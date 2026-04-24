@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import '../App.css';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
         <nav className="main-nav">
-
             <div className="nav-top">
 
                 <div className="nav-logo">
@@ -21,34 +21,39 @@ const Navbar = () => {
                 </div>
 
                 <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
+
                     <li>
-                        <a href="#home" onClick={() => setIsOpen(false)}>
+                        <Link to="/" onClick={() => setIsOpen(false)}>
                             หน้าแรก
-                        </a>
+                        </Link>
                     </li>
 
                     <li>
-                        <a href="#menu" onClick={() => setIsOpen(false)}>
+                        <Link to="/" onClick={() => setIsOpen(false)}>
                             เมนูอาหาร
-                        </a>
+                        </Link>
                     </li>
 
                     <li>
-                        <a href="#plan" onClick={() => setIsOpen(false)}>
+                        <Link to="/" onClick={() => setIsOpen(false)}>
                             แผนการกิน
-                        </a>
+                        </Link>
                     </li>
 
                     <li>
-                        <a href="#about" onClick={() => setIsOpen(false)}>
+                        <Link to="/" onClick={() => setIsOpen(false)}>
                             เกี่ยวกับเรา
-                        </a>
+                        </Link>
+                    </li>
+
+                    <li className="auth-buttons">
+                        <Link to="/auth" onClick={() => setIsOpen(false)}>
+                            เข้าสู่ระบบ
+                        </Link>
                     </li>
 
                 </ul>
-
             </div>
-
         </nav>
     );
 };

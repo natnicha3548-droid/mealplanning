@@ -3,15 +3,15 @@ const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
-app.use(cors()); // อนุญาตให้ React ดึงข้อมูลได้
-app.use(express.json()); // ให้ Backend อ่านค่า JSON ที่ส่งมาจาก Frontend ได้
+app.use(cors());
+app.use(express.json());
 
-// --- 1. การเชื่อมต่อฐานข้อมูล (Database Connection) ---
+// --- 1. เชื่อมต่อฐานข้อมูล ---
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '123456',
-    database: 'meal_planning_db' // ชื่อที่คุณสร้างไว้ใน phpMyAdmin [cite: 188, 190]
+    password: '',
+    database: 'meal_planning_db'
 });
 
 db.connect((err) => {
@@ -22,9 +22,8 @@ db.connect((err) => {
     console.log('Database connection successful!');
 });
 
-// --- 2. API สำหรับดึงข้อมูลอาหาร (ดึงข้อมูลแบบ 3NF) ---
+// --- 2. API ดึงข้อมูลอาหาร ---
 app.get('/api/foods', (req, res) => {
-    // ใช้คำสั่ง JOIN เพื่อดึงข้อมูลจาก 2 ตารางที่แยกกันไว้ตาม L.3 
     const sql = `
         SELECT f.food_id, f.food_name, f.serving_size, f.image, 
                n.calories, n.protein, n.fat, n.carbohydrates
@@ -38,10 +37,14 @@ app.get('/api/foods', (req, res) => {
     });
 });
 
-// --- 3. API สำหรับบันทึกแผนการกิน (Meal Plan) --- [cite: 202]
+// --- 3. API บันทึกแผนการกิน ---
 app.post('/api/meal-plans', (req, res) => {
     const { user_id, plan_date, total_calories, plan_detail } = req.body;
-    const sql = "INSERT INTO meal_plans (user_id, plan_date, total_calories, plan_detail) VALUES (?, ?, ?, ?)";
+
+    const sql = `
+        INSERT INTO meal_plans (user_id, plan_date, total_calories, plan_detail)
+        VALUES (?, ?, ?, ?)
+    `;
 
     db.query(sql, [user_id, plan_date, total_calories, plan_detail], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -49,6 +52,48 @@ app.post('/api/meal-plans', (req, res) => {
     });
 });
 
+// --- 4. API สมัครสมาชิก ---
+app.post('/api/signup', (req, res) => {
+    const { email, password, gender, age, height, weight } = req.body;
+
+    const sql = `
+        INSERT INTO users (email, password, gender, age, height, weight)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(sql, [email, password, gender, age, height, weight], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ message: "สมัครไม่สำเร็จ" });
+        }
+        res.json({ message: "สมัครสมาชิกสำเร็จ" });
+    });
+});
+
+// --- 5. API เข้าสู่ระบบ ---
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
+
+    const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+    db.query(sql, [email, password], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.json({ message: "เกิดข้อผิดพลาด" });
+        }
+
+        if (results.length > 0) {
+            res.json({
+                message: "เข้าสู่ระบบสำเร็จ",
+                user: results[0]
+            });
+        } else {
+            res.json({ message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
+        }
+    });
+});
+
+// --- 6. เปิด server ---
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

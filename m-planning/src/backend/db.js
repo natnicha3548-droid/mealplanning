@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',      // ยูสเซอร์เนมปกติของ XAMPP
-    password: '123456',      // รหัสผ่านปกติจะว่างไว้
+    password: '',      // รหัสผ่านปกติจะว่างไว้
     database: 'meal_planning_db' // ชื่อฐานข้อมูลที่คุณสร้าง 
 });
 
