@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import {
+    FaUser,
+    FaLock,
+    FaVenusMars,
+    FaBirthdayCake,
+    FaRulerVertical,
+    FaWeight,
+} from "react-icons/fa";
 
 function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
@@ -49,15 +57,70 @@ function AuthPage() {
                 <h2>{isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}</h2>
 
                 <form onSubmit={handleSubmit} className="auth-form">
-                    <input type="email" name="email" placeholder="อีเมล" onChange={handleChange} required />
-                    <input type="password" name="password" placeholder="รหัสผ่าน" onChange={handleChange} required />
+
+                    <div className="input-group">
+                        <i><FaUser /></i>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="อีเมล"
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <i><FaLock /></i>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="รหัสผ่าน"
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
                     {!isLogin && (
                         <>
-                            <input type="text" name="gender" placeholder="เพศ" onChange={handleChange} />
-                            <input type="number" name="age" placeholder="อายุ" onChange={handleChange} />
-                            <input type="number" name="height" placeholder="ส่วนสูง (cm)" onChange={handleChange} />
-                            <input type="number" name="weight" placeholder="น้ำหนัก (kg)" onChange={handleChange} />
+                            <div className="input-group">
+                                <i><FaVenusMars /></i>
+                                <input
+                                    type="text"
+                                    name="gender"
+                                    placeholder="เพศ"
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="input-group">
+                                <i><FaBirthdayCake /></i>
+                                <input
+                                    type="number"
+                                    name="age"
+                                    placeholder="อายุ"
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="input-group">
+                                <i><FaRulerVertical /></i>
+                                <input
+                                    type="number"
+                                    name="height"
+                                    placeholder="ส่วนสูง (cm)"
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="input-group">
+                                <i><FaWeight /></i>
+                                <input
+                                    type="number"
+                                    name="weight"
+                                    placeholder="น้ำหนัก (kg)"
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </>
                     )}
 
@@ -66,12 +129,12 @@ function AuthPage() {
                     </button>
                 </form>
 
-                <p>
+                <div className="auth-footer">
                     {isLogin ? "ยังไม่มีบัญชี?" : "มีบัญชีแล้ว?"}
-                    <button onClick={() => setIsLogin(!isLogin)} className="link-btn">
+                    <span onClick={() => setIsLogin(!isLogin)}>
                         {isLogin ? " สมัครสมาชิก" : " เข้าสู่ระบบ"}
-                    </button>
-                </p>
+                    </span>
+                </div>
             </div>
         </div>
     );
