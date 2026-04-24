@@ -42,7 +42,13 @@ const Navbar = () => {
 
                     <li>
                         <Link to="/" onClick={() => setIsOpen(false)}>
-                            เกี่ยวกับเรา
+                            รายการโปรด
+                        </Link>
+                    </li>
+
+                    <li>
+                        <Link to="/" onClick={() => setIsOpen(false)}>
+                            แผนการกินย้อนหลัง
                         </Link>
                     </li>
 
