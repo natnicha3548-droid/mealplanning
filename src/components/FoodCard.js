@@ -11,6 +11,7 @@ function FoodCard({ food, onClick }) {
                 className="food-img"
                 alt={food.food_name}
             />
+            
 
             <div className="food-details">
                 <h3 className="food-name">{food.food_name}</h3>
