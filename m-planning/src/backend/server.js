@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ================= DATABASE =================
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -21,14 +22,16 @@ db.connect(err => {
     console.log('Database connected');
 });
 
+// ================= EMAIL =================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'YOUR_EMAIL',
-        pass: 'YOUR_APP_PASSWORD'
+        user: 'natnicha3548@gmail.com',
+        pass: 'rvmkwklrxmznauda'
     }
 });
 
+// ================= SIGNUP =================
 app.post('/api/signup', async (req, res) => {
     const { email, password } = req.body;
 
@@ -41,15 +44,33 @@ app.post('/api/signup', async (req, res) => {
     db.query(
         "INSERT INTO users (email, password) VALUES (?, ?)",
         [email, hashed],
-        (err) => {
+        async (err) => {
             if (err) {
                 return res.status(400).json({ message: "อีเมลซ้ำ" });
             }
+
+            // 🔥 เพิ่มตรงนี้
+            try {
+                await transporter.sendMail({
+                    to: email,
+                    subject: 'สมัครสมาชิกสำเร็จ 🎉',
+                    html: `
+                        <h2>สมัครสมาชิกสำเร็จ</h2>
+                        <p>ยินดีต้อนรับสู่ระบบ MealPlan</p>
+                    `
+                });
+
+                console.log("SEND MAIL SUCCESS");
+            } catch (e) {
+                console.error("MAIL ERROR:", e);
+            }
+
             res.json({ message: "สมัครสมาชิกสำเร็จ" });
         }
     );
 });
 
+// ================= LOGIN =================
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -81,46 +102,97 @@ app.post('/api/login', (req, res) => {
     );
 });
 
-app.post('/api/update-profile', async (req, res) => {
-    const { user_id, email, password, newPassword } = req.body;
+// ================= FORGOT PASSWORD =================
+app.post('/api/forgot-password', async (req, res) => {
+    const { email } = req.body;
 
-    const [users] = await db.promise().query(
-        "SELECT * FROM users WHERE user_id = ?",
-        [user_id]
+    const token = crypto.randomBytes(32).toString("hex");
+    const expire = new Date(Date.now() + 1000 * 60 * 15); // 15 นาที
+
+    db.query(
+        "UPDATE users SET reset_token = ?, token_expire = ? WHERE email = ?",
+        [token, expire, email],
+        async (err, result) => {
+            if (err || result.affectedRows === 0) {
+                return res.status(404).json({ message: "ไม่พบอีเมล" });
+            }
+
+            const link = `http://localhost:3000/reset-password/${token}`;
+
+            try {
+                await transporter.sendMail({
+                    to: email,
+                    subject: 'รีเซ็ตรหัสผ่าน',
+                    html: `
+                        <h3>รีเซ็ตรหัสผ่าน</h3>
+                        <p>คลิกลิงก์ด้านล่าง:</p>
+                        <a href="${link}">${link}</a>
+                        <p>ลิงก์หมดอายุใน 15 นาที</p>
+                    `
+                });
+
+                res.json({ message: "ส่งลิงก์รีเซ็ตแล้ว" });
+
+            } catch (e) {
+                console.error(e);
+                res.status(500).json({ message: "ส่งเมลไม่สำเร็จ" });
+            }
+        }
     );
-
-    if (!users.length) {
-        return res.json({ message: "ไม่พบ user" });
-    }
-
-    const user = users[0];
-    const valid = await bcrypt.compare(password, user.password);
-
-    if (!valid) {
-        return res.json({ message: "รหัสผ่านเดิมไม่ถูกต้อง" });
-    }
-
-    let updatedPassword = user.password;
-
-    if (newPassword) {
-        updatedPassword = await bcrypt.hash(newPassword, 10);
-    }
-
-    await db.promise().query(
-        "UPDATE users SET email = ?, password = ? WHERE user_id = ?",
-        [email, updatedPassword, user_id]
-    );
-
-    res.json({ message: "อัปเดตสำเร็จ" });
 });
 
+// ================= RESET PASSWORD (FIXED 100%) =================
+app.post('/api/reset-password/:token', async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { newPassword } = req.body;
+
+        console.log("TOKEN FROM URL:", token);
+
+        if (!token || !newPassword) {
+            return res.status(400).json({ message: "ข้อมูลไม่ครบ" });
+        }
+
+        const [users] = await db.promise().query(
+            "SELECT * FROM users WHERE reset_token = ? AND token_expire > NOW()",
+            [token]
+        );
+
+        console.log("USER FOUND:", users);
+
+        if (!users.length) {
+            return res.status(400).json({ message: "token ไม่ถูกหรือหมดอายุ" });
+        }
+
+        const user = users[0];
+        const hashed = await bcrypt.hash(newPassword, 10);
+
+        await db.promise().query(
+            "UPDATE users SET password = ?, reset_token = NULL, token_expire = NULL WHERE user_id = ?",
+            [hashed, user.user_id]
+        );
+
+        res.json({ message: "รีเซ็ตรหัสผ่านสำเร็จ" });
+
+    } catch (error) {
+        console.error("RESET ERROR:", error);
+        res.status(500).json({ message: "server error" });
+    }
+});
+
+// ================= USER INFO =================
 app.get('/api/user/:id', (req, res) => {
-    db.query("SELECT * FROM users WHERE user_id = ?", [req.params.id], (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.json(results[0] || null);
-    });
+    db.query(
+        "SELECT * FROM users WHERE user_id = ?",
+        [req.params.id],
+        (err, results) => {
+            if (err) return res.status(500).json(err);
+            res.json(results[0] || null);
+        }
+    );
 });
 
+// ================= UPDATE USER BODY =================
 app.post('/api/update-user-info', (req, res) => {
     const { user_id, weight, height, age, gender, activity, disease } = req.body;
 
@@ -137,6 +209,7 @@ app.post('/api/update-user-info', (req, res) => {
     });
 });
 
+// ================= SAVE CALC =================
 app.post('/api/save-calculation', (req, res) => {
     const {
         user_id, weight, height, age, gender, activity, disease,
@@ -158,6 +231,7 @@ app.post('/api/save-calculation', (req, res) => {
     });
 });
 
+// ================= GET CALC =================
 app.get('/api/get-calculation/:user_id', (req, res) => {
     db.query(
         `SELECT * FROM user_calculations 
@@ -171,6 +245,7 @@ app.get('/api/get-calculation/:user_id', (req, res) => {
     );
 });
 
+// ================= FOODS =================
 app.get('/api/foods', (req, res) => {
     const sql = `
         SELECT 
@@ -190,6 +265,7 @@ app.get('/api/foods', (req, res) => {
     });
 });
 
+// ================= START SERVER =================
 app.listen(5000, () => {
     console.log("Server running on http://localhost:5000");
 });

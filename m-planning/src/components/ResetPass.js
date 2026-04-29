@@ -35,27 +35,27 @@ function ResetPass() {
         }
 
         try {
-            const res = await fetch("http://localhost:5000/api/reset-password", {
+            const res = await fetch(`http://localhost:5000/api/reset-password/${token}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    token: token,
                     newPassword: form.password,
                 }),
             });
 
             const data = await res.json();
+
             alert(data.message);
 
-            if (data.message === "เปลี่ยนรหัสผ่านสำเร็จ") {
+            if (res.ok) {
                 navigate("/auth");
             }
 
         } catch (error) {
             console.error(error);
-            alert("เกิดข้อผิดพลาด");
+            alert("เชื่อมต่อ server ไม่ได้");
         }
     };
 
@@ -89,12 +89,11 @@ function ResetPass() {
                     </div>
 
                     <div style={{ textAlign: "left", marginTop: "5px" }}>
-                        <label style={{ fontSize: "0.85rem", color: "#7a5c4d" }}>
+                        <label>
                             <input
                                 type="checkbox"
                                 checked={showPassword}
                                 onChange={() => setShowPassword(!showPassword)}
-                                style={{ marginRight: "6px" }}
                             />
                             แสดงรหัสผ่าน
                         </label>
