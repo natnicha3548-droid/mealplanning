@@ -468,7 +468,7 @@ body {
   transition: 0.25s;
 }
 
-.calc-form button {
+.calc-form button:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(255, 140, 66, 0.4);
 }
@@ -512,6 +512,179 @@ body {
 
 .calc-btn:hover {
   background-color: #45a049;
+}
+
+.slideshow {
+  position: relative;
+  width: 100%;
+  margin-bottom: 35px;
+
+  /* เอาการล็อกความสูงออก */
+  display: flex;
+  justify-content: center;
+}
+
+/* ใช้กับ <img> */
+.slide-img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.text-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+}
+
+.text-center h1 {
+  font-size: 3rem;
+  background: linear-gradient(90deg, #ff8c42, #ffd166);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-center p {
+  font-size: 1.2rem;
+}
+
+.view-more {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  background: linear-gradient(135deg, #ff8c42, #ffd166);
+  color: white;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(255, 140, 66, 0.6);
+  backdrop-filter: blur(6px);
+  transition: all 0.25s ease;
+}
+
+.view-more:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 18px 40px rgba(255, 140, 66, 0.8);
+  filter: brightness(1.1);
+}
+
+
+.nutrition-card {
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 30px 25px 60px;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.nutrition-card h2 {
+  font-size: 1rem;
+  color: #7a5c4d;
+  margin-bottom: 10px;
+}
+
+.tdee {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ff7a00;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.tdee small {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.macro-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.macro {
+  flex: 1;
+  padding: 15px;
+  border-radius: 15px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  font-size: 0.9rem;
+}
+
+.macro svg {
+  font-size: 1.2rem;
+}
+
+.carb {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.protein {
+  background: #fff8e1;
+  color: #ff8f00;
+}
+
+.fat {
+  background: #fbe9e7;
+  color: #d84315;
+}
+
+.macro strong {
+  font-size: 1rem;
+}
+
+.macro:hover {
+  transform: translateY(-3px);
+  transition: 0.2s;
+}
+
+.calc-floating-btn {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: linear-gradient(135deg, #ff8c42, #ffd166);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 6px 15px rgba(255, 140, 66, 0.35);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
+}
+
+.calc-floating-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 140, 66, 0.45);
+  filter: brightness(1.05);
+}
+
+.calc-floating-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.25);
 }
 
 @keyframes fadeIn {

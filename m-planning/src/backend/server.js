@@ -172,7 +172,19 @@ app.get('/api/get-calculation/:user_id', (req, res) => {
 });
 
 app.get('/api/foods', (req, res) => {
-    db.query("SELECT * FROM foods", (err, results) => {
+    const sql = `
+        SELECT 
+            f.food_id,
+            f.food_name,
+            f.image,
+            f.serving_size,
+            n.calories
+        FROM foods f
+        LEFT JOIN food_nutrients n 
+        ON f.food_id = n.food_id
+    `;
+
+    db.query(sql, (err, results) => {
         if (err) return res.status(500).json(err);
         res.json(results);
     });
