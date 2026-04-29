@@ -41,7 +41,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
 
                     <li>
                         <Link to="/" onClick={handleClose} className={isActive("/") ? "active" : ""}>
-                            หน้าแรก
+                            หน้าแรกนะ
                         </Link>
                     </li>
 
