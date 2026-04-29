@@ -47,7 +47,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
 
                     <li>
                         <Link to="/menu" onClick={handleClose}>
-                            เมนูอาหาร
+                            เมนูอาหารของฉัน
                         </Link>
                     </li>
 
