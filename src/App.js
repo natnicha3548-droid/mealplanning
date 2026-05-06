@@ -7,6 +7,9 @@ import Calc from "./components/Calc";
 import Profile from "./components/Profile";
 import HomePage from "./pages/HomePage";
 import MenuFood from "./pages/MenuFood";
+import MealPlan from "./pages/MealPlan";
+import PastPlans from "./pages/PastPlans";
+import FavFood from "./pages/FavFood";
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -97,7 +100,9 @@ function App() {
         <Route path="/calculate" element={<Calc />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/menu" element={<MenuFood />} />
-
+        <Route path="/meal-plan" element={<MealPlan />} />
+        <Route path="/past-plans" element={<PastPlans />} />
+        <Route path="/favourite-food" element={<FavFood />} />
       </Routes>
     </div>
   );

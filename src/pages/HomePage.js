@@ -84,6 +84,24 @@ function HomePage({ calcResult, formData }) {
                 </div>
             )}
 
+            {/* แผนการกินล่าสุด */}
+            <div className="latest-meal-plan">
+                <h2>แผนการกินล่าสุด</h2>
+                {/* Content for latest meal plan */}
+            </div>
+
+            {/* รายการโปรด */}
+            <div className="favorite-items">
+                <h2>รายการโปรด</h2>
+                {/* Content for favorite items */}
+            </div>
+
+            {/* แผนการกินย้อนหลัง */}
+            <div className="past-meal-plans">
+                <h2>แผนการกินย้อนหลัง</h2>
+                {/* Content for past meal plans */}
+            </div>
+
         </div>
     );
 }
