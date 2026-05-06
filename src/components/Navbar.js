@@ -52,8 +52,8 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                     </li>
 
                     <li>
-                        <Link to="/meal-plan" onClick={handleClose}>
-                            แผนการกิน
+                        <Link to="/plan" onClick={handleClose}>
+                            แผนการกินของฉัน
                         </Link>
                     </li>
 
