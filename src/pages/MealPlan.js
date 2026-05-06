@@ -15,7 +15,7 @@ function MealPlan() {
         <div style={{ padding: "20px" }}>
             <h2>แผนการกินของคุณ</h2>
             {mealPlan.length === 0 ? (
-                <p>คุณยังไม่มีแผนการกินเลย ลองสร้างดูสิ!</p>
+                <p>คุณยังไม่มีแผนการกินเลย ลองสร้างดูสิ!!!</p>
             ) : (
                 <ul>
                     {mealPlan.map((meal, index) => (
