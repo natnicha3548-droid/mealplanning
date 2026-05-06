@@ -3,7 +3,6 @@ import "../App.css";
 
 function Profile() {
     const [user, setUser] = useState(null);
-    const [calc, setCalc] = useState(null);
 
     const [form, setForm] = useState({
         email: "",
@@ -16,11 +15,6 @@ function Profile() {
         if (storedUser) {
             setUser(storedUser);
             setForm(prev => ({ ...prev, email: storedUser.email }));
-
-            fetch(`http://localhost:5000/api/get-calculation/${storedUser.user_id}`)
-                .then(res => res.json())
-                .then(data => setCalc(data))
-                .catch(err => console.error(err));
         }
     }, []);
 
@@ -34,26 +28,38 @@ function Profile() {
             return;
         }
 
-        const res = await fetch("http://localhost:5000/api/update-profile", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user_id: user.user_id,
-                email: form.email,
-                password: form.password,
-                newPassword: form.newPassword
-            })
-        });
+        try {
+            const res = await fetch("http://localhost:5000/api/update-user-info", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.user_id,
+                    email: form.email,
+                    password: form.password,
+                    newPassword: form.newPassword
+                })
+            });
 
-        const data = await res.json();
-        alert(data.message);
+            if (!res.ok) {
+                const text = await res.text();
+                alert(text);
+                return;
+            }
 
-        if (res.ok) {
-            const updatedUser = { ...user, email: form.email };
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-            setUser(updatedUser);
+            const data = await res.json();
+            alert(data.message);
+
+            if (res.ok) {
+                const updatedUser = { ...user, email: form.email };
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+                setUser(updatedUser);
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("เกิดข้อผิดพลาด");
         }
     };
 
@@ -89,14 +95,6 @@ function Profile() {
                     บันทึกข้อมูล
                 </button>
             </div>
-
-            {calc && (
-                <div className="calc-result">
-                    <h3>ข้อมูลสุขภาพ</h3>
-                    <p>BMI: {calc.bmi}</p>
-                    <p>TDEE: {calc.tdee} kcal</p>
-                </div>
-            )}
         </div>
     );
 }

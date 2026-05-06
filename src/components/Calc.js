@@ -37,6 +37,21 @@ function Calc() {
         }
     }, []);
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (user) {
+            fetch(`http://localhost:5000/api/get-calculation/${user.user_id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        setResult(data);
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+    }, []);
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -147,7 +162,7 @@ function Calc() {
                 ← กลับ
             </button>
 
-            <h2>🍽 คำนวณพลังงาน</h2>
+            <h2>คำนวณพลังงาน</h2>
 
             <div className="calc-form">
                 <input name="weight" value={form.weight} placeholder="น้ำหนัก (kg)" onChange={handleChange} />
@@ -180,7 +195,7 @@ function Calc() {
 
             {result && (
                 <div className="calc-result">
-                    <h3>✨ ผลลัพธ์</h3>
+                    <h3>ผลลัพธ์</h3>
                     <p>BMI: {result.bmi}</p>
                     <p>BMR: {result.bmr} kcal</p>
                     <p>TDEE: {result.tdee} kcal</p>

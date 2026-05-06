@@ -50,10 +50,16 @@ function AuthPage({ setUser }) {
                 body: JSON.stringify(form),
             });
 
+            if (!res.ok) {
+                const text = await res.text();
+                alert(text);
+                return;
+            }
+
             const data = await res.json();
             alert(data.message);
 
-            if (res.ok && isLogin) {
+            if (isLogin) {
                 const userData = data.user;
 
                 if (!userData || !userData.user_id) {
@@ -64,14 +70,10 @@ function AuthPage({ setUser }) {
                 localStorage.setItem("user", JSON.stringify(userData));
                 setUser(userData);
 
-                const res2 = await fetch(`http://localhost:5000/api/get-calculation/${userData.user_id}`);
-                const calcData = await res2.json();
-
-                if (calcData) {
-                    navigate("/");
-                } else {
-                    navigate("/calculate");
-                }
+                navigate("/calculate");
+            } else {
+                alert("สมัครสำเร็จ กรุณาเข้าสู่ระบบ");
+                setIsLogin(true);
             }
 
         } catch (error) {
@@ -94,6 +96,12 @@ function AuthPage({ setUser }) {
                 },
                 body: JSON.stringify({ email: form.email }),
             });
+
+            if (!res.ok) {
+                const text = await res.text();
+                alert(text);
+                return;
+            }
 
             const data = await res.json();
             alert(data.message);
@@ -145,12 +153,11 @@ function AuthPage({ setUser }) {
                     )}
 
                     <div style={{ textAlign: "left", marginTop: "5px" }}>
-                        <label style={{ fontSize: "0.85rem", color: "#7a5c4d" }}>
+                        <label style={{ fontSize: "0.85rem" }}>
                             <input
                                 type="checkbox"
                                 checked={showPassword}
                                 onChange={() => setShowPassword(!showPassword)}
-                                style={{ marginRight: "6px" }}
                             />
                             แสดงรหัสผ่าน
                         </label>
@@ -159,11 +166,7 @@ function AuthPage({ setUser }) {
                     {isLogin && (
                         <div style={{ textAlign: "right", marginTop: "5px" }}>
                             <span
-                                style={{
-                                    fontSize: "0.85rem",
-                                    color: "#ff8c42",
-                                    cursor: "pointer",
-                                }}
+                                style={{ cursor: "pointer", color: "orange" }}
                                 onClick={handleForgotPassword}
                             >
                                 ลืมรหัสผ่าน?

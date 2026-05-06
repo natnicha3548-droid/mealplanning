@@ -16,12 +16,10 @@ function App() {
 
   const [user, setUser] = useState(null);
   const [calcResult, setCalcResult] = useState(null);
-
   const [formData, setFormData] = useState(null);
 
   const location = useLocation();
 
-  // โหลด user
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
@@ -32,34 +30,6 @@ function App() {
     }
   }, []);
 
-  // โหลดผลคำนวณ
-  useEffect(() => {
-
-    if (!user) {
-      setCalcResult(null);
-      return;
-    }
-
-    fetch(`http://localhost:5000/api/get-calculation/${user.user_id}`)
-      .then(res => {
-        if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
-        return res.json();
-      })
-      .then(data => {
-        if (data && data.tdee) {
-          setCalcResult(data);
-        } else {
-          setCalcResult(null);
-        }
-      })
-      .catch(err => {
-        console.error("Error:", err);
-        setCalcResult(null);
-      });
-
-  }, [user]);
-
-  // รับค่าจากหน้า Calc
   useEffect(() => {
     if (location.state?.calcResult) {
       setCalcResult(location.state.calcResult);
@@ -88,12 +58,7 @@ function App() {
 
         <Route
           path="/auth"
-          element={
-            <AuthPage
-              setUser={setUser}
-              setCalcResult={setCalcResult}
-            />
-          }
+          element={<AuthPage setUser={setUser} />}
         />
 
         <Route path="/reset-password/:token" element={<ResetPass />} />
@@ -103,6 +68,8 @@ function App() {
         <Route path="/meal-plan" element={<MealPlan />} />
         <Route path="/past-plans" element={<PastPlans />} />
         <Route path="/favourite-food" element={<FavFood />} />
+        <Route path="*" element={<HomePage />} />
+
       </Routes>
     </div>
   );
