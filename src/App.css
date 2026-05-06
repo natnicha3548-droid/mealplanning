@@ -693,3 +693,72 @@ body {
     transform: translateY(0);
   }
 }
+
+/* HEADER */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.menu-actions input {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+.filter-btn {
+  background: #ff8c42;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+/* CATEGORY */
+.category-list {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.category-list button {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+.category-list .active {
+  background: #ff8c42;
+  color: white;
+}
+
+/* GRID */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* FEATURES */
+.features {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.feature-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+}
