@@ -52,19 +52,19 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                     </li>
 
                     <li>
-                        <Link to="/plan" onClick={handleClose}>
+                        <Link to="/meal-plan" onClick={handleClose}>
                             แผนการกิน
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/favorites" onClick={handleClose}>
+                        <Link to="/favourite-food" onClick={handleClose}>
                             รายการโปรด
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/history" onClick={handleClose}>
+                        <Link to="/past-plans" onClick={handleClose}>
                             แผนการกินย้อนหลัง
                         </Link>
                     </li>
