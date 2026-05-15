@@ -59,7 +59,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
 
                     <li>
                         <Link to="/favourite-food" onClick={handleClose}>
-                            รายการโปรด
+                            รายการโปรดของฉัน
                         </Link>
                     </li>
 
