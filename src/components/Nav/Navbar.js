@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../App.css';
+import "./Navbar.css";
+import logo from "../../assets/logo.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import logo from "../assets/logo.png";
+
 
 const Navbar = ({ user, setUser, setCalcResult }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -59,7 +60,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
 
                     <li>
                         <Link to="/favourite-food" onClick={handleClose}>
-                            รายการโปรด
+                            รายการโปรดของฉัน
                         </Link>
                     </li>
 
