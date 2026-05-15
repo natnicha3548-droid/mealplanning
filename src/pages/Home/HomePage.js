@@ -53,7 +53,7 @@ function HomePage({ calcResult, formData }) {
 
                         <div className="macro carb">
                             <FaBreadSlice />
-                            <p>คาร์บ</p>
+                            <p>คาร์บ </p>
                             <strong>{calcResult.carb} g</strong>
                         </div>
 
