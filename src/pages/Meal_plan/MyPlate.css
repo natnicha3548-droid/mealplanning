@@ -1,0 +1,217 @@
+/* MyPlate.css */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+.my-plate-container {
+  font-family: 'Kanit', sans-serif;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  color: #333;
+}
+
+/* Header */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 20px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-icon {
+  font-size: 3rem;
+}
+
+.logo-title h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.cal-info {
+  text-align: right;
+}
+
+.cal-info h2 {
+  font-size: 1.2rem;
+  margin: 0 0 5px 0;
+  font-weight: 600;
+}
+
+.cal-info p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Meals List */
+.meal-section {
+  margin-bottom: 25px;
+}
+
+.meal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-icon {
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s;
+}
+
+.add-icon:hover {
+  transform: scale(1.1);
+}
+
+.meal-item {
+  background-color: #dfdfdf;
+  border-radius: 8px;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.meal-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.meal-controls {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.meal-cal {
+  font-size: 1.1rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.delete-icon:hover {
+  color: #ff4d4f;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.2rem;
+}
+
+.qty-btn {
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.qty-btn:hover {
+  color: #666;
+}
+
+.qty-number {
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Bottom Section */
+.bottom-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.nutrition-summary {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+}
+
+.nutrition-label {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.nutrition-bar {
+  background-color: #dfdfdf;
+  width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nutrition-bar.exceeded {
+  background-color: #ff4d4f; /* สีแดงเมื่อเกิน */
+  color: white;
+}
+
+.exceed-text {
+  margin-top: 8px;
+  color: #ff4d4f;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  align-self: flex-end;
+}
+
+.btn-back,
+.btn-next {
+  padding: 10px 25px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-back:hover,
+.btn-next:hover {
+  background-color: #e0e0e0;
+}

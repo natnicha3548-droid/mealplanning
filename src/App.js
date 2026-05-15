@@ -10,6 +10,7 @@ import MenuFood from "./pages/Menu_food/MenuFood";
 import MealPlan from "./pages/Meal_plan/MealPlan";
 import PastPlans from "./pages/Past_plan/PastPlans";
 import FavFood from "./pages/Fav_food/FavFood";
+import MyPlate from "./pages/Meal_plan/MyPlate";
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
         <Route path="/meal-plan" element={<MealPlan />} />
         <Route path="/past-plans" element={<PastPlans />} />
         <Route path="/favourite-food" element={<FavFood />} />
+        <Route path="/MyPlate" element={<MyPlate />} />
         <Route path="*" element={<HomePage />} />
 
       </Routes>
