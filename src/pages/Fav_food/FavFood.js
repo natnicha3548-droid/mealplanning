@@ -16,7 +16,7 @@ function FavFood() {
         <div style={{ padding: "20px" }}>
             <h2>รายการโปรดของฉัน</h2>
             {favFoods.length === 0 ? (
-                <p>คุณยังไม่มีรายการโปรดเลย ลองเพิ่มดูสิ!</p>
+                <p>คุณยังไม่มีรายการโปรดเลย ลองเพิ่มดูสิ! </p>
             ) : (
                 <ul>
                     {favFoods.map((food, index) => (
