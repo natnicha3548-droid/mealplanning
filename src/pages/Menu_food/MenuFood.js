@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import FoodCard from '../components/FoodCard';
+import FoodCard from '../../components/FoodCard';
 
 const categories = [
     "ทั้งหมด", "จานเดียว", "อีสาน", "คลีน",
