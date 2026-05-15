@@ -14,7 +14,7 @@ function FavFood() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h2>รายการโปรดของคุณ</h2>
+            <h2>รายการโปรดของฉัน</h2>
             {favFoods.length === 0 ? (
                 <p>คุณยังไม่มีรายการโปรดเลย ลองเพิ่มดูสิ!</p>
             ) : (
