@@ -12,7 +12,6 @@ import MenuFood from "./pages/Menu_food/MenuFood";
 import MealPlan from "./pages/Meal_plan/MealPlan";
 import PastPlans from "./pages/Past_plan/PastPlans";
 import FavFood from "./pages/Fav_food/FavFood";
-
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -134,50 +133,14 @@ function App() {
           }
         />
 
-        <Route
-          path="/reset-password/:token"
-          element={<ResetPass />}
-        />
-
-        <Route
-          path="/calculate"
-          element={<Calc />}
-        />
-
-        <Route
-          path="/profile"
-          element={<Profile />}
-        />
-
-        <Route
-          path="/menu"
-          element={<MenuFood />}
-        />
-
-        <Route
-          path="/meal-plan"
-          element={<MealPlan />}
-        />
-
-        <Route
-          path="/past-plans"
-          element={<PastPlans />}
-        />
-
-        <Route
-          path="/favourite-food"
-          element={<FavFood />}
-        />
-
-        <Route
-          path="*"
-          element={
-            <HomePage
-              calcResult={calcResult}
-              formData={formData}
-            />
-          }
-        />
+        <Route path="/reset-password/:token" element={<ResetPass />} />
+        <Route path="/calculate" element={<Calc />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/menu" element={<MenuFood />} />
+        <Route path="/meal-plan" element={<MealPlan />} />
+        <Route path="/past-plans" element={<PastPlans />} />
+        <Route path="/favourite-food" element={<FavFood />} />
+        <Route path="*" element={<HomePage />} />
 
       </Routes>
 

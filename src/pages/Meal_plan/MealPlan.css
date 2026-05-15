@@ -265,3 +265,36 @@
     margin: auto;
   }
 }
+
+/* เพิ่มเติมจากที่คุณเขียนไว้ */
+
+.meal-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.create-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+.day:hover:not(.active) {
+  background: #f9f9f9;
+  border-color: #eee;
+}
+
+/* ปรับปรุง Responsive สำหรับ Mobile ให้กดง่ายขึ้น */
+@media (max-width: 1100px) {
+  .meal-card {
+    grid-template-columns: 1fr; /* Stack เป็นแนวตั้งตามที่คุณเขียน */
+    padding: 30px;
+  }
+  
+  .meal-image {
+    margin: 10px auto;
+  }
+}
