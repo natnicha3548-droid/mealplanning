@@ -78,7 +78,7 @@ function MealPlan() {
       <div className="meal-top">
         <div>
           <h1>แผนการกินของฉัน</h1>
-          <p>วางแผนมื้ออาหารล่วงหน้า เพื่อสุขภาพที่ดีในทุกวัน</p>
+          <p>วางแผนมื้ออาหารล่วงหน้า เพื่อสุขภาพที่ดีในทุกวัน </p>
         </div>
 
         <button className="create-btn">
