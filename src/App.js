@@ -5,11 +5,11 @@ import AuthPage from './components/AuthPage';
 import ResetPass from "./components/ResetPass";
 import Calc from "./components/Calc";
 import Profile from "./components/Profile";
-import HomePage from "./pages/HomePage";
-import MenuFood from "./pages/MenuFood";
-import MealPlan from "./pages/MealPlan";
-import PastPlans from "./pages/PastPlans";
-import FavFood from "./pages/FavFood";
+import HomePage from "./pages/Home/HomePage";
+import MenuFood from "./pages/Menu_food/MenuFood";
+import MealPlan from "./pages/Meal_plan/MealPlan";
+import PastPlans from "./pages/Past_plan/PastPlans";
+import FavFood from "./pages/Fav_food/FavFood";
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {

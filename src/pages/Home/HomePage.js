@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaFire, FaBreadSlice, FaDrumstickBite, FaTint } from "react-icons/fa";
 
-import img1 from "../assets/sl1.png";
-import img2 from "../assets/sl2.png";
+import slide1 from "../../assets/sl1.png";
+import slide2 from "../../assets/sl2.png";
 
 function HomePage({ calcResult, formData }) {
 
-    const slides = [img1, img2];
+    const slides = [slide1, slide2];
     const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ function HomePage({ calcResult, formData }) {
 
                         <div className="macro carb">
                             <FaBreadSlice />
-                            <p>คาร์บ</p>
+                            <p>คาร์บ </p>
                             <strong>{calcResult.carb} g</strong>
                         </div>
 
