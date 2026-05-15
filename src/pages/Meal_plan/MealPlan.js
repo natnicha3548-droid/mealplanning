@@ -9,52 +9,134 @@ import {
   FaPlus,
 } from "react-icons/fa";
 
+// ฟังก์ชันสำหรับสร้างวันที่ 7 วันล่วงหน้า (เริ่มจากวันนี้)
+const generateNext7Days = () => {
+  const dayNames = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
+  const monthNames = [
+    "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+    "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+  ];
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    days.push({
+      name: dayNames[d.getDay()],
+      date: `${d.getDate()} ${monthNames[d.getMonth()]}`,
+      fullDate: d.toISOString().split("T")[0],
+    });
+  }
+  return days;
+};
+
 function MealPlan() {
   const [mealPlan, setMealPlan] = useState([]);
+  const [weekDays, setWeekDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // ดึงข้อมูลจาก LocalStorage หรือใช้ค่า Default
-  useEffect(() => {
-    const stored = localStorage.getItem("mealPlan");
-    if (stored) {
-      setMealPlan(JSON.parse(stored));
-    } else {
-      const defaultPlan = [
-        {
-          name: "ผัดกะเพราไก่ + ไข่ดาว",
-          calories: 600,
-          time: "07:00 - 09:00",
-          type: "มื้อเช้า",
-          image: "https://images.unsplash.com/photo-1562967916-eb82221dfb92?q=80&w=1200&auto=format&fit=crop",
-          tag: "จานเดียว",
-          icon: "sun",
-        },
-        {
-          name: "ข้าวอกไก่ย่าง + ผักต้ม",
-          calories: 450,
-          time: "12:00 - 13:00",
-          type: "มื้อกลางวัน",
-          image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1200&auto=format&fit=crop",
-          tag: "คลีน",
-          icon: "cloud",
-        },
-        {
-          name: "ต้มยำกุ้ง",
-          calories: 250,
-          time: "18:00 - 19:00",
-          type: "มื้อเย็น",
-          image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop",
-          tag: "ต้ม/แกง",
-          icon: "moon",
-        },
-      ];
-      setMealPlan(defaultPlan);
-      localStorage.setItem("mealPlan", JSON.stringify(defaultPlan));
+  // State สำหรับเก็บข้อมูลเป้าหมายที่ดึงมาจากการคำนวณ
+  const [goalData, setGoalData] = useState({
+    tdee: 1600, // ค่าเริ่มต้น
+    carb: 0,
+    protein: 0,
+    fat: 0
+  });
+
+  const fetchMealPlanFromDB = async (date) => {
+    setIsLoading(true);
+    try {
+      const storedUser = localStorage.getItem("user");
+      const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
+
+      const response = await fetch(`http://localhost:5000/api/meals?date=${date}&userId=${currentUserId}`);
+      
+      if (!response.ok) {
+        throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูลมื้ออาหาร");
+      }
+
+      const dataFromDB = await response.json();
+      setMealPlan(dataFromDB);
+      setIsLoading(false);
+
+    } catch (error) {
+      console.error("Error fetching meals:", error);
+      setMealPlan([]); 
+      setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const days = generateNext7Days();
+    setWeekDays(days);
+    
+    // ดึงข้อมูล User
+    const storedUser = localStorage.getItem("user");
+    const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
+
+    // 1. ดึงเป้าหมายการคำนวณ (TDEE, Macros) จาก Backend
+    fetch(`http://localhost:5000/api/get-calculation/${currentUserId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setGoalData({
+            tdee: data.tdee || 1600,
+            carb: data.carb || 0,
+            protein: data.protein || 0,
+            fat: data.fat || 0
+          });
+        }
+      })
+      .catch(err => console.error("Error fetching goals:", err));
+
+    // 2. ดึงมื้ออาหารของวันนี้
+    fetchMealPlanFromDB(days[0].fullDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const totalCalories = mealPlan.reduce((sum, meal) => sum + meal.calories, 0);
-  const goalCalories = 1600;
+  const handleDayClick = (index) => {
+    setSelectedDay(index);
+    fetchMealPlanFromDB(weekDays[index].fullDate);
+  };
+
+  // คำนวณแคลอรีที่กินไปแล้ว
+  const totalCalories = mealPlan.reduce((sum, meal) => sum + (Number(meal.calories) || 0), 0);
+  const totalCarbs = mealPlan.reduce((sum, meal) => sum + (Number(meal.carbs) || 0), 0);
+  const totalProtein = mealPlan.reduce((sum, meal) => sum + (Number(meal.protein) || 0), 0);
+  const totalFat = mealPlan.reduce((sum, meal) => sum + (Number(meal.fat) || 0), 0);
+  const totalSugar = mealPlan.reduce((sum, meal) => sum + (Number(meal.sugar) || 0), 0);
+  const totalSodium = mealPlan.reduce((sum, meal) => sum + (Number(meal.sodium) || 0), 0); 
+
+  // ใช้ TDEE เป็น Goal Calories สำหรับขีดความคืบหน้า
+  const goalCalories = goalData.tdee;
   const progressWidth = Math.min((totalCalories / goalCalories) * 100, 100);
+
+  // คำนวณเปอร์เซ็นต์สัดส่วนสารอาหาร
+  const totalMacros = totalCarbs + totalProtein + totalFat + totalSugar + (totalSodium / 1000) || 1; 
+  const pCarb = Math.round((totalCarbs / totalMacros) * 100) || 0;
+  const pPro = Math.round((totalProtein / totalMacros) * 100) || 0;
+  const pFat = Math.round((totalFat / totalMacros) * 100) || 0;
+  const pSug = Math.round((totalSugar / totalMacros) * 100) || 0;
+  const pSod = totalMacros > 1 ? Math.max(0, 100 - pCarb - pPro - pFat - pSug) : 0; 
+
+  const endCarb = pCarb;
+  const endPro = endCarb + pPro;
+  const endFat = endPro + pFat;
+  const endSug = endFat + pSug;
+
+  const circleStyle = {
+    background: totalCalories === 0 
+      ? `radial-gradient(closest-side, white 85%, transparent 86% 100%), #ffd166` // ถ้ายังไม่กินอะไรเลย ให้แสดงวงล้อสีเหลืองอ่อน
+      : `radial-gradient(closest-side, white 85%, transparent 86% 100%),
+         conic-gradient(
+           #FF9F43 0% ${endCarb}%,      
+           #EE5253 ${endCarb}% ${endPro}%,     
+           #10AC84 ${endPro}% ${endFat}%,     
+           #0984E3 ${endFat}% ${endSug}%,     
+           #FDCB6E ${endSug}% 100%     
+         )`
+  };
 
   const renderIcon = (icon) => {
     switch (icon) {
@@ -67,7 +149,6 @@ function MealPlan() {
 
   return (
     <div className="meal-page">
-      {/* HEADER */}
       <header className="meal-top">
         <div>
           <h1>แผนการกินของฉัน</h1>
@@ -78,59 +159,88 @@ function MealPlan() {
         </Link>
       </header>
 
-      {/* DAYS SELECTOR */}
       <nav className="days-row">
-        {["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี"].map((day, idx) => (
-          <div key={idx} className={`day ${idx === 0 ? "active" : ""}`}>
-            <h4>{day}</h4>
-            <span>{5 + idx} พ.ค.</span>
+        {weekDays.map((day, idx) => (
+          <div 
+            key={idx} 
+            className={`day ${idx === selectedDay ? "active" : ""}`}
+            onClick={() => handleDayClick(idx)}
+            style={{ cursor: "pointer" }}
+          >
+            <h4>{idx === 0 ? "วันนี้" : day.name}</h4>
+            <span>{day.date}</span>
           </div>
         ))}
       </nav>
 
       <main className="meal-layout">
-        {/* LEFT: Meal List */}
         <section className="meal-list">
-          {mealPlan.map((meal, index) => (
-            <div className="meal-card" key={index}>
-              <div className="meal-icon">{renderIcon(meal.icon)}</div>
-              <div className="meal-time">
-                <h3>{meal.type}</h3>
-                <span>{meal.time}</span>
+          {isLoading ? (
+            <div style={{ textAlign: "center", padding: "50px", color: "#888" }}>กำลังโหลดข้อมูลมื้ออาหาร...</div>
+          ) : mealPlan.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "50px", color: "#888" }}>ยังไม่มีแผนการกินในวันนี้</div>
+          ) : (
+            mealPlan.map((meal, index) => (
+              <div className="meal-card" key={index}>
+                <div className="meal-icon">{renderIcon(meal.icon)}</div>
+                <div className="meal-time">
+                  <h3>{meal.type}</h3>
+                  <span>{meal.time}</span>
+                </div>
+                <img src={meal.image} alt={meal.name} className="meal-image" />
+                <div className="meal-info">
+                  <h2>{meal.name}</h2>
+                  <div className="meal-tag">{meal.tag}</div>
+                </div>
+                <div className="meal-cal">{meal.calories} kcal</div>
+                <button className="change-btn">เปลี่ยนเมนู</button>
+                <FaEllipsisV className="dot-icon" />
               </div>
-              <img src={meal.image} alt={meal.name} className="meal-image" />
-              <div className="meal-info">
-                <h2>{meal.name}</h2>
-                <div className="meal-tag">{meal.tag}</div>
-              </div>
-              <div className="meal-cal">{meal.calories} kcal</div>
-              <button className="change-btn">เปลี่ยนเมนู</button>
-              <FaEllipsisV className="dot-icon" />
-            </div>
-          ))}
-          <button className="add-meal-btn">+ เพิ่มมื้ออาหาร / ของว่าง</button>
+            ))
+          )}
         </section>
 
-        {/* RIGHT: Summary Card */}
         <aside className="summary-card">
           <h2>สรุปวันนี้</h2>
           <div className="circle-box">
-            <div className="circle">
+            <div className="circle" style={circleStyle}>
               <h1>{totalCalories}</h1>
               <span>kcal</span>
             </div>
           </div>
 
           <div className="summary-list">
-            <NutritionItem label="คาร์โบไฮเดรต" value="45%" />
-            <NutritionItem label="โปรตีน" value="30%" />
-            <NutritionItem label="ไขมัน" value="20%" />
+            <NutritionItem 
+              label="คาร์โบไฮเดรต" 
+              value={`${pCarb}%`} 
+              grams={`${totalCarbs.toFixed(2)} / ${Number(goalData.carb).toFixed(2)}g`} 
+            />
+            <NutritionItem 
+              label="โปรตีน" 
+              value={`${pPro}%`} 
+              grams={`${totalProtein.toFixed(2)} / ${Number(goalData.protein).toFixed(2)}g`} 
+            />
+            <NutritionItem 
+              label="ไขมัน" 
+              value={`${pFat}%`} 
+              grams={`${totalFat.toFixed(2)} / ${Number(goalData.fat).toFixed(2)}g`} 
+            />
+            <NutritionItem 
+              label="น้ำตาล" 
+              value={`${pSug}%`} 
+              grams={`${totalSugar.toFixed(2)}g`} 
+            />
+            <NutritionItem 
+              label="โซเดียม" 
+              value={`${pSod}%`} 
+              grams={`${totalSodium.toFixed(2)}mg`} 
+            />
           </div>
 
           <div className="goal-box">
             <div className="goal-top">
               <span>เป้าหมายรายวัน</span>
-              <strong>{totalCalories} / {goalCalories} kcal</strong>
+              <strong>{totalCalories} / {Number(goalCalories).toFixed(0)} kcal</strong>
             </div>
             <div className="goal-bar">
               <div className="goal-fill" style={{ width: `${progressWidth}%` }}></div>
@@ -143,10 +253,9 @@ function MealPlan() {
   );
 }
 
-// Sub-component เพื่อความสะอาดของโค้ด
-const NutritionItem = ({ label, value }) => (
+const NutritionItem = ({ label, value, grams }) => (
   <div className="summary-item">
-    <span>{label}</span>
+    <span>{label} <small style={{color:"#aaa", fontSize:"0.8rem"}}>({grams})</small></span>
     <strong>{value}</strong>
   </div>
 );

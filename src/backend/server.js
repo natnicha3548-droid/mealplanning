@@ -271,6 +271,49 @@ app.post('/api/save-calculation', (req, res) => {
     });
 });
 
+// ================= GET MEALS FOR PLANNER =================
+app.get('/api/meals', (req, res) => {
+    const { date, userId } = req.query;
+
+    // คำสั่ง SQL ดึงข้อมูลจาก meal_plan ย่อยไป meal_detail และไปดึงข้อมูลสารอาหารจาก food
+    const sql = `
+        SELECT 
+            md.meal_type AS type,
+            f.food_name AS name,
+            f.image AS image,
+            (f.calories * md.quantity) AS calories,
+            (f.carbohydrates * md.quantity) AS carbs,
+            (f.protein * md.quantity) AS protein,
+            (f.fat * md.quantity) AS fat,
+            (f.sugar * md.quantity) AS sugar,
+            (f.sodium * md.quantity) AS sodium,
+            CASE md.meal_type 
+                WHEN 'เช้า' THEN '07:00 - 09:00'
+                WHEN 'กลางวัน' THEN '12:00 - 13:00'
+                WHEN 'เย็น' THEN '18:00 - 19:00'
+            END AS time,
+            CASE md.meal_type 
+                WHEN 'เช้า' THEN 'sun'
+                WHEN 'กลางวัน' THEN 'cloud'
+                WHEN 'เย็น' THEN 'moon'
+            END AS icon,
+            'เมนูของคุณ' AS tag
+        FROM meal_plan mp
+        JOIN meal_detail md ON mp.plan_id = md.plan_id
+        JOIN food f ON md.food_id = f.food_id
+        WHERE mp.user_id = ? AND mp.plan_date = ?
+        ORDER BY FIELD(md.meal_type, 'เช้า', 'กลางวัน', 'เย็น')
+    `;
+
+    db.query(sql, [userId, date], (err, results) => {
+        if (err) {
+            console.error("API Meals Error:", err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(results);
+    });
+});
+
 // ================= START =================
 app.listen(5000, () => {
     console.log("Server running on http://localhost:5000");
