@@ -1,0 +1,87 @@
+.fav-container {
+    max-width: 700px;
+    margin: 120px auto 40px;
+    padding: 30px;
+    border-radius: 24px;
+
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(15px);
+
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.fav-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #ff8c42;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.fav-empty {
+    text-align: center;
+    color: #7a5c4d;
+    font-size: 1rem;
+}
+
+.fav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fav-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 20px;
+    border-radius: 16px;
+
+    background: #fff8f2;
+    border: 1px solid #ffe0c2;
+
+    transition: 0.3s ease;
+}
+
+.fav-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 140, 66, 0.15);
+}
+
+.fav-item strong {
+    color: #5c3d00;
+    font-size: 1rem;
+}
+
+.fav-item span {
+    background: linear-gradient(90deg, #ff8c42, #ffd166);
+    color: white;
+
+    padding: 6px 14px;
+    border-radius: 50px;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .fav-container {
+        margin: 100px 15px 30px;
+        padding: 22px;
+    }
+
+    .fav-title {
+        font-size: 1.5rem;
+    }
+
+    .fav-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

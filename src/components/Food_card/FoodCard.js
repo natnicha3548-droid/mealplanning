@@ -1,4 +1,5 @@
 import React from 'react';
+import "./FoodCard.css";
 
 function FoodCard({ food, onClick }) {
     return (

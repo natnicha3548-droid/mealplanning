@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaLock } from "react-icons/fa";
-import "../App.css";
+import "./ResetPass.css";
 
 function ResetPass() {
     const { token } = useParams();

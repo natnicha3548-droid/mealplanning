@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import "./AuthPage.css";
 
 function AuthPage({ setUser }) {
     const navigate = useNavigate();

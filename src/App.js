@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Navbar from './components/Navbar';
-import AuthPage from './components/AuthPage';
-import ResetPass from "./components/ResetPass";
-import Calc from "./components/Calc";
-import Profile from "./components/Profile";
+import Navbar from './components/Nav/Navbar';
+import AuthPage from './components/Auth_page/AuthPage';
+import ResetPass from "./components/Reset_pass/ResetPass";
+import Calc from "./components/Cal/Calc";
+import Profile from "./components/Pro/Profile";
 import HomePage from "./pages/Home/HomePage";
 import MenuFood from "./pages/Menu_food/MenuFood";
 import MealPlan from "./pages/Meal_plan/MealPlan";
