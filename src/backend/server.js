@@ -197,13 +197,28 @@ app.post('/api/update-user-info', (req, res) => {
 
 // ================= FOODS =================
 app.get('/api/foods', (req, res) => {
+
     db.query(
-        "SELECT food_id, food_name, image, serving_size, calories FROM food",
+        `
+        SELECT 
+            food_id,
+            food_name,
+            category_id,
+            image,
+            serving_size,
+            calories
+        FROM food
+        `,
         (err, results) => {
-            if (err) return res.status(500).json(err);
+
+            if (err)
+                return res.status(500).json(err);
+
             res.json(results);
+
         }
     );
+
 });
 
 // ================= GET CALC =================

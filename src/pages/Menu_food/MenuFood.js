@@ -1,105 +1,195 @@
 import React, { useState, useEffect } from 'react';
 import FoodCard from '../../components/Food_card/FoodCard';
-import "./MenuFood.css";
 
-const categories = [
-    "ทั้งหมด", "จานเดียว", "อีสาน", "คลีน",
-    "ต้ม/แกง", "ยำ/สลัด", "เครื่องดื่ม", "ของว่าง"
-];
+import { FiSearch } from "react-icons/fi";
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import { LuSoup } from "react-icons/lu";
+
+import "./MenuFood.css";
 
 function MenuFood() {
 
     const [foods, setFoods] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedCategory, setSelectedCategory] = useState("ทั้งหมด");
     const [search, setSearch] = useState("");
 
     useEffect(() => {
+
         fetch("http://localhost:5000/api/foods")
             .then(res => res.json())
             .then(data => {
+
                 setFoods(data || []);
                 setLoading(false);
+
             })
             .catch(err => {
+
                 console.error(err);
                 setLoading(false);
+
             });
+
     }, []);
 
-    // 🔎 filter logic (แก้แล้ว)
+    // SEARCH
     const filteredFoods = foods.filter(food => {
 
-        // ✅ ใช้ field ที่ถูกต้องจาก backend
-        const name = (food.food_name || "").toLowerCase();
+        const name =
+            (food.food_name || "").toLowerCase();
 
-        // ❗ ตอนนี้ยังไม่มี category ใน DB → ปิด filter นี้ไปก่อน
-        const matchCategory = selectedCategory === "ทั้งหมด";
+        return name.includes(
+            search.toLowerCase()
+        );
 
-        const matchSearch = name.includes(search.toLowerCase());
-
-        return matchCategory && matchSearch;
     });
 
+    // แยกหมวดจาก category_id
+    const savoryFoods = filteredFoods.filter(
+        food => food.category_id === 1
+    );
+
+    const sweetFoods = filteredFoods.filter(
+        food => food.category_id === 2
+    );
+
     return (
+
         <div className="app-container">
 
             {/* HEADER */}
+
             <div className="menu-header">
-                <div>
-                    <h1>เมนูอาหาร</h1>
-                    <p>เลือกเมนูที่ใช่ สำหรับเป้าหมายของคุณ</p>
+
+                <div className="menu-left">
+
+                    <div className="menu-icon">
+                        <LuSoup />
+                    </div>
+
+                    <div className="menu-text">
+
+                        <h1>
+                            รายการอาหารทั้งหมด
+                        </h1>
+
+                        <p>
+                            รวมเมนูอาหารหลากหลาย ครบทุกมื้อ อร่อยง่าย ได้สุขภาพ
+                        </p>
+
+                    </div>
+
                 </div>
 
                 <div className="menu-actions">
-                    <input
-                        type="text"
-                        placeholder="ค้นหาเมนูอาหาร..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
 
-                    <button className="filter-btn">ตัวกรอง</button>
-                </div>
-            </div>
+                    <div className="search-box">
 
-            {/* CATEGORY */}
-            <div className="category-list">
-                {categories.map((cat) => (
-                    <button
-                        key={cat}
-                        className={selectedCategory === cat ? "active" : ""}
-                        onClick={() => setSelectedCategory(cat)}
-                    >
-                        {cat}
+                        <FiSearch className="search-icon" />
+
+                        <input
+                            type="text"
+                            placeholder="ค้นหาเมนูอาหาร..."
+                            value={search}
+                            onChange={(e) =>
+                                setSearch(e.target.value)
+                            }
+                        />
+
+                    </div>
+
+                    <button className="filter-btn">
+                        <HiOutlineAdjustmentsHorizontal />
                     </button>
-                ))}
+
+                </div>
+
             </div>
 
-            {/* FOOD GRID */}
+            {/* ของคาว */}
+
+            <div className="section-header">
+
+                <div className="section-title">
+
+                    🍛 ของคาว
+
+                    <span>
+                        {savoryFoods.length} เมนู
+                    </span>
+
+                </div>
+
+            </div>
+
             <main className="food-grid">
 
                 {loading ? (
+
                     <p>กำลังโหลดข้อมูล...</p>
-                ) : filteredFoods.length > 0 ? (
-                    filteredFoods.map((food) => (
-                        <FoodCard key={food.food_id} food={food} />
+
+                ) : savoryFoods.length > 0 ? (
+
+                    savoryFoods.map((food) => (
+
+                        <FoodCard
+                            key={food.food_id}
+                            food={food}
+                        />
+
                     ))
+
                 ) : (
-                    <p>ไม่มีข้อมูลอาหาร</p>
+
+                    <p>ไม่พบเมนูอาหาร</p>
+
                 )}
 
             </main>
 
-            {/* FEATURE SECTION */}
-            <div className="features">
-                <div className="feature-card">🥗 วัตถุดิบคุณภาพ</div>
-                <div className="feature-card">🍃 โภชนาการครบถ้วน</div>
-                <div className="feature-card">❤️ อร่อยและสุขภาพดี</div>
-                <div className="feature-card">📋 วางแผนง่าย</div>
+            {/* ของหวาน */}
+
+            <div className="section-header">
+
+                <div className="section-title">
+
+                    🍰 ของหวาน
+
+                    <span>
+                        {sweetFoods.length} เมนู
+                    </span>
+
+                </div>
+
             </div>
 
+            <main className="food-grid">
+
+                {loading ? (
+
+                    <p>กำลังโหลดข้อมูล...</p>
+
+                ) : sweetFoods.length > 0 ? (
+
+                    sweetFoods.map((food) => (
+
+                        <FoodCard
+                            key={food.food_id}
+                            food={food}
+                        />
+
+                    ))
+
+                ) : (
+
+                    <p>ไม่พบเมนูอาหาร</p>
+
+                )}
+
+            </main>
+
         </div>
+
     );
 }
 
