@@ -153,7 +153,7 @@ function MenuFood() {
 
                 <div className="section-title">
 
-                    🍰 ของหวาน
+                    🍰 ของหวานแสนหวาน
 
                     <span>
                         {sweetFoods.length} เมนู
