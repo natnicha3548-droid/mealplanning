@@ -185,6 +185,20 @@
     font-size: 1.5rem;
 }
 
+/* SUGAR */
+
+.sugar {
+    background: #f3e5f5;
+    color: #8e24aa;
+}
+
+/* SODIUM */
+
+.sodium {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
 /* MOBILE */
 
 @media (max-width: 768px) {

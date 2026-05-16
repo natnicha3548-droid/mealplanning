@@ -241,34 +241,100 @@ app.get('/api/get-calculation/:user_id', (req, res) => {
 });
 
 // ================= SAVE CALC =================
+// ================= SAVE CALC =================
 app.post('/api/save-calculation', (req, res) => {
+
     const {
-        user_id, weight, height, age, gender, activity, disease,
-        bmi, bmr, tdee, carb, protein, fat
+        user_id,
+        weight,
+        height,
+        age,
+        gender,
+        activity,
+        disease,
+        bmi,
+        bmr,
+        tdee,
+        carb,
+        protein,
+        fat,
+        sugar,
+        sodium
     } = req.body;
 
     // กันข้อมูลไม่ครบ
     if (!user_id || !tdee) {
-        return res.status(400).json({ message: "ข้อมูลไม่ครบ" });
+
+        return res.status(400).json({
+            message: "ข้อมูลไม่ครบ"
+        });
+
     }
 
     const sql = `
         INSERT INTO user_calculations
-        (user_id, weight, height, age, gender, activity, disease,
-         bmi, bmr, tdee, carb, protein, fat)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (
+            user_id,
+            weight,
+            height,
+            age,
+            gender,
+            activity,
+            disease,
+            bmi,
+            bmr,
+            tdee,
+            carb,
+            protein,
+            fat,
+            sugar,
+            sodium
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [
-        user_id, weight, height, age, gender, activity, disease,
-        bmi, bmr, tdee, carb, protein, fat
-    ], (err) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: "save error" });
+    db.query(
+
+        sql,
+
+        [
+            user_id,
+            weight,
+            height,
+            age,
+            gender,
+            activity,
+            disease,
+            bmi,
+            bmr,
+            tdee,
+            carb,
+            protein,
+            fat,
+            sugar,
+            sodium
+        ],
+
+        (err) => {
+
+            if (err) {
+
+                console.error(err);
+
+                return res.status(500).json({
+                    message: "save error"
+                });
+
+            }
+
+            res.json({
+                message: "saved"
+            });
+
         }
-        res.json({ message: "saved" });
-    });
+
+    );
+
 });
 
 // ================= GET MEALS FOR PLANNER =================

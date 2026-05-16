@@ -13,9 +13,12 @@ import MealPlan from "./pages/Meal_plan/MealPlan";
 import PastPlans from "./pages/Past_plan/PastPlans";
 import MyPlate from "./pages/Meal_plan/MyPlate";
 import FavFood from "./pages/Fav_food/FavFood";
+
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
+
+  // ================= STATE =================
 
   const [user, setUser] = useState(null);
 
@@ -31,6 +34,7 @@ function App() {
 
     const loadUserData = async () => {
 
+      // โหลด user จาก localStorage
       const storedUser = localStorage.getItem("user");
 
       if (!storedUser) {
@@ -44,6 +48,7 @@ function App() {
 
       setUser(parsedUser);
 
+      // โหลดค่าคำนวณล่าสุด
       try {
 
         const res = await fetch(
@@ -52,31 +57,40 @@ function App() {
 
         const data = await res.json();
 
+        // ถ้ามีข้อมูล
         if (data) {
 
+          // เก็บผลคำนวณ
           setCalcResult({
+
             bmi: data.bmi,
             bmr: data.bmr,
             tdee: data.tdee,
             carb: data.carb,
             protein: data.protein,
-            fat: data.fat
+            fat: data.fat,
+            sugar: data.sugar,
+            sodium: data.sodium
+
           });
 
+          // เก็บข้อมูลฟอร์ม
           setFormData({
+
             weight: data.weight,
             height: data.height,
             age: data.age,
             gender: data.gender,
             activity: data.activity,
             disease: data.disease
+
           });
 
         }
 
       } catch (err) {
 
-        console.error(err);
+        console.error("LOAD CALC ERROR:", err);
 
       }
 
@@ -86,7 +100,8 @@ function App() {
 
   }, []);
 
- 
+  // ================= UPDATE FROM NAVIGATE =================
+
   useEffect(() => {
 
     if (location.state?.calcResult) {
@@ -107,13 +122,19 @@ function App() {
 
     <div className="main-layout">
 
+      {/* ================= NAVBAR ================= */}
+
       <Navbar
         user={user}
         setUser={setUser}
         setCalcResult={setCalcResult}
       />
 
+      {/* ================= ROUTES ================= */}
+
       <Routes>
+
+        {/* HOME */}
 
         <Route
           path="/"
@@ -125,6 +146,8 @@ function App() {
           }
         />
 
+        {/* AUTH */}
+
         <Route
           path="/auth"
           element={
@@ -134,15 +157,73 @@ function App() {
           }
         />
 
-        <Route path="/reset-password/:token" element={<ResetPass />} />
-        <Route path="/calculate" element={<Calc />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/menu" element={<MenuFood />} />
-        <Route path="/meal-plan" element={<MealPlan />} />
-        <Route path="/past-plans" element={<PastPlans />} />
-        <Route path="/favourite-food" element={<FavFood />} />
-        <Route path="/MyPlate" element={<MyPlate />} />
-        <Route path="*" element={<HomePage />} />
+        {/* RESET PASSWORD */}
+
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPass />}
+        />
+
+        {/* CALCULATE */}
+
+        <Route
+          path="/calculate"
+          element={<Calc />}
+        />
+
+        {/* PROFILE */}
+
+        <Route
+          path="/profile"
+          element={<Profile />}
+        />
+
+        {/* MENU FOOD */}
+
+        <Route
+          path="/menu"
+          element={<MenuFood />}
+        />
+
+        {/* MEAL PLAN */}
+
+        <Route
+          path="/meal-plan"
+          element={<MealPlan />}
+        />
+
+        {/* PAST PLAN */}
+
+        <Route
+          path="/past-plans"
+          element={<PastPlans />}
+        />
+
+        {/* MY PLATE */}
+
+        <Route
+          path="/MyPlate"
+          element={<MyPlate />}
+        />
+
+        {/* FAV FOOD */}
+
+        <Route
+          path="/favourite-food"
+          element={<FavFood />}
+        />
+
+        {/* NOT FOUND */}
+
+        <Route
+          path="*"
+          element={
+            <HomePage
+              calcResult={calcResult}
+              formData={formData}
+            />
+          }
+        />
 
       </Routes>
 
