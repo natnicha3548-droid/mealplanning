@@ -41,7 +41,7 @@
 /* DAYS ROW */
 .days-row {
   display: flex;
-  gap: 18px;
+  gap: 17px;
   margin-bottom: 30px;
   overflow-x: auto;
   padding-bottom: 6px;
@@ -68,7 +68,7 @@
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,0.92),
+      rgba(255, 255, 255, 0.92),
       rgba(255, 242, 227, 0.85)
     );
 
@@ -98,18 +98,18 @@
   content: "";
   position: absolute;
 
-  width: 90px;
-  height: 90px;
+  width: 150px;
+  height: 100px;
 
-  top: -35px;
-  right: -30px;
+  top: -50px;
+  right: 19px;
 
-  background:
+  /* background:
     radial-gradient(
       circle,
-      rgba(255, 181, 107, 0.28),
+      rgba(255, 250, 105, 0.218),
       transparent 72%
-    );
+    ); */
 
   transition: 0.3s ease;
 }
@@ -126,7 +126,7 @@
   height: 8px;
 
   border-radius: 50%;
-  background: rgba(255, 140, 66, 0.35);
+  background: rgba(255, 120, 23, 0.35);
 
   transition: 0.3s ease;
 }
@@ -136,7 +136,7 @@
   transform: translateY(-5px) scale(1.02);
 
   box-shadow:
-    0 18px 35px rgba(255, 140, 66, 0.12),
+    0 18px 35px rgba(255, 118, 32, 0.12),
     0 6px 12px rgba(0,0,0,0.04);
 }
 
@@ -145,11 +145,11 @@
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,0.98),
-      rgba(255,244,235,0.96)
+      rgba(255, 250, 210, 0.98),
+      rgba(255, 234, 216, 0.841)
     );
 
-  border: 1px solid rgba(255, 140, 66, 0.25);
+  border: 2px solid rgba(255, 140, 66, 0.25);
 
   box-shadow:
     0 20px 38px rgba(255, 140, 66, 0.16),
@@ -187,7 +187,7 @@
 
 .day span {
   font-size: 0.9rem;
-  color: #9a9a9a;
+  color: #7c6138;
   font-weight: 500;
   z-index: 2;
 }
@@ -198,8 +198,9 @@
 }
 
 .day.active span {
-  color: #bc8b64;
+  color: #6b3509;
 }
+
 /* LAYOUT */
 .meal-layout {
   display: grid;
@@ -415,8 +416,8 @@
 }
 
 .day:hover:not(.active) {
-  background: #f9f9f9;
-  border-color: #eee;
+  background: #fdffe3;
+  border-color: #fffc3a8d;
 }
 
 /* ปรับปรุง Responsive สำหรับ Mobile ให้กดง่ายขึ้น */
