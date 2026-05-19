@@ -142,22 +142,22 @@
 
 @media (max-width: 768px) {
     .nav-top {
-        height: 60px;
-        padding: 0 15px;
+        height: 100%;
+        padding: 0 2%;
     }
 
     .nav-logo img {
-        height: 42px;
+        height: 50px;
     }
 
     .nav-logo span {
-        margin-left: -12px;
+        margin-left: -20px;
         font-size: 1.1rem;
     }
 
     .hamburger {
         display: block;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         color: #ff8c42;
         margin-left: auto;
     }
@@ -165,19 +165,21 @@
     .nav-links {
         display: none;
         position: absolute;
-        top: 60px;
+        top: 100%;
         left: 0;
         width: 100%;
         flex-direction: column;
         background: rgba(255, 248, 240, 0.97);
-        padding: 18px 0;
+        padding: 18px 24px;
         gap: 14px;
-        text-align: center;
+        text-align: left;
         border-radius: 0 0 15px 15px;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        box-sizing: border-box;
     }
 
     .nav-links.active {
         display: flex;
     }
+    
 }

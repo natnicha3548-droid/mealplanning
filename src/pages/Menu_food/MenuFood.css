@@ -1,3 +1,9 @@
+.app-container {
+    padding: 110px 10% 40px;
+    max-width: 1400px;
+    margin: auto;
+    animation: fadeInPage 0.6s ease-out forwards;
+}
 .menu-header {
     display: flex;
     justify-content: space-between;

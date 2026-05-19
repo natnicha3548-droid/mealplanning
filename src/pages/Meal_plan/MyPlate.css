@@ -1,23 +1,11 @@
 /* MyPlate.css */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
 
-:root {
-  --primary-orange: #ff8c42;
-  --secondary-orange: #ffa94d;
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --text-dark: #333;
-  --text-gray: #888;
-  --danger: #ee5253;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
-
 .my-plate-container {
-  padding: 110px 30px 40px;
-  max-width: 1200px;
+  padding: 110px 10% 40px;
+  max-width: 1400px;
   margin: auto;
-  font-family: 'Kanit', sans-serif;
-  background-color: var(--bg-light);
-  min-height: 100vh;
+  animation: fadeInPage 0.6s ease-out forwards;
 }
 
 /* HEADER SECTION */
@@ -30,89 +18,150 @@
   padding-bottom: 20px;
 }
 
-.logo-title h1 {
-  font-size: 2.2rem;
-  margin: 0;
-  color: var(--text-dark);
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-.logo-title p {
-  color: var(--text-gray);
-  margin: 5px 0 0;
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
+
+.plate-left-icon {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #fff5ee;
+  border: 1px solid #ffe3d2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff8c42;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+
+.plate-title h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3b2418;
+  line-height: 1.1;
+}
+
 
 .cal-info {
   text-align: right;
 }
 
 .cal-info h2 {
-  color: var(--primary-orange);
+  color: #ff8c42;
   margin: 0;
   font-size: 1.5rem;
 }
 
-/* MEAL LIST */
+/* MEAL SECTION (กล่องใหญ่สำหรับแต่ละมื้อ) */
 .meals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.meal-card-beautiful {
-  background: var(--card-bg);
-  border-radius: 24px;
-  padding: 20px;
   display: grid;
-  grid-template-columns: 60px 140px 160px 1fr 100px 180px;
+  grid-template-columns: repeat(3, 1fr); /* แบ่งพื้นที่เป็น 3 ส่วนเท่ากัน (เช้า | กลางวัน | เย็น) */
+  gap: 20px; /* ระยะห่างระหว่างกล่องมื้ออาหาร */
+  margin-bottom: 0px !important;
+  align-items: start; /* ให้กล่องยึดความสูงจากเนื้อหาด้านบน ไม่ยืดตามกล่องอื่น */
+}
+
+.meal-section {
+  background: rgba(255, 255, 255, 0.70);
+  border-radius: 24px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #fad3a9;
+  margin-bottom: 10px;
+}
+
+.meal-section-header {
+  display: flex;
   align-items: center;
-  gap: 20px;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #f798ef;
 }
 
-.meal-card-beautiful:hover {
-  transform: translateY(-5px);
-}
-
-.mc-icon-box {
-  width: 50px;
-  height: 50px;
+.ms-icon-box {
+  width: 45px;
+  height: 45px;
   background: #fff4e8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-orange);
-  font-size: 1.2rem;
+  color: #ff8c42;
+  font-size: 1.3rem;
 }
 
-.mc-time-info h3 {
+.meal-section-header h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.5rem;
+  color: #5c2929;
 }
 
-.mc-time-info span {
-  color: var(--text-gray);
-  font-size: 0.85rem;
+.empty-meal {
+  color: #888;
+  font-style: italic;
+  margin-bottom: 20px;
+  text-align: center;
+  background: #f0e4da;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* MEAL CARD (รายการอาหารย่อยในแต่ละมื้อ) */
+.category-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.meal-card-beautiful {
+  background: #fdfdfd;
+  border-radius: 16px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 100px 1fr 100px 180px; 
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #eee;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meal-card-beautiful:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .mc-image {
-  width: 140px;
-  height: 90px;
-  border-radius: 15px;
+  width: 100px;
+  height: 75px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.mc-main-info h2 {
-  margin: 0 0 8px;
+.mc-main-info h3 {
+  margin: 0 0 6px;
   font-size: 1.1rem;
+  color: #333;
 }
 
 .mc-tag {
   padding: 4px 12px;
   background: #fff2e6;
-  color: var(--primary-orange);
+  color: #ff8c42;
   border-radius: 20px;
   font-size: 0.75rem;
 }
@@ -120,7 +169,8 @@
 .mc-calories {
   font-weight: 600;
   font-size: 1.1rem;
-  color: var(--text-dark);
+  color: #333;
+  text-align: right;
 }
 
 /* ACTIONS (QTY & DELETE) */
@@ -135,39 +185,39 @@
   display: flex;
   align-items: center;
   background: #f8f9fa;
-  padding: 5px;
-  border-radius: 12px;
-  border: 1px solid #eee;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
 .qty-btn {
   background: white;
   border: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-orange);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  color: #ff8c42;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .qty-num {
-  padding: 0 15px;
+  padding: 0 12px;
   font-weight: 600;
-  min-width: 40px;
+  min-width: 35px;
   text-align: center;
 }
 
 .delete-btn {
   background: #fff0f0;
-  color: var(--danger);
+  color: #ee5253;
   border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -176,17 +226,17 @@
 }
 
 .delete-btn:hover {
-  background: var(--danger);
+  background: #ee5253;
   color: white;
 }
 
 .add-meal-btn-wide {
   width: 100%;
-  padding: 20px;
+  padding: 15px;
   border: 2px dashed #ffd1b3;
-  background: white;
-  border-radius: 20px;
-  color: var(--primary-orange);
+  background: #fffaf7;
+  border-radius: 16px;
+  color: #ff8c42;
   font-family: 'Kanit';
   font-size: 1rem;
   cursor: pointer;
@@ -194,16 +244,17 @@
 }
 
 .add-meal-btn-wide:hover {
-  background: #fff7f1;
+  background: #fff0e5;
+  border-color: #ff8c42;
 }
 
 /* BOTTOM SECTION (SUMMARY & BARS) */
 .bottom-section {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: 40px;
+  gap: 10px;
   align-items: flex-start;
-  margin-top: 50px;
+  margin-top: 0px;
 }
 
 .nutrition-summary {
@@ -216,11 +267,11 @@
   background: white;
   padding: 15px 20px;
   border-radius: 18px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .nutrition-label {
-  color: var(--text-gray);
+  color: #888;
   font-size: 0.9rem;
   margin-bottom: 10px;
 }
@@ -233,28 +284,17 @@
   align-items: center;
   padding-left: 15px;
   font-weight: 600;
-  color: var(--text-dark);
+  color: #333;
   position: relative;
   overflow: hidden;
 }
 
-.nutrition-bar::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #ff8c4222, #ff8c4255);
-  z-index: 0;
-}
-
 .nutrition-bar.exceeded {
-  border: 2px solid var(--danger);
+  border: 2px solid #ee5253;
 }
 
 .exceed-text {
-  color: var(--danger);
+  color: #ee5253;
   font-size: 0.8rem;
   margin-top: 5px;
   font-weight: 500;
@@ -281,11 +321,11 @@
 .btn-back {
   background: white;
   border: 2px solid #ddd;
-  color: var(--text-gray);
+  color: #888;
 }
 
 .btn-next {
-  background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+  background: linear-gradient(90deg, #ff8c42, #ffa94d);
   border: none;
   color: white;
   box-shadow: 0 10px 20px rgba(255, 140, 66, 0.2);
@@ -296,20 +336,785 @@
   filter: brightness(1.1);
 }
 
-/* RESPONSIVE */
+
+/* การ์ดครอบปฏิทินสไตล์น่ารัก */
+.cute-calendar-card {
+  background: rgba(255, 255, 255, 0.70);
+  padding: 24px;
+  border-radius: 24px;
+  margin-top: 0px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+  border: 1px solid #fad3a9;
+  font-family: inherit;
+}
+
+.calendar-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendar-header-title h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+.calendar-icon {
+  font-size: 1.3rem;
+}
+
+.calendar-subtitle {
+  margin: 4px 0 20px 32px;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+}
+
+/* ตัว Grid ปฏิทิน 7 วัน */
+.cute-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  user-select: none;
+}
+
+/* ไอเทมแต่ละวันเดี่ยวๆ */
+.cute-date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 6px;
+  background: #f0e8e4;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+}
+
+/* เอฟเฟกต์ตอนชี้ */
+.cute-date-item:hover {
+  background: #fffac5;
+  transform: translateY(-3px);
+  border-color: #ffef79;
+}
+
+.cute-date-item .day-label {
+  font-size: 0.85rem;
+  color: #6e5c56;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.cute-date-item .day-circle {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffffd3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+
+.cute-date-item .day-number {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #955954;
+}
+
+/* สไตล์ตอนที่ "วันนั้นถูกเลือก" (Selected) */
+.cute-date-item.selected {
+  background: #ffbc93;
+  border-color: #ffa36a;
+  box-shadow: 0 6px 15px rgba(255, 140, 66, 0.3);
+}
+
+.cute-date-item.selected .day-label {
+  color: #9c5f52;
+  font-weight: bold;
+}
+
+.cute-date-item.selected .day-circle {
+  background: #ffffffbb;
+}
+
+.cute-date-item.selected .day-number {
+  color: #ff8c42;
+}
+
+/* สไตล์ของ "วันปัจจุบัน" */
+.cute-date-item.today {
+  background: linear-gradient(135deg, #fcffcd 0%, #ffd6bc 100%);
+  border-color: #ffbb91; 
+  box-shadow: 0 6px 15px rgba(255, 140, 66, 0.4);
+}
+
+.cute-date-item.today .day-number {
+  color: #ff8c42;
+}
+
+/* ข้อความ Badge คำว่า "วันนี้" */
+.today-badge {
+  position: absolute;
+  bottom: -4px;
+  background: #ff8c42;
+  color: white;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   [แก้ไข] สไตล์ของการ์ดปฏิทิน
+   ========================================= */
+.cute-calendar-card {
+  /* ... background, padding, radius, shadow, border, font เหมือนเดิม ... */
+  background: rgba(255, 255, 255, 0.70);
+  padding: 24px;
+  border-radius: 24px;
+  margin-top: 25px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+  border: 1px solid #fad3a9;
+  font-family: inherit;
+  position: relative; /* สำคัญ: เพื่อให้ Pop-up ปฏิทินอิงตำแหน่ง */
+}
+
+.calendar-header-title {
+  /* ... display, items, gap เหมือนเดิม ... */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.calendar-header-title h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+/* =========================================
+   [ลบสไตล์เก่า] ลบสไตล์เก่าของ .date-picker-wrapper ทั้งหมดออก
+   และใช้สไตล์ใหม่ด้านล่างแทน
+   ========================================= */
+
+/* =========================================
+   [ใหม่] สไตล์สำหรับ Dropdown Button ของปฏิทิน
+   ========================================= */
+.date-picker-library-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 100; /* เพื่อให้อยู่เหนือองค์ประกอบอื่น */
+}
+
+.cute-calendar-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff5eb;
+  border-radius: 12px;
+  border: 1px solid #ffdcb8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #ff8c42;
+  font-weight: 500;
+  outline: none;
+}
+
+.cute-calendar-dropdown-btn:hover {
+  background: #ffbc8c;
+  border-color: #ff8c42;
+  color: #fff;
+}
+
+.cute-calendar-dropdown-btn.active {
+  background: #ff8c42;
+  border-color: #ff8c42;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
+}
+
+.cute-calendar-dropdown-btn .calendar-icon {
+  font-size: 1.1rem;
+}
+
+.cute-calendar-dropdown-btn .arrow-icon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* =========================================
+   [ใหม่] สไตล์สำหรับ Pop-up ปฏิทิน (react-calendar)
+   ========================================= */
+.cute-calendar-popup {
+  position: absolute;
+  bottom: 110%; /* ✅ ให้ดันขึ้นไปด้านบน (110% คือกะให้ห่างจากปุ่มนิดนึง) */
+  top: auto;    /* ✅ ยกเลิกการอิงตำแหน่งจากด้านบน */
+  left: 0;
+  
+  /* โค้ดด้านล่างนี้ปล่อยไว้เหมือนเดิมได้เลยครับ */
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #fad3a9;
+  box-shadow: 0 -10px 30px rgba(149, 157, 165, 0.15); /* ปรับเงาให้ชี้ขึ้นบนนิดหน่อยจะสวยขึ้นครับ */
+  padding: 15px;
+  width: 500px; 
+  z-index: 101;
+}
+
+/* ปรับแต่งสไตล์ react-calendar ให้เป็นธีมน่ารัก */
+.react-calendar {
+  border: none;
+  font-family: inherit;
+}
+
+/* ส่วนหัวเดือน/ปี */
+.react-calendar__navigation {
+  display: flex;
+  height: 44px;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: #ff6f16;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #fff5eb;
+}
+
+/* ชื่อเดือน/ปี ตรงกลาง */
+.react-calendar__navigation__label {
+  color: #4a4a4a;
+  font-weight: 600;
+  font-size: 1rem;
+  pointer-events: none; /* ห้ามคลิกตรงกลางเพื่อเปลี่ยนมุมมอง */
+}
+
+/* ตัว Grid วัน */
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  margin-bottom: 8px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.5em 0 !important; /* ลดขอบซ้ายขวาเพื่อเพิ่มพื้นที่ให้ตัวหนังสือ */
+}
+
+/* ตั้งค่าแท็ก abbr ภายในหัวตาราง */
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important; /* เอาเส้นประใต้ข้อความออก */
+  border-bottom: none !important; /* กันเหนียวเผื่อบางเบราว์เซอร์ใช้เส้นขอบล่าง */
+  cursor: default !important; /* ไม่ให้เมาส์เปลี่ยนเป็นรูปเครื่องหมายคำถาม */
+  font-size: 0.8rem !important; /* ย่อขนาดฟอนต์ลงนิดนึงให้พอดีกับช่อง */
+  white-space: nowrap !important; /* บังคับไม่ให้ตัวหนังสือขึ้นบรรทัดใหม่ (ห้ามตก) */
+  display: block;
+}
+
+/* สไตล์แต่ละวันเดี่ยวๆ */
+.react-calendar__tile {
+  max-width: 100%;
+  padding: 10px 6px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #fff5eb;
+  color: #ff8c42;
+}
+
+/* วันปัจจุบันในเดือน */
+.react-calendar__tile--now {
+  background: #ffbc8c;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: #ffbc8c;
+  color: #fff;
+}
+
+/* วันที่ถูกเลือก (ที่เป็น baseDate) */
+.react-calendar__tile--active {
+  background: #ff8c42;
+  color: white;
+  border-radius: 10px;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: #ff8c42;
+  color: white;
+}
+
+/* สไตล์วันนอกเดือน */
+.react-calendar__month-view__days__tile--neighboringMonth {
+  color: #d0d0d0;
+}
+
+/* การจัดโครงสร้างตาราง Grid สารอาหาร 2 คอลัมน์ */
+.myplate-nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+/* เคสพิเศษ: ให้โซเดียมและแคลอรีแผ่เต็มความกว้าง */
+.macro-progress-card.span-full {
+  grid-column: span 2;
+}
+
+/* ตัวการ์ดอุ้มสารอาหารแต่ละกล่อง */
+.macro-progress-card {
+  background: rgba(254, 253, 253, 0.70);
+  border-radius: 20px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #fad3a9;
+}
+
+/* ตัวหนังสือหัวการ์ด (เช่น คาร์โบไฮเดรต) */
+.macro-card-title {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #874d3e;
+}
+
+/* เจาะจงเปลี่ยนสีเฉพาะคำว่า "เป้าหมายพลังงาน" ผ่าน Classname */
+.calorie-title-special .macro-card-title {
+  color: #f65f5d;   
+  font-weight: 800; 
+}
+
+/* ร่องหลอดปรอท (Track พื้นหลัง) */
+.plate-macro-track {
+  position: relative;
+  width: 100%;
+  height: 46px;
+  background: #f1e6da; 
+  border-radius: 14px;
+  overflow: hidden; 
+}
+
+/* ตัววิ่งหลอดปรอทภายใน */
+.plate-macro-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 14px 0 0 14px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+}
+
+/* เคสที่ 1: ยังไม่ได้กินอะไรเลย (0%) */
+.plate-macro-fill.bar-empty {
+  width: 0% !important;
+}
+
+/* เคสที่ 2: กำลังน่ารัก (0% - 100%) -> หลอดสีเหลืองอมส้มพาสเทล */
+.plate-macro-fill.bar-normal {
+  background: linear-gradient(90deg, #fb8c47, #f9df7a);
+}
+
+/* เคสที่ 3: ทะลุเป้าหมาย (>100%) -> เปลี่ยนเป็นสีแดง */
+.plate-macro-fill.bar-exceeded {
+  background: linear-gradient(90deg, #ee5253, #ff6b6b);
+  border-radius: 14px; 
+}
+
+/* ตัวแคปซูลขาวแสดงตัวเลขที่ลอยอยู่ด้านบนหลอดปรอท */
+.plate-macro-pill-text {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.50);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.88rem;
+  color: #3b2418;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  pointer-events: none; 
+}
+
+/* หน้าจอมือถือสแต็กกลับมาเป็นแถวเดี่ยวแนวตั้งเพื่อความสวยงาม */
+/* =========================================
+   📱 ส่วนรองรับหน้าจอมือถือ (Responsive Mobile)
+   ========================================= */
+@media (max-width: 768px) {
+  .my-plate-container {
+    padding: 100px 5% 30px;
+  }
+  /* 1. Header: จัดเรียงลงมาเป็นแนวตั้ง จะได้ไม่เบียดกัน */
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  /* ไอคอนด้านซ้าย */
+  .plate-left-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.8rem;
+  }
+
+  .plate-title h1 {
+    font-size: 1.8rem;
+  }
+  .cal-info {
+    align-self: flex-end !important; /* 👈 สั่งให้ตัวกล่องโดนดันไปอยู่ฝั่งขวาสุด */
+    text-align: right !important;    /* 👈 จัดตัวหนังสือด้านในให้ชิดขวาด้วย */
+    width: 100%;
+  }
+
+  .cal-info h2 {
+    font-size: 1.2rem;
+  }
+
+  .cal-info p {
+    font-size: 0.85rem;
+  }
+
+  /* 2. กล่องมื้ออาหาร: จากเดิม 3 คอลัมน์ บีบเหลือ 1 คอลัมน์ (เรียงลงมา เช้า -> กลางวัน -> เย็น) */
+  .meals-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* 3. การ์ดอาหาร (รูปภาพ+ปุ่มกด): ย่อขนาดลงนิดหน่อยให้พอดีจอมือถือแคบๆ */
+  .cute-food-item {
+    padding: 6px;
+    gap: 8px;
+  }
+  .cfi-image-wrapper {
+    width: 90px;
+    height: 70px;
+  }
+  .cfi-name {
+    font-size: 0.8rem;
+  }
+  .cfi-kcal {
+    font-size: 0.7rem;
+  }
+  .qty-btn-cute {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+  .delete-btn-cute {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* 4. Pop-up ปฏิทิน: จัดให้อยู่กึ่งกลางจอ และลดความกว้างไม่ให้ล้นหน้าจอ */
+  .cute-calendar-popup {
+    width: 90vw; /* กว้าง 90% ของหน้าจอ */
+    max-width: 350px;
+    left: 80%; /* เริ่มจากกึ่งกลางจอ */
+    transform: translateX(-50%); /* เทคนิคจัดให้อยู่กึ่งกลางเป๊ะๆ */
+    padding: 10px;
+  }
+  .react-calendar__navigation button {
+    min-width: 10px;
+    font-size: 1rem;
+  }
+  .react-calendar__tile {
+    padding: 8px 4px;
+    font-size: 0.85rem;
+  }
+
+  /* 5. โซนด้านล่าง (แผงสารอาหาร 2 คอลัมน์): บีบเหลือคอลัมน์เดียว */
+  .bottom-section {
+    grid-template-columns: 1fr; /* ปฏิทินกับสารอาหารเรียงบนล่าง */
+    gap: 20px;
+  }
+  .myplate-nutrition-grid {
+    grid-template-columns: 1fr; /* หลอดสารอาหารเรียงบนล่าง */
+  }
+  .macro-progress-card.span-full {
+    grid-column: span 1;
+  }
+
+  .date-picker-library-wrapper {
+    align-self: center; /* จัดปุ่มปฏิทินให้อยู่กึ่งกลางในโซนด้านล่าง */
+  }
+
+  .calendar-header-title {
+    display: flex !important;
+    flex-direction: column !important; /* 👈 คำสั่งนี้แหละครับที่จับมันเรียง บน-ล่าง */
+    align-items: center !important;    /* 👈 จัดให้อยู่กึ่งกลางจอ (ถ้าอยากให้ชิดซ้ายเปลี่ยนเป็น flex-start) */
+    gap: 12px !important;              /* เพิ่มระยะห่างระหว่างปุ่มกับตัวหนังสือ */
+    text-align: center;
+  }
+  
+  .calendar-header-title h3 {
+    margin: 0 !important;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .calendar-subtitle {
+    text-align: center;
+    margin: 8px 0 16px 0;
+    font-size: 0.7rem;
+  }
+  .action-buttons {
+    display: flex !important;
+    flex-direction: row !important; /* บังคับเรียงซ้าย-ขวา */
+    gap: 10px; /* ระยะห่างระหว่าง 2 ปุ่ม */
+    width: 100%;
+  }
+
+  .btn-next {
+    width: 65% !important; /* 👈 ปุ่มบันทึกกว้าง 65% (ใหญ่กว่าเห็นได้ชัด) */
+    height: auto !important;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .btn-back {
+    width: 35% !important; /* 👈 ปุ่มย้อนกลับกว้าง 35% */
+    height: auto !important;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  /* 6. ตัวเลือกวันที่ 7 วัน: ย่อขนาดวงกลมและตัวหนังสือลง */
+  .cute-calendar-grid {
+    gap: 5px;
+  }
+  .cute-date-item {
+    padding: 5px 2px;
+  }
+  .cute-date-item .day-circle {
+    width: 30px;
+    height: 30px;
+  }
+  .cute-date-item .day-number {
+    font-size: 0.85rem;
+  }
+  .today-badge {
+    font-size: 0.55rem;
+    padding: 1px 4px;
+  }
+}
+
+/* รองรับจอแท็บเล็ต/จอคอมเล็ก (max-width: 1024px) */
 @media (max-width: 1024px) {
+  .meals-list {
+    gap: 10px;
+  }
+  .bottom-section {
+    grid-template-columns: 1fr; /* เอาปฏิทินลงไปอยู่ใต้แผงสารอาหาร */
+  }
   .meal-card-beautiful {
-    grid-template-columns: 60px 1fr 120px;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: 80px 1fr 120px;
+    grid-template-rows: auto auto;
+    gap: 10px;
   }
   
   .mc-image {
-    grid-column: 2;
-    width: 100%;
-    height: 150px;
+    width: 80px;
+    height: 80px;
+    grid-row: 1 / 3;
+  }
+  
+  .mc-calories {
+    text-align: left;
+  }
+
+  .mc-actions {
+    grid-column: 2 / 4;
+    justify-content: flex-start;
   }
   
   .bottom-section {
     grid-template-columns: 1fr;
   }
+}
+/* =========================================
+   สไตล์การ์ดอาหารแบบใหม่ (รูปภาพมีตัวหนังสือทับ)
+   ========================================= */
+.cute-food-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f5e6d3; /* ขอบสีนวลๆ */
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.cute-food-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 140, 66, 0.1);
+  border-color: #ffdcb8;
+}
+
+/* =========================================
+   ส่วนรูปภาพ และ Overlay แรเงา
+   ========================================= */
+.cfi-image-wrapper {
+  position: relative;
+  width: 130px; /* ความกว้างรูป */
+  height: 85px; /* ความสูงรูป */
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.cfi-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cute-food-item:hover .cfi-image {
+  transform: scale(1.05); /* ซูมรูปนิดๆ ตอนเอาเมาส์ชี้ */
+}
+
+/* แรเงาดำไล่ระดับ เพื่อให้ตัวหนังสือสีขาวอ่านออกเสมอ */
+.cfi-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  padding: 20px 8px 6px 8px; 
+  display: flex;
+  flex-direction: column;
+}
+
+.cfi-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* ถ้าชื่อยาวไปให้ขึ้น ... */
+}
+
+.cfi-kcal {
+  color: #ffdcb8; /* สีส้มอ่อนให้ดูน่ากิน */
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* =========================================
+   ส่วนปุ่มกด เพิ่ม/ลด/ลบ สไตล์ปุ๊กปิ๊ก
+   ========================================= */
+.cfi-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+/* กรอบแคปซูลสำหรับปุ่ม + - */
+.cfi-qty-control {
+  display: flex;
+  align-items: center;
+  background: #fff9f4;
+  border-radius: 20px;
+  padding: 4px;
+  border: 1px solid #ffeadd;
+}
+
+.qty-btn-cute {
+  background: #ffffff;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff8c42;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(255, 140, 66, 0.15);
+  transition: all 0.2s;
+}
+
+.qty-btn-cute:hover {
+  background: #ff8c42;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.qty-btn-cute:active {
+  transform: scale(0.95);
+}
+
+.qty-num-cute {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+  color: #4a4a4a;
+  font-size: 0.9rem;
+}
+
+/* ปุ่มถังขยะ */
+.delete-btn-cute {
+  background: #fff0f0;
+  color: #ff6b6b;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-btn-cute:hover {
+  background: #ff6b6b;
+  color: #ffffff;
+  transform: rotate(10deg); /* หมุนดุ๊กดิ๊กนิดนึงตอนชี้ */
 }

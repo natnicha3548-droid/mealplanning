@@ -10,8 +10,10 @@ import Profile from "./components/Pro/Profile";
 import HomePage from "./pages/Home/HomePage";
 import MenuFood from "./pages/Menu_food/MenuFood";
 import MealPlan from "./pages/Meal_plan/MealPlan";
+import NutritionReport from "./pages/Meal_plan/NutritionReport";
 import PastPlans from "./pages/Past_plan/PastPlans";
 import MyPlate from "./pages/Meal_plan/MyPlate";
+import SearchFood from "./pages/Meal_plan/SearchFood";
 import FavFood from "./pages/Fav_food/FavFood";
 
 import { Routes, Route, useLocation } from 'react-router-dom';
@@ -192,6 +194,13 @@ function App() {
           element={<MealPlan />}
         />
 
+        {/* NUTRITION REPORT */}
+
+        <Route
+          path="/report"
+          element={<NutritionReport />}
+        />
+
         {/* PAST PLAN */}
 
         <Route
@@ -204,6 +213,13 @@ function App() {
         <Route
           path="/MyPlate"
           element={<MyPlate />}
+        />
+
+        {/* SEARCH FOOD */}
+
+        <Route
+          path="/SearchFood"
+          element={<SearchFood />}
         />
 
         {/* FAV FOOD */}
