@@ -10,7 +10,8 @@ import {
   FaHeart,
   FaPen,
   FaStar,
-  FaRegStar
+  FaRegStar,
+  FaChartPie
 } from "react-icons/fa";
 import { LuNotebookPen } from "react-icons/lu";
 
@@ -407,6 +408,13 @@ function MealPlan() {
             <div className="goal-top"><span>เป้าหมายรายวัน</span><strong>{totalCalories.toFixed(0)} / {Number(goalCalories).toFixed(0)} kcal</strong></div>
             <div className="goal-bar"><div className="goal-fill" style={{ width: `${progressWidth}%` }}></div></div>
           </div>
+          {/* 🌟 เพิ่มปุ่ม Nutrition Report ตรงนี้ 🌟 */}
+          <button 
+            className="nutrition-report-btn"
+            onClick={() => navigate("/report")} // 👈 เปลี่ยน URL ไปยังหน้าที่คุณต้องการ
+          >
+            <FaChartPie /> ดูรายงานโภชนาการ
+          </button>
         </aside>
       </main>
 

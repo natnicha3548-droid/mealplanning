@@ -630,6 +630,72 @@ app.post('/api/favorite-food', (req, res) => {
   });
 });
 
+// ==========================================
+// 5. API รายงานโภชนาการแบบสมบูรณ์สำหรับกลุ่มโรค NCDs
+// ==========================================
+app.get('/api/report/:user_id', async (req, res) => {
+    const userId = req.params.user_id;
+    const connection = db.promise();
+
+    try {
+        // 1. ดึงข้อมูลโรคประจำตัวและเกณฑ์สารอาหารล่าสุดของผู้ใช้
+        const [userCalc] = await connection.query(`
+            SELECT uc.*, u.chronic_disease 
+            FROM user_calculations uc
+            JOIN users u ON uc.user_id = u.user_id
+            WHERE uc.user_id = ?
+            ORDER BY uc.created_at DESC
+            LIMIT 1
+        `, [userId]);
+
+        // 2. ดึงสถิติการกิน 7 วันย้อนหลัง (รวม น้ำตาล และ โซเดียม จริงจากตาราง food)
+        const [mealsData] = await connection.query(`
+            SELECT 
+                mp.plan_date,
+                IFNULL(mp.total_calories, 0) AS calories,
+                SUM(IFNULL(f.carbohydrates, 0) * IFNULL(md.quantity, 1)) AS carbs,
+                SUM(IFNULL(f.protein, 0) * IFNULL(md.quantity, 1)) AS protein,
+                SUM(IFNULL(f.fat, 0) * IFNULL(md.quantity, 1)) AS fat,
+                SUM(IFNULL(f.sugar, 0) * IFNULL(md.quantity, 1)) AS sugar,
+                SUM(IFNULL(f.sodium, 0) * IFNULL(md.quantity, 1)) AS sodium
+            FROM meal_plan mp
+            LEFT JOIN meal_detail md ON mp.plan_id = md.plan_id
+            LEFT JOIN food f ON md.food_id = f.food_id
+            WHERE mp.user_id = ?
+            GROUP BY mp.plan_id, mp.plan_date
+            ORDER BY mp.plan_date DESC
+            LIMIT 7
+        `, [userId]);
+
+        // กลับลำดับข้อมูลจากอดีตมาปัจจุบันเพื่อให้กราฟวาดจากซ้ายไปขวา
+        mealsData.reverse();
+
+        const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+        const formattedWeekly = mealsData.map(row => {
+            const d = new Date(row.plan_date);
+            return {
+                dateLabel: `${d.getDate()} ${monthNames[d.getMonth()]}`,
+                calories: Math.round(row.calories),
+                carbs: Math.round(row.carbs),
+                protein: Math.round(row.protein),
+                fat: Math.round(row.fat),
+                sugar: Math.round(row.sugar),
+                sodium: Math.round(row.sodium)
+            };
+        });
+
+        // ส่งข้อมูลแพ็กคู่กลับไปให้คอมโพเนนต์ React
+        res.json({
+            userConfig: userCalc[0] || { chronic_disease: 'none', tdee: 1600, sugar: 25, sodium: 2000 },
+            weeklyData: formattedWeekly
+        });
+
+    } catch (error) {
+        console.error("Complete NCD Report Error:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ================= START =================
 app.listen(5000, () => {
     console.log("Server running on http://localhost:5000");
