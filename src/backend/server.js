@@ -241,7 +241,6 @@ app.get('/api/get-calculation/:user_id', (req, res) => {
 });
 
 // ================= SAVE CALC =================
-// ================= SAVE CALC =================
 app.post('/api/save-calculation', (req, res) => {
 
     const {
@@ -337,38 +336,38 @@ app.post('/api/save-calculation', (req, res) => {
 
 });
 
-// ================= GET MEALS FOR PLANNER =================
+/// ================= GET MEALS FOR PLANNER =================
 app.get('/api/meals', (req, res) => {
     const { date, userId } = req.query;
 
-    // คำสั่ง SQL ดึงข้อมูลจาก meal_plan ย่อยไป meal_detail และไปดึงข้อมูลสารอาหารจาก food
+    if (!date || !userId) {
+        return res.status(400).json({ message: "กรุณาส่ง date และ userId มาด้วย" });
+    }
+
+    // ✅ ใส่ ORDER BY md.meal_type ASC เพื่อบังคับให้ MySQL เรียงตามลำดับ ENUM (เช้า -> กลางวัน -> เย็น) เสมอ
     const sql = `
         SELECT 
-            md.meal_type AS type,
-            f.food_name AS name,
-            f.image AS image,
-            (f.calories * md.quantity) AS calories,
-            (f.carbohydrates * md.quantity) AS carbs,
-            (f.protein * md.quantity) AS protein,
-            (f.fat * md.quantity) AS fat,
-            (f.sugar * md.quantity) AS sugar,
-            (f.sodium * md.quantity) AS sodium,
-            CASE md.meal_type 
-                WHEN 'เช้า' THEN '07:00 - 09:00'
-                WHEN 'กลางวัน' THEN '12:00 - 13:00'
-                WHEN 'เย็น' THEN '18:00 - 19:00'
-            END AS time,
-            CASE md.meal_type 
-                WHEN 'เช้า' THEN 'sun'
-                WHEN 'กลางวัน' THEN 'cloud'
-                WHEN 'เย็น' THEN 'moon'
-            END AS icon,
-            'เมนูของคุณ' AS tag
+            mp.plan_id,
+            mp.plan_date,
+            md.meal_detail_id,
+            md.meal_type,
+            md.quantity,
+            md.total_calories,
+            f.food_id,
+            f.food_name,
+            f.image,
+            f.calories,
+            f.protein,
+            f.fat,
+            f.carbohydrates,
+            f.sugar,
+            f.sodium,
+            f.serving_size
         FROM meal_plan mp
-        JOIN meal_detail md ON mp.plan_id = md.plan_id
-        JOIN food f ON md.food_id = f.food_id
+        INNER JOIN meal_detail md ON mp.plan_id = md.plan_id
+        INNER JOIN food f ON md.food_id = f.food_id
         WHERE mp.user_id = ? AND mp.plan_date = ?
-        ORDER BY FIELD(md.meal_type, 'เช้า', 'กลางวัน', 'เย็น')
+        ORDER BY md.meal_type ASC
     `;
 
     db.query(sql, [userId, date], (err, results) => {
@@ -376,8 +375,259 @@ app.get('/api/meals', (req, res) => {
             console.error("API Meals Error:", err);
             return res.status(500).json({ error: err.message });
         }
-        res.json(results);
+        res.json(results); 
     });
+});
+
+
+// ================= Save Plan =================
+app.post('/api/save-plan', async (req, res) => {
+    const { user_id, days, total_calories, details } = req.body;
+
+    if (!user_id || !days || !details || days.length === 0) {
+        return res.status(400).json({ message: "ข้อมูลไม่ครบถ้วน" });
+    }
+
+    const connection = db.promise();
+
+    try {
+        await connection.query("START TRANSACTION");
+
+        for (const day of days) {
+            
+            // ค้นหาแผนอาหารเก่าที่มีอยู่แล้วในวันนี้ของผู้ใช้
+            const [existingPlans] = await connection.query(
+                "SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?",
+                [user_id, day]
+            );
+
+            let planId;
+
+            if (existingPlans.length > 0) {
+                // 🔄 เคสที่ 1: มีแผนเก่าอยู่แล้ว (ผู้ใช้กดแก้ไขแผนของวันนี้) -> ใช้ plan_id เดิม
+                planId = existingPlans[0].plan_id;
+
+                // อัปเดตพลังงานแคลอรีรวมในตารางหลัก
+                await connection.query(
+                    "UPDATE meal_plan SET total_calories = ? WHERE plan_id = ?",
+                    [total_calories, planId]
+                );
+
+                // ล้างเฉพาะรายการอาหารชุดเก่าในตารางย่อย meal_detail ของวันนี้ทิ้ง (ตาราง favorite จะไม่พังเพราะ plan_id เดิมยังอยู่!)
+                await connection.query(
+                    "DELETE FROM meal_detail WHERE plan_id = ?",
+                    [planId]
+                );
+
+            } else {
+                // 🌟 เคสที่ 2: ยังไม่มีแผนในวันนี้เลย -> ทำการ INSERT หัวข้อแผนอันใหม่
+                const [planResult] = await connection.query(
+                    "INSERT INTO meal_plan (user_id, plan_date, total_calories) VALUES (?, ?, ?)",
+                    [user_id, day, total_calories]
+                );
+                planId = planResult.insertId;
+            }
+
+            // บันทึกรายละเอียดอาหารชุดล่าสุดลงในตารางย่อย meal_detail
+            for (const item of details) {
+                await connection.query(
+                    `INSERT INTO meal_detail 
+                    (plan_id, meal_type, food_id, quantity, total_calories) 
+                    VALUES (?, ?, ?, ?, ?)`,
+                    [planId, item.meal_type, item.food_id, item.quantity, item.total_calories]
+                );
+            }
+        }
+
+        await connection.query("COMMIT");
+        res.json({ message: "บันทึกแผนอาหารสำเร็จ!" });
+
+    } catch (error) {
+        await connection.query("ROLLBACK");
+        console.error("Save Plan Error:", error);
+        res.status(500).json({ message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล", error: error.message });
+    }
+});
+
+// ================= DELETE PLAN =================
+app.delete('/api/plan/:id', async (req, res) => {
+    const planId = req.params.id;
+
+    const connection = db.promise();
+
+    try {
+        await connection.query("START TRANSACTION");
+
+        // ลบข้อมูลในตาราง meal_detail ก่อน
+        await connection.query(
+            "DELETE FROM meal_detail WHERE plan_id = ?",
+            [planId]
+        );
+
+        // ลบข้อมูลในตาราง meal_plan
+        const [result] = await connection.query(
+            "DELETE FROM meal_plan WHERE plan_id = ?",
+            [planId]
+        );
+
+        await connection.query("COMMIT");
+
+        if (result.affectedRows > 0) {
+            res.json({
+                success: true,
+                message: "ลบแผนอาหารสำเร็จ"
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "ไม่พบแผนอาหาร"
+            });
+        }
+
+    } catch (error) {
+
+        await connection.query("ROLLBACK");
+
+        console.error("Delete Plan Error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "เกิดข้อผิดพลาดในการลบข้อมูล",
+            error: error.message
+        });
+    }
+});
+// ==========================================
+// FAVORITE (รายการโปรด)
+// ==========================================
+
+// 1. กดหัวใจ (เพิ่ม/ลบ)
+app.post('/api/favorite-plan', (req, res) => {
+  const { user_id, plan_id } = req.body;
+
+  const checkSql = "SELECT * FROM favorite WHERE user_id = ? AND plan_id = ?";
+  db.query(checkSql, [user_id, plan_id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (results.length > 0) {
+      const deleteSql = "DELETE FROM favorite WHERE user_id = ? AND plan_id = ?";
+      db.query(deleteSql, [user_id, plan_id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "ลบออกจากรายการโปรดแล้ว", isFav: false });
+      });
+    } else {
+      const insertSql = "INSERT INTO favorite (user_id, plan_id) VALUES (?, ?)";
+      db.query(insertSql, [user_id, plan_id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "เพิ่มลงรายการโปรดแล้ว", isFav: true });
+      });
+    }
+  });
+});
+
+// 2. เช็กสถานะหัวใจตอนโหลดหน้าเว็บ (🌟 สร้างใหม่)
+app.get('/api/favorite-status', (req, res) => {
+    const { user_id, plan_id } = req.query;
+
+    if (!user_id || !plan_id) {
+        return res.status(400).json({ message: "ข้อมูลไม่ครบถ้วน" });
+    }
+
+    const sql = "SELECT * FROM favorite WHERE user_id = ? AND plan_id = ?";
+    db.query(sql, [user_id, plan_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (results.length > 0) {
+            res.json({ isFav: true });
+        } else {
+            res.json({ isFav: false });
+        }
+    });
+});
+
+// ==========================================
+// REVIEW (รีวิวเมนูอาหาร)
+// ==========================================
+
+// 1. บันทึกรีวิว
+app.post('/api/review', (req, res) => {
+  const { user_id, food_id, rating, review_text } = req.body;
+
+  const sql = "INSERT INTO food_review (user_id, food_id, rating, review_text, review_status) VALUES (?, ?, ?, ?, 'รออนุมัติ')";
+  
+  db.query(sql, [user_id, food_id, rating, review_text], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "บันทึกรีวิวสำเร็จ รอการอนุมัติ" });
+  });
+});
+
+// 2. เช็กสถานะรีวิวตอนโหลดหน้าเว็บ (🌟 สร้างใหม่)
+app.get('/api/review-status', (req, res) => {
+    const { user_id, food_id } = req.query;
+
+    if (!user_id || !food_id) {
+        return res.status(400).json({ message: "ข้อมูลไม่ครบถ้วน" });
+    }
+
+    const sql = "SELECT * FROM food_review WHERE user_id = ? AND food_id = ?";
+    db.query(sql, [user_id, food_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (results.length > 0) {
+            res.json({ 
+                isReviewed: true, 
+                rating: results[0].rating,
+                review_text: results[0].review_text 
+            });
+        } else {
+            res.json({ isReviewed: false, rating: 0, review_text: "" });
+        }
+    });
+});
+
+// ==========================================
+// อาหารที่ถูกใจ (Favorite Foods)
+// ==========================================
+
+// 1. ดึงข้อมูลว่า User คนนี้ถูกใจอาหาร (food_id) อะไรบ้าง
+app.get('/api/favorite-foods', (req, res) => {
+  const { user_id } = req.query;
+  
+  if (!user_id) return res.status(400).json({ message: "ข้อมูลไม่ครบถ้วน" });
+
+  // ดึงเฉพาะรายการที่กดถูกใจอาหาร (food_id ไม่เป็น null)
+  const sql = "SELECT food_id FROM favorite WHERE user_id = ? AND food_id IS NOT NULL";
+  db.query(sql, [user_id], (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(results);
+  });
+});
+
+// 2. กดปุ่มถูกใจ (เพิ่ม/ลบ อาหาร)
+app.post('/api/favorite-food', (req, res) => {
+  const { user_id, food_id } = req.body;
+
+  // เช็กก่อนว่าเคยกดหรือยัง
+  const checkSql = "SELECT * FROM favorite WHERE user_id = ? AND food_id = ?";
+  db.query(checkSql, [user_id, food_id], (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (results.length > 0) {
+          // ถ้ามีอยู่แล้ว -> ลบออก (Unfavorite)
+          const deleteSql = "DELETE FROM favorite WHERE user_id = ? AND food_id = ?";
+          db.query(deleteSql, [user_id, food_id], (err, result) => {
+              if (err) return res.status(500).json({ error: err.message });
+              res.json({ message: "ลบออกจากรายการโปรดแล้ว", isFav: false });
+          });
+      } else {
+          // ถ้ายังไม่มี -> เพิ่มลงไป (Favorite)
+          const insertSql = "INSERT INTO favorite (user_id, food_id) VALUES (?, ?)";
+          db.query(insertSql, [user_id, food_id], (err, result) => {
+              if (err) return res.status(500).json({ error: err.message });
+              res.json({ message: "เพิ่มลงรายการโปรดแล้ว", isFav: true });
+          });
+      }
+  });
 });
 
 // ================= START =================
