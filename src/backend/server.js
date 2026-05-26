@@ -28,7 +28,10 @@ db.connect(err => {
 
 });
 
-// ================= EMAIL CONFIG =================
+// ================= New plan =================
+const dbPromise = db.promise(); 
+
+// ================= EMAIL =================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -1090,18 +1093,95 @@ app.get('/api/report/:user_id', async (req, res) => {
         });
 
     } catch (error) {
-
-        console.error("Complete Report Error:", error);
-
-        res.status(500).json({
-            error: error.message
-        });
-
+        console.error("Complete NCD Report Error:", error);
+        res.status(500).json({ error: error.message });
     }
-
 });
 
-// ================= START SERVER =================
+// ================= RESTORE PLAN (ฟังก์ชันใหม่ที่เพิ่มให้) =================
+app.post('/api/restore-plan', async (req, res) => {
+    const { userId, sourceDate, targetDate } = req.body;
+
+    try {
+        // 1. ดึงข้อมูลแผนต้นฉบับ
+        const [oldPlans] = await dbPromise.query(
+            'SELECT * FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            [userId, sourceDate]
+        );
+
+        if (oldPlans.length === 0) {
+            return res.status(404).json({ message: "ไม่พบแผนของวันที่เลือก" });
+        }
+        
+        const oldPlan = oldPlans[0];
+
+        // 2. ใช้คำสั่ง SQL เริ่ม Transaction โดยตรง
+        await dbPromise.query('START TRANSACTION');
+
+        try {
+            // ลบของเดิมวันนี้ออกก่อน (เพื่อกันข้อมูลซ้ำ) โดยลบรายละเอียดก่อนเพื่อกัน Foreign Key Error
+            const [existing] = await dbPromise.query(
+                'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+                [userId, targetDate]
+            );
+
+            if (existing.length > 0) {
+                const planIdToDelete = existing[0].plan_id;
+                await dbPromise.query('DELETE FROM meal_detail WHERE plan_id = ?', [planIdToDelete]);
+                await dbPromise.query('DELETE FROM meal_plan WHERE plan_id = ?', [planIdToDelete]);
+            }
+
+            // 3. INSERT หัวข้อแผนใหม่
+            const [newPlan] = await dbPromise.query(
+                'INSERT INTO meal_plan (user_id, plan_date, total_calories, plan_detail) VALUES (?, ?, ?, ?)',
+                [userId, targetDate, oldPlan.total_calories, oldPlan.plan_detail]
+            );
+
+            const newPlanId = newPlan.insertId;
+
+            // 4. คัดลอกรายละเอียดอาหาร
+            await dbPromise.query(
+                `INSERT INTO meal_detail (plan_id, meal_type, food_id, food_name_snapshot, quantity, total_calories)
+                 SELECT ?, meal_type, food_id, food_name_snapshot, quantity, total_calories
+                 FROM meal_detail WHERE plan_id = ?`,
+                [newPlanId, oldPlan.plan_id]
+            );
+
+            await dbPromise.query('COMMIT');
+            res.json({ message: "นำแผนกลับมาใช้ใหม่สำเร็จ!" });
+
+        } catch (err) {
+            await dbPromise.query('ROLLBACK'); // ยกเลิกรายการหากผิดพลาด
+            throw err;
+        }
+    } catch (error) {
+        console.error("Restore Error:", error);
+        res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์", error: error.message });
+    }
+});
+// เพิ่ม API นี้ใน server.js
+app.get('/api/meal-status', async (req, res) => {
+    const { userId, planId } = req.query;
+    try {
+        // ดึงสถานะหัวใจของแผนนี้
+        const [fav] = await db.promise().query(
+            "SELECT * FROM favorite WHERE user_id = ? AND plan_id = ?",
+            [userId, planId]
+        );
+        
+        // ดึงรีวิวของอาหารทั้งหมดในแผนนี้ (ถ้ามี)
+        const [reviews] = await db.promise().query(
+            "SELECT food_id, rating, review_text FROM food_review WHERE user_id = ?",
+            [userId]
+        );
+
+        res.json({ isFav: fav.length > 0, reviews });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ================= START =================
 app.listen(5000, () => {
 
     console.log("Server running on http://localhost:5000");

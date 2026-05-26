@@ -517,6 +517,7 @@
 
 /* เส้นประคั่นมื้อ */
 .meal-group-divider {
+  display: none !important;
   border-bottom: 1px dashed #f798ef;
   margin: 10px 0 20px 0;
 }
@@ -543,9 +544,6 @@
   margin-top: 15px;
 }
 
-.meal-row-item:last-child {
-  border-bottom: none !important;
-}
 
 .global-icon-action-btn {
   position: relative;

@@ -328,7 +328,7 @@ function MealPlan() {
                   {/* 🌟 เพิ่ม style เช็กสีหัวใจ */}
                   <button 
                     className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`} 
-                    style={{ color: isPlanFav ? "red" : "" }}
+                    style={{ color: isPlanFav ? "red" : "#ddaa9d" }}
                     title="บันทึกแผนนี้เป็นเซ็ตโปรด" 
                     onClick={() => handleSaveFavoritePlan()}
                   >
@@ -369,8 +369,8 @@ function MealPlan() {
                         onClick={() => handleOpenReviewModal(meal)}
                         style={{ color: reviewedStatus[meal.food_id] ? "#ffb936" : "#ddaa9d" }} 
                       >
-                        <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "" }} /> 
-                        <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "" }}>รีวิว</span>
+                        <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} /> 
+                        <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }}>รีวิว</span>
                       </button>
                     </div>
                   </div>
