@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import FoodCard from '../../components/Food_card/FoodCard';
+import React, { useState, useEffect, useMemo } from "react";
+import {
+    FaSearch,
+    FaHeart,
+    FaRegHeart
+} from "react-icons/fa";
 
-import { FiSearch } from "react-icons/fi";
-import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
-import { LuSoup } from "react-icons/lu";
+import {
+    LuSoup
+} from "react-icons/lu";
 
 import "./MenuFood.css";
 
@@ -11,186 +15,671 @@ function MenuFood() {
 
     const [foods, setFoods] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState("");
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [activeCategory, setActiveCategory] = useState("all");
+
+    const [selectedFood, setSelectedFood] = useState(null);
+
+    const [selectedMeal, setSelectedMeal] =
+        useState("breakfast");
+
+    const [quantity, setQuantity] =
+        useState(1);
 
     useEffect(() => {
 
-        fetch("http://localhost:5000/api/foods")
-            .then(res => res.json())
-            .then(data => {
+        if (selectedFood) {
+            document.body.classList.add("modal-open");
+        } else {
+            document.body.classList.remove("modal-open");
+        }
 
-                setFoods(data || []);
-                setLoading(false);
+        return () => {
+            document.body.classList.remove("modal-open");
+        };
 
-            })
-            .catch(err => {
+    }, [selectedFood]);
+
+    const [favFoodIds, setFavFoodIds] = useState([]);
+
+    const storedUser =
+        JSON.parse(localStorage.getItem("user"));
+
+    const currentUserId =
+        storedUser?.user_id || 1;
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+
+            try {
+
+                const foodRes =
+                    await fetch(
+                        "http://localhost:5000/api/foods"
+                    );
+
+                const foodData =
+                    await foodRes.json();
+
+                setFoods(foodData);
+
+                const favRes =
+                    await fetch(
+                        `http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`
+                    );
+
+                const favData =
+                    await favRes.json();
+
+                if (favRes.ok) {
+
+                    setFavFoodIds(
+                        favData.map(f => f.food_id)
+                    );
+
+                }
+
+            } catch (err) {
 
                 console.error(err);
+
+            } finally {
+
                 setLoading(false);
 
-            });
+            }
 
-    }, []);
+        };
 
-    // SEARCH
-    const filteredFoods = foods.filter(food => {
+        fetchData();
 
-        const name =
-            (food.food_name || "").toLowerCase();
+    }, [currentUserId]);
 
-        return name.includes(
-            search.toLowerCase()
+    // ================= FAVORITE =================
+
+    const toggleFavorite = async (
+        e,
+        foodId
+    ) => {
+
+        e.stopPropagation();
+
+        const isFav =
+            favFoodIds.includes(foodId);
+
+        if (isFav) {
+
+            setFavFoodIds(
+                favFoodIds.filter(
+                    id => id !== foodId
+                )
+            );
+
+        } else {
+
+            setFavFoodIds([
+                ...favFoodIds,
+                foodId
+            ]);
+
+        }
+
+        try {
+
+            await fetch(
+                "http://localhost:5000/api/favorite-food",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUserId,
+                        food_id: foodId
+                    })
+                }
+            );
+
+        } catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
+
+    // ================= ADD FOOD =================
+
+    const addToMealPlan = () => {
+
+        const oldMealPlan =
+            JSON.parse(
+                localStorage.getItem("mealPlan")
+            ) || [];
+
+        const newFood = {
+            ...selectedFood,
+            mealType: selectedMeal,
+            quantity: quantity,
+            totalCalories:
+                Number(selectedFood.calories) *
+                quantity
+        };
+
+        const updatedMealPlan = [
+            ...oldMealPlan,
+            newFood
+        ];
+
+        localStorage.setItem(
+            "mealPlan",
+            JSON.stringify(updatedMealPlan)
         );
 
-    });
+        alert("เพิ่มอาหารเข้าจานแล้ว");
 
-    // แยกหมวดจาก category_id
-    const savoryFoods = filteredFoods.filter(
-        food => food.category_id === 1
-    );
+        setSelectedFood(null);
 
-    const sweetFoods = filteredFoods.filter(
-        food => food.category_id === 2
-    );
+        setQuantity(1);
+
+    };
+
+    // ================= FILTER =================
+
+    const filteredFoods = useMemo(() => {
+
+        return foods.filter(food => {
+
+            const matchSearch =
+                (food.food_name || "")
+                    .toLowerCase()
+                    .includes(
+                        searchTerm.toLowerCase()
+                    );
+
+            let matchCategory = true;
+
+            if (activeCategory === "fav") {
+
+                matchCategory =
+                    favFoodIds.includes(
+                        food.food_id
+                    );
+
+            } else if (
+                activeCategory !== "all"
+            ) {
+
+                matchCategory =
+                    food.category_id ===
+                    activeCategory;
+
+            }
+
+            return (
+                matchSearch &&
+                matchCategory
+            );
+
+        });
+
+    }, [
+        foods,
+        searchTerm,
+        activeCategory,
+        favFoodIds
+    ]);
 
     return (
 
-        <div className="app-container">
+        <div className="menu-page">
 
             {/* HEADER */}
 
             <div className="menu-header">
 
-                <div className="menu-left">
+                <div className="menu-title-box">
 
                     <div className="menu-icon">
                         <LuSoup />
                     </div>
 
-                    <div className="menu-text">
+                    <div>
 
                         <h1>
-                            รายการอาหารทั้งหมด
+                            เมนูอาหารทั้งหมด
                         </h1>
 
                         <p>
-                            รวมเมนูอาหารหลากหลาย ครบทุกมื้อ อร่อยง่าย ได้สุขภาพ
+                            เลือกอาหารที่คุณชอบ
+                            พร้อมข้อมูลแคลอรี่
                         </p>
 
                     </div>
 
                 </div>
 
-                <div className="menu-actions">
+                <div className="search-box">
 
-                    <div className="search-box">
+                    <FaSearch className="search-icon" />
 
-                        <FiSearch className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="ค้นหาเมนูอาหาร..."
+                        value={searchTerm}
+                        onChange={(e) =>
+                            setSearchTerm(
+                                e.target.value
+                            )
+                        }
+                    />
 
-                        <input
-                            type="text"
-                            placeholder="ค้นหาเมนูอาหาร..."
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(e.target.value)
-                            }
-                        />
+                </div>
+
+            </div>
+
+            {/* CATEGORY */}
+
+            <div className="category-tabs">
+
+                <button
+                    className={
+                        activeCategory === "all"
+                            ? "active"
+                            : ""
+                    }
+                    onClick={() =>
+                        setActiveCategory("all")
+                    }
+                >
+                    ทั้งหมด
+                </button>
+
+                <button
+                    className={
+                        activeCategory === 1
+                            ? "active"
+                            : ""
+                    }
+                    onClick={() =>
+                        setActiveCategory(1)
+                    }
+                >
+                    ของคาว
+                </button>
+
+                <button
+                    className={
+                        activeCategory === 2
+                            ? "active"
+                            : ""
+                    }
+                    onClick={() =>
+                        setActiveCategory(2)
+                    }
+                >
+                    ของหวาน
+                </button>
+
+                <button
+                    className={
+                        activeCategory === "fav"
+                            ? "active"
+                            : ""
+                    }
+                    onClick={() =>
+                        setActiveCategory("fav")
+                    }
+                >
+                    ❤️ รายการโปรด
+                </button>
+
+            </div>
+
+            {/* GRID */}
+
+            <div className="food-grid">
+
+                {loading ? (
+
+                    <p>
+                        กำลังโหลดข้อมูล...
+                    </p>
+
+                ) : filteredFoods.length > 0 ? (
+
+                    filteredFoods.map(food => (
+
+                        <div
+                            key={food.food_id}
+                            className="food-card"
+                            onClick={() => {
+
+                                setSelectedFood(food);
+
+                                setSelectedMeal(
+                                    "breakfast"
+                                );
+
+                                setQuantity(1);
+
+                            }}
+                        >
+
+                            <button
+                                className="fav-btn"
+                                onClick={(e) =>
+                                    toggleFavorite(
+                                        e,
+                                        food.food_id
+                                    )
+                                }
+                            >
+
+                                {favFoodIds.includes(
+                                    food.food_id
+                                ) ? (
+
+                                    <FaHeart />
+
+                                ) : (
+
+                                    <FaRegHeart />
+
+                                )}
+
+                            </button>
+
+                            <div className="food-img-wrapper">
+
+                                <img
+                                    src={food.image}
+                                    alt={food.food_name}
+                                />
+
+                            </div>
+
+                            <div className="food-info">
+
+                                <h3>
+                                    {food.food_name}
+                                </h3>
+
+                                <p>
+                                    {Number(
+                                        food.calories
+                                    ).toFixed(0)} kcal
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    ))
+
+                ) : (
+
+                    <div className="empty-state">
+
+                        ไม่พบเมนูอาหาร
 
                     </div>
 
-                    <button className="filter-btn">
-                        <HiOutlineAdjustmentsHorizontal />
-                    </button>
-
-                </div>
-
-            </div>
-
-            {/* ของคาว */}
-
-            <div className="section-header">
-
-                <div className="section-title">
-
-                    🍛 ของคาว
-
-                    <span>
-                        {savoryFoods.length} เมนู
-                    </span>
-
-                </div>
-
-            </div>
-
-            <main className="food-grid">
-
-                {loading ? (
-
-                    <p>กำลังโหลดข้อมูล...</p>
-
-                ) : savoryFoods.length > 0 ? (
-
-                    savoryFoods.map((food) => (
-
-                        <FoodCard
-                            key={food.food_id}
-                            food={food}
-                        />
-
-                    ))
-
-                ) : (
-
-                    <p>ไม่พบเมนูอาหาร</p>
-
                 )}
 
-            </main>
+            </div>
 
-            {/* ของหวาน */}
+            {/* MODAL */}
 
-            <div className="section-header">
+            {selectedFood && (
 
-                <div className="section-title">
+                <div
+                    className="modal-overlay"
+                    onClick={() =>
+                        setSelectedFood(null)
+                    }
+                >
 
-                    🍰 ของหวานแสนหวาน
+                    <div
+                        className="food-modal"
+                        onClick={(e) =>
+                            e.stopPropagation()
+                        }
+                    >
 
-                    <span>
-                        {sweetFoods.length} เมนู
-                    </span>
+                        <button
+                            className="bookmark-btn"
+                            onClick={(e) =>
+                                toggleFavorite(
+                                    e,
+                                    selectedFood.food_id
+                                )
+                            }
+                        >
+
+                            {favFoodIds.includes(
+                                selectedFood.food_id
+                            ) ? (
+
+                                <FaHeart />
+
+                            ) : (
+
+                                <FaRegHeart />
+
+                            )}
+
+                        </button>
+
+                        {/* LEFT */}
+
+                        <div className="food-modal-left">
+
+                            <img
+                                src={selectedFood.image}
+                                alt={
+                                    selectedFood.food_name
+                                }
+                                className="food-modal-image"
+                            />
+
+                            <div className="food-section">
+
+                                <h4>
+                                    รายละเอียดอาหาร
+                                </h4>
+
+                                <div className="food-box detail-text">
+
+                                    {
+                                        selectedFood.description ||
+                                        "ไม่มีรายละเอียดอาหาร"
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {/* RIGHT */}
+
+                        <div className="food-modal-right">
+
+                            <h2>
+                                {selectedFood.food_name}
+                            </h2>
+
+                            <div className="food-section">
+
+                                <h4>
+                                    คุณค่าทางโภชนาการ
+                                </h4>
+
+                                <div className="nutrition-grid">
+
+                                    <div>
+                                        🔥
+                                        <span>
+                                            {selectedFood.calories} kcal
+                                        </span>
+                                        แคลอรี่
+                                    </div>
+
+                                    <div>
+                                        🍞
+                                        <span>
+                                            {selectedFood.carbohydrates} g
+                                        </span>
+                                        คาร์โบไฮเดรต
+                                    </div>
+
+                                    <div>
+                                        🥩
+                                        <span>
+                                            {selectedFood.protein} g
+                                        </span>
+                                        โปรตีน
+                                    </div>
+
+                                    <div>
+                                        🧈
+                                        <span>
+                                            {selectedFood.fat} g
+                                        </span>
+                                        ไขมัน
+                                    </div>
+
+                                    <div>
+                                        🍭
+                                        <span>
+                                            {selectedFood.sugar} g
+                                        </span>
+                                        น้ำตาล
+                                    </div>
+
+                                    <div>
+                                        🧂
+                                        <span>
+                                            {selectedFood.sodium} mg
+                                        </span>
+                                        โซเดียม
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {/* MEAL SELECT */}
+
+                            <div className="food-section">
+
+                                <h4>
+                                    เลือกมื้ออาหาร
+                                </h4>
+
+                                <div className="meal-buttons">
+
+                                    <button
+                                        className={
+                                            selectedMeal === "breakfast"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setSelectedMeal("breakfast")
+                                        }
+                                    >
+                                        เช้า
+                                    </button>
+
+                                    <button
+                                        className={
+                                            selectedMeal === "lunch"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setSelectedMeal("lunch")
+                                        }
+                                    >
+                                        กลางวัน
+                                    </button>
+
+                                    <button
+                                        className={
+                                            selectedMeal === "dinner"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setSelectedMeal("dinner")
+                                        }
+                                    >
+                                        เย็น
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            {/* QUANTITY */}
+
+                            <div className="quantity-wrapper">
+
+                                <button
+                                    className="qty-btn"
+                                    onClick={() =>
+                                        quantity > 1 &&
+                                        setQuantity(
+                                            quantity - 1
+                                        )
+                                    }
+                                >
+                                    -
+                                </button>
+
+                                <span className="qty-number">
+                                    {quantity}
+                                </span>
+
+                                <button
+                                    className="qty-btn"
+                                    onClick={() =>
+                                        setQuantity(
+                                            quantity + 1
+                                        )
+                                    }
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                className="add-btn"
+                                onClick={addToMealPlan}
+                            >
+
+                                เพิ่มใส่จานอาหาร
+
+                            </button>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
-
-            <main className="food-grid">
-
-                {loading ? (
-
-                    <p>กำลังโหลดข้อมูล...</p>
-
-                ) : sweetFoods.length > 0 ? (
-
-                    sweetFoods.map((food) => (
-
-                        <FoodCard
-                            key={food.food_id}
-                            food={food}
-                        />
-
-                    ))
-
-                ) : (
-
-                    <p>ไม่พบเมนูอาหาร</p>
-
-                )}
-
-            </main>
+            )}
 
         </div>
 
     );
+
 }
 
 export default MenuFood;
