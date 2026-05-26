@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+
 import {
     FaSearch,
     FaHeart,
@@ -6,8 +7,16 @@ import {
 } from "react-icons/fa";
 
 import {
+    FaPlateWheat
+} from "react-icons/fa6";
+
+import {
     LuSoup
 } from "react-icons/lu";
+
+import {
+    Link
+} from "react-router-dom";
 
 import "./MenuFood.css";
 
@@ -30,21 +39,36 @@ function MenuFood() {
     useEffect(() => {
 
         if (selectedFood) {
-            document.body.classList.add("modal-open");
+
+            document.body.classList.add(
+                "modal-open"
+            );
+
         } else {
-            document.body.classList.remove("modal-open");
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+
         }
 
         return () => {
-            document.body.classList.remove("modal-open");
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+
         };
 
     }, [selectedFood]);
 
-    const [favFoodIds, setFavFoodIds] = useState([]);
+    const [favFoodIds, setFavFoodIds] =
+        useState([]);
 
     const storedUser =
-        JSON.parse(localStorage.getItem("user"));
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const currentUserId =
         storedUser?.user_id || 1;
@@ -76,7 +100,9 @@ function MenuFood() {
                 if (favRes.ok) {
 
                     setFavFoodIds(
-                        favData.map(f => f.food_id)
+                        favData.map(
+                            f => f.food_id
+                        )
                     );
 
                 }
@@ -155,31 +181,76 @@ function MenuFood() {
 
     const addToMealPlan = () => {
 
-        const oldMealPlan =
+        if (!selectedFood) {
+
+            alert("กรุณาเลือกอาหาร");
+
+            return;
+
+        }
+
+        const myPlate =
             JSON.parse(
-                localStorage.getItem("mealPlan")
+                localStorage.getItem("myplate")
             ) || [];
 
-        const newFood = {
-            ...selectedFood,
-            mealType: selectedMeal,
-            quantity: quantity,
-            totalCalories:
-                Number(selectedFood.calories) *
-                quantity
+        const mealMap = {
+            breakfast: "เช้า",
+            lunch: "กลางวัน",
+            dinner: "เย็น"
         };
 
-        const updatedMealPlan = [
-            ...oldMealPlan,
-            newFood
-        ];
+        const newItem = {
+
+            id: Date.now(),
+
+            food_id:
+                selectedFood.food_id,
+
+            name:
+                selectedFood.food_name,
+
+            image:
+                selectedFood.image,
+
+            qty:
+                quantity,
+
+            meal_type:
+                mealMap[selectedMeal],
+
+            calPerUnit:
+                Number(selectedFood.calories),
+
+            macros: {
+
+                carbs:
+                    Number(selectedFood.carbohydrates),
+
+                protein:
+                    Number(selectedFood.protein),
+
+                fat:
+                    Number(selectedFood.fat),
+
+                sugar:
+                    Number(selectedFood.sugar),
+
+                sodium:
+                    Number(selectedFood.sodium)
+
+            }
+
+        };
+
+        myPlate.push(newItem);
 
         localStorage.setItem(
-            "mealPlan",
-            JSON.stringify(updatedMealPlan)
+            "myplate",
+            JSON.stringify(myPlate)
         );
 
-        alert("เพิ่มอาหารเข้าจานแล้ว");
+        alert("เพิ่มลงจานอาหารแล้ว");
 
         setSelectedFood(null);
 
@@ -202,7 +273,9 @@ function MenuFood() {
 
             let matchCategory = true;
 
-            if (activeCategory === "fav") {
+            if (
+                activeCategory === "fav"
+            ) {
 
                 matchCategory =
                     favFoodIds.includes(
@@ -262,20 +335,35 @@ function MenuFood() {
 
                 </div>
 
-                <div className="search-box">
+                {/* SEARCH + PLATE */}
 
-                    <FaSearch className="search-icon" />
+                <div className="search-wrapper">
 
-                    <input
-                        type="text"
-                        placeholder="ค้นหาเมนูอาหาร..."
-                        value={searchTerm}
-                        onChange={(e) =>
-                            setSearchTerm(
-                                e.target.value
-                            )
-                        }
-                    />
+                    <div className="search-box">
+
+                        <FaSearch className="search-icon" />
+
+                        <input
+                            type="text"
+                            placeholder="ค้นหาเมนูอาหาร..."
+                            value={searchTerm}
+                            onChange={(e) =>
+                                setSearchTerm(
+                                    e.target.value
+                                )
+                            }
+                        />
+
+                    </div>
+
+                    <Link
+                        to="/myplate"
+                        className="plate-icon-btn"
+                    >
+
+                        <FaPlateWheat />
+
+                    </Link>
 
                 </div>
 
@@ -292,7 +380,9 @@ function MenuFood() {
                             : ""
                     }
                     onClick={() =>
-                        setActiveCategory("all")
+                        setActiveCategory(
+                            "all"
+                        )
                     }
                 >
                     ทั้งหมด
@@ -331,7 +421,9 @@ function MenuFood() {
                             : ""
                     }
                     onClick={() =>
-                        setActiveCategory("fav")
+                        setActiveCategory(
+                            "fav"
+                        )
                     }
                 >
                     ❤️ รายการโปรด
@@ -354,11 +446,15 @@ function MenuFood() {
                     filteredFoods.map(food => (
 
                         <div
-                            key={food.food_id}
+                            key={
+                                food.food_id
+                            }
                             className="food-card"
                             onClick={() => {
 
-                                setSelectedFood(food);
+                                setSelectedFood(
+                                    food
+                                );
 
                                 setSelectedMeal(
                                     "breakfast"
@@ -396,8 +492,12 @@ function MenuFood() {
                             <div className="food-img-wrapper">
 
                                 <img
-                                    src={food.image}
-                                    alt={food.food_name}
+                                    src={
+                                        food.image
+                                    }
+                                    alt={
+                                        food.food_name
+                                    }
                                 />
 
                             </div>
@@ -405,13 +505,18 @@ function MenuFood() {
                             <div className="food-info">
 
                                 <h3>
-                                    {food.food_name}
+                                    {
+                                        food.food_name
+                                    }
                                 </h3>
 
                                 <p>
                                     {Number(
                                         food.calories
-                                    ).toFixed(0)} kcal
+                                    ).toFixed(
+                                        0
+                                    )}{" "}
+                                    kcal
                                 </p>
 
                             </div>
@@ -439,7 +544,9 @@ function MenuFood() {
                 <div
                     className="modal-overlay"
                     onClick={() =>
-                        setSelectedFood(null)
+                        setSelectedFood(
+                            null
+                        )
                     }
                 >
 
@@ -479,7 +586,9 @@ function MenuFood() {
                         <div className="food-modal-left">
 
                             <img
-                                src={selectedFood.image}
+                                src={
+                                    selectedFood.image
+                                }
                                 alt={
                                     selectedFood.food_name
                                 }
@@ -494,10 +603,8 @@ function MenuFood() {
 
                                 <div className="food-box detail-text">
 
-                                    {
-                                        selectedFood.description ||
-                                        "ไม่มีรายละเอียดอาหาร"
-                                    }
+                                    {selectedFood.description ||
+                                        "ไม่มีรายละเอียดอาหาร"}
 
                                 </div>
 
@@ -510,7 +617,9 @@ function MenuFood() {
                         <div className="food-modal-right">
 
                             <h2>
-                                {selectedFood.food_name}
+                                {
+                                    selectedFood.food_name
+                                }
                             </h2>
 
                             <div className="food-section">
@@ -524,7 +633,10 @@ function MenuFood() {
                                     <div>
                                         🔥
                                         <span>
-                                            {selectedFood.calories} kcal
+                                            {
+                                                selectedFood.calories
+                                            }{" "}
+                                            kcal
                                         </span>
                                         แคลอรี่
                                     </div>
@@ -532,7 +644,10 @@ function MenuFood() {
                                     <div>
                                         🍞
                                         <span>
-                                            {selectedFood.carbohydrates} g
+                                            {
+                                                selectedFood.carbohydrates
+                                            }{" "}
+                                            g
                                         </span>
                                         คาร์โบไฮเดรต
                                     </div>
@@ -540,7 +655,10 @@ function MenuFood() {
                                     <div>
                                         🥩
                                         <span>
-                                            {selectedFood.protein} g
+                                            {
+                                                selectedFood.protein
+                                            }{" "}
+                                            g
                                         </span>
                                         โปรตีน
                                     </div>
@@ -548,7 +666,10 @@ function MenuFood() {
                                     <div>
                                         🧈
                                         <span>
-                                            {selectedFood.fat} g
+                                            {
+                                                selectedFood.fat
+                                            }{" "}
+                                            g
                                         </span>
                                         ไขมัน
                                     </div>
@@ -556,7 +677,10 @@ function MenuFood() {
                                     <div>
                                         🍭
                                         <span>
-                                            {selectedFood.sugar} g
+                                            {
+                                                selectedFood.sugar
+                                            }{" "}
+                                            g
                                         </span>
                                         น้ำตาล
                                     </div>
@@ -564,7 +688,10 @@ function MenuFood() {
                                     <div>
                                         🧂
                                         <span>
-                                            {selectedFood.sodium} mg
+                                            {
+                                                selectedFood.sodium
+                                            }{" "}
+                                            mg
                                         </span>
                                         โซเดียม
                                     </div>
@@ -585,12 +712,15 @@ function MenuFood() {
 
                                     <button
                                         className={
-                                            selectedMeal === "breakfast"
+                                            selectedMeal ===
+                                                "breakfast"
                                                 ? "active"
                                                 : ""
                                         }
                                         onClick={() =>
-                                            setSelectedMeal("breakfast")
+                                            setSelectedMeal(
+                                                "breakfast"
+                                            )
                                         }
                                     >
                                         เช้า
@@ -598,12 +728,15 @@ function MenuFood() {
 
                                     <button
                                         className={
-                                            selectedMeal === "lunch"
+                                            selectedMeal ===
+                                                "lunch"
                                                 ? "active"
                                                 : ""
                                         }
                                         onClick={() =>
-                                            setSelectedMeal("lunch")
+                                            setSelectedMeal(
+                                                "lunch"
+                                            )
                                         }
                                     >
                                         กลางวัน
@@ -611,12 +744,15 @@ function MenuFood() {
 
                                     <button
                                         className={
-                                            selectedMeal === "dinner"
+                                            selectedMeal ===
+                                                "dinner"
                                                 ? "active"
                                                 : ""
                                         }
                                         onClick={() =>
-                                            setSelectedMeal("dinner")
+                                            setSelectedMeal(
+                                                "dinner"
+                                            )
                                         }
                                     >
                                         เย็น
@@ -628,44 +764,58 @@ function MenuFood() {
 
                             {/* QUANTITY */}
 
-                            <div className="quantity-wrapper">
+                            <div className="quantity-section">
 
-                                <button
-                                    className="qty-btn"
-                                    onClick={() =>
-                                        quantity > 1 &&
-                                        setQuantity(
-                                            quantity - 1
-                                        )
-                                    }
-                                >
-                                    -
-                                </button>
+                                <h4>
+                                    จำนวน
+                                </h4>
 
-                                <span className="qty-number">
-                                    {quantity}
-                                </span>
+                                <div className="quantity-control">
 
-                                <button
-                                    className="qty-btn"
-                                    onClick={() =>
-                                        setQuantity(
-                                            quantity + 1
-                                        )
-                                    }
-                                >
-                                    +
-                                </button>
+                                    <button
+                                        className="quantity-btn"
+                                        onClick={() =>
+                                            setQuantity(
+                                                prev =>
+                                                    Math.max(
+                                                        1,
+                                                        prev - 1
+                                                    )
+                                            )
+                                        }
+                                    >
+                                        -
+                                    </button>
+
+                                    <span className="quantity-value">
+
+                                        {quantity}
+
+                                    </span>
+
+                                    <button
+                                        className="quantity-btn"
+                                        onClick={() =>
+                                            setQuantity(
+                                                prev =>
+                                                    prev + 1
+                                            )
+                                        }
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
 
                             </div>
 
                             <button
                                 className="add-btn"
-                                onClick={addToMealPlan}
+                                onClick={
+                                    addToMealPlan
+                                }
                             >
-
                                 เพิ่มใส่จานอาหาร
-
                             </button>
 
                         </div>

@@ -1181,6 +1181,189 @@ app.get('/api/meal-status', async (req, res) => {
     }
 });
 
+// ================= ADD TO MEAL PLAN API =================
+
+app.post(
+    "/api/add-to-meal-plan",
+    async (req, res) => {
+
+        const {
+            user_id,
+            food_id,
+            meal_type,
+            quantity,
+            plan_date
+        } = req.body;
+
+        // ================= VALIDATE =================
+
+        if (
+            !user_id ||
+            !food_id ||
+            !meal_type ||
+            !quantity
+        ) {
+
+            return res.status(400).json({
+                message: "ข้อมูลไม่ครบ"
+            });
+
+        }
+
+        try {
+
+            // ใช้วันที่ส่งมา
+            const today =
+                plan_date ||
+                new Date()
+                    .toISOString()
+                    .split("T")[0];
+
+            // ================= FIND FOOD =================
+
+            const [foods] =
+                await db.promise().query(
+                    `
+                    SELECT *
+                    FROM food
+                    WHERE food_id = ?
+                    `,
+                    [food_id]
+                );
+
+            if (foods.length === 0) {
+
+                return res.status(404).json({
+                    message: "ไม่พบอาหาร"
+                });
+
+            }
+
+            const food = foods[0];
+
+            // ================= FIND TODAY PLAN =================
+
+            const [plans] =
+                await db.promise().query(
+                    `
+                    SELECT *
+                    FROM meal_plan
+                    WHERE user_id = ?
+                    AND plan_date = ?
+                    `,
+                    [user_id, today]
+                );
+
+            let planId;
+
+            // ================= CREATE PLAN =================
+
+            if (plans.length === 0) {
+
+                const [newPlan] =
+                    await db.promise().query(
+                        `
+                        INSERT INTO meal_plan
+                        (
+                            user_id,
+                            plan_date,
+                            total_calories
+                        )
+                        VALUES (?, ?, ?)
+                        `,
+                        [
+                            user_id,
+                            today,
+                            0
+                        ]
+                    );
+
+                planId =
+                    newPlan.insertId;
+
+            } else {
+
+                planId =
+                    plans[0].plan_id;
+
+            }
+
+            // ================= CALCULATE =================
+
+            const totalCalories =
+                Number(food.calories) *
+                Number(quantity);
+
+            // ================= INSERT DETAIL =================
+
+            await db.promise().query(
+                `
+                INSERT INTO meal_detail
+                (
+                    plan_id,
+                    meal_type,
+                    food_id,
+                    quantity,
+                    total_calories
+                )
+                VALUES (?, ?, ?, ?, ?)
+                `,
+                [
+                    planId,
+                    meal_type,
+                    food_id,
+                    quantity,
+                    totalCalories
+                ]
+            );
+
+            // ================= UPDATE TOTAL =================
+
+            await db.promise().query(
+                `
+                UPDATE meal_plan
+
+                SET total_calories =
+                (
+                    SELECT
+                        IFNULL(
+                            SUM(total_calories),
+                            0
+                        )
+                    FROM meal_detail
+                    WHERE plan_id = ?
+                )
+
+                WHERE plan_id = ?
+                `,
+                [
+                    planId,
+                    planId
+                ]
+            );
+
+            // ================= SUCCESS =================
+
+            res.json({
+                success: true,
+                message:
+                    "เพิ่มอาหารสำเร็จ"
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "server error"
+            });
+
+        }
+
+    }
+);
+
 // ================= START =================
 app.listen(5000, () => {
 

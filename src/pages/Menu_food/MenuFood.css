@@ -106,6 +106,14 @@ body {
 
 /* ================= SEARCH ================= */
 
+.search-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
 .search-box {
     position: relative;
 
@@ -154,6 +162,51 @@ body {
     color: #b7a79b;
 
     font-size: 1rem;
+}
+
+/* ================= MY PLATE BUTTON ================= */
+
+.plate-icon-btn {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(135deg,
+            #ff9b54,
+            #ff7b2c);
+
+    color: white;
+
+    font-size: 1.35rem;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 10px 22px rgba(255, 140, 66, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.plate-icon-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 28px rgba(255, 140, 66, 0.3);
+}
+
+.plate-icon-btn svg {
+    transform: translateY(1px);
 }
 
 /* ================= CATEGORY ================= */
@@ -672,6 +725,66 @@ body {
     border-color: transparent;
 }
 
+/* ================= QUANTITY ================= */
+
+.quantity-section {
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.quantity-section h4 {
+    margin-bottom: 14px;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    color: #2d1b12;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+}
+
+.quantity-btn {
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #fff5ef;
+
+    color: #ff7b2c;
+
+    font-size: 1.1rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.quantity-btn:hover {
+    transform: translateY(-2px);
+
+    background: #ffe7d6;
+}
+
+.quantity-value {
+    min-width: 24px;
+
+    text-align: center;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    color: #2d1b12;
+}
+
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 1200px) {
@@ -730,6 +843,7 @@ body {
         height: 240px;
     }
 }
+
 
 @media (max-width: 480px) {
     .menu-page {
