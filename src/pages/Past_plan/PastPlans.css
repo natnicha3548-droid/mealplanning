@@ -360,11 +360,13 @@ body {
 .icon-lunch { background-color: #ffe0d9c9; color: #bc2121; }     /* มื้อกลางวัน */
 .icon-dinner { background-color: #dad4f790; color: #8b5cf6; }    /* มื้อเย็น */
 
+/* เปลี่ยนสีตัวหนังสือมื้ออาหาร */
 .meal-type-text {
   font-size: 0.85rem;
-  color: #ea580c;
-  font-weight: 500;
+  letter-spacing: -0.2px;
 }
+
+
 
 .meal-detail {
   display: flex;

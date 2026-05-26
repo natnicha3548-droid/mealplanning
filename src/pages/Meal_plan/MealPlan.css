@@ -525,7 +525,6 @@
 /* 3. ตัวหนังสือป้ายบอกชื่อมื้ออาหารด้านล่าง */
 .meal-text-label {
   font-size: 0.85rem;
-  font-weight: bold;
   letter-spacing: -0.2px;
 }
 

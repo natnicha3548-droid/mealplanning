@@ -273,9 +273,9 @@ function MealPlan() {
   };
 
   const renderIcon = (mealType) => {
-    if (mealType === "เช้า") return <FaSun style={{ color: "#FF9F43" }} />;
-    if (mealType === "กลางวัน") return <FaCloudSun style={{ color: "#fb4949" }} />;
-    return <FaMoon style={{ color: "#9074ff" }} />;
+    if (mealType === "เช้า") return <FaSun size={26} style={{ color: "#FF9F43" }} />;
+    if (mealType === "กลางวัน") return <FaCloudSun size={26} style={{ color: "#fb4949" }} />;
+    return <FaMoon size={24} style={{ color: "#9074ff" }} />;
   };
 
   const groupedMeals = mealPlan.reduce((acc, meal) => {
