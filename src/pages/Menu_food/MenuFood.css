@@ -206,7 +206,7 @@ body {
 }
 
 .plate-icon-btn svg {
-    transform: translateY(1px);
+    font-size: 32px;
 }
 
 /* ================= CATEGORY ================= */

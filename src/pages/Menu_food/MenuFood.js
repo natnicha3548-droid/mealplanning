@@ -7,8 +7,8 @@ import {
 } from "react-icons/fa";
 
 import {
-    FaPlateWheat
-} from "react-icons/fa6";
+    MdDinnerDining
+} from "react-icons/md";
 
 import {
     LuSoup
@@ -361,7 +361,7 @@ function MenuFood() {
                         className="plate-icon-btn"
                     >
 
-                        <FaPlateWheat />
+                        <MdDinnerDining />
 
                     </Link>
 
