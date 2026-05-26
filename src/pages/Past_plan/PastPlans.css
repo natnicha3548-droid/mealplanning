@@ -273,12 +273,15 @@ body {
   gap: 1.5rem;
 }
 
-/* ปรับให้ไอคอนมื้ออาหารอยู่กึ่งกลาง */
+/* =========================================
+   Meal Type
+========================================= */
 .meal-type {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 8px; /* ระยะห่างระหว่างไอคอนกับข้อความ */
 }
 
 .meal-list-header {
@@ -289,7 +292,7 @@ body {
 }
 
 .meal-list-header h3 {
-  color: #9a3412;
+  color: #602815;
   font-size: 1.2rem;
   margin: 0;
 }
@@ -343,14 +346,19 @@ body {
 }
 
 .meal-icon {
-  background-color: #ffedd5;
-  width: 45px;
-  height: 45px;
+  width: 50px;   /* ขนาดวงกลม */
+  height: 50px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
+  /* ใช้พื้นหลังสีจางๆ ตามมื้ออาหาร */
 }
+
+/* กำหนดสีพื้นหลังแยกตามประเภทมื้ออาหาร (ถ้าคุณต้องการให้สีต่างกัน) */
+.icon-breakfast { background-color: #fde8cda8; color: #f97316; } /* มื้อเช้า */
+.icon-lunch { background-color: #ffe0d9c9; color: #bc2121; }     /* มื้อกลางวัน */
+.icon-dinner { background-color: #dad4f790; color: #8b5cf6; }    /* มื้อเย็น */
 
 .meal-type-text {
   font-size: 0.85rem;
@@ -365,11 +373,10 @@ body {
 }
 
 .meal-image {
-  width: 90px;
-  height: 70px;
-  border-radius: 12px;
+  width: 150px;
+  height: 100px;
+  border-radius: 20px;
   object-fit: cover;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .meal-info h4 {
@@ -447,8 +454,6 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #f0e6dd;
 }
 
 /* ปุ่มดูรายงานโภชนาการ */

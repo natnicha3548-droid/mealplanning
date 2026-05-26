@@ -4,8 +4,14 @@ import {
   Sun, CloudSun, Moon, RefreshCw, 
   History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw
 } from 'lucide-react';
-import { FaHeart, FaStar } from "react-icons/fa"; 
+import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon } from "react-icons/fa";
 import './PastPlans.css';
+
+const mealIcons = {
+  'มื้อเช้า': 'icon-breakfast',
+  'มื้อกลางวัน': 'icon-lunch',
+  'มื้อเย็น': 'icon-dinner'
+};
 
 const PastPlans = () => {
   const navigate = useNavigate();
@@ -138,13 +144,13 @@ const PastPlans = () => {
         const formattedData = data.map(item => {
           let icon, typeText;
           if (item.meal_type === 'เช้า') {
-            icon = <Sun size={20} className="text-orange-500" />;
+            icon = <FaSun size={26} style={{ color: "#FF9F43" }} />;
             typeText = 'มื้อเช้า';
           } else if (item.meal_type === 'กลางวัน') {
-            icon = <CloudSun size={20} className="text-orange-400" />;
+            icon = <FaCloudSun size={26} style={{ color: "#fb4949" }} />;
             typeText = 'มื้อกลางวัน';
           } else {
-            icon = <Moon size={20} className="text-indigo-500" />;
+            icon = <FaMoon size={24} style={{ color: "#9074ff" }} />;
             typeText = 'มื้อเย็น';
           }
           return {
@@ -334,7 +340,10 @@ const PastPlans = () => {
                     <div className="meal-type">
                     {index === 0 && (
                         <>
-                        <span className="meal-icon">{meal.icon}</span>
+                        {/* ตรงนี้คือจุดที่แก้ไขครับ */}
+                        <span className={`meal-icon ${mealIcons[meal.type] || ''}`}>
+                            {meal.icon}
+                        </span>
                         <span className="meal-type-text">{meal.type}</span>
                         </>
                     )}
@@ -472,7 +481,6 @@ const PastPlans = () => {
 
   return (
     <div className="past-plans-wrapper pastel-theme">
-      <div className="bg-decoration leaf-left">🌿</div>
 
       <header className="past-plans-header">
         <div className="header-left">
