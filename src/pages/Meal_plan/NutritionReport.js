@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area, LineChart, Line, Legend
@@ -7,12 +7,15 @@ import {
 import { 
   FaArrowLeft, FaExclamationTriangle, FaCheckCircle,
   FaFire, FaBullseye, FaCalendarAlt,
-  FaDna, FaHeartbeat, FaChartLine, FaChartPie // 🌟 นำเข้าไอคอนสำหรับหัวข้อใหม่ตรงนี้
+  FaDna, FaHeartbeat, FaChartLine, FaChartPie 
 } from "react-icons/fa";
 import "./NutritionReport.css";
 
 function NutritionReport() {
   const navigate = useNavigate();
+  const location = useLocation(); 
+  const pastPlanState = location.state; 
+
   const [reportData, setReportData] = useState([]);
   const [userConfig, setUserConfig] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,57 +60,90 @@ function NutritionReport() {
   const avgSodium = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.sodium, 0) / reportData.length) : 0;
   const avgFat = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.fat, 0) / reportData.length) : 0;
 
-  // ฟังก์ชันจัดกลุ่มการแจ้งเตือน NCDs
+  // หาพลังงานของ "วันนี้" (เอาจากข้อมูลล่าสุดในอาเรย์)
+  const todayData = reportData.length > 0 ? reportData[reportData.length - 1] : null;
+  const todayCalories = todayData ? todayData.calories : 0;
+
+  // ฟังก์ชันแปลงวันที่ภาษาไทย
+  const formatThaiDate = (dateStr) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+    return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+  };
+
+  // 🌟 ฟังก์ชันแสดงแผงควบคุม NCDs (ปรับให้ฉลาดขึ้น แสดงข้อมูลตามบริบท)
   const renderNCDWatchSection = () => {
     let title = "";
-    let watchMetricName = "";
-    let avgValue = 0;
+    let currentValue = 0;
     let targetValue = 0;
     let unit = "";
     let description = "";
-    let ncdIcon = null; // 🌟 ตัวแปรเก็บไอคอนโรคประจำตัว
+    let ncdIcon = null;
+
+    // เลือกตัวแปรเพื่อเช็กว่าเป็นการดูแบบ "เฉลี่ย" หรือ "ดูแค่วันนี้"
+    let currentSugar = avgSugar;
+    let currentSodium = avgSodium;
+    let currentFat = avgFat;
+    let valueLabel = "ทานเฉลี่ยจริง";
+
+    // 🌟 ถ้าเข้าจากหน้า PastPlans (ดูย้อนหลัง) ให้ดึงข้อมูลของวันนั้นๆ มาโชว์แทนค่าเฉลี่ย
+    if (pastPlanState) {
+      valueLabel = "ทานจริงในวันนี้";
+      const d = new Date(pastPlanState.pastDate);
+      const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+      const targetLabel = `${d.getDate()} ${monthNames[d.getMonth()]}`;
+      const dayData = reportData.find(item => item.dateLabel === targetLabel);
+      
+      if (dayData) {
+        currentSugar = dayData.sugar;
+        currentSodium = dayData.sodium;
+        currentFat = dayData.fat;
+      } else {
+        currentSugar = 0;
+        currentSodium = 0;
+        currentFat = 0;
+      }
+    }
 
     if (disease === "diabetes") {
       title = "แผงควบคุมพิเศษ: ติดตามโรคเบาหวาน";
-      ncdIcon = <FaDna className="title-icon-inline txt-danger-icon" />; // 🌟 เปลี่ยนเป็นไอคอน DNA ของแท้
-      watchMetricName = "ปริมาณน้ำตาลเฉลี่ย";
-      avgValue = avgSugar;
+      ncdIcon = <FaDna className="title-icon-inline txt-danger-icon" />;
+      currentValue = currentSugar;
       targetValue = targetSugar;
       unit = "กรัม";
       description = "ผู้ป่วยเบาหวานต้องควบคุมน้ำตาลและคาร์โบไฮเดรตอย่างเข้มงวดเพื่อป้องกันระดับน้ำตาลในเลือดสะสมสูง";
     } else if (disease === "kidney") {
       title = "แผงควบคุมพิเศษ: ติดตามโรคไต";
       ncdIcon = <FaHeartbeat className="title-icon-inline" />;
-      watchMetricName = "ปริมาณโซเดียมเฉลี่ย";
-      avgValue = avgSodium;
+      currentValue = currentSodium;
       targetValue = targetSodium;
       unit = "มิลลิกรัม (mg)";
       description = "โรคไตจำเป็นต้องจำกัดโซเดียมอย่างจริงจังเพื่อลดภาระการทำงานของไตและควบคุมภาวะบวมน้ำ";
     } else if (disease === "heart") {
       title = "แผงควบคุมพิเศษ: ติดตามโรคหัวใจและหลอดเลือด";
       ncdIcon = <FaHeartbeat className="title-icon-inline" />;
-      watchMetricName = "ปริมาณโซเดียมและไขมัน";
-      avgValue = avgSodium;
+      currentValue = currentSodium;
       targetValue = targetSodium;
       unit = "mg";
       description = "การควบคุมโซเดียมและไขมันช่วยลดความดันโลหิตและป้องกันการอุดตันของคอเลสเตอรอลในหลอดเลือด";
     } else {
-      return null;
+      return null; // ถ้าเป็น none (ไม่มีโรค) จะไม่แสดง
     }
 
-    const isDanger = avgValue > targetValue;
+    const isDanger = currentValue > targetValue;
 
     return (
       <div className={`ncd-watch-card ${isDanger ? "danger-alert" : "safe-alert"}`}>
         <div className="ncd-watch-header">
-          <h3>{ncdIcon} {title}</h3> {/* 🌟 แสดงไอคอนหน้าชื่อโรค */}
+          <h3>{ncdIcon} {title}</h3>
           <span className="ncd-badge">{isDanger ? <FaExclamationTriangle /> : <FaCheckCircle />} {isDanger ? "ควรระวัง" : "อยู่ในเกณฑ์ดี"}</span>
         </div>
         <p className="ncd-desc">{description}</p>
         <div className="ncd-compare-grid">
           <div className="ncd-compare-box">
-            <span>ทานเฉลี่ยจริง</span>
-            <strong className={isDanger ? "txt-danger" : "txt-safe"}>{avgValue} {unit}</strong>
+            <span>{valueLabel}</span>
+            <strong className={isDanger ? "txt-danger" : "txt-safe"}>{currentValue} {unit}</strong>
           </div>
           <div className="ncd-compare-box">
             <span>เกณฑ์แนะนำทางการแพทย์</span>
@@ -116,7 +152,7 @@ function NutritionReport() {
         </div>
         {disease === "heart" && (
           <div className="heart-extra-info">
-            <p>💡 ไขมันเฉลี่ยของคุณในสัปดาห์นี้อยู่ที่ <strong>{avgFat}g</strong> จากเกณฑ์จำกัดสูงสุดที่ <strong>{targetFat}g</strong></p>
+            <p>💡 ไขมันที่ได้รับอยู่ที่ <strong>{currentFat}g</strong> จากเกณฑ์จำกัดสูงสุดที่ <strong>{targetFat}g</strong></p>
           </div>
         )}
       </div>
@@ -130,30 +166,56 @@ function NutritionReport() {
           <FaArrowLeft /> ย้อนกลับ
         </button>
         <div className="report-header-text">
-          <h1>รายงานโภชนาการสุขภาพ</h1>
-          <p>สรุปผลและพฤติกรรมการทานอาหารรายสัปดาห์ย้อนหลัง</p>
+          <h1>{pastPlanState ? `รายงานโภชนาการวันที่ ${formatThaiDate(pastPlanState.pastDate)}` : "รายงานโภชนาการสุขภาพ"}</h1>
+          <p>{pastPlanState ? "สรุปผลพลังงานของแผนการกินย้อนหลังที่คุณเลือก" : "สรุปผลและพฤติกรรมการทานอาหารรายสัปดาห์ย้อนหลัง"}</p>
         </div>
       </header>
 
-      {/* ส่วนประเมินความเสี่ยงโรค NCDs */}
+      {/* 🌟 แสดงคำแนะนำโรคประจำตัวเสมอ ไม่ว่าจะดูจากหน้าไหน */}
       {renderNCDWatchSection()}
 
-      <div className="report-summary-cards">
-        <div className="r-card orange">
-          <div className="card-icon-wrapper"><FaFire /></div>
-          <h3>พลังงานเฉลี่ยที่ได้รับ</h3>
-          <h2>{avgCalories} <span>kcal/วัน</span></h2>
-        </div>
-        <div className="r-card outline">
-          <div className="card-icon-wrapper"><FaBullseye /></div>
-          <h3>เป้าหมายพลังงานส่วนบุคคล</h3>
-          <h2>{userConfig?.tdee || 1600} <span>kcal/วัน</span></h2>
-        </div>
-        <div className="r-card outline">
-          <div className="card-icon-wrapper"><FaCalendarAlt /></div>
-          <h3>จำนวนวันที่บันทึก</h3>
-          <h2>{reportData.length} <span>วัน</span></h2>
-        </div>
+      {/* แสดงการ์ดสรุปผลตามบริบท (มาจากหน้าไหน) */}
+      <div className="report-summary-cards" style={{ gridTemplateColumns: pastPlanState ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)' }}>
+        
+        {pastPlanState ? (
+          /* ================= แสดงเฉพาะการดูย้อนหลัง (PastPlans) ================= */
+          <>
+            <div className="r-card orange">
+              <div className="card-icon-wrapper"><FaFire /></div>
+              <h3>พลังงานวันที่ {formatThaiDate(pastPlanState.pastDate)} รวม</h3>
+              <h2>{pastPlanState.totalCalories} <span>kcal</span></h2>
+            </div>
+            <div className="r-card outline">
+              <div className="card-icon-wrapper"><FaBullseye /></div>
+              <h3>เป้าหมายพลังงานส่วนบุคคล</h3>
+              <h2>{userConfig?.tdee || 1600} <span>kcal/วัน</span></h2>
+            </div>
+          </>
+        ) : (
+          /* ================= แสดงตอนเปิดหน้าปกติ (MealPlan) ================= */
+          <>
+            <div className="r-card orange">
+              <div className="card-icon-wrapper"><FaFire /></div>
+              <h3>พลังงานวันนี้รวม</h3>
+              <h2>{todayCalories} <span>kcal</span></h2>
+            </div>
+            <div className="r-card outline">
+              <div className="card-icon-wrapper"><FaChartLine /></div>
+              <h3>พลังงานเฉลี่ยที่ได้รับ</h3>
+              <h2>{avgCalories} <span>kcal/วัน</span></h2>
+            </div>
+            <div className="r-card outline">
+              <div className="card-icon-wrapper"><FaBullseye /></div>
+              <h3>เป้าหมายพลังงานส่วนบุคคล</h3>
+              <h2>{userConfig?.tdee || 1600} <span>kcal/วัน</span></h2>
+            </div>
+            <div className="r-card outline">
+              <div className="card-icon-wrapper"><FaCalendarAlt /></div>
+              <h3>จำนวนวันที่บันทึก</h3>
+              <h2>{reportData.length} <span>วัน</span></h2>
+            </div>
+          </>
+        )}
       </div>
 
       {/* กราฟที่ 1: พลังงาน */}
@@ -174,7 +236,7 @@ function NutritionReport() {
         </div>
       </div>
 
-      {/* 🌟 กราฟเจาะลึกเฉพาะโรค NCDs: เปลี่ยนเป็นไอคอนสถิติเส้นตรงกราฟน้ำตาล/โซเดียม */}
+      {/* กราฟเจาะลึกเฉพาะโรค NCDs */}
       {disease !== "none" && (
         <div className="chart-section warning-chart">
           <h2>
@@ -200,7 +262,7 @@ function NutritionReport() {
         </div>
       )}
 
-      {/* กราฟที่ 3: สัดส่วนสารอาหารหลัก 🌟 เปลี่ยนเป็นไอคอนแผนภูมิต้นแบบสำหรับข้อมูลสัดส่วน */}
+      {/* กราฟสัดส่วนสารอาหารหลัก */}
       <div className="chart-section">
         <h2>
           <FaChartPie className="title-icon-inline-h2 groups-color" /> สัดส่วนสารอาหารที่ได้รับ (กรัม)
