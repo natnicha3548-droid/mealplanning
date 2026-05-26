@@ -16,23 +16,42 @@ import slide2 from "../../assets/sl2.png";
 
 function HomePage({ calcResult, formData }) {
 
-    const slides = [slide1, slide2];
+    // ================= SLIDE =================
 
+    const slides = [slide1, slide2];
     const [currentSlide, setCurrentSlide] = useState(0);
+
+    // ================= LOCAL STORAGE =================
+
+    const [savedResult, setSavedResult] = useState(null);
+
+    // ================= USE EFFECT =================
 
     useEffect(() => {
 
+        // AUTO SLIDE
+
         const interval = setInterval(() => {
-
-            setCurrentSlide(prev =>
-                (prev + 1) % slides.length
-            );
-
+            setCurrentSlide(prev => (prev + 1) % slides.length);
         }, 3000);
+
+        // LOAD LOCAL STORAGE
+
+        const localCalc = JSON.parse(
+            localStorage.getItem("calcResult")
+        );
+
+        if (localCalc) {
+            setSavedResult(localCalc);
+        }
 
         return () => clearInterval(interval);
 
     }, []);
+
+    // ================= RESULT =================
+
+    const result = calcResult || savedResult;
 
     return (
 
@@ -48,22 +67,74 @@ function HomePage({ calcResult, formData }) {
                     className="slide-img"
                 />
 
-                <div className="overlay">
+            </div>
 
-                    <Link
-                        to="/menu"
-                        className="view-more"
-                    >
-                        ดูเพิ่มเติม
-                    </Link>
+            {/* ================= QUICK BUTTON ================= */}
 
-                </div>
+            <div className="quick-actions">
+
+                {/* ================= CALCULATE ================= */}
+
+                <Link
+                    to="/calculate"
+                    state={{
+                        formData:
+                            formData ||
+                            JSON.parse(
+                                localStorage.getItem("formData")
+                            )
+                    }}
+                    className="quick-card"
+                >
+
+                    <div className="quick-icon">
+                        <FaFire />
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            คำนวณพลังงาน
+                        </h3>
+
+                        <p>
+                            คลิกเพื่อคำนวณแคลอรี่ที่คุณต้องการ
+                        </p>
+
+                    </div>
+
+                </Link>
+
+                {/* ================= MENU ================= */}
+
+                <Link
+                    to="/menu"
+                    className="quick-card"
+                >
+
+                    <div className="quick-icon">
+                        <FaBreadSlice />
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            ดูเพิ่มเติม
+                        </h3>
+
+                        <p>
+                            คลิกเพื่อดูเมนูอาหารทั้งหมด
+                        </p>
+
+                    </div>
+
+                </Link>
 
             </div>
 
             {/* ================= RESULT ================= */}
 
-            {calcResult && (
+            {result && (
 
                 <div className="nutrition-card">
 
@@ -71,111 +142,111 @@ function HomePage({ calcResult, formData }) {
                         พลังงานที่ควรได้รับต่อวัน
                     </h2>
 
-                    {/* TDEE */}
+                    {/* ================= TDEE ================= */}
 
                     <div className="tdee">
 
                         <FaFire />
 
                         <span>
-                            {Math.round(calcResult.tdee)}
+                            {Math.round(result.tdee)}
                         </span>
 
-                        <small>kcal</small>
+                        <small>
+                            kcal
+                        </small>
 
                     </div>
 
-                    {/* MACRO */}
+                    {/* ================= MACRO ================= */}
 
                     <div className="macro-box">
 
-                        {/* CARB */}
+                        {/* ================= CARB ================= */}
 
                         <div className="macro carb">
 
                             <FaBreadSlice />
 
-                            <p>คาร์บ</p>
+                            <p>
+                                คาร์บ
+                            </p>
 
                             <strong>
-                                {Math.round(calcResult.carb)} g
+                                {Math.round(result.carb)} g
                             </strong>
 
                         </div>
 
-                        {/* PROTEIN */}
+                        {/* ================= PROTEIN ================= */}
 
                         <div className="macro protein">
 
                             <FaDrumstickBite />
 
-                            <p>โปรตีน</p>
+                            <p>
+                                โปรตีน
+                            </p>
 
                             <strong>
-                                {Math.round(calcResult.protein)} g
+                                {Math.round(result.protein)} g
                             </strong>
 
                         </div>
 
-                        {/* FAT */}
+                        {/* ================= FAT ================= */}
 
                         <div className="macro fat">
 
                             <FaTint />
 
-                            <p>ไขมัน</p>
+                            <p>
+                                ไขมัน
+                            </p>
 
                             <strong>
-                                {Math.round(calcResult.fat)} g
+                                {Math.round(result.fat)} g
                             </strong>
 
                         </div>
 
-                        {/* SUGAR */}
+                        {/* ================= SUGAR ================= */}
 
                         <div className="macro sugar">
 
                             <FaCandyCane />
 
-                            <p>น้ำตาล</p>
+                            <p>
+                                น้ำตาล
+                            </p>
 
                             <strong>
-                                {Math.round(calcResult.sugar || 25)} g
+                                {Math.round(
+                                    result.sugar || 25
+                                )} g
                             </strong>
 
                         </div>
 
-                        {/* SODIUM */}
+                        {/* ================= SODIUM ================= */}
 
                         <div className="macro sodium">
 
                             <FaMortarPestle />
 
-                            <p>โซเดียม</p>
+                            <p>
+                                โซเดียม
+                            </p>
 
                             <strong>
-                                {Math.round(calcResult.sodium || 2000)} mg
+                                {Math.round(
+                                    result.sodium || 2000
+                                )} mg
                             </strong>
 
                         </div>
 
                     </div>
-
-                    {/* BUTTON */}
-
-                    <Link
-                        to="/calculate"
-                        state={{
-                            formData:
-                                formData ||
-                                JSON.parse(
-                                    localStorage.getItem("formData")
-                                )
-                        }}
-                        className="calc-floating-btn"
-                    >
-                        คำนวณใหม่
-                    </Link>
 
                 </div>
 
@@ -214,6 +285,7 @@ function HomePage({ calcResult, formData }) {
         </div>
 
     );
+
 }
 
 export default HomePage;

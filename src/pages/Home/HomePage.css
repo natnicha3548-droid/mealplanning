@@ -4,6 +4,8 @@
     margin-top: 80px;
     overflow: hidden;
     position: relative;
+
+    padding-bottom: 20px;
 }
 
 .slide-img {
@@ -37,6 +39,59 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(255, 140, 66, 0.4);
     background: rgba(255, 140, 66, 1);
+}
+
+/* ================= QUICK ACTION ================= */
+
+.quick-actions {
+    width: 90%;
+    margin: 30px auto 40px;
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.quick-card {
+    flex: 1;
+    background: #fff7ef;
+    border: 2px solid #ff9f43;
+    border-radius: 24px;
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.quick-card:hover {
+    transform: translateY(-5px);
+    background: #fff1df;
+}
+
+.quick-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: #ff9f43;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: white;
+}
+
+.quick-card h3 {
+    font-size: 24px;
+    color: #6b3e00;
+    margin-bottom: 5px;
+}
+
+.quick-card p {
+    color: #8b6b4a;
+    font-size: 15px;
 }
 
 /* NUTRITION CARD */
@@ -126,38 +181,18 @@
     color: #d84315;
 }
 
-.calc-floating-btn {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
+/* SUGAR */
 
-    background: linear-gradient(135deg, #ff8c42, #ffd166);
-    color: white;
-
-    padding: 8px 16px;
-    border-radius: 10px;
-
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-
-    box-shadow: 0 6px 15px rgba(255, 140, 66, 0.35);
-
-    transition:
-        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.3s ease,
-        filter 0.3s ease;
+.sugar {
+    background: #f3e5f5;
+    color: #8e24aa;
 }
 
-.calc-floating-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(255, 140, 66, 0.45);
-    filter: brightness(1.05);
-}
+/* SODIUM */
 
-.calc-floating-btn:active {
-    transform: scale(0.97);
-    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.25);
+.sodium {
+    background: #e3f2fd;
+    color: #1565c0;
 }
 
 /* SECTION */
@@ -185,23 +220,18 @@
     font-size: 1.5rem;
 }
 
-/* SUGAR */
-
-.sugar {
-    background: #f3e5f5;
-    color: #8e24aa;
-}
-
-/* SODIUM */
-
-.sodium {
-    background: #e3f2fd;
-    color: #1565c0;
-}
-
 /* MOBILE */
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+
+    .quick-actions {
+        flex-direction: column;
+        margin: 20px auto 30px;
+    }
+
+    .quick-card {
+        padding: 20px;
+    }
 
     .slideshow {
         height: 55vh;
@@ -228,4 +258,5 @@
     .past-meal-plans h2 {
         font-size: 1.2rem;
     }
+
 }
