@@ -7,6 +7,8 @@ import {
 import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon } from "react-icons/fa";
 import './PastPlans.css';
 
+import { LuCalendarClock } from "react-icons/lu";
+
 const mealIcons = {
   'มื้อเช้า': 'icon-breakfast',
   'มื้อกลางวัน': 'icon-lunch',
@@ -77,9 +79,9 @@ const PastPlans = () => {
   // ================= State Management =================
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [isYearOpen, setIsYearOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('เมื่อวาน'); 
-  const [selectedDate, setSelectedDate] = useState(yesterdayStr);
-  const [viewingMonth, setViewingMonth] = useState(null); 
+  const [activeTab, setActiveTab] = useState(sessionStorage.getItem("past_activeTab") || 'เมื่อวาน'); 
+  const [selectedDate, setSelectedDate] = useState(sessionStorage.getItem("past_selectedDate") || yesterdayStr);
+  const [viewingMonth, setViewingMonth] = useState(sessionStorage.getItem("past_viewingMonth") ? Number(sessionStorage.getItem("past_viewingMonth")) : null);
   const [mealData, setMealData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -176,6 +178,17 @@ const PastPlans = () => {
       setIsLoading(false);
     }
   };
+  
+  // 🌟 เพิ่ม useEffect ชุดนี้เพื่อเซฟค่าตัวเลือกเก็บไว้ตอนย้ายหน้า
+  useEffect(() => {
+    sessionStorage.setItem("past_activeTab", activeTab);
+    sessionStorage.setItem("past_selectedDate", selectedDate);
+    if (viewingMonth !== null) {
+      sessionStorage.setItem("past_viewingMonth", viewingMonth);
+    } else {
+      sessionStorage.removeItem("past_viewingMonth");
+    }
+  }, [activeTab, selectedDate, viewingMonth]);
 
   useEffect(() => {
     fetchMeals(selectedDate);
@@ -485,7 +498,7 @@ const PastPlans = () => {
       <header className="past-plans-header">
         <div className="header-left">
           <div className="title-row">
-            <History size={28} className="history-icon" />
+            <div className="past-icon"><LuCalendarClock /></div>
             <h1>ประวัติ</h1>
             
             <div 

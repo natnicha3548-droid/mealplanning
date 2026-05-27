@@ -45,7 +45,7 @@ function MealPlan() {
   const navigate = useNavigate();
   const [mealPlan, setMealPlan] = useState([]);
   const [weekDays, setWeekDays] = useState([]);
-  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(Number(sessionStorage.getItem("meal_selectedDay")) || 0);
   const [isLoading, setIsLoading] = useState(true);
   const [isPlanFav, setIsPlanFav] = useState(false);
 
@@ -109,6 +109,10 @@ function MealPlan() {
       setIsLoading(false);
     }
   };
+  // 🌟 เพิ่ม useEffect นี้ไว้ช่วยจำวันปัจจุบันที่เลือก
+  useEffect(() => {
+    sessionStorage.setItem("meal_selectedDay", selectedDay);
+  }, [selectedDay]);
 
   useEffect(() => {
     const days = generateNext7Days();

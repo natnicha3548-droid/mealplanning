@@ -8,6 +8,20 @@ body {
   margin: 0;
 }
 
+.past-icon {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #fff5ee;
+  border: 1px solid #ffe3d2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff8c42;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
 
 .past-plans-wrapper.pastel-theme {
   padding: 110px 10% 40px;
@@ -58,10 +72,11 @@ body {
 }
 
 .title-row h1 {
-  font-size: 2rem;
-  font-weight: 700;
   margin: 0;
-  color: #333;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3b2418;
+  line-height: 1.1;
 }
 
 .year-text {
@@ -72,9 +87,10 @@ body {
 }
 
 .subtitle {
-  margin: 5px 0 0 38px;
-  color: #666;
-  font-size: 1rem;
+  margin: 5px 0 0 95px;
+  font-size: 0.95rem;
+  color: #8c7b70;
+  line-height: 1.5;
 }
 
 .header-right {
@@ -172,7 +188,7 @@ body {
 /* การ์ดวันแต่ละใบ */
 .day-card {
   min-width: 125px;
-  padding: 22px 20px;
+  padding: 22px 50px;
   border-radius: 26px;
   position: relative;
   overflow: hidden;
@@ -363,10 +379,9 @@ body {
 /* เปลี่ยนสีตัวหนังสือมื้ออาหาร */
 .meal-type-text {
   font-size: 0.85rem;
+  color: #b85a18;
   letter-spacing: -0.2px;
 }
-
-
 
 .meal-detail {
   display: flex;
@@ -705,18 +720,15 @@ body {
 }
 
 .week-selector::-webkit-scrollbar-track {
-  background: #fdfdfd; 
+  background: #f8efeb; 
   border-radius: 10px;
 }
 
 .week-selector::-webkit-scrollbar-thumb {
-  background: #e7e5e4; 
+  background: #f1dbd0; 
   border-radius: 10px;
 }
 
-.week-selector::-webkit-scrollbar-thumb:hover {
-  background: #d6d3d1; 
-}
 
 /* =========================================
    8. Year Selector (Custom Dropdown ปีที่น่ารักขึ้น)
@@ -726,12 +738,11 @@ body {
   display: inline-flex;
   align-items: center;
 }
-
 .year-selector-display {
-  font-size: 1.8rem;
+  font-size: 2.4rem;
   color: #F97316;
   font-weight: 700;
-  margin-left: 8px;
+  margin-left: 5px;
   display: flex;
   align-items: center;
   gap: 4px;
