@@ -42,18 +42,28 @@
 }
 
 /* ================= QUICK ACTION ================= */
+.main-container {
+    /* max-width: 1100px; */
+    /* margin: 0 auto; */
+    /* padding: 0 20px; ใช้ padding ที่นี่แทนการแยกใส่ในแต่ละกล่อง */
+    box-sizing: border-box;
+    padding: 110px 10% 40px;
+    max-width: 1400px;
+    margin: auto;
+    animation: fadeInPage 0.6s ease-out forwards;
+}
 
 .quick-actions {
-    width: 90%;
-    margin: 30px auto 40px;
-    display: flex;
+   display: flex;
     gap: 20px;
-    position: relative;
-    z-index: 10;
+    margin-top: -90px; /* ขยับขึ้นไปทับสไลด์โชว์ */
+    margin-bottom: 40px;
+    align-items: stretch; /* ทำให้ความสูงกล่องเท่ากัน */
 }
 
 .quick-card {
     flex: 1;
+    min-width: 0;
     background: #fff7ef;
     border: 2px solid #ff9f43;
     border-radius: 24px;
@@ -69,6 +79,13 @@
 .quick-card:hover {
     transform: translateY(-5px);
     background: #fff1df;
+}
+
+.quick-card-content {
+    /* 🌟 แนะนำให้เอา h3 กับ p ไปครอบไว้ใน div นี้ เพื่อคุมระยะห่าง */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .quick-icon {
@@ -94,27 +111,25 @@
     font-size: 15px;
 }
 
+
 /* NUTRITION CARD */
 
 .nutrition-card {
-    max-width: 650px;
-    margin: 40px auto;
-    padding: 30px 25px 60px;
-    text-align: center;
-
+    width: 100%; /* ยืดเต็มความกว้าง main-container */
+    padding: 40px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
-
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-
-    position: relative;
+    text-align: center;
 }
 
 .nutrition-card h2 {
     font-size: 1rem;
     color: #7a5c4d;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .tdee {
@@ -135,22 +150,22 @@
 
 .macro-box {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .macro {
-    flex: 1;
+    flex: 1; /* ยืดกล่องให้เท่ากัน */
+    min-width: 120px; /* ขนาดต่ำสุด */
+    min-height: 110px; /* 🌟 บังคับความสูงให้เท่ากันเป๊ะ */
     padding: 15px;
     border-radius: 15px;
-
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 5px;
-
-    font-size: 0.9rem;
     transition: 0.2s;
 }
 
@@ -200,24 +215,34 @@
 .latest-meal-plan,
 .favorite-items,
 .past-meal-plans {
-    max-width: 1000px;
-    margin: 30px auto;
+    width: 100%; /* ขยายให้เต็ม Container 1100px */
+    margin-bottom: 25px; /* ระยะห่างระหว่างกล่อง */
     padding: 30px;
-
-    border-radius: 24px;
-
+    
     background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(12px);
-
+    
+    border-radius: 24px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box; /* สำคัญ: ป้องกัน Padding ดันจนเบี้ยว */
+    
+    transition: transform 0.3s ease;
+}
+
+/* เพิ่ม Effect เวลาเมาส์ชี้ให้น่ารักเหมือนเพื่อน */
+.latest-meal-plan:hover,
+.favorite-items:hover,
+.past-meal-plans:hover {
+    transform: translateY(-5px);
 }
 
 .latest-meal-plan h2,
 .favorite-items h2,
 .past-meal-plans h2 {
-    margin-top: 0;
+    margin: 0;
     color: #ff8c42;
     font-size: 1.5rem;
+    font-weight: 700;
 }
 
 /* MOBILE */
@@ -226,11 +251,11 @@
 
     .quick-actions {
         flex-direction: column;
-        margin: 20px auto 30px;
     }
 
     .quick-card {
         padding: 20px;
+        min-height: 100px;
     }
 
     .slideshow {
@@ -238,7 +263,7 @@
     }
 
     .macro-box {
-        flex-direction: column;
+        flex-wrap: wrap;
     }
 
     .nutrition-card {
