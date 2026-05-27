@@ -270,6 +270,14 @@
   color: #ff8c42;
 }
 
+.nutrition-subtitle {
+  margin: 10px 0 10px; 
+  margin-left: 15px;
+  color: #666; 
+  font-size: 0.95rem; 
+  line-height: 1.5;
+}
+
 @media (max-width: 768px) {
   .report-container {
     padding: 100px 16px 40px;

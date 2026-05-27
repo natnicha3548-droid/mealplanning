@@ -1011,23 +1011,23 @@ app.post('/api/favorite-food', (req, res) => {
 
 // ================= REPORT API =================
 app.get('/api/report/:user_id', async (req, res) => {
-
-    const userId = req.params.user_id;
-
+const userId = req.params.user_id;
     const connection = db.promise();
 
     try {
-
-        // ดึงข้อมูลคำนวณล่าสุด
+        // 🌟 แก้ไข SQL: ดึง TDEE ล่าสุดจาก user_calculations และผูก JOIN กับตาราง users เพื่อเอาโรคประจำตัว (chronic_disease)
         const [userCalc] = await connection.query(`
-            SELECT uc.*
+            SELECT 
+                uc.*,
+                u.chronic_disease AS disease
             FROM user_calculations uc
+            INNER JOIN users u ON uc.user_id = u.user_id
             WHERE uc.user_id = ?
             ORDER BY uc.created_at DESC
             LIMIT 1
         `, [userId]);
 
-        // ดึงข้อมูลโภชนาการย้อนหลัง 7 วัน
+        // ดึงข้อมูลโภชนาการย้อนหลัง 7 วัน (คงเดิม)
         const [mealsData] = await connection.query(`
             SELECT 
                 mp.plan_date,
@@ -1051,25 +1051,13 @@ app.get('/api/report/:user_id', async (req, res) => {
 
         // ชื่อเดือนภาษาไทย
         const monthNames = [
-            "ม.ค.",
-            "ก.พ.",
-            "มี.ค.",
-            "เม.ย.",
-            "พ.ค.",
-            "มิ.ย.",
-            "ก.ค.",
-            "ส.ค.",
-            "ก.ย.",
-            "ต.ค.",
-            "พ.ย.",
-            "ธ.ค."
+            "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+            "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
         ];
 
         // แปลงข้อมูลสำหรับกราฟ
         const formattedWeekly = mealsData.map(row => {
-
             const d = new Date(row.plan_date);
-
             return {
                 dateLabel: `${d.getDate()} ${monthNames[d.getMonth()]}`,
                 calories: Math.round(row.calories),
@@ -1079,15 +1067,15 @@ app.get('/api/report/:user_id', async (req, res) => {
                 sugar: Math.round(row.sugar),
                 sodium: Math.round(row.sodium)
             };
-
         });
 
-        // ส่งข้อมูลกลับ React
+        // คืนค่าข้อมูลกลับไปยัง React หน้าบ้าน
         res.json({
             userConfig: userCalc[0] || {
                 tdee: 1600,
                 sugar: 25,
-                sodium: 2000
+                sodium: 2000,
+                disease: "none"
             },
             weeklyData: formattedWeekly
         });

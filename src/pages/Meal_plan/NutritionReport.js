@@ -7,7 +7,8 @@ import {
 import { 
   FaArrowLeft, FaExclamationTriangle, FaCheckCircle,
   FaFire, FaBullseye, FaCalendarAlt,
-  FaDna, FaHeartbeat, FaChartLine, FaChartPie 
+  FaDna, FaHeartbeat, FaChartLine, FaChartPie,
+  FaNotesMedical
 } from "react-icons/fa";
 import "./NutritionReport.css";
 
@@ -25,31 +26,32 @@ function NutritionReport() {
       try {
         const storedUser = localStorage.getItem("user");
         const user = storedUser ? JSON.parse(storedUser) : { user_id: 1 };
-
         const response = await fetch(`http://localhost:5000/api/report/${user.user_id}`);
         const data = await response.json();
         
         setUserConfig(data.userConfig);
-        
-        if (data.weeklyData.length === 0) {
-           setReportData([{ dateLabel: "ไม่มีข้อมูล", calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 }]);
-        } else {
-           setReportData(data.weeklyData);
-        }
+        setReportData(data.weeklyData.length === 0 ? [{ dateLabel: "ไม่มีข้อมูล", calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 }] : data.weeklyData);
       } catch (error) {
         console.error("Error fetching report:", error);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchReportData();
   }, []);
 
   if (isLoading) return <div className="loading">กำลังโหลดรายงานเพื่อสุขภาพ...</div>;
 
-  // ดึงค่าเป้าหมายและโรคประจำตัว
-  const disease = userConfig?.chronic_disease || "none";
+  // ================= 🌟 ระบบจัดการหลายโรคประจำตัว =================
+  let detectedDiseases = [];
+  if (userConfig?.disease) {
+    const diseaseString = String(userConfig.disease).toLowerCase();
+    if (diseaseString.includes("diabetes")) detectedDiseases.push("diabetes");
+    if (diseaseString.includes("kidney") || diseaseString.includes("โรคไต")) detectedDiseases.push("kidney");
+    if (diseaseString.includes("heart")) detectedDiseases.push("heart");
+  }
+
+  // ดึงค่าเป้าหมายอื่นๆ ตามปกติ
   const targetSugar = Number(userConfig?.sugar) || 25;
   const targetSodium = Number(userConfig?.sodium) || 2000;
   const targetFat = Number(userConfig?.fat) || 50;
@@ -60,9 +62,21 @@ function NutritionReport() {
   const avgSodium = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.sodium, 0) / reportData.length) : 0;
   const avgFat = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.fat, 0) / reportData.length) : 0;
 
-  // หาพลังงานของ "วันนี้" (เอาจากข้อมูลล่าสุดในอาเรย์)
-  const todayData = reportData.length > 0 ? reportData[reportData.length - 1] : null;
+  // 🌟 ดึงข้อมูลของ "วันนี้วันเดียว" เพื่อนำไปเปรียบเทียบรายวัน
+  const getTodayLabel = () => {
+    const d = new Date();
+    const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+    return `${d.getDate()} ${monthNames[d.getMonth()]}`;
+  };
+  const todayLabel = getTodayLabel();
+
+  // 🌟 ค้นหาข้อมูลที่ตรงกับ "วันนี้เป๊ะๆ" เท่านั้น (ถ้าหาไม่เจอให้ถือเป็น 0)
+  const todayData = reportData.length > 0 ? reportData.find(item => item.dateLabel === todayLabel) : null;
+  
   const todayCalories = todayData ? todayData.calories : 0;
+  const todaySugar = todayData ? todayData.sugar : 0;
+  const todaySodium = todayData ? todayData.sodium : 0;
+  const todayFat = todayData ? todayData.fat : 0;
 
   // ฟังก์ชันแปลงวันที่ภาษาไทย
   const formatThaiDate = (dateStr) => {
@@ -72,91 +86,216 @@ function NutritionReport() {
     return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
   };
 
-  // 🌟 ฟังก์ชันแสดงแผงควบคุม NCDs (ปรับให้ฉลาดขึ้น แสดงข้อมูลตามบริบท)
-  const renderNCDWatchSection = () => {
-    let title = "";
-    let currentValue = 0;
-    let targetValue = 0;
-    let unit = "";
-    let description = "";
-    let ncdIcon = null;
+  // ================= 🌟 วนลูปแสดงแผงควบคุม NCDs =================
+  const renderAllNCDWatchSections = () => {
+    if (detectedDiseases.length === 0) return null;
 
-    // เลือกตัวแปรเพื่อเช็กว่าเป็นการดูแบบ "เฉลี่ย" หรือ "ดูแค่วันนี้"
-    let currentSugar = avgSugar;
-    let currentSodium = avgSodium;
-    let currentFat = avgFat;
-    let valueLabel = "ทานเฉลี่ยจริง";
-
-    // 🌟 ถ้าเข้าจากหน้า PastPlans (ดูย้อนหลัง) ให้ดึงข้อมูลของวันนั้นๆ มาโชว์แทนค่าเฉลี่ย
-    if (pastPlanState) {
-      valueLabel = "ทานจริงในวันนี้";
-      const d = new Date(pastPlanState.pastDate);
-      const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-      const targetLabel = `${d.getDate()} ${monthNames[d.getMonth()]}`;
-      const dayData = reportData.find(item => item.dateLabel === targetLabel);
+    return detectedDiseases.map((diseaseType) => {
+      let title = "";
+      let currentValue = 0; // เก็บค่าเฉลี่ยรายสัปดาห์ (หรือค่าในอดีต)
+      let todayValue = 0;   // เก็บค่าของวันนี้ตรงๆ
+      let targetValue = 0;
+      let unit = "";
+      let description = "";
+      let ncdIcon = null;
       
-      if (dayData) {
-        currentSugar = dayData.sugar;
-        currentSodium = dayData.sodium;
-        currentFat = dayData.fat;
-      } else {
-        currentSugar = 0;
-        currentSodium = 0;
-        currentFat = 0;
+      // 🌟 ประกาศ currentFat ไว้ตรงนี้เพื่อไม่ให้เกิด Error no-undef
+      let currentFat = avgFat; 
+
+      if (diseaseType === "diabetes") {
+        title = "แผงควบคุมพิเศษ: ติดตามโรคเบาหวาน";
+        ncdIcon = <FaDna className="title-icon-inline txt-danger-icon" />;
+        currentValue = avgSugar;
+        todayValue = todaySugar;
+        targetValue = targetSugar;
+        unit = "กรัม";
+        description = "ผู้ป่วยเบาหวานต้องควบคุมน้ำตาลและคาร์โบไฮเดรตอย่างเข้มงวดเพื่อป้องกันระดับน้ำตาลในเลือดสะสมสูง";
+      } else if (diseaseType === "kidney") {
+        title = "แผงควบคุมพิเศษ: ติดตามโรคไต";
+        ncdIcon = <FaNotesMedical className="title-icon-inline" />;
+        currentValue = avgSodium;
+        todayValue = todaySodium;
+        targetValue = targetSodium;
+        unit = "มิลลิกรัม";
+        description = "โรคไตจำเป็นต้องจำกัดโซเดียมอย่างจริงจังเพื่อลดภาระการทำงานของไตและควบคุมภาวะบวมน้ำ";
+      } else if (diseaseType === "heart") {
+        title = "แผงควบคุมพิเศษ: ติดตามโรคหัวใจและหลอดเลือด";
+        ncdIcon = <FaHeartbeat className="title-icon-inline" />;
+        currentValue = avgSodium;
+        todayValue = todaySodium;
+        targetValue = targetSodium;
+        unit = "มิลลิกรัม";
+        description = "การควบคุมโซเดียมและไขมันช่วยลดความดันโลหิตและป้องกันการอุดตันของคอเลสเตอรอลในหลอดเลือด";
       }
-    }
 
-    if (disease === "diabetes") {
-      title = "แผงควบคุมพิเศษ: ติดตามโรคเบาหวาน";
-      ncdIcon = <FaDna className="title-icon-inline txt-danger-icon" />;
-      currentValue = currentSugar;
-      targetValue = targetSugar;
-      unit = "กรัม";
-      description = "ผู้ป่วยเบาหวานต้องควบคุมน้ำตาลและคาร์โบไฮเดรตอย่างเข้มงวดเพื่อป้องกันระดับน้ำตาลในเลือดสะสมสูง";
-    } else if (disease === "kidney") {
-      title = "แผงควบคุมพิเศษ: ติดตามโรคไต";
-      ncdIcon = <FaHeartbeat className="title-icon-inline" />;
-      currentValue = currentSodium;
-      targetValue = targetSodium;
-      unit = "มิลลิกรัม (mg)";
-      description = "โรคไตจำเป็นต้องจำกัดโซเดียมอย่างจริงจังเพื่อลดภาระการทำงานของไตและควบคุมภาวะบวมน้ำ";
-    } else if (disease === "heart") {
-      title = "แผงควบคุมพิเศษ: ติดตามโรคหัวใจและหลอดเลือด";
-      ncdIcon = <FaHeartbeat className="title-icon-inline" />;
-      currentValue = currentSodium;
-      targetValue = targetSodium;
-      unit = "mg";
-      description = "การควบคุมโซเดียมและไขมันช่วยลดความดันโลหิตและป้องกันการอุดตันของคอเลสเตอรอลในหลอดเลือด";
-    } else {
-      return null; // ถ้าเป็น none (ไม่มีโรค) จะไม่แสดง
-    }
+      // ถ้าเป็นการเปิดดูประวัติย้อนหลัง (Past Plans)
+      if (pastPlanState) {
+        const d = new Date(pastPlanState.pastDate);
+        const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+        const targetLabel = `${d.getDate()} ${monthNames[d.getMonth()]}`;
+        const dayData = reportData.find(item => item.dateLabel === targetLabel);
+        
+        if (dayData) {
+          currentValue = diseaseType === "diabetes" ? dayData.sugar : dayData.sodium;
+          currentFat = dayData.fat;
+        } else {
+          currentValue = 0;
+          currentFat = 0;
+        }
+      }
 
-    const isDanger = currentValue > targetValue;
+      // เช็กแจ้งเตือนอันตราย (ถ้าวันนี้เกิน หรือเฉลี่ยสัปดาห์เกิน ให้แจ้งเตือนสีแดง)
+      const isDanger = currentValue > targetValue || (!pastPlanState && todayValue > targetValue);
 
-    return (
-      <div className={`ncd-watch-card ${isDanger ? "danger-alert" : "safe-alert"}`}>
-        <div className="ncd-watch-header">
-          <h3>{ncdIcon} {title}</h3>
-          <span className="ncd-badge">{isDanger ? <FaExclamationTriangle /> : <FaCheckCircle />} {isDanger ? "ควรระวัง" : "อยู่ในเกณฑ์ดี"}</span>
+      return (
+        <div key={diseaseType} className={`ncd-watch-card ${isDanger ? "danger-alert" : "safe-alert"}`} style={{ marginBottom: "20px" }}>
+          <div className="ncd-watch-header">
+            <h3>{ncdIcon} {title}</h3>
+            <span className="ncd-badge">{isDanger ? <FaExclamationTriangle /> : <FaCheckCircle />} {isDanger ? "ควรระวัง" : "อยู่ในเกณฑ์ดี"}</span>
+          </div>
+          <p className="ncd-desc">{description}</p>
+
+          {/* ---------------- เบาหวาน ---------------- */}
+          {diseaseType === "diabetes" && (
+            <>
+              <div
+                className="ncd-compare-grid"
+                style={{
+                  gridTemplateColumns: pastPlanState
+                    ? "repeat(2, 1fr)"
+                    : "repeat(3, 1fr)"
+                }}
+              >
+                {!pastPlanState && (
+                  <div className="ncd-compare-box">
+                    <span>ทานจริงวันนี้</span>
+                    <strong className={todayValue > targetValue ? "txt-danger" : "txt-safe"}>
+                      {todayValue} {unit}
+                    </strong>
+                  </div>
+                )}
+
+                <div className="ncd-compare-box">
+                  <span>{pastPlanState ? "ทานจริงในวันนั้น" : "ทานเฉลี่ย 7 วัน"}</span>
+                  <strong className={currentValue > targetValue ? "txt-danger" : "txt-safe"}>
+                    {currentValue} {unit}
+                  </strong>
+                </div>
+
+                <div className="ncd-compare-box">
+                  <span>เกณฑ์แนะนำทางการแพทย์</span>
+                  <strong>{targetValue} {unit}</strong>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ---------------- โรคไต ---------------- */}
+          {diseaseType === "kidney" && (
+            <>
+              <div
+                className="ncd-compare-grid"
+                style={{
+                  gridTemplateColumns: pastPlanState
+                    ? "repeat(2, 1fr)"
+                    : "repeat(3, 1fr)"
+                }}
+              >
+                {!pastPlanState && (
+                  <div className="ncd-compare-box">
+                    <span>ทานจริงวันนี้</span>
+                    <strong className={todayValue > targetValue ? "txt-danger" : "txt-safe"}>
+                      {todayValue} {unit}
+                    </strong>
+                  </div>
+                )}
+
+                <div className="ncd-compare-box">
+                  <span>{pastPlanState ? "ทานจริงในวันนั้น" : "ทานเฉลี่ย 7 วัน"}</span>
+                  <strong className={currentValue > targetValue ? "txt-danger" : "txt-safe"}>
+                    {currentValue} {unit}
+                  </strong>
+                </div>
+
+                <div className="ncd-compare-box">
+                  <span>เกณฑ์แนะนำทางการแพทย์</span>
+                  <strong>{targetValue} {unit}</strong>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ---------------- โรคหัวใจ ---------------- */}
+          {diseaseType === "heart" && (
+            <>
+              <p className="nutrition-subtitle">โซเดียม</p>
+
+              <div
+                className="ncd-compare-grid"
+                style={{
+                  gridTemplateColumns: pastPlanState
+                    ? "repeat(2, 1fr)"
+                    : "repeat(3, 1fr)"
+                }}
+              >
+                {!pastPlanState && (
+                  <div className="ncd-compare-box">
+                    <span>ทานจริงวันนี้</span>
+                    <strong className={todayValue > targetValue ? "txt-danger" : "txt-safe"}>
+                      {todayValue} {unit}
+                    </strong>
+                  </div>
+                )}
+
+                <div className="ncd-compare-box">
+                  <span>{pastPlanState ? "ทานจริงในวันนั้น" : "ทานเฉลี่ย 7 วัน"}</span>
+                  <strong className={currentValue > targetValue ? "txt-danger" : "txt-safe"}>
+                    {currentValue} {unit}
+                  </strong>
+                </div>
+
+                <div className="ncd-compare-box">
+                  <span>เกณฑ์แนะนำทางการแพทย์</span>
+                  <strong>{targetValue} {unit}</strong>
+                </div>
+              </div>
+
+              <p className="nutrition-subtitle">ไขมัน</p>
+
+              <div
+                className="ncd-compare-grid"
+                style={{
+                  gridTemplateColumns: pastPlanState
+                    ? "repeat(2, 1fr)"
+                    : "repeat(3, 1fr)"
+                }}
+              >
+                {!pastPlanState && (
+                  <div className="ncd-compare-box">
+                    <span>ทานจริงวันนี้</span>
+                    <strong className={todayFat > targetFat ? "txt-danger" : "txt-safe"}>
+                      {todayFat} กรัม
+                    </strong>
+                  </div>
+                )}
+
+                <div className="ncd-compare-box">
+                  <span>{pastPlanState ? "ทานจริงในวันนั้น" : "ทานเฉลี่ย 7 วัน"}</span>
+                  <strong className={avgFat > targetFat ? "txt-danger" : "txt-safe"}>
+                    {pastPlanState ? currentFat : avgFat} กรัม
+                  </strong>
+                </div>
+
+                <div className="ncd-compare-box">
+                  <span>เกณฑ์แนะนำทางการแพทย์</span>
+                  <strong>{targetFat} กรัม</strong>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-        <p className="ncd-desc">{description}</p>
-        <div className="ncd-compare-grid">
-          <div className="ncd-compare-box">
-            <span>{valueLabel}</span>
-            <strong className={isDanger ? "txt-danger" : "txt-safe"}>{currentValue} {unit}</strong>
-          </div>
-          <div className="ncd-compare-box">
-            <span>เกณฑ์แนะนำทางการแพทย์</span>
-            <strong>{targetValue} {unit}</strong>
-          </div>
-        </div>
-        {disease === "heart" && (
-          <div className="heart-extra-info">
-            <p>💡 ไขมันที่ได้รับอยู่ที่ <strong>{currentFat}g</strong> จากเกณฑ์จำกัดสูงสุดที่ <strong>{targetFat}g</strong></p>
-          </div>
-        )}
-      </div>
-    );
+      );
+    });
   };
 
   return (
@@ -171,14 +310,12 @@ function NutritionReport() {
         </div>
       </header>
 
-      {/* 🌟 แสดงคำแนะนำโรคประจำตัวเสมอ ไม่ว่าจะดูจากหน้าไหน */}
-      {renderNCDWatchSection()}
+      {/* แสดงคำแนะนำโรคประจำตัวทั้งหมด */}
+      {renderAllNCDWatchSections()}
 
-      {/* แสดงการ์ดสรุปผลตามบริบท (มาจากหน้าไหน) */}
+      {/* การ์ดสรุปผลด้านบน */}
       <div className="report-summary-cards" style={{ gridTemplateColumns: pastPlanState ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)' }}>
-        
         {pastPlanState ? (
-          /* ================= แสดงเฉพาะการดูย้อนหลัง (PastPlans) ================= */
           <>
             <div className="r-card orange">
               <div className="card-icon-wrapper"><FaFire /></div>
@@ -192,7 +329,6 @@ function NutritionReport() {
             </div>
           </>
         ) : (
-          /* ================= แสดงตอนเปิดหน้าปกติ (MealPlan) ================= */
           <>
             <div className="r-card orange">
               <div className="card-icon-wrapper"><FaFire /></div>
@@ -218,7 +354,7 @@ function NutritionReport() {
         )}
       </div>
 
-      {/* กราฟที่ 1: พลังงาน */}
+      {/* กราฟแนวโน้มพลังงาน */}
       <div className="chart-section">
         <h2>
           <FaChartLine className="title-icon-inline-h2" /> กราฟแสดงแนวโน้มพลังงาน (kcal)
@@ -236,26 +372,94 @@ function NutritionReport() {
         </div>
       </div>
 
-      {/* กราฟเจาะลึกเฉพาะโรค NCDs */}
-      {disease !== "none" && (
+      {/* ---------------- กราฟน้ำตาล ---------------- */}
+      {detectedDiseases.includes("diabetes") && (
         <div className="chart-section warning-chart">
           <h2>
             <FaChartLine className="title-icon-inline-h2 warning-color" />
-            {disease === "diabetes" ? "แนวโน้มปริมาณน้ำตาลรายวัน (กรัม)" : "แนวโน้มปริมาณโซเดียมรายวัน (mg)"}
+            แนวโน้มปริมาณน้ำตาลรายวัน (กรัม)
           </h2>
+
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={reportData} margin={{ top: 10, right: 10, left: 15, bottom: 0 }}>
+              <LineChart data={reportData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="dateLabel" tick={{ fill: '#888', fontSize: 13 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#888' }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }} />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
                 <Legend />
-                {disease === "diabetes" ? (
-                  <Line type="monotone" dataKey="sugar" stroke="#ee5253" strokeWidth={3} name="น้ำตาลที่กินจริง (g)" dot={{ r: 4 }} />
-                ) : (
-                  <Line type="monotone" dataKey="sodium" stroke="#2e86de" strokeWidth={3} name="โซเดียมที่กินจริง (mg)" dot={{ r: 4 }} />
-                )}
+
+                <Line
+                  type="monotone"
+                  dataKey="sugar"
+                  stroke="#ee5253"
+                  strokeWidth={3}
+                  name="น้ำตาลที่กินจริง (g)"
+                  dot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------- กราฟโซเดียม (ใช้ร่วมกัน โรคไต + โรคหัวใจ) ---------------- */}
+      {(detectedDiseases.includes("kidney") ||
+        detectedDiseases.includes("heart")) && (
+        <div className="chart-section warning-chart">
+          <h2>
+            <FaChartLine className="title-icon-inline-h2 warning-color" />
+            แนวโน้มปริมาณโซเดียมรายวัน (มิลลิกรัม)
+          </h2>
+
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={reportData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+
+                <Line
+                  type="monotone"
+                  dataKey="sodium"
+                  stroke="#2e86de"
+                  strokeWidth={3}
+                  name="โซเดียมที่กินจริง (mg)"
+                  dot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------- กราฟไขมัน (เฉพาะโรคหัวใจ) ---------------- */}
+      {detectedDiseases.includes("heart") && (
+        <div className="chart-section warning-chart">
+          <h2>
+            <FaChartLine className="title-icon-inline-h2 warning-color" />
+            แนวโน้มปริมาณไขมันรายวัน (กรัม)
+          </h2>
+
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={reportData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+
+                <Line
+                  type="monotone"
+                  dataKey="fat"
+                  stroke="#10AC84"
+                  strokeWidth={3}
+                  name="ไขมันที่กินจริง (g)"
+                  dot={{ r: 4 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
