@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaChevronLeft, FaSearch, FaHeart, FaRegHeart } from "react-icons/fa"; // 🌟 เพิ่ม FaHeart, FaRegHeart
+import { FaChevronLeft, FaSearch, FaHeart, FaRegHeart } from "react-icons/fa";
 import "./SearchFood.css";
 
 function SearchFood() {
@@ -9,33 +9,31 @@ function SearchFood() {
   
   const queryParams = new URLSearchParams(location.search);
   const mealType = queryParams.get("type") || "มื้อเช้า";
+  
+  // 🌟 อ่านค่า mode และเลือกตะกร้าให้ตรงกับหน้า MyPlate ที่เรียกมา
+  const mode = queryParams.get("mode") || "normal"; 
+  const storageKey = mode === "plan" ? "plan_plate" : "myplate";
 
   const [foods, setFoods] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all"); // 'all', 1, 2, 'fav'
+  const [activeCategory, setActiveCategory] = useState("all"); 
   const [selectedFood, setSelectedFood] = useState(null);
   const [quantity, setQuantity] = useState(1);
   
-  // 🌟 State สำหรับเก็บรายการ ID อาหารที่กดถูกใจไว้
   const [favFoodIds, setFavFoodIds] = useState([]);
-
-  // ดึงข้อมูล User ปัจจุบัน
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const currentUserId = storedUser ? storedUser.user_id : 1;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. ดึงข้อมูลอาหารทั้งหมด
         const foodRes = await fetch("http://localhost:5000/api/foods");
         const foodData = await foodRes.json();
         setFoods(foodData);
 
-        // 2. ดึงข้อมูลว่า User คนนี้เคยกดถูกใจเมนูไหนไว้บ้าง
         const favRes = await fetch(`http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`);
         const favData = await favRes.json();
         if (favRes.ok) {
-          // เก็บเฉพาะ food_id ลงใน Array [1, 5, 12, ...]
           setFavFoodIds(favData.map(fav => fav.food_id));
         }
       } catch (error) {
@@ -45,18 +43,14 @@ function SearchFood() {
     fetchData();
   }, [currentUserId]);
 
-  // 🌟 ฟังก์ชันกดสลับหัวใจ (เพิ่ม/ลบ รายการโปรด)
   const toggleFavorite = async (e, foodId) => {
-    e.stopPropagation(); // ป้องกันไม่ให้คลิกทะลุไปเปิด Modal
-    
-    // อัปเดตหน้าจอทันทีเพื่อให้ผู้ใช้รู้สึกว่าแตะปุ๊บเปลี่ยนปั๊บ (Optimistic UI)
+    e.stopPropagation(); 
     if (favFoodIds.includes(foodId)) {
-      setFavFoodIds(favFoodIds.filter(id => id !== foodId)); // ลบออก
+      setFavFoodIds(favFoodIds.filter(id => id !== foodId)); 
     } else {
-      setFavFoodIds([...favFoodIds, foodId]); // เพิ่มเข้า
+      setFavFoodIds([...favFoodIds, foodId]); 
     }
 
-    // ส่งคำสั่งไปบันทึกลง Database
     try {
       await fetch("http://localhost:5000/api/favorite-food", {
         method: "POST",
@@ -68,18 +62,14 @@ function SearchFood() {
     }
   };
 
-  // 🌟 กรองข้อมูลตาม "คำค้นหา", "หมวดหมู่" และ "รายการโปรด"
   const filteredFoods = foods.filter(f => {
     const matchSearch = f.food_name.toLowerCase().includes(searchTerm.toLowerCase());
-    
     let matchCategory = true;
     if (activeCategory === "fav") {
-      // ถ้าเลือกแท็บรายการโปรด ให้เช็กว่า food_id อยู่ใน favFoodIds หรือไม่
       matchCategory = favFoodIds.includes(f.food_id);
     } else if (activeCategory !== "all") {
       matchCategory = f.category_id === activeCategory;
     }
-
     return matchSearch && matchCategory;
   });
 
@@ -89,27 +79,30 @@ function SearchFood() {
   };
 
   const handleAddToPlate = () => {
-    const currentPlate = JSON.parse(localStorage.getItem("draft_plate")) || [];
-    
+    // 🌟 ดึงข้อมูลจากตะกร้าที่ถูกต้อง
+    const currentPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const cleanMealType = mealType.replace("มื้อ", "");
+
     const newMeal = {
       id: Date.now(),
       food_id: selectedFood.food_id,
       name: selectedFood.food_name,
       image: selectedFood.image,
-      type: mealType,
       qty: quantity,
+      meal_type: cleanMealType,
       calPerUnit: Number(selectedFood.calories) || 0,
       macros: {
-        carbs: 50,
-        protein: 20,
-        fat: 10,
-        sugar: 5,
-        sodium: 500
+        carbs: Number(selectedFood.carbohydrates) || 0,
+        protein: Number(selectedFood.protein) || 0,
+        fat: Number(selectedFood.fat) || 0,
+        sugar: Number(selectedFood.sugar) || 0,
+        sodium: Number(selectedFood.sodium) || 0
       }
     };
 
-    localStorage.setItem("draft_plate", JSON.stringify([...currentPlate, newMeal]));
-    navigate("/MyPlate");
+    // 🌟 บันทึกลงตะกร้าที่ถูกต้อง
+    localStorage.setItem(storageKey, JSON.stringify([...currentPlate, newMeal]));
+    navigate(`/MyPlate?mode=${mode}`); // 🌟 เด้งกลับไปพร้อมโหมดเดิม
   };
 
   return (
@@ -132,28 +125,17 @@ function SearchFood() {
         />
       </div>
 
-      {/* 🌟 เพิ่มแท็บ "รายการโปรด" */}
       <div className="sf-category-tabs">
-        <button className={`sf-tab ${activeCategory === "all" ? "active" : ""}`} onClick={() => setActiveCategory("all")}>
-          ทั้งหมด
-        </button>
-        <button className={`sf-tab ${activeCategory === 1 ? "active" : ""}`} onClick={() => setActiveCategory(1)}>
-          ของคาว
-        </button>
-        <button className={`sf-tab ${activeCategory === 2 ? "active" : ""}`} onClick={() => setActiveCategory(2)}>
-          ของหวาน
-        </button>
-        <button className={`sf-tab ${activeCategory === "fav" ? "active" : ""}`} onClick={() => setActiveCategory("fav")}>
-          ❤️ รายการโปรด
-        </button>
+        <button className={`sf-tab ${activeCategory === "all" ? "active" : ""}`} onClick={() => setActiveCategory("all")}>ทั้งหมด</button>
+        <button className={`sf-tab ${activeCategory === 1 ? "active" : ""}`} onClick={() => setActiveCategory(1)}>ของคาว</button>
+        <button className={`sf-tab ${activeCategory === 2 ? "active" : ""}`} onClick={() => setActiveCategory(2)}>ของหวาน</button>
+        <button className={`sf-tab ${activeCategory === "fav" ? "active" : ""}`} onClick={() => setActiveCategory("fav")}>❤️ รายการโปรด</button>
       </div>
 
       <div className="sf-food-grid">
         {filteredFoods.length > 0 ? (
           filteredFoods.map(food => (
             <div key={food.food_id} className="sf-food-card" onClick={() => openModal(food)} style={{ position: "relative" }}>
-              
-              {/* 🌟 ปุ่มกดหัวใจมุมขวาบนของการ์ด */}
               <button 
                 onClick={(e) => toggleFavorite(e, food.food_id)}
                 style={{
@@ -180,7 +162,6 @@ function SearchFood() {
         )}
       </div>
 
-      {/* Modal Popup (ส่วนนี้เหมือนเดิม) */}
       {selectedFood && (
         <div className="sf-modal-overlay">
           <div className="sf-modal-content">

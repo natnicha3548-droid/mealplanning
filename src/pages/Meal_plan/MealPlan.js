@@ -49,9 +49,7 @@ function MealPlan() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPlanFav, setIsPlanFav] = useState(false);
 
-  // 🌟 เพิ่ม State สำหรับเก็บสถานะการรีวิวของอาหารแต่ละเมนู
   const [reviewedStatus, setReviewedStatus] = useState({});
-
   const [reviewTarget, setReviewTarget] = useState(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
@@ -63,7 +61,7 @@ function MealPlan() {
   const fetchMealPlanFromDB = async (date) => {
     setIsLoading(true);
     setIsPlanFav(false); 
-    setReviewedStatus({}); // เคลียร์สถานะรีวิวเมื่อเปลี่ยนวัน
+    setReviewedStatus({}); 
 
     try {
       const storedUser = localStorage.getItem("user");
@@ -74,24 +72,20 @@ function MealPlan() {
       const dataFromDB = await response.json();
       setMealPlan(dataFromDB);
 
-      // 🌟 ทันทีที่โหลดข้อมูลแผนอาหารสำเร็จ ให้ไปเช็กสถานะหัวใจและรีวิว
       if (dataFromDB.length > 0) {
         const planId = dataFromDB[0].plan_id;
 
-        // 1. เช็กสถานะหัวใจ (Favorite)
         fetch(`http://localhost:5000/api/favorite-status?user_id=${currentUserId}&plan_id=${planId}`)
           .then(res => res.json())
           .then(data => setIsPlanFav(data.isFav))
           .catch(err => console.error("Error fetching favorite status:", err));
 
-        // 2. เช็กสถานะการรีวิวของอาหารแต่ละรายการในแผน
-        const uniqueFoodIds = [...new Set(dataFromDB.map(m => m.food_id))]; // หา ID อาหารแบบไม่ซ้ำ
+        const uniqueFoodIds = [...new Set(dataFromDB.map(m => m.food_id))]; 
         uniqueFoodIds.forEach(foodId => {
           fetch(`http://localhost:5000/api/review-status?user_id=${currentUserId}&food_id=${foodId}`)
             .then(res => res.json())
             .then(data => {
               if (data.isReviewed) {
-                // เก็บข้อมูลการรีวิวลง State โดยใช้ food_id เป็น Key
                 setReviewedStatus(prev => ({
                   ...prev,
                   [foodId]: data
@@ -109,7 +103,7 @@ function MealPlan() {
       setIsLoading(false);
     }
   };
-  // 🌟 เพิ่ม useEffect นี้ไว้ช่วยจำวันปัจจุบันที่เลือก
+  
   useEffect(() => {
     sessionStorage.setItem("meal_selectedDay", selectedDay);
   }, [selectedDay]);
@@ -149,7 +143,7 @@ function MealPlan() {
       image: meal.image,
       calPerUnit: Number(meal.calories),
       qty: Number(meal.quantity),
-      type: `มื้อ${meal.meal_type}`,
+      meal_type: meal.meal_type, 
       macros: {
         carbs: Number(meal.carbohydrates),
         protein: Number(meal.protein),
@@ -159,8 +153,9 @@ function MealPlan() {
       }
     }));
 
-    localStorage.setItem("draft_plate", JSON.stringify(draftPlate));
-    navigate("/MyPlate"); 
+    // 🌟 ใช้ plan_plate แทน myplate
+    localStorage.setItem("plan_plate", JSON.stringify(draftPlate)); 
+    navigate("/MyPlate?mode=plan"); // 🌟 แนบคำว่า mode=plan ไปด้วย
   };
 
   const handleSaveFavoritePlan = async () => {
@@ -205,15 +200,12 @@ function MealPlan() {
     }
   };
 
-  // 🌟 ฟังก์ชันเปิดหน้าต่างรีวิว (ตั้งค่ารีวิวเดิมถ้าเคยรีวิวแล้ว)
   const handleOpenReviewModal = (meal) => {
     setReviewTarget(meal);
     if (reviewedStatus[meal.food_id]) {
-        // ถ้าเคยรีวิวแล้ว ให้ดึงดาวและข้อความเดิมมาแสดง
         setRating(reviewedStatus[meal.food_id].rating);
         setReviewText(reviewedStatus[meal.food_id].review_text);
     } else {
-        // ถ้ายังไม่เคยรีวิว ให้ค่าเริ่มต้นเป็น 5 ดาวและช่องว่าง
         setRating(5);
         setReviewText("");
     }
@@ -231,13 +223,10 @@ function MealPlan() {
       });
       if (response.ok) {
         alert("บันทึกรีวิวของคุณเรียบร้อยแล้ว รอการอนุมัติจากระบบครับ ⭐");
-        
-        // 🌟 อัปเดต State ทันทีเพื่อให้ดาวที่หน้าจอเปลี่ยนสีเป็นสีเหลืองโดยไม่ต้องโหลดหน้าใหม่
         setReviewedStatus(prev => ({
             ...prev,
             [reviewTarget.food_id]: { isReviewed: true, rating, review_text: reviewText }
         }));
-
         setReviewTarget(null); 
         setReviewText("");
       }
@@ -298,11 +287,14 @@ function MealPlan() {
             <p>วางแผนมื้ออาหารล่วงหน้า เพื่อสุขภาพที่ดีในทุกวัน</p>
           </div>
         </div>
+        {/* 🌟 ลิงก์แนบ ?mode=plan และลบแค่ plan_plate */}
         <Link 
-          to="/MyPlate" 
+          to="/MyPlate?mode=plan" 
           className="create-btn" 
           style={{ textDecoration: 'none' }}
-          onClick={() => localStorage.removeItem("draft_plate")}
+          onClick={() => {
+            localStorage.removeItem("plan_plate"); 
+          }}
         >
           <FaPlus /> สร้างแผนใหม่
         </Link>
@@ -329,7 +321,6 @@ function MealPlan() {
               <div className="card-top-header-actions">
                 <span className="card-header-date-title">เมนูอาหารของฉัน</span>
                 <div className="global-icon-actions-group">
-                  {/* 🌟 เพิ่ม style เช็กสีหัวใจ */}
                   <button 
                     className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`} 
                     style={{ color: isPlanFav ? "red" : "#ddaa9d" }}
@@ -366,7 +357,6 @@ function MealPlan() {
 
                     <div className="meal-item-right">
                       <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
-                      {/* 🌟 เปลี่ยนสีดาวเป็นสีเหลืองถ้าเคยรีวิวแล้ว */}
                       <button 
                         className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`} 
                         title="เขียนรีวิวเมนูนี้" 
@@ -412,10 +402,9 @@ function MealPlan() {
             <div className="goal-top"><span>เป้าหมายรายวัน</span><strong>{totalCalories.toFixed(0)} / {Number(goalCalories).toFixed(0)} kcal</strong></div>
             <div className="goal-bar"><div className="goal-fill" style={{ width: `${progressWidth}%` }}></div></div>
           </div>
-          {/* 🌟 เพิ่มปุ่ม Nutrition Report ตรงนี้ 🌟 */}
           <button 
             className="nutrition-report-btn"
-            onClick={() => navigate("/report")} // 👈 เปลี่ยน URL ไปยังหน้าที่คุณต้องการ
+            onClick={() => navigate("/report")} 
           >
             <FaChartPie /> ดูรายงานโภชนาการ
           </button>
