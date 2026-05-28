@@ -19,6 +19,7 @@ import PastPlans from "./pages/Past_plan/PastPlans";
 import MyPlate from "./pages/Meal_plan/MyPlate";
 import SearchFood from "./pages/Meal_plan/SearchFood";
 import FavFood from "./pages/Fav_food/FavFood";
+import MealAdmin from "./admin/MealAdmin";
 
 /* ================= ROUTER ================= */
 
@@ -243,6 +244,10 @@ function App() {
         <Route
           path="/favourite-food"
           element={<FavFood />}
+        />
+        <Route
+          path="/admin"
+          element={<MealAdmin />}
         />
 
         {/* ================= NOT FOUND ================= */}
