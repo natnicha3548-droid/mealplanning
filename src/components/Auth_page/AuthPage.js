@@ -3,19 +3,24 @@ import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function AuthPage({ setUser }) {
-
     const navigate = useNavigate();
 
+    // เก็บสถานะว่าอยู่หน้า Login หรือ Signup
     const [isLogin, setIsLogin] = useState(true);
+
+    // แสดงหรือซ่อนรหัสผ่าน
     const [showPassword, setShowPassword] = useState(false);
 
+    // เก็บข้อมูล form
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
 
+    // เก็บรหัสผ่านยืนยัน
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    // อัปเดตค่าจาก input
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -23,13 +28,12 @@ function AuthPage({ setUser }) {
         });
     };
 
+    // ส่งข้อมูล Login / Signup
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
-        // ================= SIGNUP CHECK =================
+        // ตรวจสอบข้อมูลตอนสมัครสมาชิก
         if (!isLogin) {
-
             if (form.password.length < 6) {
                 alert("รหัสผ่านต้องมีอย่างน้อย 6 ตัว");
                 return;
@@ -41,12 +45,13 @@ function AuthPage({ setUser }) {
             }
         }
 
+        // เลือก API ตามสถานะ
         const url = isLogin
             ? "http://localhost:5000/api/login"
             : "http://localhost:5000/api/signup";
 
         try {
-
+            // ส่งข้อมูลไปยัง server
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -57,6 +62,7 @@ function AuthPage({ setUser }) {
 
             const data = await res.json();
 
+            // ตรวจสอบ response
             if (!res.ok) {
                 alert(data.message);
                 return;
@@ -64,36 +70,35 @@ function AuthPage({ setUser }) {
 
             alert(data.message);
 
-            // ================= LOGIN =================
+            // ทำงานหลัง Login สำเร็จ
             if (isLogin) {
-
                 const userData = data.user;
 
+                // ตรวจสอบข้อมูลผู้ใช้
                 if (!userData || !userData.user_id) {
                     alert("เกิดข้อผิดพลาด");
                     return;
                 }
 
-                // save user
+                // บันทึกข้อมูล user ลง localStorage
                 localStorage.setItem(
                     "user",
                     JSON.stringify(userData)
                 );
 
+                // เก็บ user ใน state
                 setUser(userData);
 
-                // ================= CHECK CALCULATION =================
+                // ตรวจสอบว่าผู้ใช้เคยคำนวณหรือยัง
                 try {
-
                     const calcRes = await fetch(
                         `http://localhost:5000/api/get-calculation/${userData.user_id}`
                     );
 
                     const calcData = await calcRes.json();
 
-                    // ===== เคยคำนวณแล้ว =====
+                    // ถ้าเคยคำนวณแล้ว
                     if (calcData) {
-
                         localStorage.setItem(
                             "calculation",
                             JSON.stringify(calcData)
@@ -101,48 +106,45 @@ function AuthPage({ setUser }) {
 
                         navigate("/", {
                             state: {
-                                calcResult: calcData
-                            }
+                                calcResult: calcData,
+                            },
                         });
-
                     }
 
-                    // ===== ยังไม่เคยคำนวณ =====
+                    // ถ้ายังไม่เคยคำนวณ
                     else {
-
                         navigate("/calculate");
                     }
 
                 } catch (err) {
-
                     console.error(err);
                     alert("โหลดข้อมูลไม่สำเร็จ");
                 }
             }
 
-            // ================= SIGNUP SUCCESS =================
+            // สมัครสมาชิกสำเร็จ
             else {
-
                 alert("สมัครสำเร็จ กรุณาเข้าสู่ระบบ");
                 setIsLogin(true);
             }
 
         } catch (error) {
-
             console.error(error);
             alert("เชื่อมต่อ server ไม่ได้");
         }
     };
 
+    // ลืมรหัสผ่าน
     const handleForgotPassword = async () => {
 
+        // ตรวจสอบว่ากรอกอีเมลหรือยัง
         if (!form.email) {
             alert("กรุณากรอกอีเมลก่อน");
             return;
         }
 
         try {
-
+            // ส่งอีเมลไป reset password
             const res = await fetch(
                 "http://localhost:5000/api/forgot-password",
                 {
@@ -151,13 +153,14 @@ function AuthPage({ setUser }) {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        email: form.email
+                        email: form.email,
                     }),
                 }
             );
 
             const data = await res.json();
 
+            // ตรวจสอบ response
             if (!res.ok) {
                 alert(data.message);
                 return;
@@ -166,7 +169,6 @@ function AuthPage({ setUser }) {
             alert(data.message);
 
         } catch (error) {
-
             console.error(error);
             alert("เกิดข้อผิดพลาด");
         }
@@ -174,9 +176,9 @@ function AuthPage({ setUser }) {
 
     return (
         <div className="auth-container">
-
             <div className="auth-card">
 
+                {/* หัวข้อ */}
                 <h2>
                     {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
                 </h2>
@@ -186,9 +188,8 @@ function AuthPage({ setUser }) {
                     className="auth-form"
                 >
 
-                    {/* EMAIL */}
+                    {/* Email */}
                     <div className="input-group">
-
                         <i><FaUser /></i>
 
                         <input
@@ -198,12 +199,10 @@ function AuthPage({ setUser }) {
                             onChange={handleChange}
                             required
                         />
-
                     </div>
 
-                    {/* PASSWORD */}
+                    {/* Password */}
                     <div className="input-group">
-
                         <i><FaLock /></i>
 
                         <input
@@ -217,14 +216,11 @@ function AuthPage({ setUser }) {
                             onChange={handleChange}
                             required
                         />
-
                     </div>
 
-                    {/* CONFIRM PASSWORD */}
+                    {/* Confirm Password */}
                     {!isLogin && (
-
                         <div className="input-group">
-
                             <i><FaLock /></i>
 
                             <input
@@ -241,24 +237,21 @@ function AuthPage({ setUser }) {
                                 }
                                 required
                             />
-
                         </div>
                     )}
 
-                    {/* SHOW PASSWORD */}
+                    {/* แสดงรหัสผ่าน */}
                     <div
                         style={{
                             textAlign: "left",
-                            marginTop: "5px"
+                            marginTop: "5px",
                         }}
                     >
-
                         <label
                             style={{
-                                fontSize: "0.85rem"
+                                fontSize: "0.85rem",
                             }}
                         >
-
                             <input
                                 type="checkbox"
                                 checked={showPassword}
@@ -270,48 +263,39 @@ function AuthPage({ setUser }) {
                             />
 
                             แสดงรหัสผ่าน
-
                         </label>
-
                     </div>
 
-                    {/* FORGOT PASSWORD */}
+                    {/* ลืมรหัสผ่าน */}
                     {isLogin && (
-
                         <div
                             style={{
                                 textAlign: "right",
-                                marginTop: "5px"
+                                marginTop: "5px",
                             }}
                         >
-
                             <span
                                 style={{
                                     cursor: "pointer",
-                                    color: "orange"
+                                    color: "orange",
                                 }}
-                                onClick={
-                                    handleForgotPassword
-                                }
+                                onClick={handleForgotPassword}
                             >
                                 ลืมรหัสผ่าน?
                             </span>
-
                         </div>
                     )}
 
-                    {/* BUTTON */}
+                    {/* ปุ่ม Submit */}
                     <button type="submit">
-
                         {isLogin
                             ? "เข้าสู่ระบบ"
                             : "สมัครสมาชิก"}
-
                     </button>
 
                 </form>
 
-                {/* FOOTER */}
+                {/* Footer */}
                 <div className="auth-footer">
 
                     {isLogin
@@ -323,17 +307,14 @@ function AuthPage({ setUser }) {
                             setIsLogin(!isLogin)
                         }
                     >
-
                         {isLogin
                             ? " สมัครสมาชิก"
                             : " เข้าสู่ระบบ"}
-
                     </span>
 
                 </div>
 
             </div>
-
         </div>
     );
 }

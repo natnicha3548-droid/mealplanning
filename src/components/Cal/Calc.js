@@ -28,6 +28,7 @@ function Calc() {
 
     const navigate = useNavigate();
 
+    // เก็บข้อมูล form
     const [form, setForm] = useState({
         weight: "",
         height: "",
@@ -37,10 +38,10 @@ function Calc() {
         diseases: []
     });
 
+    // เก็บผลลัพธ์การคำนวณ
     const [result, setResult] = useState(null);
 
-    // ================= USER INFO =================
-
+    // โหลดข้อมูลผู้ใช้
     useEffect(() => {
 
         const user = JSON.parse(
@@ -80,8 +81,7 @@ function Calc() {
 
     }, []);
 
-    // ================= LOAD CALCULATION =================
-
+    // โหลดผลการคำนวณเดิม
     useEffect(() => {
 
         const user = JSON.parse(
@@ -107,8 +107,7 @@ function Calc() {
 
     }, []);
 
-    // ================= HANDLE CHANGE =================
-
+    // อัปเดตค่าจาก input
     const handleChange = (e) => {
 
         setForm({
@@ -118,14 +117,14 @@ function Calc() {
 
     };
 
-    // ================= HANDLE DISEASE =================
-
+    // จัดการ checkbox โรคประจำตัว
     const handleDiseaseChange = (e) => {
 
         const value = e.target.value;
 
         let updatedDiseases = [...form.diseases];
 
+        // ถ้าเลือก "ไม่มี"
         if (value === "none") {
 
             if (e.target.checked) {
@@ -140,11 +139,13 @@ function Calc() {
 
         } else {
 
+            // ลบ none ออกก่อน
             updatedDiseases =
                 updatedDiseases.filter(
                     disease => disease !== "none"
                 );
 
+            // เพิ่มหรือลบโรค
             if (e.target.checked) {
 
                 updatedDiseases.push(value);
@@ -167,8 +168,7 @@ function Calc() {
 
     };
 
-    // ================= CALCULATE =================
-
+    // คำนวณพลังงาน
     const calculate = () => {
 
         const weight = parseFloat(form.weight);
@@ -176,6 +176,7 @@ function Calc() {
         const age = parseInt(form.age);
         const activity = parseFloat(form.activity);
 
+        // ตรวจสอบข้อมูล
         if (
             !weight ||
             !height ||
@@ -190,12 +191,10 @@ function Calc() {
 
         }
 
-        // ================= BMI =================
-
+        // คำนวณ BMI
         const bmi = weight / (height * height);
 
-        // ================= BMR =================
-
+        // คำนวณ BMR
         let bmr = 0;
 
         if (form.gender === "male") {
@@ -222,20 +221,17 @@ function Calc() {
 
         }
 
-        // ================= TDEE =================
-
+        // คำนวณ TDEE
         const tdee = bmr * activity;
 
-        // ================= DEFAULT =================
-
+        // กำหนดค่าเริ่มต้น
         let carbPercent = 55;
         let proteinPercent = 20;
         let fatPercent = 25;
         let sugar = 25;
         let sodium = 2500;
 
-        // ================= เบาหวาน =================
-
+        // กรณีเป็นเบาหวาน
         if (form.diseases.includes("diabetes")) {
 
             carbPercent = 45;
@@ -246,8 +242,7 @@ function Calc() {
 
         }
 
-        // ================= โรคหัวใจ =================
-
+        // กรณีโรคหัวใจ
         if (form.diseases.includes("heart")) {
 
             fatPercent = 20;
@@ -255,18 +250,15 @@ function Calc() {
 
         }
 
-        // ================= คำนวณพลังงาน =================
-
+        // คำนวณพลังงานสารอาหาร
         const carbKcal = (carbPercent * tdee) / 100;
         let proteinKcal = (proteinPercent * tdee) / 100;
         const fatKcal = (fatPercent * tdee) / 100;
 
-        // ================= โปรตีน =================
-
+        // คำนวณโปรตีน
         let proteinGram = 0;
 
-        // ================= โรคไต =================
-
+        // กรณีโรคไต
         if (form.diseases.includes("kidney")) {
 
             const proteinMin = weight * 0.6;
@@ -284,13 +276,11 @@ function Calc() {
 
         }
 
-        // ================= Atwater =================
-
+        // คำนวณกรัมสารอาหาร
         const carbGram = carbKcal / 4;
         const fatGram = fatKcal / 9;
 
-        // ================= RESULT =================
-
+        // สร้างผลลัพธ์
         const finalResult = {
 
             ...form,
@@ -327,6 +317,7 @@ function Calc() {
 
         };
 
+        // เก็บผลลัพธ์
         setResult(finalResult);
 
         localStorage.setItem(
@@ -336,8 +327,7 @@ function Calc() {
 
     };
 
-    // ================= FINISH =================
-
+    // บันทึกข้อมูลและไปหน้าหลัก
     const handleFinish = async () => {
 
         const user = JSON.parse(
@@ -346,6 +336,7 @@ function Calc() {
 
         if (user && result) {
 
+            // อัปเดตข้อมูลผู้ใช้
             await fetch(
                 "http://localhost:5000/api/update-user-info",
                 {
@@ -369,6 +360,7 @@ function Calc() {
                 }
             );
 
+            // บันทึกผลคำนวณ
             await fetch(
                 "http://localhost:5000/api/save-calculation",
                 {
@@ -387,6 +379,7 @@ function Calc() {
 
         }
 
+        // กลับหน้าหลัก
         navigate("/", {
             state: {
                 calcResult: result
@@ -399,8 +392,7 @@ function Calc() {
 
         <div className="calc-container">
 
-            {/* HEADER */}
-
+            {/* Header */}
             <div className="calc-header">
 
                 <button
@@ -428,8 +420,7 @@ function Calc() {
 
             <div className="calc-form">
 
-                {/* WEIGHT */}
-
+                {/* น้ำหนัก */}
                 <div className="input-card">
 
                     <div className="input-icon orange">
@@ -452,8 +443,7 @@ function Calc() {
 
                 </div>
 
-                {/* HEIGHT */}
-
+                {/* ส่วนสูง */}
                 <div className="input-card">
 
                     <div className="input-icon yellow">
@@ -476,8 +466,7 @@ function Calc() {
 
                 </div>
 
-                {/* AGE */}
-
+                {/* อายุ */}
                 <div className="input-card">
 
                     <div className="input-icon gold">
@@ -500,8 +489,7 @@ function Calc() {
 
                 </div>
 
-                {/* GENDER */}
-
+                {/* เพศ */}
                 <div className="input-card">
 
                     <div className="input-icon pink">
@@ -538,8 +526,7 @@ function Calc() {
 
                 </div>
 
-                {/* ACTIVITY */}
-
+                {/* ระดับกิจกรรม */}
                 <div className="input-card">
 
                     <div className="input-icon green">
@@ -580,8 +567,7 @@ function Calc() {
 
                 </div>
 
-                {/* ACTIVITY DESCRIPTION */}
-
+                {/* รายละเอียดกิจกรรม */}
                 <div className="activity-box">
 
                     <div className="activity-info-icon">
@@ -621,7 +607,7 @@ function Calc() {
                                 </h4>
 
                                 <p>
-                                    กิจกรรมที่ใช้แรงมากและต่อเนื่องหลายชั่วโมง เช่น ซ้อมกีฬา{" "}
+                                    กิจกรรมที่ใช้แรงมากและต่อเนื่องหลายชั่วโมง เช่น ซ้อมกีฬา
                                     <span style={{ whiteSpace: "nowrap" }}>
                                         งานเกษตรหนัก
                                     </span>
@@ -633,8 +619,7 @@ function Calc() {
 
                 </div>
 
-                {/* ================= DISEASE ================= */}
-
+                {/* โรคประจำตัว */}
                 <div className="disease-group">
 
                     <div className="disease-title">
@@ -644,6 +629,7 @@ function Calc() {
 
                     <div className="disease-list">
 
+                        {/* ไม่มีโรค */}
                         <label className="disease-box green">
 
                             <div className="disease-left">
@@ -669,6 +655,7 @@ function Calc() {
 
                         </label>
 
+                        {/* เบาหวาน */}
                         <label className="disease-box purple">
 
                             <div className="disease-left">
@@ -694,6 +681,7 @@ function Calc() {
 
                         </label>
 
+                        {/* โรคหัวใจ */}
                         <label className="disease-box pink">
 
                             <div className="disease-left">
@@ -719,6 +707,7 @@ function Calc() {
 
                         </label>
 
+                        {/* โรคไต */}
                         <label className="disease-box blue">
 
                             <div className="disease-left">
@@ -748,6 +737,7 @@ function Calc() {
 
                 </div>
 
+                {/* ปุ่มคำนวณ */}
                 <button
                     className="calculate-btn"
                     onClick={calculate}
@@ -758,8 +748,7 @@ function Calc() {
 
             </div>
 
-            {/* RESULT */}
-
+            {/* แสดงผลลัพธ์ */}
             {result && (
 
                 <div className="calc-result">
@@ -876,6 +865,7 @@ function Calc() {
 
                     </div>
 
+                    {/* ปุ่มเสร็จสิ้น */}
                     <button
                         className="finish-btn"
                         onClick={handleFinish}
