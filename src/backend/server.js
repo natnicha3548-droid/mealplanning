@@ -1352,6 +1352,335 @@ app.post(
     }
 );
 
+// ================= GET FAVORITES =================
+
+app.get("/api/favorites/:userId", (req, res) => {
+
+    const userId = req.params.userId;
+
+    const foodQuery = `
+
+        SELECT 
+            f.favorite_id,
+            food.food_id,
+            food.food_name,
+            food.image,
+            food.calories,
+            fc.category_name AS category
+
+        FROM favorite f
+
+        JOIN food
+        ON f.food_id = food.food_id
+
+        LEFT JOIN food_category fc
+        ON food.category_id = fc.category_id
+
+        WHERE f.user_id = ?
+        AND f.food_id IS NOT NULL
+
+        ORDER BY f.favorite_id DESC
+
+    `;
+
+    const planQuery = `
+
+        SELECT
+            f.favorite_id,
+            mp.plan_id,
+            mp.plan_date,
+            mp.total_calories,
+
+            breakfast.food_name AS breakfast_name,
+            breakfast.image AS breakfast_image,
+            md_breakfast.total_calories AS breakfast_cal,
+
+            lunch.food_name AS lunch_name,
+            lunch.image AS lunch_image,
+            md_lunch.total_calories AS lunch_cal,
+
+            dinner.food_name AS dinner_name,
+            dinner.image AS dinner_image,
+            md_dinner.total_calories AS dinner_cal,
+
+            (
+                IFNULL(breakfast.protein * md_breakfast.quantity, 0) +
+                IFNULL(lunch.protein * md_lunch.quantity, 0) +
+                IFNULL(dinner.protein * md_dinner.quantity, 0)
+            ) AS protein,
+
+            (
+                IFNULL(breakfast.carbohydrates * md_breakfast.quantity, 0) +
+                IFNULL(lunch.carbohydrates * md_lunch.quantity, 0) +
+                IFNULL(dinner.carbohydrates * md_dinner.quantity, 0)
+            ) AS carbs,
+
+            (
+                IFNULL(breakfast.fat * md_breakfast.quantity, 0) +
+                IFNULL(lunch.fat * md_lunch.quantity, 0) +
+                IFNULL(dinner.fat * md_dinner.quantity, 0)
+            ) AS fat
+
+        FROM favorite f
+
+        JOIN meal_plan mp
+        ON f.plan_id = mp.plan_id
+
+        LEFT JOIN meal_detail md_breakfast
+        ON mp.plan_id = md_breakfast.plan_id
+        AND md_breakfast.meal_type = 'เช้า'
+
+        LEFT JOIN food breakfast
+        ON md_breakfast.food_id = breakfast.food_id
+
+        LEFT JOIN meal_detail md_lunch
+        ON mp.plan_id = md_lunch.plan_id
+        AND md_lunch.meal_type = 'กลางวัน'
+
+        LEFT JOIN food lunch
+        ON md_lunch.food_id = lunch.food_id
+
+        LEFT JOIN meal_detail md_dinner
+        ON mp.plan_id = md_dinner.plan_id
+        AND md_dinner.meal_type = 'เย็น'
+
+        LEFT JOIN food dinner
+        ON md_dinner.food_id = dinner.food_id
+
+        WHERE f.user_id = ?
+        AND f.plan_id IS NOT NULL
+
+        ORDER BY f.favorite_id DESC
+
+    `;
+
+    db.query(foodQuery, [userId], (err, foods) => {
+
+        if (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+                error: "food query error"
+            });
+
+        }
+
+        db.query(planQuery, [userId], (err2, plans) => {
+
+            if (err2) {
+
+                console.log(err2);
+
+                return res.status(500).json({
+                    error: "plan query error"
+                });
+
+            }
+
+            res.json({
+                foods,
+                plans
+            });
+
+        });
+
+    });
+
+});
+
+// ================= DELETE FAVORITE FOOD =================
+
+app.delete("/api/favorites/food/:favoriteId", (req, res) => {
+
+    const favoriteId = req.params.favoriteId;
+
+    const query = `
+    
+        DELETE FROM favorite
+        WHERE favorite_id = ?
+    
+    `;
+
+    db.query(query, [favoriteId], (err) => {
+
+        if (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+                error: "delete favorite food failed"
+            });
+
+        }
+
+        res.json({
+            message: "favorite food deleted"
+        });
+
+    });
+
+});
+
+// ================= DELETE FAVORITE PLAN =================
+
+app.delete("/api/favorites/plan/:favoriteId", (req, res) => {
+
+    const favoriteId = req.params.favoriteId;
+
+    const query = `
+    
+        DELETE FROM favorite
+        WHERE favorite_id = ?
+    
+    `;
+
+    db.query(query, [favoriteId], (err) => {
+
+        if (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+                error: "delete favorite plan failed"
+            });
+
+        }
+
+        res.json({
+            message: "favorite plan deleted"
+        });
+
+    });
+
+});
+
+// ================= LATEST MEAL PLAN =================
+
+app.get("/api/latest-meal-plan/:userId", (req, res) => {
+
+    const { userId } = req.params;
+
+    // ดึงแผนล่าสุดจริง
+    const sql = `
+        SELECT *
+        FROM meal_plan
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+    `;
+
+    db.query(sql, [userId], (err, result) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+
+        if (result.length === 0) {
+            return res.json(null);
+        }
+
+        const latestPlan = result[0];
+
+        // ดึงรายการอาหารในแผน
+        const detailSql = `
+            SELECT
+                md.meal_type,
+                md.total_calories,
+                f.food_name,
+                f.image
+            FROM meal_detail md
+            JOIN food f
+            ON md.food_id = f.food_id
+            WHERE md.plan_id = ?
+        `;
+
+        db.query(detailSql, [latestPlan.plan_id], (err2, details) => {
+
+            if (err2) {
+                console.log(err2);
+                return res.status(500).json(err2);
+            }
+
+            let breakfast = {};
+            let lunch = {};
+            let dinner = {};
+
+            details.forEach((item) => {
+
+                if (item.meal_type === "เช้า") {
+                    breakfast = item;
+                }
+
+                if (item.meal_type === "กลางวัน") {
+                    lunch = item;
+                }
+
+                if (item.meal_type === "เย็น") {
+                    dinner = item;
+                }
+
+            });
+
+            res.json({
+
+                plan_id: latestPlan.plan_id,
+                total_calories: latestPlan.total_calories,
+
+                breakfast_name: breakfast.food_name,
+                breakfast_image: breakfast.image,
+                breakfast_cal: breakfast.total_calories,
+
+                lunch_name: lunch.food_name,
+                lunch_image: lunch.image,
+                lunch_cal: lunch.total_calories,
+
+                dinner_name: dinner.food_name,
+                dinner_image: dinner.image,
+                dinner_cal: dinner.total_calories
+
+            });
+
+        });
+
+    });
+
+});
+
+// ================= FAVORITE FOODS =================
+
+app.get("/api/favorite-foods/:userId", (req, res) => {
+
+    const { userId } = req.params;
+
+    const sql = `
+        SELECT
+            ff.favorite_id,
+            f.food_id,
+            f.food_name,
+            f.image,
+            f.calories
+        FROM favorite ff
+        JOIN food f
+        ON ff.food_id = f.food_id
+        WHERE ff.user_id = ?
+        ORDER BY ff.favorite_id DESC
+    `;
+
+    db.query(sql, [userId], (err, result) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+
+        res.json(result);
+
+    });
+
+});
+
 // ================= START =================
 app.listen(5000, () => {
 

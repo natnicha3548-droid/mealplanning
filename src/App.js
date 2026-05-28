@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+/* ================= COMPONENTS ================= */
+
 import Navbar from './components/Nav/Navbar';
 import AuthPage from './components/Auth_page/AuthPage';
 import ResetPass from "./components/Reset_pass/ResetPass";
 import Calc from "./components/Cal/Calc";
 import Profile from "./components/Pro/Profile";
+
+/* ================= PAGES ================= */
 
 import HomePage from "./pages/Home/HomePage";
 import MenuFood from "./pages/Menu_food/MenuFood";
@@ -16,29 +20,35 @@ import MyPlate from "./pages/Meal_plan/MyPlate";
 import SearchFood from "./pages/Meal_plan/SearchFood";
 import FavFood from "./pages/Fav_food/FavFood";
 
+/* ================= ROUTER ================= */
+
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
 
-  // ================= STATE =================
+  /* ================= STATE ================= */
 
+  // เก็บข้อมูลผู้ใช้ที่ล็อกอิน
   const [user, setUser] = useState(null);
 
+  // เก็บผลคำนวณโภชนาการ
   const [calcResult, setCalcResult] = useState(null);
 
+  // เก็บข้อมูลฟอร์มคำนวณ
   const [formData, setFormData] = useState(null);
 
   const location = useLocation();
 
-  // ================= LOAD USER + CALC =================
+  /* ================= LOAD USER + CALCULATION ================= */
 
   useEffect(() => {
 
     const loadUserData = async () => {
 
-      // โหลด user จาก localStorage
+      // โหลดข้อมูล user จาก localStorage
       const storedUser = localStorage.getItem("user");
 
+      // ถ้าไม่มี user ให้หยุดทำงาน
       if (!storedUser) {
 
         setUser(null);
@@ -46,23 +56,26 @@ function App() {
 
       }
 
+      // แปลงข้อมูล user จาก string เป็น object
       const parsedUser = JSON.parse(storedUser);
 
+      // เก็บข้อมูล user ลง state
       setUser(parsedUser);
 
-      // โหลดค่าคำนวณล่าสุด
       try {
 
+        // เรียก API โหลดข้อมูลคำนวณล่าสุด
         const res = await fetch(
           `http://localhost:5000/api/get-calculation/${parsedUser.user_id}`
         );
 
         const data = await res.json();
 
-        // ถ้ามีข้อมูล
+        // ถ้ามีข้อมูลคำนวณ
         if (data) {
 
-          // เก็บผลคำนวณ
+          /* ================= SET RESULT ================= */
+
           setCalcResult({
 
             bmi: data.bmi,
@@ -76,7 +89,8 @@ function App() {
 
           });
 
-          // เก็บข้อมูลฟอร์ม
+          /* ================= SET FORM DATA ================= */
+
           setFormData({
 
             weight: data.weight,
@@ -102,16 +116,18 @@ function App() {
 
   }, []);
 
-  // ================= UPDATE FROM NAVIGATE =================
+  /* ================= UPDATE STATE FROM NAVIGATE ================= */
 
   useEffect(() => {
 
+    // อัปเดตผลคำนวณเมื่อ navigate มาพร้อม state
     if (location.state?.calcResult) {
 
       setCalcResult(location.state.calcResult);
 
     }
 
+    // อัปเดตข้อมูลฟอร์มเมื่อ navigate มาพร้อม state
     if (location.state?.formData) {
 
       setFormData(location.state.formData);
@@ -136,7 +152,7 @@ function App() {
 
       <Routes>
 
-        {/* HOME */}
+        {/* ================= HOME ================= */}
 
         <Route
           path="/"
@@ -148,7 +164,7 @@ function App() {
           }
         />
 
-        {/* AUTH */}
+        {/* ================= AUTH ================= */}
 
         <Route
           path="/auth"
@@ -159,77 +175,77 @@ function App() {
           }
         />
 
-        {/* RESET PASSWORD */}
+        {/* ================= RESET PASSWORD ================= */}
 
         <Route
           path="/reset-password/:token"
           element={<ResetPass />}
         />
 
-        {/* CALCULATE */}
+        {/* ================= CALCULATE ================= */}
 
         <Route
           path="/calculate"
           element={<Calc />}
         />
 
-        {/* PROFILE */}
+        {/* ================= PROFILE ================= */}
 
         <Route
           path="/profile"
           element={<Profile />}
         />
 
-        {/* MENU FOOD */}
+        {/* ================= MENU FOOD ================= */}
 
         <Route
           path="/menu"
           element={<MenuFood />}
         />
 
-        {/* MEAL PLAN */}
+        {/* ================= MEAL PLAN ================= */}
 
         <Route
           path="/meal-plan"
           element={<MealPlan />}
         />
 
-        {/* NUTRITION REPORT */}
+        {/* ================= NUTRITION REPORT ================= */}
 
         <Route
           path="/report"
           element={<NutritionReport />}
         />
 
-        {/* PAST PLAN */}
+        {/* ================= PAST PLANS ================= */}
 
         <Route
           path="/past-plans"
           element={<PastPlans />}
         />
 
-        {/* MY PLATE */}
+        {/* ================= MY PLATE ================= */}
 
         <Route
           path="/MyPlate"
           element={<MyPlate />}
         />
 
-        {/* SEARCH FOOD */}
+        {/* ================= SEARCH FOOD ================= */}
 
         <Route
           path="/SearchFood"
           element={<SearchFood />}
         />
 
-        {/* FAV FOOD */}
+        {/* ================= FAVORITE FOOD ================= */}
 
         <Route
           path="/favourite-food"
           element={<FavFood />}
         />
 
-        {/* NOT FOUND */}
+        {/* ================= NOT FOUND ================= */}
 
         <Route
           path="*"
@@ -246,6 +262,7 @@ function App() {
     </div>
 
   );
+
 }
 
 export default App;

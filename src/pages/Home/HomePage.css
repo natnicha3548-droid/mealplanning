@@ -1,10 +1,11 @@
+/* ================= SLIDESHOW ================= */
+
 .slideshow {
     width: 100%;
     height: calc(100vh - 80px);
     margin-top: 80px;
     overflow: hidden;
     position: relative;
-
     padding-bottom: 20px;
 }
 
@@ -41,11 +42,9 @@
     background: rgba(255, 140, 66, 1);
 }
 
-/* ================= QUICK ACTION ================= */
+/* ================= MAIN CONTAINER ================= */
+
 .main-container {
-    /* max-width: 1100px; */
-    /* margin: 0 auto; */
-    /* padding: 0 20px; ใช้ padding ที่นี่แทนการแยกใส่ในแต่ละกล่อง */
     box-sizing: border-box;
     padding: 110px 10% 40px;
     max-width: 1400px;
@@ -53,12 +52,14 @@
     animation: fadeInPage 0.6s ease-out forwards;
 }
 
+/* ================= QUICK ACTION ================= */
+
 .quick-actions {
-   display: flex;
+    display: flex;
     gap: 20px;
-    margin-top: -90px; /* ขยับขึ้นไปทับสไลด์โชว์ */
+    margin-top: -90px;
     margin-bottom: 40px;
-    align-items: stretch; /* ทำให้ความสูงกล่องเท่ากัน */
+    align-items: stretch;
 }
 
 .quick-card {
@@ -82,7 +83,6 @@
 }
 
 .quick-card-content {
-    /* 🌟 แนะนำให้เอา h3 กับ p ไปครอบไว้ใน div นี้ เพื่อคุมระยะห่าง */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -111,11 +111,10 @@
     font-size: 15px;
 }
 
-
-/* NUTRITION CARD */
+/* ================= NUTRITION CARD ================= */
 
 .nutrition-card {
-    width: 100%; /* ยืดเต็มความกว้าง main-container */
+    width: 100%;
     padding: 40px;
     margin-bottom: 40px;
     box-sizing: border-box;
@@ -136,7 +135,6 @@
     font-size: 2.2rem;
     font-weight: 700;
     color: #ff7a00;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -157,9 +155,9 @@
 }
 
 .macro {
-    flex: 1; /* ยืดกล่องให้เท่ากัน */
-    min-width: 120px; /* ขนาดต่ำสุด */
-    min-height: 110px; /* 🌟 บังคับความสูงให้เท่ากันเป๊ะ */
+    flex: 1;
+    min-width: 120px;
+    min-height: 110px;
     padding: 15px;
     border-radius: 15px;
     display: flex;
@@ -167,14 +165,6 @@
     justify-content: center;
     align-items: center;
     transition: 0.2s;
-}
-
-.macro svg {
-    font-size: 1.2rem;
-}
-
-.macro strong {
-    font-size: 1rem;
 }
 
 .macro:hover {
@@ -196,40 +186,32 @@
     color: #d84315;
 }
 
-/* SUGAR */
-
 .sugar {
     background: #f3e5f5;
     color: #8e24aa;
 }
-
-/* SODIUM */
 
 .sodium {
     background: #e3f2fd;
     color: #1565c0;
 }
 
-/* SECTION */
+/* ================= SECTION ================= */
 
 .latest-meal-plan,
 .favorite-items,
 .past-meal-plans {
-    width: 100%; /* ขยายให้เต็ม Container 1100px */
-    margin-bottom: 25px; /* ระยะห่างระหว่างกล่อง */
+    width: 100%;
+    margin-bottom: 25px;
     padding: 30px;
-    
     background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(12px);
-    
     border-radius: 24px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    box-sizing: border-box; /* สำคัญ: ป้องกัน Padding ดันจนเบี้ยว */
-    
+    box-sizing: border-box;
     transition: transform 0.3s ease;
 }
 
-/* เพิ่ม Effect เวลาเมาส์ชี้ให้น่ารักเหมือนเพื่อน */
 .latest-meal-plan:hover,
 .favorite-items:hover,
 .past-meal-plans:hover {
@@ -245,7 +227,152 @@
     font-weight: 700;
 }
 
-/* MOBILE */
+/* ================= HOME FAVORITE ================= */
+
+.home-favorite-section {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    transition: 0.3s ease;
+}
+
+.home-favorite-section:hover {
+    transform: translateY(-4px);
+}
+
+/* HEADER */
+
+.home-favorite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.home-favorite-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff7a2f;
+    margin: 0;
+}
+
+.home-favorite-subtitle {
+    margin-top: 6px;
+    color: #9b7b67;
+    font-size: 0.95rem;
+}
+
+/* ================= GRID ================= */
+
+.home-favorite-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+/* ================= CARD ================= */
+
+.home-favorite-card {
+    width: 100%;
+    height: 280px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    transition: 0.3s ease;
+}
+
+.home-favorite-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* IMAGE */
+
+.home-favorite-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+}
+
+.home-favorite-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    transition: 0.3s ease;
+}
+
+.home-favorite-card:hover .home-favorite-image {
+    transform: scale(1.05);
+}
+
+/* HEART BUTTON */
+
+.home-favorite-heart {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    color: #ff5b6e;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.home-favorite-heart:hover {
+    transform: scale(1.08);
+    background: #fff0f3;
+}
+
+/* CONTENT */
+
+.home-favorite-content {
+    padding: 18px;
+}
+
+.home-favorite-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1f1f;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.home-favorite-content p {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ff7a2f;
+    margin: 0;
+}
+
+/* ================= TABLET ================= */
+
+@media screen and (max-width: 992px) {
+
+    .home-favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* ================= MOBILE ================= */
 
 @media screen and (max-width: 768px) {
 
@@ -282,6 +409,35 @@
     .favorite-items h2,
     .past-meal-plans h2 {
         font-size: 1.2rem;
+    }
+
+    .home-favorite-section {
+        padding: 22px;
+    }
+
+    .home-favorite-title {
+        font-size: 1.6rem;
+    }
+
+    .home-favorite-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .home-favorite-image-wrapper {
+        height: 150px;
+    }
+
+    .home-favorite-image {
+        height: 150px;
+    }
+
+    .home-favorite-content {
+        padding: 14px;
+    }
+
+    .home-favorite-content h3 {
+        font-size: 1rem;
     }
 
 }

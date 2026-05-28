@@ -1,3 +1,5 @@
+/* ================= PAGE ================= */
+
 /* โครงสร้างหน้าหลัก */
 .meal-page {
   padding: 110px 10% 40px;
@@ -6,7 +8,9 @@
   animation: fadeInPage 0.6s ease-out forwards;
 }
 
-/* แถบหัวข้อด้านบนสุด (Top Section) */
+/* ================= TOP SECTION ================= */
+
+/* แถบหัวข้อด้านบน */
 .meal-top {
   display: flex;
   justify-content: space-between;
@@ -14,12 +18,14 @@
   margin-bottom: 30px;
 }
 
+/* ฝั่งซ้ายของ Header */
 .meal-left {
   display: flex;
   align-items: center;
   gap: 18px;
 }
 
+/* วงกลมไอคอน */
 .meal-left-icon {
   width: 78px;
   height: 78px;
@@ -34,6 +40,7 @@
   flex-shrink: 0;
 }
 
+/* หัวข้อ */
 .meal-text h1 {
   margin: 0;
   font-size: 2.4rem;
@@ -42,6 +49,7 @@
   line-height: 1.1;
 }
 
+/* คำอธิบาย */
 .meal-text p {
   margin-top: 6px;
   font-size: 0.95rem;
@@ -49,7 +57,9 @@
   line-height: 1.5;
 }
 
-/* ปุ่มสร้างแผนอาหารใหม่ */
+/* ================= CREATE BUTTON ================= */
+
+/* ปุ่มสร้างแผนอาหาร */
 .create-btn {
   border: none;
   background: linear-gradient(90deg, #ff8c42, #ffa94d);
@@ -71,7 +81,9 @@
   transform: scale(1.02);
 }
 
-/* แถบเลือกสัปดาห์ 7 วัน (Days Timeline) */
+/* ================= DAYS TIMELINE ================= */
+
+/* แถวเลือกวัน */
 .days-row {
   display: flex;
   gap: 7px;
@@ -80,6 +92,7 @@
   padding-bottom: 6px;
 }
 
+/* Scrollbar */
 .days-row::-webkit-scrollbar {
   height: 5px;
 }
@@ -89,25 +102,35 @@
   border-radius: 999px;
 }
 
-/* การ์ดวันแต่ละใบ */
+/* ================= DAY CARD ================= */
+
+/* การ์ดวัน */
 .day {
   min-width: 125px;
   padding: 22px 50px;
   border-radius: 26px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 242, 227, 0.85));
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 242, 227, 0.85));
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.65);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.7);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    background 0.28s ease;
 }
 
+/* จุดตกแต่ง */
 .day::after {
   content: "";
   position: absolute;
@@ -120,9 +143,12 @@
   transition: 0.3s ease;
 }
 
+/* Hover */
 .day:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 18px 35px rgba(255, 118, 32, 0.12), 0 6px 12px rgba(0,0,0,0.04);
+  box-shadow:
+    0 18px 35px rgba(255, 118, 32, 0.12),
+    0 6px 12px rgba(0, 0, 0, 0.04);
 }
 
 .day:hover:not(.active) {
@@ -130,19 +156,25 @@
   border-color: #fffc3a8d;
 }
 
-/* สถานะวันเปิดใช้งาน (Active Day) */
+/* วันปัจจุบัน */
 .day.active {
-  background: linear-gradient(145deg, rgba(255, 250, 210, 0.98), rgba(255, 234, 216, 0.841));
+  background: linear-gradient(145deg,
+      rgba(255, 250, 210, 0.98),
+      rgba(255, 234, 216, 0.841));
   border: 2px solid rgba(255, 140, 66, 0.25);
-  box-shadow: 0 20px 38px rgba(255, 140, 66, 0.16), 0 4px 12px rgba(0,0,0,0.04);
+  box-shadow:
+    0 20px 38px rgba(255, 140, 66, 0.16),
+    0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
+/* เส้น Active */
 .day.active::after {
   width: 42px;
   border-radius: 999px;
   background: linear-gradient(90deg, #fff64e, #ff7b00);
 }
 
+/* ข้อความ */
 .day h4 {
   margin: 0 0 6px;
   font-size: 1.05rem;
@@ -159,54 +191,69 @@
   z-index: 2;
 }
 
-.day.active h4 { color: #ff5e00; }
-.day.active span { color: #6b3509; }
+.day.active h4 {
+  color: #ff5e00;
+}
 
-/* เค้าโครงหลักแยก ซ้าย-ขวา (Main Grid Layout) */
+.day.active span {
+  color: #6b3509;
+}
+
+/* ================= MAIN LAYOUT ================= */
+
+/* Layout ซ้ายขวา */
 .meal-layout {
   display: grid;
   grid-template-columns: 2fr 380px;
   gap: 25px;
 }
 
-/* ตัวการ์ดใหญ่ใบเดียวที่รวมอาหารทุกมื้อเข้าด้วยกัน */
+/* ================= MAIN CARD ================= */
+
+/* การ์ดรวมมื้ออาหาร */
 .unified-plan-card {
+  position: relative;
   background: rgba(255, 255, 255, 0.70);
   border-radius: 24px;
-  padding: 15px 24px 24px 24px;
+  padding: 15px 24px 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   border: 1px solid #f2f2f2;
   display: flex;
   flex-direction: column;
 }
 
-/* ส่วนหัวของการ์ดใหญ่ประจำวัน */
+/* ส่วนหัว */
 .card-top-header-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 4px 18px 4px;
+  padding: 8px 4px 18px;
   border-bottom: 2px solid #fafafa;
   margin-bottom: 5px;
 }
 
-/* ส่วนท้ายการ์ดหลัก: ดันไอคอนทั้งหมดไปฝั่งขวาสุด */
+/* ส่วนท้าย */
 .card-bottom-header-actions {
+  position: relative;
+  z-index: 20;
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   align-items: center;
-  padding: 18px 4px 8px 4px;  
-  border-top: 2px solid #fafafa;          
-  margin-bottom: 0;
+  padding: 18px 4px 8px;
+  border-top: 2px solid #fafafa;
+  margin-top: 15px;
 }
 
+/* วันที่ */
 .card-header-date-title {
   font-size: 1.05rem;
   font-weight: bold;
   color: #85553d;
 }
 
-/* แถบรวมปุ่มคำสั่งไอคอนหลัก */
+/* ================= ICON ACTIONS ================= */
+
+/* กลุ่มปุ่ม */
 .global-icon-actions-group {
   display: flex;
   align-items: center;
@@ -214,8 +261,11 @@
   gap: 16px;
 }
 
-/* ตัวปุ่มกดมินิมอลแบบกลม ไอคอนล้วน */
+/* ปุ่มไอคอน */
 .global-icon-action-btn {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
   background: none;
   border: none;
   cursor: pointer;
@@ -231,24 +281,39 @@
 .global-icon-action-btn:hover {
   transform: scale(1.18);
   background: #fdfdfd;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
-/* เซ็ตติ้งสีสัน Interactive ของกลุ่มไอคอนควบคุม */
-.global-icon-action-btn.btn-edit { color: #f1c40f; }
-.global-icon-action-btn.btn-edit:hover { background: #fffdf0; }
+/* สีปุ่ม */
+.global-icon-action-btn.btn-edit {
+  color: #f1c40f;
+}
 
-.global-icon-action-btn.btn-fav { color: #a0a0a0; }
+.global-icon-action-btn.btn-edit:hover {
+  background: #fffdf0;
+}
+
+.global-icon-action-btn.btn-fav {
+  color: #a0a0a0;
+}
+
 .global-icon-action-btn.btn-fav.active,
 .global-icon-action-btn.btn-fav:hover {
   color: #ee5253;
   background: #fff0f2;
 }
 
-.global-icon-action-btn.btn-delete { color: #eb5757; }
-.global-icon-action-btn.btn-delete:hover { background: #fff0f0; }
+.global-icon-action-btn.btn-delete {
+  color: #eb5757;
+}
 
-/* แถวอาหารแต่ละมื้อด้านในตาราง */
+.global-icon-action-btn.btn-delete:hover {
+  background: #fff0f0;
+}
+
+/* ================= MEAL ROW ================= */
+
+/* แถวอาหาร */
 .meal-row-item {
   display: flex;
   justify-content: space-between;
@@ -260,6 +325,7 @@
   border-bottom: none;
 }
 
+/* ฝั่งซ้าย */
 .meal-item-left {
   display: flex;
   align-items: center;
@@ -267,20 +333,22 @@
   flex: 1;
 }
 
+/* รูปอาหาร */
 .row-img {
   width: 150px;
   height: 100px;
   border-radius: 20px;
   object-fit: cover;
-  
 }
 
+/* รายละเอียด */
 .row-details {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
 
+/* ชื่ออาหาร */
 .row-details h2 {
   font-size: 1.15rem;
   margin: 0;
@@ -288,6 +356,7 @@
   font-weight: 600;
 }
 
+/* จำนวน */
 .row-qty-tag {
   align-self: flex-start;
   background: #f4f4f4;
@@ -298,12 +367,14 @@
   font-weight: 500;
 }
 
+/* ฝั่งขวา */
 .meal-item-right {
   display: flex;
   align-items: center;
   gap: 30px;
 }
 
+/* แคลอรี่ */
 .row-calories-display {
   font-size: 1.25rem;
   font-weight: bold;
@@ -312,7 +383,9 @@
   text-align: right;
 }
 
-/* ปุ่มเขียนรีวิวดาวประจำแถว */
+/* ================= REVIEW BUTTON ================= */
+
+/* ปุ่มรีวิว */
 .row-action-btn.btn-star {
   background: none;
   border: none;
@@ -327,26 +400,29 @@
   transition: all 0.2s ease;
 }
 
-.row-action-btn.btn-star:hover { 
-  background: #fffcf0; 
-  color: #fccb6e; 
+.row-action-btn.btn-star:hover {
+  background: #fffcf0;
+  color: #fccb6e;
 }
 
-.row-action-btn.btn-star span { 
-  font-size: 0.85rem; 
-  font-weight: 600; 
-  color: #85553d; 
+.row-action-btn.btn-star span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #85553d;
 }
 
-/* ส่วนสรุปผลโภชนาการขวาบ้าน (Summary Aside Column) */
+/* ================= SUMMARY ================= */
+
+/* กล่องสรุป */
 .summary-card {
-  background: rgba(255,255,255,0.80);
+  background: rgba(255, 255, 255, 0.80);
   border-radius: 24px;
   padding: 25px;
   height: fit-content;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
+/* วงกลม */
 .circle-box {
   display: flex;
   justify-content: center;
@@ -369,6 +445,7 @@
   font-size: 2.5rem;
 }
 
+/* รายการสรุป */
 .summary-list {
   display: flex;
   flex-direction: column;
@@ -380,6 +457,7 @@
   justify-content: space-between;
 }
 
+/* เป้าหมาย */
 .goal-box {
   margin-top: 30px;
 }
@@ -390,6 +468,7 @@
   margin-bottom: 10px;
 }
 
+/* Progress Bar */
 .goal-bar {
   width: 100%;
   height: 12px;
@@ -403,6 +482,9 @@
   background: linear-gradient(90deg, #ff8c42, #ffd166);
 }
 
+/* ================= REPORT BUTTON ================= */
+
+/* ปุ่มรายงาน */
 .report-btn {
   width: 100%;
   margin-top: 25px;
@@ -416,10 +498,15 @@
   box-sizing: border-box;
 }
 
-/* หน้าต่างป๊อปอัปรีวิวเมนูอาหาร (Modal Backdrop & Box) */
+/* ================= MODAL ================= */
+
+/* Overlay */
 .review-modal-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(5px);
   display: flex;
@@ -428,23 +515,26 @@
   z-index: 1000;
 }
 
+/* กล่อง Modal */
 .review-modal-box {
   background: white;
   padding: 30px;
   border-radius: 24px;
   width: 90%;
   max-width: 440px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
   text-align: center;
 }
 
+/* ดาว */
 .star-rating-row {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 15px 0 20px 0;
+  margin: 15px 0 20px;
 }
 
+/* Textarea */
 .review-textarea {
   width: 100%;
   padding: 14px;
@@ -457,26 +547,59 @@
   box-sizing: border-box;
 }
 
-.review-textarea:focus { border-color: #ffdcb8; }
-.modal-btn-row { display: flex; gap: 12px; margin-top: 20px; }
-
-.modal-cancel-btn { 
-  flex: 1; background: #f0f0f0; border: none; padding: 12px; 
-  border-radius: 12px; font-weight: bold; cursor: pointer; color: #666; 
+.review-textarea:focus {
+  border-color: #ffdcb8;
 }
 
-.modal-submit-btn { 
-  flex: 1; background: #ff8c42; border: none; padding: 12px; 
-  border-radius: 12px; font-weight: bold; cursor: pointer; color: white; 
-}
-.modal-submit-btn:hover { background: #e0742f; }
-
-.empty-msg { 
-  text-align: center; padding: 60px; color: #835c47; font-size: 1.05rem; 
-  background: rgba(255, 255, 255, 0.70); border-radius: 24px; border: 1px dashed #ddd; 
+/* ปุ่ม Modal */
+.modal-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
 }
 
-/* 1. กล่องจัดเรียงแนวตั้งแยกไอคอนและข้อความ */
+.modal-cancel-btn {
+  flex: 1;
+  background: #f0f0f0;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-submit-btn {
+  flex: 1;
+  background: #ff8c42;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
+
+.modal-submit-btn:hover {
+  background: #e0742f;
+}
+
+/* ================= EMPTY ================= */
+
+/* ข้อความว่าง */
+.empty-msg {
+  text-align: center;
+  padding: 60px;
+  color: #835c47;
+  font-size: 1.05rem;
+  background: rgba(255, 255, 255, 0.70);
+  border-radius: 24px;
+  border: 1px dashed #ddd;
+}
+
+/* ================= MEAL TYPE ================= */
+
+/* คอลัมน์มื้ออาหาร */
 .meal-time-column {
   display: flex;
   flex-direction: column;
@@ -487,12 +610,12 @@
   flex-shrink: 0;
 }
 
-/* เอฟเฟกต์ยืดหยุ่นเวลาผู้ใช้ขยับเมาส์มาชี้ามมื้ออาหาร */
+/* Hover */
 .meal-time-column:hover .meal-icon-circle {
   transform: scale(1.1) rotate(5deg);
 }
 
-/* 2. วงกลมพาสเทลรองหลังตัวไอคอนโลโก้ */
+/* วงกลมไอคอน */
 .meal-icon-circle {
   width: 48px;
   height: 48px;
@@ -505,60 +628,60 @@
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* แยกสีพื้นหลังวงกลมแบบ Soft-Pastel ตามประเภทมื้ออาหาร ☀️ 🌤️ 🌙 */
-.type-เช้า .meal-icon-circle { background: #fff5ec; }
-.type-กลางวัน .meal-icon-circle { background: #fde5e5; }
-.type-เย็น .meal-icon-circle { background: #f7f0ff; }
+/* สีตามประเภทมื้อ */
+.type-เช้า .meal-icon-circle {
+  background: #fff5ec;
+}
 
+.type-กลางวัน .meal-icon-circle {
+  background: #fde5e5;
+}
+
+.type-เย็น .meal-icon-circle {
+  background: #f7f0ff;
+}
+
+/* Placeholder */
 .meal-time-column-placeholder {
-  width: 90px; /* ปรับให้เท่ากับความกว้างของ .meal-time-column */
+  width: 90px;
   flex-shrink: 0;
 }
 
-/* เส้นประคั่นมื้อ */
+/* เส้นคั่น */
 .meal-group-divider {
   display: none !important;
   border-bottom: 1px dashed #f798ef;
-  margin: 10px 0 20px 0;
+  margin: 10px 0 20px;
 }
 
-/* 3. ตัวหนังสือป้ายบอกชื่อมื้ออาหารด้านล่าง */
+/* ชื่อมื้อ */
 .meal-text-label {
   font-size: 0.85rem;
   letter-spacing: -0.2px;
 }
 
-/* แยกสีตัวหนังสือให้เข้าคู่กับสีของไอคอนระบบ */
-.type-เช้า .meal-text-label { color: #ff8c42; }
-.type-กลางวัน .meal-text-label { color: #fd534d; }
-.type-เย็น .meal-text-label { color: #a574ff; }
-
-.unified-plan-card {
-  position: relative;
+/* สีข้อความ */
+.type-เช้า .meal-text-label {
+  color: #ff8c42;
 }
 
-.card-bottom-header-actions {
-  position: relative;
-  z-index: 20;
-  margin-top: 15px;
+.type-กลางวัน .meal-text-label {
+  color: #fd534d;
 }
 
-
-.global-icon-action-btn {
-  position: relative;
-  z-index: 30;
-  pointer-events: auto;
+.type-เย็น .meal-text-label {
+  color: #a574ff;
 }
 
-/* =========================================
-   ปุ่ม Nutrition Report (Soft Orange Clean)
-========================================= */
+/* ================= NUTRITION BUTTON ================= */
+
+/* ปุ่ม Nutrition */
 .nutrition-report-btn {
   width: 100%;
   margin-top: 20px;
   padding: 14px;
-  background-color: rgba(255,255,255,0.80);;
-  color: #FF9F43 ;
+  background-color: rgba(255, 255, 255, 0.80);
+  color: #FF9F43;
   border: 2px solid #FF9F43;
   border-radius: 12px;
   font-size: 1.05rem;
@@ -573,7 +696,7 @@
 }
 
 .nutrition-report-btn:hover {
-  background-color: #FF9F43 ;
+  background-color: #FF9F43;
   background: linear-gradient(135deg, #FF9F43 0%, #FFC312 100%);
   color: white;
   box-shadow: 0 6px 15px rgba(255, 159, 67, 0.25);
@@ -583,17 +706,18 @@
   transform: scale(0.97);
 }
 
-/* ==========================================================================
-   📱 🌟 RESPONSIVE MEDIA QUERIES (โซนดัดแปลงโครงสร้างแอปเพื่อหน้าจอมือถือ)
-   ========================================================================== */
+/* ================= RESPONSIVE ================= */
 
+/* Tablet */
 @media (max-width: 992px) {
+
   .meal-layout {
-    grid-template-columns: 1fr; /* สแต็กตารางอาหารคู่กับสรุปผลโภชนาการลงมาเป็นแนวตั้ง */
+    grid-template-columns: 1fr;
     gap: 30px;
   }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
 
   .meal-page {
@@ -605,31 +729,44 @@
     height: 50px;
     font-size: 1.8rem;
   }
-  .meal-text h1 { font-size: 1.8rem; }
-  .meal-text p { font-size: 0.85rem; }
-  .meal-top { flex-direction: column; align-items: stretch; gap: 15px; }
 
-  /* แปลงโครงสร้าง Flexbox ของแถวให้เป็นรูปแบบมือถือ */
+  .meal-text h1 {
+    font-size: 1.8rem;
+  }
+
+  .meal-text p {
+    font-size: 0.85rem;
+  }
+
+  .meal-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  /* แถวอาหาร */
   .meal-row-item {
-    display: block;  /* เปลี่ยนจาก flex เป็น block เพื่อให้ซ้อนกัน */
+    display: block;
     padding: 0;
     margin-bottom: 20px;
     border: none;
     border-radius: 16px;
-    overflow: hidden; /* ป้องกันข้อมูลตกขอบ */
+    overflow: hidden;
     transition: transform 0.2s ease;
   }
 
-  .meal-row-item:hover { transform: translateY(-3px); }
+  .meal-row-item:hover {
+    transform: translateY(-3px);
+  }
 
-  /* ส่วนเนื้อหาหลักของการ์ด */
+  /* ฝั่งซ้าย */
   .meal-item-left {
-    display: block;  /* block เพื่อให้ซ้อนกัน */
-    position: relative; /* เพื่อให้ข้อมูลซ้อนทับบนรูป */
+    display: block;
+    position: relative;
     gap: 0;
   }
 
-  /* ไอคอนมื้ออาหาร (จัดไว้ด้านบน) */
+  /* มื้ออาหาร */
   .meal-time-column {
     display: flex;
     flex-direction: row;
@@ -638,19 +775,21 @@
     gap: 20px;
     padding: 20px;
   }
-  .meal-time-column-placeholder { display: none; } /* ซ่อนกล่องเปล่า */
 
-  /* รูปภาพอาหาร (เป็นพื้นหลังของการ์ด) */
-  .row-img {
-    width: 100%;
-    height: 180px; /* กำหนดความสูงของภาพ */
-    border-radius: 20px 20px 0 0;
-    object-fit: cover;
-    display: block;
-    border-radius: 0; /* รูปเต็มหน้า */
+  .meal-time-column-placeholder {
+    display: none;
   }
 
-  /* เลเยอร์ไล่โทนสีเพื่อให้ข้อความสีขาวอ่านง่าย */
+  /* รูป */
+  .row-img {
+    width: 100%;
+    height: 180px;
+    border-radius: 0;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Overlay */
   .meal-item-left::after {
     content: '';
     position: absolute;
@@ -658,11 +797,11 @@
     left: 0;
     width: 100%;
     height: 60%;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
     z-index: 1;
   }
 
-  /* ข้อมูลรายละเอียด (ซ้อนทับบนรูป) */
+  /* รายละเอียด */
   .row-details {
     position: absolute;
     bottom: 15px;
@@ -671,40 +810,38 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
-    z-index: 2; /* ให้อยู่เหนือรูป */
-    color: white; /* เปลี่ยนสีข้อความ */
+    z-index: 2;
+    color: white;
   }
 
-  /* ชื่ออาหาร (สีขาว, เด่นๆ) */
   .row-details h2 {
     margin: 0;
     font-size: 1.4rem;
     font-weight: 800;
-    color: white; /* เปลี่ยนสีข้อความ */
+    color: white;
     line-height: 1;
   }
 
-  /* ป้ายจำนวน (สีขาว) */
   .row-qty-tag {
-    background: rgba(255,255,255,0.2); /* โปร่งแสง */
-    color: white; /* เปลี่ยนสีข้อความ */
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
     padding: 3px 10px;
     border-radius: 8px;
     font-size: 0.85rem;
     font-weight: 600;
   }
 
-  /* ส่วนข้อมูลขวา (ย้ายมาอยู่ด้านล่างรูป) */
+  /* ฝั่งขวา */
   .meal-item-right {
     display: flex;
-    justify-content: space-between; /* จัดแคลอรี่ชิดซ้าย รีวิวชิดขวา */
+    justify-content: space-between;
     align-items: center;
-    padding: 12px 15px; /* ใส่ padding ให้เท่ากับ row-details */
+    padding: 12px 15px;
     background: #fff;
     border-radius: 0 0 16px 16px;
   }
 
-  /* ตัวเลขแคลอรี่ (เน้นสี) */
+  /* แคลอรี่ */
   .row-calories-display {
     position: relative;
     width: auto;
@@ -715,9 +852,9 @@
     color: #ff9c67;
   }
 
-  /* ปุ่มรีวิว (จัดไว้ขวาสุด) */
+  /* ปุ่มรีวิว */
   .row-action-btn.btn-star {
-    margin-left: auto; /* ดันไปชิดขวา */
+    margin-left: auto;
     background: #fffcf0;
     color: #d5b89c;
     border: none;
@@ -726,20 +863,21 @@
     font-size: 0.85rem;
     font-weight: 600;
   }
-  /* คอนเทนเนอร์หลักของปุ่มด้านล่าง จัดให้อยู่กึ่งกลาง */
+
+  /* ปุ่มล่าง */
   .card-bottom-header-actions {
     display: flex;
-    justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน */
+    justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 10px;
     padding-bottom: 10px;
   }
 
-  /* กลุ่มของปุ่ม (ดินสอ, ถังขยะ) */
+  /* กลุ่มปุ่ม */
   .global-icon-actions-group {
     display: flex;
-    justify-content: center; /* ย้ำให้อยู่ตรงกลาง */
-    gap: 30px; /* ปรับระยะห่างระหว่างปุ่ม 2 อัน (ปรับเลขได้ตามชอบ) */
+    justify-content: center;
+    gap: 30px;
   }
 }
