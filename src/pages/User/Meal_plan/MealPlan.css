@@ -417,6 +417,7 @@
 .summary-card {
   border-radius: 24px;
   padding: 25px;
+  background: rgba(255, 255, 255, 0.80);
   height: fit-content;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
@@ -591,6 +592,7 @@
   padding: 60px;
   color: #835c47;
   font-size: 1.05rem;
+  background: rgba(255, 255, 255, 0.70);
   border-radius: 24px;
   border: 1px dashed #ddd;
 }
