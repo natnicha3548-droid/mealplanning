@@ -5,7 +5,7 @@ body {
     font-family: 'Kanit', sans-serif;
     background:
         linear-gradient(rgba(255, 248, 240, 0.6), rgba(255, 224, 178, 0.6)),
-        url("../../assets/bg.png") no-repeat center;
+        url("../../../assets/bg.png") no-repeat center;
     background-size: cover;
 }
 
@@ -13,7 +13,7 @@ body {
     body {
         background:
             linear-gradient(rgba(255, 248, 240, 0.6), rgba(255, 224, 178, 0.6)),
-            url("../../assets/mbbg.png") no-repeat bottom;
+            url("../../../assets/mbbg.png") no-repeat bottom;
         background-size: cover;
     }
 }
