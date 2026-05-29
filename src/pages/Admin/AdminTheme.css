@@ -1,0 +1,122 @@
+/* src/pages/Admin/AdminTheme.css */
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #fffdf8; /* สีพื้นหลังครีมอ่อนๆ แบบเดียวกับหน้า User */
+    font-family: 'Kanit', sans-serif;
+    color: #5c3d00;
+}
+
+/* ================= SIDEBAR ================= */
+.admin-sidebar {
+    width: 260px;
+    background-color: #ffffff;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.admin-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ff8c42;
+    text-align: center;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.admin-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-menu-item {
+    margin-bottom: 10px;
+}
+
+.admin-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    color: #8c7355;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.admin-menu-link:hover, .admin-menu-link.active {
+    background: linear-gradient(90deg, #ff8c42, #ffd166);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+    transform: translateX(5px);
+}
+
+/* ================= MAIN CONTENT & NAVBAR ================= */
+.admin-main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-navbar {
+    height: 70px;
+    background-color: transparent;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.admin-btn-logout {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.2);
+}
+
+.admin-btn-logout:hover {
+    background: #ff3333;
+    transform: translateY(-2px);
+}
+
+.admin-content {
+    padding: 20px 40px;
+    flex: 1;
+}
+
+/* ================= CARDS & DASHBOARD ================= */
+.admin-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f9ece0;
+    transition: 0.3s;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(255, 140, 66, 0.08);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff8c42;
+    margin-top: 10px;
+}

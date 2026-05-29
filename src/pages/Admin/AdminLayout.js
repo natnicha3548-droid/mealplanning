@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from '../../components/Admin/AdminSidebar';
 import AdminNavbar from '../../components/Admin/AdminNavbar';
+import './AdminTheme.css';
 
 function AdminLayout() {
   return (
