@@ -1,0 +1,443 @@
+/* ================= SLIDESHOW ================= */
+
+.slideshow {
+    width: 100%;
+    height: calc(100vh - 80px);
+    margin-top: 80px;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.slide-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.view-more {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 140, 66, 0.9);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(255, 140, 66, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+
+.view-more:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(255, 140, 66, 0.4);
+    background: rgba(255, 140, 66, 1);
+}
+
+/* ================= MAIN CONTAINER ================= */
+
+.main-container {
+    box-sizing: border-box;
+    padding: 110px 10% 40px;
+    max-width: 1400px;
+    margin: auto;
+    animation: fadeInPage 0.6s ease-out forwards;
+}
+
+/* ================= QUICK ACTION ================= */
+
+.quick-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: -90px;
+    margin-bottom: 40px;
+    align-items: stretch;
+}
+
+.quick-card {
+    flex: 1;
+    min-width: 0;
+    background: #fff7ef;
+    border: 2px solid #ff9f43;
+    border-radius: 24px;
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.quick-card:hover {
+    transform: translateY(-5px);
+    background: #fff1df;
+}
+
+.quick-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.quick-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: #ff9f43;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: white;
+}
+
+.quick-card h3 {
+    font-size: 24px;
+    color: #6b3e00;
+    margin-bottom: 5px;
+}
+
+.quick-card p {
+    color: #8b6b4a;
+    font-size: 15px;
+}
+
+/* ================= NUTRITION CARD ================= */
+
+.nutrition-card {
+    width: 100%;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.nutrition-card h2 {
+    font-size: 1rem;
+    color: #7a5c4d;
+    margin-top: 10px;
+}
+
+.tdee {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ff7a00;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.tdee small {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.macro-box {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.macro {
+    flex: 1;
+    min-width: 120px;
+    min-height: 110px;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.macro:hover {
+    transform: translateY(-3px);
+}
+
+.carb {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.protein {
+    background: #fff8e1;
+    color: #ff8f00;
+}
+
+.fat {
+    background: #fbe9e7;
+    color: #d84315;
+}
+
+.sugar {
+    background: #f3e5f5;
+    color: #8e24aa;
+}
+
+.sodium {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* ================= SECTION ================= */
+
+.latest-meal-plan,
+.favorite-items,
+.past-meal-plans {
+    width: 100%;
+    margin-bottom: 25px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+.latest-meal-plan:hover,
+.favorite-items:hover,
+.past-meal-plans:hover {
+    transform: translateY(-5px);
+}
+
+.latest-meal-plan h2,
+.favorite-items h2,
+.past-meal-plans h2 {
+    margin: 0;
+    color: #ff8c42;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ================= HOME FAVORITE ================= */
+
+.home-favorite-section {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    transition: 0.3s ease;
+}
+
+.home-favorite-section:hover {
+    transform: translateY(-4px);
+}
+
+/* HEADER */
+
+.home-favorite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.home-favorite-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff7a2f;
+    margin: 0;
+}
+
+.home-favorite-subtitle {
+    margin-top: 6px;
+    color: #9b7b67;
+    font-size: 0.95rem;
+}
+
+/* ================= GRID ================= */
+
+.home-favorite-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+/* ================= CARD ================= */
+
+.home-favorite-card {
+    width: 100%;
+    height: 280px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    transition: 0.3s ease;
+}
+
+.home-favorite-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* IMAGE */
+
+.home-favorite-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+}
+
+.home-favorite-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    transition: 0.3s ease;
+}
+
+.home-favorite-card:hover .home-favorite-image {
+    transform: scale(1.05);
+}
+
+/* HEART BUTTON */
+
+.home-favorite-heart {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    color: #ff5b6e;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.home-favorite-heart:hover {
+    transform: scale(1.08);
+    background: #fff0f3;
+}
+
+/* CONTENT */
+
+.home-favorite-content {
+    padding: 18px;
+}
+
+.home-favorite-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1f1f;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.home-favorite-content p {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ff7a2f;
+    margin: 0;
+}
+
+/* ================= TABLET ================= */
+
+@media screen and (max-width: 992px) {
+
+    .home-favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media screen and (max-width: 768px) {
+
+    .quick-actions {
+        flex-direction: column;
+    }
+
+    .quick-card {
+        padding: 20px;
+        min-height: 100px;
+    }
+
+    .slideshow {
+        height: 55vh;
+    }
+
+    .macro-box {
+        flex-wrap: wrap;
+    }
+
+    .nutrition-card {
+        margin: 25px 15px;
+        padding: 25px 20px 60px;
+    }
+
+    .latest-meal-plan,
+    .favorite-items,
+    .past-meal-plans {
+        margin: 20px 15px;
+        padding: 22px;
+    }
+
+    .latest-meal-plan h2,
+    .favorite-items h2,
+    .past-meal-plans h2 {
+        font-size: 1.2rem;
+    }
+
+    .home-favorite-section {
+        padding: 22px;
+    }
+
+    .home-favorite-title {
+        font-size: 1.6rem;
+    }
+
+    .home-favorite-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .home-favorite-image-wrapper {
+        height: 150px;
+    }
+
+    .home-favorite-image {
+        height: 150px;
+    }
+
+    .home-favorite-content {
+        padding: 14px;
+    }
+
+    .home-favorite-content h3 {
+        font-size: 1rem;
+    }
+
+}

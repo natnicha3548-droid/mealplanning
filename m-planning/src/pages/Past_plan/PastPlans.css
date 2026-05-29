@@ -1,0 +1,897 @@
+/* =========================================
+   1. Base & Background
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
+body {
+  background-color: #FFF7F0; /* พื้นหลังสีครีมส้มอ่อน */
+  margin: 0;
+}
+
+.past-icon {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #fff5ee;
+  border: 1px solid #ffe3d2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff8c42;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+
+.past-plans-wrapper.pastel-theme {
+  padding: 110px 10% 40px;
+  max-width: 1400px;
+  margin: auto;
+  animation: fadeInPage 0.6s ease-out forwards;
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ของตกแต่งพื้นหลัง */
+.bg-decoration {
+  position: absolute;
+  font-size: 4rem;
+  opacity: 0.3;
+  z-index: -1;
+}
+.leaf-left { top: 20px; left: -20px; transform: rotate(-30deg); }
+
+/* =========================================
+   2. Header & Tabs
+   ========================================= */
+.past-plans-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-icon {
+  color: #333;
+}
+
+.title-row h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3b2418;
+  line-height: 1.1;
+}
+
+.year-text {
+  font-size: 1.8rem;
+  color: #F97316;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.subtitle {
+  margin: 5px 0 0 95px;
+  font-size: 0.95rem;
+  color: #8c7b70;
+  line-height: 1.5;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* แท็บเมนูแคปซูล */
+.pill-tab-menu {
+  display: flex;
+  background-color: #FFFFFF;
+  border-radius: 50px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.08);
+  gap: 5px;
+}
+
+.pill-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #888;
+  padding: 8px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.pill-tab-btn:hover {
+  color: #F97316;
+}
+
+.pill-tab-btn.active {
+  color: #F97316;
+  font-weight: 600;
+}
+
+.pill-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  width: 60%;
+  height: 3px;
+  background-color: #F97316;
+  border-radius: 5px;
+}
+
+.icon-only-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.08);
+  transition: transform 0.2s;
+}
+
+.icon-only-btn:hover {
+  transform: scale(1.05);
+}
+
+/* =========================================
+   3. Week Selector (เมื่อเลือกแท็บ "สัปดาห์" หรือ "เดือน")
+   ========================================= */
+.week-selector {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 30px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.week-selector::-webkit-scrollbar {
+  height: 5px;
+}
+
+.week-selector::-webkit-scrollbar-thumb {
+  background: rgba(255, 140, 66, 0.18);
+  border-radius: 999px;
+}
+
+/* การ์ดวันแต่ละใบ */
+.day-card {
+  min-width: 125px;
+  padding: 22px 50px;
+  border-radius: 26px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 242, 227, 0.85));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.65);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+}
+
+/* จุดวงกลมเล็กๆ มุมซ้ายบนของการ์ด */
+.day-card::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 120, 23, 0.35);
+  transition: 0.3s ease;
+}
+
+.day-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 18px 35px rgba(255, 118, 32, 0.12), 0 6px 12px rgba(0,0,0,0.04);
+}
+
+.day-card:hover:not(.active) {
+  background: #fdffe3;
+  border-color: #fffc3a8d;
+}
+
+/* สถานะวันเปิดใช้งาน (Active Day) */
+.day-card.active {
+  background: linear-gradient(145deg, rgba(255, 250, 210, 0.98), rgba(255, 234, 216, 0.841));
+  border: 2px solid rgba(255, 140, 66, 0.25);
+  box-shadow: 0 20px 38px rgba(255, 140, 66, 0.16), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* ขยายจุดเป็นแคปซูลตอน Active */
+.day-card.active::after {
+  width: 42px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff64e, #ff7b00);
+}
+
+.day-name {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: -0.3px;
+  z-index: 2;
+}
+
+.day-date {
+  font-size: 0.9rem;
+  color: #7c6138;
+  font-weight: 500;
+  z-index: 2;
+}
+
+.day-card.active .day-name { color: #ff5e00; }
+.day-card.active .day-date { color: #6b3509; }
+
+/* =========================================
+   4. Meal List (หน้ารายการอาหาร)
+   ========================================= */
+.past-plan-card {
+  background: rgba(255, 255, 255, 0.70);
+  border-radius: 24px;
+  padding: 15px 24px 24px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f2f2f2;
+  display: flex;
+  flex-direction: column;
+}
+/* จัดกลุ่มมื้ออาหารให้มีระยะห่าง */
+.meal-group {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dotted #fe57ad; /* เส้นคั่นแยกมื้อ */
+  padding-bottom: 0.5rem;
+}
+
+/* ลบเส้นคั่นของแต่ละการ์ดออกเพื่อให้รวมกลุ่มกัน */
+.meal-card {
+  border-bottom: none !important;
+  padding-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* =========================================
+   Meal Type
+========================================= */
+.meal-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* ระยะห่างระหว่างไอคอนกับข้อความ */
+}
+
+.meal-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.meal-list-header h3 {
+  color: #602815;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.heart-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.heart-icon-btn:hover {
+  background-color: #fce7f3;
+}
+
+.meal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meal-card {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed #fed7aa;
+  transition: transform 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: translateX(5px);
+}
+
+.meal-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.meal-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meal-icon {
+  width: 50px;   /* ขนาดวงกลม */
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* ใช้พื้นหลังสีจางๆ ตามมื้ออาหาร */
+}
+
+/* กำหนดสีพื้นหลังแยกตามประเภทมื้ออาหาร (ถ้าคุณต้องการให้สีต่างกัน) */
+.icon-breakfast { background-color: #fde8cda8; color: #f97316; } /* มื้อเช้า */
+.icon-lunch { background-color: #ffe0d9c9; color: #bc2121; }     /* มื้อกลางวัน */
+.icon-dinner { background-color: #dad4f790; color: #8b5cf6; }    /* มื้อเย็น */
+
+/* เปลี่ยนสีตัวหนังสือมื้ออาหาร */
+.meal-type-text {
+  font-size: 0.85rem;
+  color: #b85a18;
+  letter-spacing: -0.2px;
+}
+
+.meal-detail {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.meal-image {
+  width: 150px;
+  height: 100px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.meal-info h4 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.meal-portion {
+  font-size: 0.85rem;
+  color: #78716c;
+  background-color: #f5f5f4;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.meal-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.meal-cal {
+  font-weight: 600;
+  color: #f97316;
+  font-size: 1.2rem;
+}
+
+.meal-review {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #a8a29e;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.meal-review:hover {
+  color: #f59e0b;
+}
+
+/* สรุปแคลอรีรวม */
+.meal-total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+.total-label {
+  font-weight: 500;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.total-value {
+  font-weight: 600;
+  color: #ea580c;
+  font-size: 1.3rem;
+  background-color: #ffedd5;
+  padding: 0.4rem 1rem;
+  border-radius: 12px;
+}
+
+/* =========================================
+   Meal List Footer Buttons
+   ========================================= */
+.meal-list-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+/* ปุ่มดูรายงานโภชนาการ */
+.nutrition-btn {
+  background: linear-gradient(135deg, #ffd94e, #ff954a); /* ไล่เฉดสีส้มสวยๆ */
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nutrition-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, #ffa361, #ffda45);
+}
+
+.nutrition-btn:active {
+  transform: translateY(0);
+}
+
+/* ปุ่มรีเซ็ตแผน (ปุ่มหมุนวน) */
+.restore-plan-btn {
+  background-color: #fff7f091;
+  border: 1px solid #f0e6dd;
+  color: #F97316;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.restore-plan-btn:hover {
+  transform: rotate(180deg) scale(1.1);
+  background-color: #fffaf0;
+  border-color: #f97316;
+  color: #ea580c;
+  box-shadow: 0 6px 15px rgba(249, 115, 22, 0.2);
+}
+
+
+/* =========================================
+   5. Calendar Month Grid (การ์ดเดือนพาสเทล)
+   ========================================= */
+.month-grid-pastel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  padding: 1rem 0;
+}
+
+.calendar-card {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  height: 160px;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(var(--theme-main), 0.15);
+}
+
+.calendar-top-bar {
+  height: 18px;
+  background-color: var(--theme-light);
+  width: 100%;
+}
+
+.calendar-rings {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 40px;
+  z-index: 10;
+}
+
+.ring {
+  width: 12px;
+  height: 25px;
+  background: linear-gradient(to bottom, #fdfdfd, #e0e0e0);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 2px rgba(0,0,0,0.1);
+}
+
+.calendar-content {
+  padding: 20px 20px;
+  flex-grow: 1;
+  position: relative;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.month-badge {
+  background-color: var(--theme-light);
+  color: var(--theme-main);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.month-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.month-art {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, var(--theme-light) 0%, transparent 100%);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 10px 15px;
+  opacity: 0.9;
+}
+
+.art-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.05));
+}
+
+/* ส่วนพื้นหลัง */
+.review-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+
+/* ส่วนตัวกล่อง Modal */
+.review-modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 25px; /* ความโค้งมนของกล่อง */
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* หัวข้อรีวิว */
+.review-modal-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* กล่องข้อความ */
+.review-modal-content textarea {
+  width: 100%;
+  height: 150px;
+  margin: 20px 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 15px; /* โค้งมน */
+  padding: 15px;
+  font-size: 1rem;
+  resize: none;
+  background-color: #fafafa;
+}
+
+/* จัดการปุ่ม */
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* ปุ่มยกเลิก (สีเทาอ่อน) */
+.modal-actions button:first-child {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ปุ่มบันทึก (สีส้ม) */
+.modal-actions button:last-child {
+  background: #fb923c; /* สีส้มตามภาพ */
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* =========================================
+   6. Responsive Adjustments
+   ========================================= */
+@media (max-width: 1100px) {
+  .month-grid-pastel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .month-grid-pastel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .past-plans-header {
+    flex-direction: column;
+  }
+  .pill-tab-menu {
+    width: 100%;
+    justify-content: center;
+  }
+  .meal-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .meal-detail {
+    flex-direction: column;
+  }
+  .meal-stats {
+    align-items: center;
+  }
+  .meal-total-row {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .month-grid-pastel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   7. Month Details (หน้ารายละเอียดเดือน)
+   ========================================= */
+.month-detail-view {
+  animation: fadeInPage 0.4s ease-out forwards;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #78716c;
+  font-family: 'Prompt', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.back-btn:hover {
+  color: #f97316;
+  background-color: #ffedd5;
+  transform: translateX(-4px);
+}
+
+.month-detail-title {
+  margin: 0 0 20px 5px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* เพิ่มให้ Scrollbar แถบวันที่แนวนอนดูเนียนขึ้น */
+.week-selector::-webkit-scrollbar {
+  height: 6px;
+  display: block; /* เปิด Scrollbar ให้เห็นว่าเลื่อนได้ (สำหรับจอใหญ่) */
+}
+
+.week-selector::-webkit-scrollbar-track {
+  background: #f8efeb; 
+  border-radius: 10px;
+}
+
+.week-selector::-webkit-scrollbar-thumb {
+  background: #f1dbd0; 
+  border-radius: 10px;
+}
+
+
+/* =========================================
+   8. Year Selector (Custom Dropdown ปีที่น่ารักขึ้น)
+   ========================================= */
+.year-selector-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.year-selector-display {
+  font-size: 2.4rem;
+  color: #F97316;
+  font-weight: 700;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 14px;
+  background-color: transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.year-selector-display:hover,
+.year-selector-display.open {
+  background-color: #ffedd5;
+}
+
+.year-dropdown-icon {
+  color: #F97316;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 2px;
+}
+
+.year-dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+/* =========================================
+   แก้ไขเมนูเด้งหนี (สะพานล่องหน)
+   ========================================= */
+.year-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px); /* ปรับขยับให้ชิดปุ่มขึ้นมาอีกนิด */
+  left: 10px;
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.12);
+  padding: 10px;
+  z-index: 100;
+  min-width: 110px;
+  animation: dropFade 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  border: 2px solid #fff7ed;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* สร้างสะพานล่องหนเชื่อมปุ่มกับเมนู ไม่ให้เมาส์ตกหลุม */
+.year-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+}
+
+@keyframes dropFade {
+  from { opacity: 0; transform: translateY(-15px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.year-dropdown-item {
+  padding: 10px 15px;
+  font-size: 1.2rem;
+  color: #78716c;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.year-dropdown-item:hover {
+  background-color: #fff7ed;
+  color: #f97316;
+  transform: scale(1.03);
+}
+
+.year-dropdown-item.active {
+  background-color: #f97316;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+}

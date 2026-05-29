@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import '../App.css';
+import "./Navbar.css";
+import logo from "../../assets/logo.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import logo from "../assets/logo.png";
 
 const Navbar = ({ user, setUser, setCalcResult }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -25,7 +26,10 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
         <nav className="main-nav">
             <div className="nav-top">
 
-                <div className="nav-logo" onClick={() => navigate("/")}>
+                <div
+                    className="nav-logo"
+                    onClick={() => navigate("/")}
+                >
                     <img src={logo} alt="logo" />
                     <span>MealPlan</span>
                 </div>
@@ -40,38 +44,61 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                 <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
 
                     <li>
-                        <Link to="/" onClick={handleClose} className={isActive("/") ? "active" : ""}>
+                        <Link
+                            to="/"
+                            onClick={handleClose}
+                            className={isActive("/") ? "active" : ""}
+                        >
                             หน้าแรก
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/menu" onClick={handleClose}>
-                            เมนูอาหาร
+                        <Link
+                            to="/menu"
+                            onClick={handleClose}
+                            className={isActive("/menu") ? "active" : ""}
+                        >
+                            เมนูอาหารของฉัน
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/plan" onClick={handleClose}>
-                            แผนการกิน
+                        <Link
+                            to="/meal-plan"
+                            onClick={handleClose}
+                            className={isActive("/meal-plan") ? "active" : ""}
+                        >
+                            แผนการกินของฉัน
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/favorites" onClick={handleClose}>
-                            รายการโปรด
+                        <Link
+                            to="/favourite-food"
+                            onClick={handleClose}
+                            className={isActive("/favourite-food") ? "active" : ""}
+                        >
+                            รายการโปรดของฉัน
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/history" onClick={handleClose}>
+                        <Link
+                            to="/past-plans"
+                            onClick={handleClose}
+                            className={isActive("/past-plans") ? "active" : ""}
+                        >
                             แผนการกินย้อนหลัง
                         </Link>
                     </li>
 
                     <li>
                         {user ? (
-                            <div className="profile-box" style={{ position: "relative" }}>
+                            <div
+                                className="profile-box"
+                                style={{ position: "relative" }}
+                            >
                                 <img
                                     src={`https://ui-avatars.com/api/?name=${user.email}&background=ff8c42&color=fff`}
                                     alt="avatar"
@@ -80,18 +107,23 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                                 />
 
                                 {profileOpen && (
-                                    <div style={{
-                                        position: "absolute",
-                                        top: "45px",
-                                        right: "0",
-                                        background: "#fff",
-                                        borderRadius: "12px",
-                                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                                        padding: "10px",
-                                        minWidth: "140px"
-                                    }}>
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "45px",
+                                            right: "0",
+                                            background: "#fff",
+                                            borderRadius: "12px",
+                                            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                                            padding: "10px",
+                                            minWidth: "140px"
+                                        }}
+                                    >
                                         <div
-                                            style={{ padding: "8px", cursor: "pointer" }}
+                                            style={{
+                                                padding: "8px",
+                                                cursor: "pointer"
+                                            }}
                                             onClick={() => {
                                                 navigate("/profile");
                                                 setProfileOpen(false);
@@ -101,7 +133,11 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                                         </div>
 
                                         <div
-                                            style={{ padding: "8px", cursor: "pointer", color: "#ff4d4f" }}
+                                            style={{
+                                                padding: "8px",
+                                                cursor: "pointer",
+                                                color: "#ff4d4f"
+                                            }}
                                             onClick={handleLogout}
                                         >
                                             ออกจากระบบ
@@ -110,7 +146,11 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                                 )}
                             </div>
                         ) : (
-                            <Link to="/auth" onClick={handleClose}>
+                            <Link
+                                to="/auth"
+                                onClick={handleClose}
+                                className={isActive("/auth") ? "active" : ""}
+                            >
                                 เข้าสู่ระบบ
                             </Link>
                         )}
