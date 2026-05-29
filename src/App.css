@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  background:
+    linear-gradient(rgba(255, 248, 240, 0.6), rgba(255, 224, 178, 0.6)),
+    url("./assets/bg.png") no-repeat center;
+  background-size: cover;
+}
+
+@media (max-width: 768px) {
+  body {
+    background:
+      linear-gradient(rgba(255, 248, 240, 0.6), rgba(255, 224, 178, 0.6)),
+      url("./assets/mbbg.png") no-repeat bottom;
+    background-size: cover;
+  }
+}
+
+.main-layout {
+  min-height: 100vh;
+}
+
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 90px 20px 40px;
+}

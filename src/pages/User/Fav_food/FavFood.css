@@ -1,0 +1,601 @@
+/* ================= PAGE ================= */
+
+/* หน้า Favorite */
+.favorite-page {
+    max-width: 1400px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 120px 10% 50px;
+    animation: fadeInPage 0.5s ease;
+}
+
+/* Animation ตอนโหลด */
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= HEADER ================= */
+
+/* ส่วนหัว */
+.favorite-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+/* วงกลมไอคอน */
+.favorite-icon {
+    width: 78px;
+    height: 78px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff1e5, #ffe7d6);
+    color: #ff8c42;
+    font-size: 2rem;
+    border: 1px solid #ffe0cd;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+    flex-shrink: 0;
+}
+
+/* หัวข้อ */
+.favorite-header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d1b12;
+    line-height: 1.1;
+}
+
+/* คำอธิบาย */
+.favorite-header p {
+    margin-top: 6px;
+    color: #8c7b70;
+    font-size: 0.95rem;
+}
+
+/* ================= TABS ================= */
+
+/* แถบเมนู */
+.favorite-tabs {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+/* ซ่อน scrollbar */
+.favorite-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* ปุ่มแท็บ */
+.tab-btn {
+    border: 1px solid #ececec;
+    outline: none;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: white;
+    color: #666;
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    transition: 0.2s;
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ปุ่มแท็บที่ถูกเลือก */
+.tab-btn.active {
+    background: linear-gradient(135deg, #ff9b54, #ff7b2c);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
+}
+
+/* ================= CATEGORY ================= */
+
+/* หมวดอาหาร */
+.food-category {
+    margin-bottom: 50px;
+}
+
+.food-category:last-child {
+    margin-bottom: 0;
+}
+
+/* ส่วนหัวหมวด */
+.section-top {
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f3e8df;
+}
+
+/* หัวข้อหมวด */
+.section-top h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d1b12;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+/* เส้นสีด้านหน้า */
+.section-top h2::before {
+    content: "";
+    width: 8px;
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #ffb066, #ff7a00);
+}
+
+/* ================= FOOD GRID ================= */
+
+/* Grid อาหาร */
+.favorite-food-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+/* ================= FOOD CARD ================= */
+
+/* การ์ดอาหาร */
+.favorite-food-card {
+    position: relative;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.favorite-food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ================= IMAGE ================= */
+
+/* กล่องรูป */
+.favorite-food-image-box {
+    width: 100%;
+    height: 170px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* รูปอาหาร */
+.favorite-food-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+/* Zoom รูปตอน hover */
+.favorite-food-card:hover .favorite-food-image {
+    transform: scale(1.05);
+}
+
+/* ================= FAVORITE BUTTON ================= */
+
+/* ปุ่มหัวใจ */
+.favorite-heart-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    color: #ff5a5f;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.favorite-heart-btn:hover {
+    transform: scale(1.08);
+}
+
+/* ================= FOOD INFO ================= */
+
+/* ข้อมูลอาหาร */
+.favorite-food-info {
+    padding: 16px;
+}
+
+/* ชื่ออาหาร */
+.favorite-food-info h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #2d1b12;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* แคลอรี */
+.favorite-food-info p {
+    margin: 0;
+    color: #ff8c42;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* ================= PLAN ================= */
+
+/* รายการแผนอาหาร */
+.meal-plan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* การ์ดแผนอาหาร */
+.meal-plan-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.meal-plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ฝั่งซ้าย */
+.meal-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* รูปอาหาร */
+.meal-image {
+    width: 210px;
+    height: 155px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+/* ชื่อแผน */
+.meal-info h3 {
+    margin: 0 0 10px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* รายละเอียด */
+.meal-info p {
+    margin: 0 0 14px;
+    color: #8c7b70;
+    font-size: 0.95rem;
+}
+
+/* ข้อมูลเพิ่มเติม */
+.meal-detail {
+    display: flex;
+    gap: 20px;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* ปุ่ม Favorite */
+.meal-fav-btn {
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 16px;
+    background: #fff2f2;
+    color: #ff5a5a;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.meal-fav-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ================= EMPTY ================= */
+
+/* กล่องว่าง */
+.empty-box {
+    background: white;
+    border-radius: 24px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #999;
+    font-size: 1rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* ================= FULL PLAN CARD ================= */
+
+/* การ์ดแผนอาหารแบบเต็ม */
+.meal-plan-full-card {
+    background: white;
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f4ece5;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ================= PLAN HEADER ================= */
+
+/* ส่วนหัวแผนอาหาร */
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f3ebe5;
+}
+
+/* หัวข้อ */
+.plan-header h2 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* รายละเอียด */
+.plan-header p {
+    margin: 0;
+    color: #ff8c42;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* ================= MEAL ROW ================= */
+
+/* แถวอาหาร */
+.meal-row {
+    display: grid;
+    grid-template-columns: 180px 150px 1fr 120px;
+    align-items: center;
+    gap: 22px;
+    padding: 20px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #fffaf6, #fff4ed);
+    margin-bottom: 18px;
+    transition: 0.25s ease;
+}
+
+.meal-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= MEAL TYPE ================= */
+
+/* ประเภทมื้อ */
+.meal-type {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ff8c42;
+}
+
+/* ================= IMAGE ================= */
+
+/* รูปในแถวอาหาร */
+.meal-row .meal-image {
+    width: 150px;
+    height: 110px;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+/* ================= INFO ================= */
+
+/* ชื่ออาหาร */
+.meal-row .meal-info h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* รายละเอียด */
+.meal-row .meal-info span {
+    color: #888;
+    font-size: 0.95rem;
+}
+
+/* ================= CALORIES ================= */
+
+/* กล่องแคลอรี */
+.meal-cal {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ff7a00;
+    background: white;
+    padding: 14px 18px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* ================= SUMMARY ================= */
+
+/* สรุปข้อมูล */
+.plan-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 30px;
+}
+
+/* กล่องสรุป */
+.summary-box {
+    background: linear-gradient(135deg, #fff6ef, #ffe9d7);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ff7a00;
+    border: 1px solid #ffe0c7;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
+@media (max-width: 1200px) {
+
+    .favorite-food-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Tablet กลาง */
+@media (max-width: 992px) {
+
+    .favorite-food-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .meal-plan-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .favorite-page {
+        padding: 110px 6% 40px;
+    }
+
+    .favorite-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .favorite-food-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .meal-left {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .meal-image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .meal-info h3 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Mobile เล็ก */
+@media (max-width: 480px) {
+
+    .favorite-page {
+        padding: 100px 5% 30px;
+    }
+
+    .favorite-food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .favorite-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .section-top h2 {
+        font-size: 1.5rem;
+    }
+
+    .favorite-food-image {
+        height: 220px;
+    }
+}
+
+/* Responsive Meal Row */
+@media (max-width: 992px) {
+
+    .meal-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .meal-row .meal-image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .plan-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .plan-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+
+/* Responsive เล็กมาก */
+@media (max-width: 600px) {
+
+    .plan-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .meal-plan-full-card {
+        padding: 20px;
+    }
+
+    .plan-header h2 {
+        font-size: 1.6rem;
+    }
+}

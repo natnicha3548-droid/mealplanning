@@ -1,0 +1,558 @@
+/* ================= CONTAINER ================= */
+
+/* กล่องหลัก */
+.calc-container {
+    max-width: 760px;
+    margin: 60px auto;
+    padding: 36px 34px;
+    border-radius: 34px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    position: relative;
+    animation: fadeIn 0.5s ease;
+}
+
+/* ================= HEADER ================= */
+
+/* ส่วนหัว */
+.calc-header {
+    margin-bottom: 34px;
+}
+
+/* ปุ่มกลับ */
+.calc-back-btn {
+    border: 1.5px solid #f1d4b5;
+    background: #fffaf5;
+    color: #2d2d2d;
+    padding: 12px 22px;
+    border-radius: 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.calc-back-btn:hover {
+    background: #fff3e6;
+    transform: translateY(-2px);
+}
+
+/* กลุ่มหัวข้อ */
+.calc-title-area {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* วงกลมไอคอน */
+.calc-fire {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff3e5, #ffe3c0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff8b1f;
+    font-size: 2rem;
+}
+
+/* หัวข้อ */
+.calc-container h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #542600;
+    margin-bottom: 10px;
+}
+
+/* เส้นใต้หัวข้อ */
+.title-line {
+    width: 90px;
+    height: 7px;
+    margin: 0 auto;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #ffb15f, #ffd7a4);
+}
+
+/* ================= FORM ================= */
+
+/* ฟอร์มหลัก */
+.calc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ================= INPUT CARD ================= */
+
+/* กล่อง input */
+.input-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: #fffefd;
+    border: 1.5px solid #f4dcc1;
+    transition: 0.25s ease;
+}
+
+.input-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= ICON ================= */
+
+/* วงกลมไอคอน */
+.input-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+}
+
+/* ================= ICON COLORS ================= */
+
+/* สีไอคอน */
+.orange {
+    background: #fff1e3;
+    color: #ff8c42;
+}
+
+.yellow {
+    background: #fff6dc;
+    color: #e7a700;
+}
+
+.gold {
+    background: #fff4df;
+    color: #ff9f1c;
+}
+
+.pink {
+    background: #ffeef3;
+    color: #ff5c8a;
+}
+
+.green {
+    background: #edf9ed;
+    color: #3aa74f;
+}
+
+/* ================= INPUT CONTENT ================= */
+
+/* เนื้อหาในกล่อง */
+.input-content {
+    flex: 1;
+}
+
+/* label */
+.input-content label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #7a7a7a;
+}
+
+/* ================= INPUT ================= */
+
+/* ช่องกรอกข้อมูล */
+.calc-form input,
+.calc-form select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1.8px solid #efcfad;
+    background: #fffdf9;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f1f1f;
+    box-sizing: border-box;
+    transition: 0.25s;
+}
+
+/* ตอน focus */
+.calc-form input:focus,
+.calc-form select:focus {
+    outline: none;
+    border-color: #ffb066;
+    box-shadow: 0 0 0 5px rgba(255, 176, 102, 0.15);
+}
+
+/* ================= ACTIVITY BOX ================= */
+
+/* กล่องรายละเอียดกิจกรรม */
+.activity-box {
+    display: flex;
+    gap: 18px;
+    padding: 22px;
+    border-radius: 26px;
+    background: #fff9f1;
+    border: 1.5px solid #ffe0b8;
+}
+
+/* ไอคอนกิจกรรม */
+.activity-info-icon {
+    font-size: 1.5rem;
+    color: #ff9800;
+    margin-top: 3px;
+}
+
+/* หัวข้อกิจกรรม */
+.activity-box h4 {
+    margin-bottom: 8px;
+    color: #2c2c2c;
+    font-size: 1.2rem;
+}
+
+/* รายละเอียดกิจกรรม */
+.activity-box p {
+    color: #5f5f5f;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* ================= DISEASE ================= */
+
+/* กลุ่มโรค */
+.disease-group {
+    margin-top: 10px;
+}
+
+/* หัวข้อโรค */
+.disease-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d2d2d;
+}
+
+.disease-title svg {
+    color: #ff7f7f;
+}
+
+/* ================= DISEASE LIST ================= */
+
+/* Grid โรค */
+.disease-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ================= DISEASE BOX ================= */
+
+/* กล่องโรค */
+.disease-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px;
+    border-radius: 24px;
+    border: 2px solid transparent;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+.disease-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+}
+
+/* ฝั่งซ้าย */
+.disease-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ข้อความโรค */
+.disease-left span {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d2d2d;
+}
+
+/* ================= DISEASE ICON ================= */
+
+/* วงกลมไอคอนโรค */
+.disease-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* ================= CHECKBOX ================= */
+
+/* checkbox */
+.disease-box input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: #9d4edd;
+    cursor: pointer;
+}
+
+/* ================= COLORS ================= */
+
+/* สีแต่ละโรค */
+.green.disease-box {
+    background: #f7fff9;
+    border-color: #dff2e4;
+}
+
+.green .disease-icon {
+    background: #e4f7ea;
+    color: #17a34a;
+}
+
+.purple.disease-box {
+    background: #fcf8ff;
+    border-color: #ead7ff;
+}
+
+.purple .disease-icon {
+    background: #f0e3ff;
+    color: #9d4edd;
+}
+
+.pink.disease-box {
+    background: #fff8fb;
+    border-color: #ffd9e6;
+}
+
+.pink .disease-icon {
+    background: #ffe5ee;
+    color: #ff4d8d;
+}
+
+.blue.disease-box {
+    background: #f8fbff;
+    border-color: #dce9ff;
+}
+
+.blue .disease-icon {
+    background: #e7f0ff;
+    color: #2f80ed;
+}
+
+/* ================= ACTIVE ================= */
+
+/* ตอนเลือก checkbox */
+.disease-box:has(input:checked) {
+    transform: scale(0.98);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ================= CALCULATE BUTTON ================= */
+
+/* ปุ่มคำนวณ */
+.calculate-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 20px;
+    border: none;
+    border-radius: 24px;
+    background: linear-gradient(90deg, #f6a44e, #ea7b1d);
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.calculate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(234, 123, 29, 0.3);
+}
+
+/* ================= RESULT ================= */
+
+/* กล่องผลลัพธ์ */
+.calc-result {
+    margin-top: 30px;
+    padding: 30px 24px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, #fffdfb 0%, #fff7f1 100%);
+    border: 1.5px solid #f4dcc2;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.06);
+}
+
+/* หัวข้อผลลัพธ์ */
+.calc-result h3 {
+    text-align: center;
+    margin-bottom: 26px;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #6b3a00;
+}
+
+/* รายการผลลัพธ์ */
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* การ์ดผลลัพธ์ */
+.result-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1.5px solid #f3e2cf;
+    transition: 0.25s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ฝั่งซ้ายผลลัพธ์ */
+.result-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ไอคอนผลลัพธ์ */
+.result-left svg {
+    font-size: 1.1rem;
+    color: #ff9333;
+}
+
+/* ข้อความผลลัพธ์ */
+.result-left span {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3c2a18;
+}
+
+/* ค่าผลลัพธ์ */
+.result-card strong {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ff7f11;
+}
+
+/* ================= FINISH BUTTON ================= */
+
+/* ปุ่มเสร็จสิ้น */
+.finish-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+    border: none;
+    border-radius: 22px;
+    background: linear-gradient(90deg, #ff9d42, #ffb96b);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.finish-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(255, 157, 66, 0.30);
+}
+
+/* ================= MOBILE ================= */
+
+/* Responsive สำหรับมือถือ */
+@media (max-width: 768px) {
+
+    .calc-container {
+        margin: 20px 14px;
+        padding: 24px 18px;
+        border-radius: 26px;
+    }
+
+    .calc-container h2 {
+        font-size: 2rem;
+    }
+
+    .input-card {
+        gap: 12px;
+        padding: 12px 14px;
+    }
+
+    .input-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 1rem;
+    }
+
+    .input-content label {
+        font-size: 0.8rem;
+    }
+
+    .calc-form input,
+    .calc-form select {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+    }
+
+    .disease-list {
+        grid-template-columns: 1fr;
+    }
+
+    .calculate-btn {
+        font-size: 1.15rem;
+        padding: 17px;
+    }
+
+    .calc-result {
+        padding: 24px 18px;
+    }
+
+    .calc-result h3 {
+        font-size: 1.5rem;
+    }
+
+    .result-card {
+        padding: 14px 15px;
+    }
+
+    .result-left span,
+    .result-card strong {
+        font-size: 0.93rem;
+    }
+}
+
+/* ================= ANIMATION ================= */
+
+/* Animation ตอนโหลด */
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
