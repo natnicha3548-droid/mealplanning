@@ -1,4 +1,5 @@
-* {
+.menu-page,
+.menu-page * {
     box-sizing: border-box;
 }
 
