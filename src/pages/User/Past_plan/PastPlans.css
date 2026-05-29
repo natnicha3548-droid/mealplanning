@@ -188,7 +188,7 @@ body {
 /* การ์ดวันแต่ละใบ */
 .day-card {
   min-width: 125px;
-  padding: 22px 50px;
+  padding: 22px 20px;
   border-radius: 26px;
   position: relative;
   overflow: hidden;
