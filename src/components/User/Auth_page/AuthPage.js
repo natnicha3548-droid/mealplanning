@@ -89,7 +89,15 @@ function AuthPage({ setUser }) {
                 // เก็บ user ใน state
                 setUser(userData);
 
-                // ตรวจสอบว่าผู้ใช้เคยคำนวณหรือยัง
+                /* ================= เพิ่มโค้ดเช็คสิทธิ์ ADMIN ตรงนี้ ================= */
+                if (userData.role === 'Admin') {
+                    // ถ้าเป็นแอดมิน ให้เด้งไปหน้าแอดมินทันที และไม่ต้องไปเช็คฟังก์ชันคำนวณด้านล่าง
+                    navigate("/admin");
+                    return; 
+                }
+                /* ============================================================= */
+
+                // ตรวจสอบว่าผู้ใช้เคยคำนวณหรือยัง (สำหรับ User ทั่วไป)
                 try {
                     const calcRes = await fetch(
                         `http://localhost:5000/api/get-calculation/${userData.user_id}`
@@ -110,7 +118,6 @@ function AuthPage({ setUser }) {
                             },
                         });
                     }
-
                     // ถ้ายังไม่เคยคำนวณ
                     else {
                         navigate("/calculate");
@@ -136,15 +143,12 @@ function AuthPage({ setUser }) {
 
     // ลืมรหัสผ่าน
     const handleForgotPassword = async () => {
-
-        // ตรวจสอบว่ากรอกอีเมลหรือยัง
         if (!form.email) {
             alert("กรุณากรอกอีเมลก่อน");
             return;
         }
 
         try {
-            // ส่งอีเมลไป reset password
             const res = await fetch(
                 "http://localhost:5000/api/forgot-password",
                 {
@@ -160,7 +164,6 @@ function AuthPage({ setUser }) {
 
             const data = await res.json();
 
-            // ตรวจสอบ response
             if (!res.ok) {
                 alert(data.message);
                 return;
@@ -181,7 +184,7 @@ function AuthPage({ setUser }) {
                 {/* หัวข้อ */}
                 <h2>
                     {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
-                </h2>
+                </h2> 
 
                 <form
                     onSubmit={handleSubmit}
@@ -191,7 +194,6 @@ function AuthPage({ setUser }) {
                     {/* Email */}
                     <div className="input-group">
                         <i><FaUser /></i>
-
                         <input
                             type="email"
                             name="email"
@@ -204,13 +206,8 @@ function AuthPage({ setUser }) {
                     {/* Password */}
                     <div className="input-group">
                         <i><FaLock /></i>
-
                         <input
-                            type={
-                                showPassword
-                                    ? "text"
-                                    : "password"
-                            }
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             placeholder="รหัสผ่าน"
                             onChange={handleChange}
@@ -222,63 +219,31 @@ function AuthPage({ setUser }) {
                     {!isLogin && (
                         <div className="input-group">
                             <i><FaLock /></i>
-
                             <input
-                                type={
-                                    showPassword
-                                        ? "text"
-                                        : "password"
-                                }
+                                type={showPassword ? "text" : "password"}
                                 placeholder="ยืนยันรหัสผ่าน"
-                                onChange={(e) =>
-                                    setConfirmPassword(
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
                         </div>
                     )}
 
                     {/* แสดงรหัสผ่าน */}
-                    <div
-                        style={{
-                            textAlign: "left",
-                            marginTop: "5px",
-                        }}
-                    >
-                        <label
-                            style={{
-                                fontSize: "0.85rem",
-                            }}
-                        >
+                    <div style={{ textAlign: "left", marginTop: "5px" }}>
+                        <label style={{ fontSize: "0.85rem" }}>
                             <input
                                 type="checkbox"
                                 checked={showPassword}
-                                onChange={() =>
-                                    setShowPassword(
-                                        !showPassword
-                                    )
-                                }
-                            />
-
-                            แสดงรหัสผ่าน
+                                onChange={() => setShowPassword(!showPassword)}
+                            /> แสดงรหัสผ่าน
                         </label>
                     </div>
 
                     {/* ลืมรหัสผ่าน */}
                     {isLogin && (
-                        <div
-                            style={{
-                                textAlign: "right",
-                                marginTop: "5px",
-                            }}
-                        >
+                        <div style={{ textAlign: "right", marginTop: "5px" }}>
                             <span
-                                style={{
-                                    cursor: "pointer",
-                                    color: "orange",
-                                }}
+                                style={{ cursor: "pointer", color: "orange" }}
                                 onClick={handleForgotPassword}
                             >
                                 ลืมรหัสผ่าน?
@@ -288,30 +253,17 @@ function AuthPage({ setUser }) {
 
                     {/* ปุ่ม Submit */}
                     <button type="submit">
-                        {isLogin
-                            ? "เข้าสู่ระบบ"
-                            : "สมัครสมาชิก"}
+                        {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
                     </button>
 
                 </form>
 
                 {/* Footer */}
                 <div className="auth-footer">
-
-                    {isLogin
-                        ? "ยังไม่มีบัญชี?"
-                        : "มีบัญชีแล้ว?"}
-
-                    <span
-                        onClick={() =>
-                            setIsLogin(!isLogin)
-                        }
-                    >
-                        {isLogin
-                            ? " สมัครสมาชิก"
-                            : " เข้าสู่ระบบ"}
+                    {isLogin ? "ยังไม่มีบัญชี?" : "มีบัญชีแล้ว?"}
+                    <span onClick={() => setIsLogin(!isLogin)}>
+                        {isLogin ? " สมัครสมาชิก" : " เข้าสู่ระบบ"}
                     </span>
-
                 </div>
 
             </div>

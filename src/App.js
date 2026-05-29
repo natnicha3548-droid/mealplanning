@@ -23,7 +23,6 @@ import FavFood from "./pages/User/Fav_food/FavFood";
 /* ================= PAGES (ADMIN) ================= */
 
 import AdminLayout from './pages/Admin/AdminLayout';
-import AdminLogin from './pages/Admin/AdminLogin';
 import DashboardReport from './pages/Admin/DashboardReport';
 import ManageCategories from './pages/Admin/ManageCategories';
 import ManageFood from './pages/Admin/ManageFood';
@@ -223,9 +222,6 @@ function App() {
 
 
         {/* ================= ADMIN ROUTES ================= */}
-        
-        {/* หน้า Login แอดมิน (แยกอิสระ) */}
-        <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* กลุ่มหน้าแอดมินที่ต้องมี Sidebar (ใช้ AdminLayout เป็นโครงร่าง) */}
         <Route path="/admin" element={<AdminLayout />}>

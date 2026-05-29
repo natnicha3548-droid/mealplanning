@@ -153,7 +153,8 @@ app.post('/api/login', (req, res) => {
                 message: "เข้าสู่ระบบสำเร็จ",
                 user: {
                     user_id: user.user_id,
-                    email: user.email
+                    email: user.email,
+                    role: user.role
                 }
             });
 
