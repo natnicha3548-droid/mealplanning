@@ -460,7 +460,7 @@ function HomePage({ calcResult, formData }) {
                             <div>
 
                                 <h2 className="home-favorite-title">
-                                    รายการโปรด
+                                    รายการโปรดจ้า
                                 </h2>
 
                                 <p className="home-favorite-subtitle">
