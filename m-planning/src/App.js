@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-/* ================= COMPONENTS ================= */
+/* ================= COMPONENTS (USER) ================= */
 
-import Navbar from './components/Nav/Navbar';
-import AuthPage from './components/Auth_page/AuthPage';
-import ResetPass from "./components/Reset_pass/ResetPass";
-import Calc from "./components/Cal/Calc";
-import Profile from "./components/Pro/Profile";
+import Navbar from './components/User/Nav/Navbar';
+import AuthPage from './components/User/Auth_page/AuthPage';
+import ResetPass from "./components/User/Reset_pass/ResetPass";
+import Calc from "./components/User/Cal/Calc";
+import Profile from "./components/User/Pro/Profile";
 
-/* ================= PAGES ================= */
+/* ================= PAGES (USER) ================= */
 
-import HomePage from "./pages/Home/HomePage";
-import MenuFood from "./pages/Menu_food/MenuFood";
-import MealPlan from "./pages/Meal_plan/MealPlan";
-import NutritionReport from "./pages/Meal_plan/NutritionReport";
-import PastPlans from "./pages/Past_plan/PastPlans";
-import MyPlate from "./pages/Meal_plan/MyPlate";
-import SearchFood from "./pages/Meal_plan/SearchFood";
-import FavFood from "./pages/Fav_food/FavFood";
-import MealAdmin from "./admin/MealAdmin";
+import HomePage from "./pages/User/Home/HomePage";
+import MenuFood from "./pages/User/Menu_food/MenuFood";
+import MealPlan from "./pages/User/Meal_plan/MealPlan";
+import NutritionReport from "./pages/User/Meal_plan/NutritionReport";
+import PastPlans from "./pages/User/Past_plan/PastPlans";
+import MyPlate from "./pages/User/Meal_plan/MyPlate";
+import SearchFood from "./pages/User/Meal_plan/SearchFood";
+import FavFood from "./pages/User/Fav_food/FavFood";
+
+/* ================= PAGES (ADMIN) ================= */
+
+import AdminLayout from './pages/Admin/AdminLayout';
+import AdminLogin from './pages/Admin/AdminLogin';
+import DashboardReport from './pages/Admin/DashboardReport';
+import ManageCategories from './pages/Admin/ManageCategories';
+import ManageFood from './pages/Admin/ManageFood';
+import ManageReviews from './pages/Admin/ManageReviews';
+import ManageUsers from './pages/Admin/ManageUsers';
 
 /* ================= ROUTER ================= */
 
@@ -39,6 +48,9 @@ function App() {
   const [formData, setFormData] = useState(null);
 
   const location = useLocation();
+  
+  // เช็คว่า URL ปัจจุบันเป็นของฝั่ง Admin หรือไม่
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   /* ================= LOAD USER + CALCULATION ================= */
 
@@ -51,10 +63,8 @@ function App() {
 
       // ถ้าไม่มี user ให้หยุดทำงาน
       if (!storedUser) {
-
         setUser(null);
         return;
-
       }
 
       // แปลงข้อมูล user จาก string เป็น object
@@ -64,7 +74,6 @@ function App() {
       setUser(parsedUser);
 
       try {
-
         // เรียก API โหลดข้อมูลคำนวณล่าสุด
         const res = await fetch(
           `http://localhost:5000/api/get-calculation/${parsedUser.user_id}`
@@ -76,9 +85,7 @@ function App() {
         if (data) {
 
           /* ================= SET RESULT ================= */
-
           setCalcResult({
-
             bmi: data.bmi,
             bmr: data.bmr,
             tdee: data.tdee,
@@ -87,30 +94,21 @@ function App() {
             fat: data.fat,
             sugar: data.sugar,
             sodium: data.sodium
-
           });
 
           /* ================= SET FORM DATA ================= */
-
           setFormData({
-
             weight: data.weight,
             height: data.height,
             age: data.age,
             gender: data.gender,
             activity: data.activity,
             disease: data.disease
-
           });
-
         }
-
       } catch (err) {
-
         console.error("LOAD CALC ERROR:", err);
-
       }
-
     };
 
     loadUserData();
@@ -123,16 +121,12 @@ function App() {
 
     // อัปเดตผลคำนวณเมื่อ navigate มาพร้อม state
     if (location.state?.calcResult) {
-
       setCalcResult(location.state.calcResult);
-
     }
 
     // อัปเดตข้อมูลฟอร์มเมื่อ navigate มาพร้อม state
     if (location.state?.formData) {
-
       setFormData(location.state.formData);
-
     }
 
   }, [location.state]);
@@ -142,18 +136,21 @@ function App() {
     <div className="main-layout">
 
       {/* ================= NAVBAR ================= */}
-
-      <Navbar
-        user={user}
-        setUser={setUser}
-        setCalcResult={setCalcResult}
-      />
+      
+      {/* ซ่อน Navbar ของ User ถ้ากำลังอยู่หน้า Admin */}
+      {!isAdminRoute && (
+        <Navbar
+          user={user}
+          setUser={setUser}
+          setCalcResult={setCalcResult}
+        />
+      )}
 
       {/* ================= ROUTES ================= */}
 
       <Routes>
 
-        {/* ================= HOME ================= */}
+        {/* ================= USER ROUTES ================= */}
 
         <Route
           path="/"
@@ -165,8 +162,6 @@ function App() {
           }
         />
 
-        {/* ================= AUTH ================= */}
-
         <Route
           path="/auth"
           element={
@@ -176,79 +171,71 @@ function App() {
           }
         />
 
-        {/* ================= RESET PASSWORD ================= */}
-
         <Route
           path="/reset-password/:token"
           element={<ResetPass />}
         />
-
-        {/* ================= CALCULATE ================= */}
 
         <Route
           path="/calculate"
           element={<Calc />}
         />
 
-        {/* ================= PROFILE ================= */}
-
         <Route
           path="/profile"
           element={<Profile />}
         />
-
-        {/* ================= MENU FOOD ================= */}
 
         <Route
           path="/menu"
           element={<MenuFood />}
         />
 
-        {/* ================= MEAL PLAN ================= */}
-
         <Route
           path="/meal-plan"
           element={<MealPlan />}
         />
-
-        {/* ================= NUTRITION REPORT ================= */}
 
         <Route
           path="/report"
           element={<NutritionReport />}
         />
 
-        {/* ================= PAST PLANS ================= */}
-
         <Route
           path="/past-plans"
           element={<PastPlans />}
         />
-
-        {/* ================= MY PLATE ================= */}
 
         <Route
           path="/MyPlate"
           element={<MyPlate />}
         />
 
-        {/* ================= SEARCH FOOD ================= */}
-
         <Route
           path="/SearchFood"
           element={<SearchFood />}
         />
 
-        {/* ================= FAVORITE FOOD ================= */}
-
         <Route
           path="/favourite-food"
           element={<FavFood />}
         />
-        <Route
-          path="/admin"
-          element={<MealAdmin />}
-        />
+
+
+        {/* ================= ADMIN ROUTES ================= */}
+        
+        {/* หน้า Login แอดมิน (แยกอิสระ) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* กลุ่มหน้าแอดมินที่ต้องมี Sidebar (ใช้ AdminLayout เป็นโครงร่าง) */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashboardReport />} /> {/* เข้า /admin จะเจอ Dashboard */}
+          <Route path="manage-food" element={<ManageFood />} />
+          <Route path="manage-users" element={<ManageUsers />} />
+          <Route path="manage-categories" element={<ManageCategories />} />
+          <Route path="manage-reviews" element={<ManageReviews />} />
+        </Route>
+
 
         {/* ================= NOT FOUND ================= */}
 

@@ -12,8 +12,8 @@ import {
     FaHeart
 } from "react-icons/fa";
 
-import slide1 from "../../assets/sl1.png";
-import slide2 from "../../assets/sl2.png";
+import slide1 from "../../../assets/sl1.png";
+import slide2 from "../../../assets/sl2.png";
 
 function HomePage({ calcResult, formData }) {
 
