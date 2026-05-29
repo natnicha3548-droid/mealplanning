@@ -538,7 +538,7 @@ function HomePage({ calcResult, formData }) {
                 <div className="past-meal-plans">
 
                     <h2>
-                        แผนการกินย้อนหลัง
+                        แผนการกินย้อนหลัง..
                     </h2>
 
                 </div>
