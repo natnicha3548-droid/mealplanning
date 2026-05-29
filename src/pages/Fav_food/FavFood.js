@@ -311,7 +311,7 @@ function FavFood() {
                     {favFoods.length === 0 && (
 
                         <div className="empty-box">
-                            ยังไม่มีรายการโปรดอาหาร
+                            ยังไม่มีรายการโปรดอาหารจ้า
                         </div>
 
                     )}
@@ -344,39 +344,38 @@ function FavFood() {
 
                         <div className="meal-plan-list">
 
-                            {favPlans.map((plan) => (
+                                {favPlans.map((plan, index) => (
 
-                                <div
-                                    key={plan.favorite_id}
-                                    className="meal-plan-full-card"
-                                >
+                                    <div
+                                        key={plan.favorite_id}
+                                        className="meal-plan-full-card"
+                                    >
 
-                                    {/* HEADER */}
-                                    <div className="plan-header">
+                                        {/* HEADER */}
+                                        <div className="plan-header">
 
-                                        <div>
+                                            <div>
 
-                                            <h2>
-                                                {plan.plan_name || "แผนการกิน"}
-                                            </h2>
+                                                <h2>
+                                                    {plan.plan_name || `แผนการกินที่ ${index + 1}`}
+                                                </h2>
 
-                                            <p>
-                                                รวม {parseInt(plan.total_calories)} kcal
-                                            </p>
+                                                <p>
+                                                    รวม {parseInt(plan.total_calories)} kcal
+                                                </p>
+
+                                            </div>
+
+                                            <button
+                                                className="meal-fav-btn"
+                                                onClick={() =>
+                                                    removeFavoritePlan(plan.favorite_id)
+                                                }
+                                            >
+                                                <FaHeart />
+                                            </button>
 
                                         </div>
-
-                                        <button
-                                            className="meal-fav-btn"
-                                            onClick={() =>
-                                                removeFavoritePlan(plan.favorite_id)
-                                            }
-                                        >
-                                            <FaHeart />
-                                        </button>
-
-                                    </div>
-
                                     {/* BREAKFAST */}
                                     <div className="meal-row">
 
