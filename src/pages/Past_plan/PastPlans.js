@@ -89,6 +89,13 @@ const PastPlans = () => {
   const [currentPlanId, setCurrentPlanId] = useState(null); 
   const [isPlanFavorite, setIsPlanFavorite] = useState(false);
   const [reviewedStatus, setReviewedStatus] = useState({});
+  
+
+  // รีวิว
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeFood, setActiveFood] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
 
   const monthsData = [
     { id: '01', name: 'มกราคม', light: '#ffedd5', main: '#f97316', icon: '❄️🏔️' },
@@ -370,10 +377,12 @@ const PastPlans = () => {
                     </div>
                     </div>
                     
+                    
                     <div className="meal-stats">
                       <span className="meal-cal">{meal.cal} kcal</span>
                       <span 
                         className="meal-review"
+                        onClick={() => openReviewModal(meal.food_id)}
                         style={{
                           display: 'flex',
                           alignItems: 'center',
@@ -492,6 +501,25 @@ const PastPlans = () => {
     );
   };
 
+  const openReviewModal = (foodId) => {
+    const existing = reviewedStatus[foodId];
+    setActiveFood(foodId);
+    setRating(existing ? existing.rating : 0);
+    setReviewText(existing ? existing.review_text : "");
+    setIsModalOpen(true);
+  };
+
+  const handleSaveReview = async () => {
+    const userId = JSON.parse(localStorage.getItem('user'))?.user_id || 1;
+    await fetch('http://localhost:5000/api/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, food_id: activeFood, rating, review_text: reviewText })
+    });
+    setIsModalOpen(false);
+    fetchMeals(selectedDate);
+  };
+
   return (
     <div className="past-plans-wrapper pastel-theme">
 
@@ -512,6 +540,30 @@ const PastPlans = () => {
                 {selectedYear}
                 <ChevronDown size={22} className={`year-dropdown-icon ${isYearOpen ? 'open' : ''}`} />
               </div>
+
+              {isModalOpen && (
+              <div className="review-modal-overlay">
+                <div className="review-modal-content">
+                  {/* เพิ่มตรงนี้: แสดงชื่อเมนูที่กำลังรีวิว */}
+                  <h3>เขียนรีวิวให้เมนู "{mealData.find(m => m.food_id === activeFood)?.name}"</h3>
+                  
+                  <div style={{display:'flex', justifyContent:'center', margin:'10px 0'}}>
+                    {[1,2,3,4,5].map(s => (
+                      <FaStar key={s} color={s <= rating ? "#FDCB6E" : "#ddd"} 
+                        onClick={() => setRating(s)} size={35} style={{cursor:'pointer', margin:'0 2px'}}/>
+                    ))}
+                  </div>
+                  
+                  <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} 
+                            placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." />
+                            
+                  <div className="modal-actions">
+                    <button onClick={() => setIsModalOpen(false)}>ยกเลิก</button>
+                    <button onClick={handleSaveReview}>บันทึกรีวิว</button>
+                  </div>
+                </div>
+              </div>
+            )}
 
               {isYearOpen && (
                 <div className="year-dropdown-menu">
