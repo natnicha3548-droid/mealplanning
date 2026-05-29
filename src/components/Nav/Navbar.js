@@ -69,7 +69,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                             onClick={handleClose}
                             className={isActive("/meal-plan") ? "active" : ""}
                         >
-                            แผนการกินของฉัน
+                            แผนการกินของฉันจ้า
                         </Link>
                     </li>
 
