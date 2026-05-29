@@ -9,6 +9,7 @@
 }
 
 .auth-card {
+    flex: 1;
     width: 90%;
     max-width: 380px;
     padding: 40px 35px;
