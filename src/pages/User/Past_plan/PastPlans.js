@@ -4,7 +4,7 @@ import {
   Sun, CloudSun, Moon, RefreshCw, 
   History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw
 } from 'lucide-react';
-import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon } from "react-icons/fa";
+import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar } from "react-icons/fa";
 import './PastPlans.css';
 
 import { LuCalendarClock } from "react-icons/lu";
@@ -313,6 +313,25 @@ const PastPlans = () => {
     return acc;
   }, {});
 
+  const openReviewModal = (foodId) => {
+    const existing = reviewedStatus[foodId];
+    setActiveFood(foodId);
+    setRating(existing ? existing.rating : 0);
+    setReviewText(existing ? existing.review_text : "");
+    setIsModalOpen(true);
+  };
+
+  const handleSaveReview = async () => {
+    const userId = JSON.parse(localStorage.getItem('user'))?.user_id || 1;
+    await fetch('http://localhost:5000/api/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, food_id: activeFood, rating, review_text: reviewText })
+    });
+    setIsModalOpen(false);
+    fetchMeals(selectedDate);
+  };
+
   // ================= Render Functions =================
   const renderMealList = () => (
     <div className="past-plan-card">
@@ -387,7 +406,6 @@ const PastPlans = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '6px',
-                          // 🌟 ใช้ reviewedStatus[meal.food_id] เพื่อเช็กว่าเมนูนี้รีวิวหรือยัง
                           color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d",
                           fontWeight: reviewedStatus[meal.food_id] ? "500" : "400",
                           cursor: "pointer",
@@ -395,7 +413,7 @@ const PastPlans = () => {
                         }}
                       >
                         <FaStar size={16} style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} /> 
-                        รีวิว
+                        {reviewedStatus[meal.food_id] ? "แก้ไขรีวิว" : "รีวิว"}
                       </span>
                     </div>
                 </div>
@@ -501,27 +519,38 @@ const PastPlans = () => {
     );
   };
 
-  const openReviewModal = (foodId) => {
-    const existing = reviewedStatus[foodId];
-    setActiveFood(foodId);
-    setRating(existing ? existing.rating : 0);
-    setReviewText(existing ? existing.review_text : "");
-    setIsModalOpen(true);
-  };
-
-  const handleSaveReview = async () => {
-    const userId = JSON.parse(localStorage.getItem('user'))?.user_id || 1;
-    await fetch('http://localhost:5000/api/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, food_id: activeFood, rating, review_text: reviewText })
-    });
-    setIsModalOpen(false);
-    fetchMeals(selectedDate);
-  };
-
   return (
     <div className="past-plans-wrapper pastel-theme">
+
+      {/* 🌟 ย้าย Modal ออกมาอยู่ข้างนอกสุดตรงนี้ เพื่อไม่ให้เกิดบั๊กซ้อนทับกัน */}
+      {isModalOpen && (
+        <div className="review-modal-overlay">
+          <div className="review-modal-content">
+            {/* 🌟 เปลี่ยนข้อความหัวข้ออัตโนมัติ */}
+            <h3>
+              {reviewedStatus[activeFood] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{mealData.find(m => m.food_id === activeFood)?.name}"
+            </h3>
+            
+            <div style={{display:'flex', justifyContent:'center', margin:'10px 0'}}>
+              {[1,2,3,4,5].map(s => (
+                <FaStar key={s} color={s <= rating ? "#FDCB6E" : "#ddd"} 
+                  onClick={() => setRating(s)} size={35} style={{cursor:'pointer', margin:'0 2px'}}/>
+              ))}
+            </div>
+            
+            <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} 
+                      placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." />
+                      
+            <div className="modal-actions">
+              <button onClick={() => setIsModalOpen(false)}>ยกเลิก</button>
+              {/* 🌟 เปลี่ยนข้อความบนปุ่มบันทึกอัตโนมัติ */}
+              <button onClick={handleSaveReview}>
+                {reviewedStatus[activeFood] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <header className="past-plans-header">
         <div className="header-left">
@@ -540,30 +569,6 @@ const PastPlans = () => {
                 {selectedYear}
                 <ChevronDown size={22} className={`year-dropdown-icon ${isYearOpen ? 'open' : ''}`} />
               </div>
-
-              {isModalOpen && (
-              <div className="review-modal-overlay">
-                <div className="review-modal-content">
-                  {/* เพิ่มตรงนี้: แสดงชื่อเมนูที่กำลังรีวิว */}
-                  <h3>เขียนรีวิวให้เมนู "{mealData.find(m => m.food_id === activeFood)?.name}"</h3>
-                  
-                  <div style={{display:'flex', justifyContent:'center', margin:'10px 0'}}>
-                    {[1,2,3,4,5].map(s => (
-                      <FaStar key={s} color={s <= rating ? "#FDCB6E" : "#ddd"} 
-                        onClick={() => setRating(s)} size={35} style={{cursor:'pointer', margin:'0 2px'}}/>
-                    ))}
-                  </div>
-                  
-                  <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} 
-                            placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." />
-                            
-                  <div className="modal-actions">
-                    <button onClick={() => setIsModalOpen(false)}>ยกเลิก</button>
-                    <button onClick={handleSaveReview}>บันทึกรีวิว</button>
-                  </div>
-                </div>
-              </div>
-            )}
 
               {isYearOpen && (
                 <div className="year-dropdown-menu">

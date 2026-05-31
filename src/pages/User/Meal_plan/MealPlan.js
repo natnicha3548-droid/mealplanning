@@ -414,7 +414,9 @@ function MealPlan() {
       {reviewTarget && (
         <div className="review-modal-overlay">
           <div className="review-modal-box">
-            <h3>เขียนรีวิวให้เมนู "{reviewTarget.food_name}"</h3>
+            <h3>
+              {reviewedStatus[reviewTarget.food_id] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{reviewTarget.food_name}"
+            </h3>
             <div className="star-rating-row">
               {[1, 2, 3, 4, 5].map((num) => (
                 <span key={num} onClick={() => setRating(num)} style={{ cursor: "pointer", fontSize: "1.8rem" }}>
@@ -425,7 +427,9 @@ function MealPlan() {
             <textarea rows="4" placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} className="review-textarea" />
             <div className="modal-btn-row">
               <button className="modal-cancel-btn" onClick={() => setReviewTarget(null)}>ยกเลิก</button>
-              <button className="modal-submit-btn" onClick={handleConfirmReview}>บันทึกรีวิว</button>
+              <button className="modal-submit-btn" onClick={handleConfirmReview}>
+                {reviewedStatus[reviewTarget.food_id] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}
+              </button>
             </div>
           </div>
         </div>

@@ -834,39 +834,37 @@ app.get('/api/favorite-status', (req, res) => {
 
 // ================= REVIEW API =================
 app.post('/api/review', (req, res) => {
+    const { user_id, food_id, rating, review_text } = req.body;
 
-    const {
-        user_id,
-        food_id,
-        rating,
-        review_text
-    } = req.body;
+    // 1. เช็กก่อนว่าเคยรีวิวเมนูนี้หรือยัง
+    const checkSql = "SELECT review_id FROM food_review WHERE user_id = ? AND food_id = ?";
+    
+    db.query(checkSql, [user_id, food_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-    // บันทึกรีวิว
-    const sql = `
-        INSERT INTO food_review
-        (
-            user_id,
-            food_id,
-            rating,
-            review_text,
-            review_status
-        )
-        VALUES (?, ?, ?, ?, 'รออนุมัติ')
-    `;
-
-    db.query(sql, [user_id, food_id, rating, review_text], (err) => {
-
-        if (err) return res.status(500).json({
-            error: err.message
-        });
-
-        res.json({
-            message: "บันทึกรีวิวสำเร็จ รอการอนุมัติ"
-        });
-
+        if (results.length > 0) {
+            // 2. ถ้าเคยรีวิวแล้ว -> ให้อัปเดต (UPDATE) ข้อมูลเดิมแทนการเพิ่มใหม่
+            const updateSql = `
+                UPDATE food_review 
+                SET rating = ?, review_text = ?, review_status = 'รออนุมัติ', created_at = CURRENT_TIMESTAMP
+                WHERE user_id = ? AND food_id = ?
+            `;
+            db.query(updateSql, [rating, review_text, user_id, food_id], (updateErr) => {
+                if (updateErr) return res.status(500).json({ error: updateErr.message });
+                res.json({ message: "อัปเดตรีวิวสำเร็จ รอแอดมินอนุมัติ" });
+            });
+        } else {
+            // 3. ถ้ายังไม่เคยรีวิว -> ให้เพิ่มข้อมูลใหม่ (INSERT)
+            const insertSql = `
+                INSERT INTO food_review (user_id, food_id, rating, review_text, review_status)
+                VALUES (?, ?, ?, ?, 'รออนุมัติ')
+            `;
+            db.query(insertSql, [user_id, food_id, rating, review_text], (insertErr) => {
+                if (insertErr) return res.status(500).json({ error: insertErr.message });
+                res.json({ message: "บันทึกรีวิวใหม่สำเร็จ รอแอดมินอนุมัติ" });
+            });
+        }
     });
-
 });
 
 // ================= REVIEW STATUS API =================
@@ -886,8 +884,8 @@ app.get('/api/review-status', (req, res) => {
 
     }
 
-    // เช็กรีวิว
-    const sql = "SELECT * FROM food_review WHERE user_id = ? AND food_id = ?";
+    // ดึงรีวิวล่าสุดที่ผู้ใช้เคยเขียนไว้
+    const sql = "SELECT * FROM food_review WHERE user_id = ? AND food_id = ? ORDER BY created_at DESC LIMIT 1";
 
     db.query(sql, [user_id, food_id], (err, results) => {
 

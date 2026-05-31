@@ -391,8 +391,9 @@ body {
 }
 
 .meal-image {
-  width: 150px;
-  height: 100px;
+  width: 150px !important;
+  height: 100px !important;
+  flex-shrink: 0;
   border-radius: 20px;
   object-fit: cover;
 }
@@ -423,6 +424,11 @@ body {
   font-weight: 600;
   color: #f97316;
   font-size: 1.2rem;
+
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
 }
 
 .meal-review {
