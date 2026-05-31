@@ -2,7 +2,7 @@
 
 .admin-navbar {
   /* ดึงสีครีมกึ่งโปร่งใสและเอฟเฟกต์เบลอมาจากของ User */
-  background: rgba(255, 248, 240, 0.9);
+  background: rgba(255, 248, 240, 0.9) !important;
   backdrop-filter: blur(10px);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   

@@ -1688,20 +1688,57 @@ app.get("/api/favorite-foods/:userId", (req, res) => {
 app.get('/api/admin/dashboard-stats', async (req, res) => {
     const connection = db.promise();
     try {
-        // นับจำนวนสมาชิกที่เป็น User ธรรมดา
+        // 1. นับจำนวนภาพรวม
         const [users] = await connection.query("SELECT COUNT(*) AS total FROM users WHERE role = 'User'");
-        
-        // นับจำนวนอาหารทั้งหมด
         const [foods] = await connection.query("SELECT COUNT(*) AS total FROM food");
-        
-        // นับจำนวนรีวิวที่รออนุมัติ
         const [reviews] = await connection.query("SELECT COUNT(*) AS total FROM food_review WHERE review_status = 'รออนุมัติ'");
 
-        // ส่งข้อมูลกลับไปให้หน้าเว็บ
+        // 2. ข้อมูลกราฟ: แผนการกิน 7 วันย้อนหลัง (สมมติว่าดึงจาก meal_plan)
+        const [chartData] = await connection.query(`
+            SELECT DATE_FORMAT(plan_date, '%d %b') as name, COUNT(*) as plans 
+            FROM meal_plan 
+            GROUP BY plan_date 
+            ORDER BY plan_date DESC 
+            LIMIT 7
+        `);
+
+        // 3. 5 อันดับเมนูยอดฮิต (นับจากที่ถูกจัดลง meal_detail)
+        const [topFoods] = await connection.query(`
+            SELECT f.food_name, COUNT(md.food_id) as count 
+            FROM meal_detail md 
+            JOIN food f ON md.food_id = f.food_id 
+            GROUP BY md.food_id 
+            ORDER BY count DESC 
+            LIMIT 5
+        `);
+
+        // 4. รายการรีวิวด่วน (รออนุมัติ) 3 รายการล่าสุด
+        const [recentReviews] = await connection.query(`
+            SELECT fr.review_id, u.email, f.food_name, fr.rating, fr.review_text 
+            FROM food_review fr
+            JOIN users u ON fr.user_id = u.user_id
+            JOIN food f ON fr.food_id = f.food_id
+            WHERE fr.review_status = 'รออนุมัติ'
+            ORDER BY fr.created_at DESC
+            LIMIT 3
+        `);
+
+        // 5. ข้อมูลจำลองสำหรับ Insights จาก FP-growth Algorithm 
+        // (คุณสามารถนำผลลัพธ์จากการรันโมเดล FP-growth มาใส่ตรงนี้ได้ในอนาคต)
+        const fpGrowthInsights = [
+            { pair: "ข้าวผัดหมู + น้ำซุป", confidence: "85%" },
+            { pair: "สลัดอกไก่ + ไข่ต้ม", confidence: "72%" },
+            { pair: "ผัดกะเพรา + ไข่ดาว", confidence: "90%" }
+        ];
+
         res.json({
             totalUsers: users[0].total,
             totalFoods: foods[0].total,
-            pendingReviews: reviews[0].total
+            pendingReviews: reviews[0].total,
+            chartData: chartData.reverse(), // กลับด้านให้วันที่เก่าอยู่ซ้าย ใหม่ยู่ขวา
+            topFoods: topFoods,
+            recentReviews: recentReviews,
+            fpGrowthInsights: fpGrowthInsights
         });
     } catch (error) {
         console.error("Dashboard Stats Error:", error);
