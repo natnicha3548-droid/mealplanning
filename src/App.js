@@ -24,9 +24,9 @@ import FavFood from "./pages/User/Fav_food/FavFood";
 
 import AdminLayout from './pages/Admin/AdminLayout';
 import DashboardReport from './pages/Admin/DashboardReport';
+import ManageReviews from './pages/Admin/ManageReviews';
 import ManageCategories from './pages/Admin/ManageCategories';
 import ManageFood from './pages/Admin/ManageFood';
-import ManageReviews from './pages/Admin/ManageReviews';
 import ManageUsers from './pages/Admin/ManageUsers';
 
 /* ================= ROUTER ================= */

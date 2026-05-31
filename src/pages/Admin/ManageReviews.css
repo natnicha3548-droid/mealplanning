@@ -1,0 +1,215 @@
+/* src/pages/Admin/ManageReviews.css */
+
+.manage-reviews-wrapper {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.page-title {
+  color: #5c3d00;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+  font-size: 2rem;
+}
+
+.header-icon-wrapper {
+    width: 78px;
+    height: 78px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff1e5, #ffe7d6);
+    color: #ff8c42;
+    font-size: 2rem;
+    border: 1px solid #ffe0cd;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+    flex-shrink: 0;
+}
+
+.header-icon-wrapper svg {
+  color: #ff8c42;
+  font-size: 2.5rem;
+}
+
+/* ================= TABS ================= */
+.review-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f9ece0;
+  padding-bottom: 15px;
+}
+
+.tab-btn {
+  background: #ffffff;;
+  border: 1px solid #f9ece0;
+  border: none;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #a68c74;
+  cursor: pointer;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+/* สีพื้นฐานของตัวเลข Badge (ตอนไม่ได้กด) */
+.badge-count {
+  background: #f9ece0;
+  color: #a68c74;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* 🟠 1. สีสำหรับแท็บ: รอตรวจสอบ (สีส้ม) */
+.tab-btn.tab-pending:hover { background: #fff4eb; color: #ff8c42; }
+.tab-btn.tab-pending.active { background: #ff8c42; color: white; box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3); }
+.tab-btn.tab-pending.active .badge-count { background: white; color: #ff8c42; }
+
+/* 🟢 2. สีสำหรับแท็บ: อนุมัติแล้ว (สีเขียว) */
+.tab-btn.tab-approved:hover { background: #e6f4ea; color: #1e8e3e; }
+.tab-btn.tab-approved.active { background: #1e8e3e; color: white; box-shadow: 0 4px 10px rgba(30, 142, 62, 0.3); }
+.tab-btn.tab-approved.active .badge-count { background: white; color: #1e8e3e; }
+
+/* 🔴 3. สีสำหรับแท็บ: ปฏิเสธแล้ว (สีแดง) */
+.tab-btn.tab-rejected:hover { background: #fce8e6; color: #d93025; }
+.tab-btn.tab-rejected.active { background: #d93025; color: white; box-shadow: 0 4px 10px rgba(217, 48, 37, 0.3); }
+.tab-btn.tab-rejected.active .badge-count { background: white; color: #d93025; }
+
+/* ================= REVIEW CARDS ================= */
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.review-card-full {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #fcf2e8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: 0.2s;
+}
+
+.review-card-full:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.08);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.review-food-name {
+  font-weight: 700;
+  color: #5c3d00;
+  font-size: 1.1rem;
+  margin: 0 0 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-user-email {
+  font-size: 0.85rem;
+  color: #a68c74;
+  margin: 0;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.review-text-content {
+  background: #fdfaf7;
+  padding: 15px;
+  border-radius: 10px;
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  min-height: 60px;
+  font-style: italic;
+}
+
+.review-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.action-btn-large {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.btn-approve-lg {
+  background: #e6f4ea;
+  color: #1e8e3e;
+}
+.btn-approve-lg:hover { background: #d3ecd9; }
+
+.btn-reject-lg {
+  background: #fce8e6;
+  color: #d93025;
+}
+.btn-reject-lg:hover { background: #fad2cf; }
+
+.status-badge {
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-approved { background: #e6f4ea; color: #1e8e3e; }
+.status-rejected { background: #fce8e6; color: #d93025; }
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: #a68c74;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

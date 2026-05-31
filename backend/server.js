@@ -1685,50 +1685,52 @@ app.get("/api/favorite-foods/:userId", (req, res) => {
 // ================= ADMIN DASHBOARD STATS API =================
 app.get('/api/admin/dashboard-stats', async (req, res) => {
     const connection = db.promise();
+    const filter = req.query.filter || '7days'; // รับค่า filter จาก Frontend (ค่าเริ่มต้นคือ 7 วัน)
+    
     try {
         // 1. นับจำนวนภาพรวม
         const [users] = await connection.query("SELECT COUNT(*) AS total FROM users WHERE role = 'User'");
         const [foods] = await connection.query("SELECT COUNT(*) AS total FROM food");
         const [reviews] = await connection.query("SELECT COUNT(*) AS total FROM food_review WHERE review_status = 'รออนุมัติ'");
 
-        // 2. ข้อมูลกราฟ: แผนการกิน 7 วันย้อนหลัง (สมมติว่าดึงจาก meal_plan)
-        const [chartData] = await connection.query(`
-            SELECT DATE_FORMAT(plan_date, '%d %b') as name, COUNT(*) as plans 
-            FROM meal_plan 
-            GROUP BY plan_date 
-            ORDER BY plan_date DESC 
-            LIMIT 7
-        `);
+        // 2. ข้อมูลกราฟ: ดึงข้อมูลตาม Filter ที่เลือก (อัปเดตรวมแบบใหม่ไว้ตรงนี้เลยครับ)
+        let chartQuery = "";
+        if (filter === '7days') {
+            chartQuery = `SELECT DATE_FORMAT(plan_date, '%d %b') as name, COUNT(*) as plans FROM meal_plan GROUP BY plan_date ORDER BY plan_date DESC LIMIT 7`;
+        } else if (filter === 'month') {
+            chartQuery = `SELECT DATE_FORMAT(plan_date, '%d %b') as name, COUNT(*) as plans FROM meal_plan WHERE plan_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY plan_date ORDER BY plan_date DESC`;
+        } else if (filter === 'year') {
+            chartQuery = `SELECT DATE_FORMAT(plan_date, '%b %Y') as name, COUNT(*) as plans FROM meal_plan WHERE plan_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) GROUP BY YEAR(plan_date), MONTH(plan_date) ORDER BY YEAR(plan_date) DESC, MONTH(plan_date) DESC`;
+        } else if (filter === 'all') {
+            // แบบดูภาพรวมทั้งหมดทุกปี
+            chartQuery = `SELECT DATE_FORMAT(plan_date, '%b %Y') as name, COUNT(*) as plans FROM meal_plan GROUP BY YEAR(plan_date), MONTH(plan_date) ORDER BY YEAR(plan_date) DESC, MONTH(plan_date) DESC`;
+        } else if (filter.match(/^\d{4}-\d{2}$/)) {
+            // แบบดูเฉพาะเดือนที่ระบุ (เช่น "2026-05")
+            chartQuery = `SELECT DATE_FORMAT(plan_date, '%d %b') as name, COUNT(*) as plans FROM meal_plan WHERE DATE_FORMAT(plan_date, '%Y-%m') = '${filter}' GROUP BY plan_date ORDER BY plan_date DESC`;
+        }
+        const [chartData] = await connection.query(chartQuery);
 
-        // 3. 5 อันดับเมนูยอดฮิต (นับจากที่ถูกจัดลง meal_detail)
+        // 3. 5 อันดับเมนูยอดฮิต
         const [topFoods] = await connection.query(`
             SELECT f.food_name, COUNT(md.food_id) as count 
-            FROM meal_detail md 
-            JOIN food f ON md.food_id = f.food_id 
-            GROUP BY md.food_id 
-            ORDER BY count DESC 
-            LIMIT 5
+            FROM meal_detail md JOIN food f ON md.food_id = f.food_id 
+            GROUP BY md.food_id ORDER BY count DESC LIMIT 5
         `);
 
-        // 4. รายการรีวิวด่วน (รออนุมัติ) 3 รายการล่าสุด
+        // 4. รายการรีวิวด่วน
         const [recentReviews] = await connection.query(`
             SELECT fr.review_id, u.email, f.food_name, fr.rating, fr.review_text 
-            FROM food_review fr
-            JOIN users u ON fr.user_id = u.user_id
-            JOIN food f ON fr.food_id = f.food_id
-            WHERE fr.review_status = 'รออนุมัติ'
-            ORDER BY fr.created_at DESC
-            LIMIT 3
+            FROM food_review fr JOIN users u ON fr.user_id = u.user_id JOIN food f ON fr.food_id = f.food_id
+            WHERE fr.review_status = 'รออนุมัติ' ORDER BY fr.created_at DESC LIMIT 3
         `);
 
-        // 5. ข้อมูลจำลองสำหรับ Insights จาก FP-growth Algorithm 
-        // (คุณสามารถนำผลลัพธ์จากการรันโมเดล FP-growth มาใส่ตรงนี้ได้ในอนาคต)
         const fpGrowthInsights = [
             { pair: "ข้าวผัดหมู + น้ำซุป", confidence: "85%" },
             { pair: "สลัดอกไก่ + ไข่ต้ม", confidence: "72%" },
             { pair: "ผัดกะเพรา + ไข่ดาว", confidence: "90%" }
         ];
 
+        // 5. ส่งข้อมูลกลับไปให้ Frontend
         res.json({
             totalUsers: users[0].total,
             totalFoods: foods[0].total,
@@ -1738,8 +1740,44 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             recentReviews: recentReviews,
             fpGrowthInsights: fpGrowthInsights
         });
+
     } catch (error) {
         console.error("Dashboard Stats Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// ================= ADMIN: MANAGE REVIEWS API =================
+
+// 1. API สำหรับดึงข้อมูลรีวิวทั้งหมด (พร้อมชื่ออาหารและอีเมลผู้ใช้)
+app.get('/api/admin/all-reviews', async (req, res) => {
+    const connection = db.promise();
+    try {
+        const [reviews] = await connection.query(`
+            SELECT fr.review_id, u.email, f.food_name, fr.rating, fr.review_text, fr.review_status, fr.created_at 
+            FROM food_review fr
+            JOIN users u ON fr.user_id = u.user_id
+            JOIN food f ON fr.food_id = f.food_id
+            ORDER BY fr.created_at DESC
+        `);
+        res.json(reviews);
+    } catch (error) {
+        console.error("Fetch All Reviews Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// 2. API สำหรับอัปเดตสถานะรีวิว (อนุมัติ / ปฏิเสธ)
+app.put('/api/admin/reviews/:id/status', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; 
+    const connection = db.promise();
+    try {
+        // อัปเดตสถานะในตาราง food_review
+        await connection.query("UPDATE food_review SET review_status = ? WHERE review_id = ?", [status, id]);
+        res.json({ message: "อัปเดตสถานะเรียบร้อย" });
+    } catch (error) {
+        console.error("Update Review Status Error:", error);
         res.status(500).json({ message: "Server Error" });
     }
 });

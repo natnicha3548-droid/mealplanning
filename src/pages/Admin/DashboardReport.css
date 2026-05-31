@@ -1,22 +1,68 @@
-/* เพิ่มต่อท้ายไฟล์ DashboardReport.css */
-
 .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 25px;
   margin-bottom: 25px;
 }
+
 /* จัดให้กล่องสถิติเรียงแนวนอน */
 .dashboard-stats-container {
   display: flex;
   gap: 25px;
   margin-bottom: 30px;
-  flex-wrap: wrap; /* ถ้าจอมือถือจะปัดตกบรรทัดให้เอง */
+  flex-wrap: wrap; 
 }
 
 /* บังคับให้การ์ดแต่ละใบกว้างเท่าๆ กัน */
 .stat-card {
   flex: 1 1 250px; 
+}
+
+/* ตั้งค่าให้หัวข้อและไอคอนใน stat-card เรียงกลางพอดี */
+.stat-card h4 {
+  color: #8c7355;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ================= ส่วนหัวข้อหน้า Dashboard ================= */
+.dashboard-page-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* จัดเรียงหัวข้อให้อยู่ตรงกลางบรรทัดกับไอคอน */
+.dashboard-main-title {
+  color: #5c3d00;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+  font-size: 1.6rem;
+}
+
+/* ================= สไตล์กรอบวงกลมไอคอน (Glow Effect) ================= */
+.dashboard-icon-wrapper {
+   width: 78px;
+    height: 78px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff1e5, #ffe7d6);
+    color: #ff8c42;
+    font-size: 2rem;
+    border: 1px solid #ffe0cd;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+    flex-shrink: 0;
+}
+
+.dashboard-icon-wrapper svg {
+  color: #ff8c42;
+  font-size: 2.5rem;
 }
 
 @media (max-width: 1024px) {
@@ -32,6 +78,20 @@
   font-size: 1.2rem;
   border-bottom: 2px dashed #f9ece0;
   padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-icon {
+  font-size: 1.4rem;
+  color: #ff8c42; 
+}
+
+.flex-align {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ลิสต์เมนูยอดฮิต & FP-growth */
@@ -44,6 +104,7 @@
 .insight-list li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid #fcf2e8;
   color: #8c7355;
@@ -74,10 +135,26 @@
 .quick-review-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 5px;
 }
 .quick-review-email { font-size: 0.85rem; color: #a68c74; }
-.quick-review-food { font-weight: bold; color: #5c3d00; }
+.quick-review-food { 
+  font-weight: bold; 
+  color: #5c3d00; 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #fca311;
+  font-size: 0.85rem;
+}
+
 .quick-review-text { font-size: 0.95rem; color: #666; margin: 10px 0; }
 
 .quick-action-btn {
@@ -88,6 +165,195 @@
   font-family: inherit;
   font-size: 0.85rem;
   margin-right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.2s;
 }
+
+.quick-action-btn:hover {
+  filter: brightness(0.95);
+}
+
 .btn-approve { background: #e6f4ea; color: #1e8e3e; }
 .btn-reject { background: #fce8e6; color: #d93025; }
+
+/* ================= Custom Dropdown แบบทำเอง (อันเดิม) ================= */
+.custom-cute-dropdown {
+  position: relative;
+  width: 140px; 
+  font-family: inherit;
+  z-index: 100; 
+}
+
+.dropdown-header {
+  padding: 8px 15px;
+  background: #ffffff;
+  border: 2px solid #f9ece0;
+  border-radius: 20px;
+  color: #ff8c42;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.dropdown-header:hover, .dropdown-header.active {
+  border-color: #ff8c42;
+  box-shadow: 0 5px 15px rgba(255, 140, 66, 0.15);
+}
+
+.dropdown-header .arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-header.active .arrow {
+  transform: rotate(180deg); 
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 110%; 
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.15); 
+  list-style: none;
+  padding: 8px;
+  margin: 0;
+  border: 1px solid #fcf2e8;
+  animation: fadeInDown 0.2s ease forwards;
+}
+
+.dropdown-options li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+  color: #8c7355;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.dropdown-options li:hover {
+  background: #fff4eb; 
+  color: #ff8c42; 
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= ปุ่มไอคอนปฏิทินข้าง Dropdown ================= */
+.month-picker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: #ffffff;
+  border: 2px solid #f9ece0;
+  border-radius: 12px;
+  color: #ff8c42;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.month-picker-wrapper:hover, .month-picker-wrapper.active {
+  border-color: #ff8c42;
+  background: #fff4eb;
+  box-shadow: 0 5px 15px rgba(255, 140, 66, 0.15);
+}
+
+.month-picker-wrapper .calendar-icon {
+  font-size: 1.3rem;
+  pointer-events: none; 
+}
+
+/* ================= Custom Month Popup (กล่องปฏิทินน่ารักๆ) ================= */
+.custom-month-popup {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid #f9ece0;
+  border-radius: 20px;
+  padding: 15px;
+  width: 240px;
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.15);
+  z-index: 100;
+  animation: fadeInDown 0.2s ease forwards;
+}
+
+.month-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  color: #ff8c42;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.month-popup-header button {
+  background: #fff4eb;
+  border: none;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  color: #ff8c42;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.month-popup-header button:hover {
+  background: #ff8c42;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
+}
+
+.month-popup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.month-item {
+  padding: 10px 0;
+  text-align: center;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #8c7355;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.month-item:hover {
+  background: #fffdf8;
+  color: #ff8c42;
+  border: 1px solid #f9ece0;
+}
+
+/* สถานะเมื่อเดือนนั้นถูกเลือก */
+.month-item.active {
+  background: #ff8c42;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
+  border: 1px solid #ff8c42;
+}
