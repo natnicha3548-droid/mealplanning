@@ -1,16 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { FaChartPie, FaHamburger, FaFolderOpen, FaUsers, FaStar } from 'react-icons/fa';
 
 function AdminSidebar() {
+  const location = useLocation(); // เอาไว้เช็คว่าตอนนี้อยู่หน้าไหน จะได้ทำสีไฮไลท์ถูก
+
   return (
-    <div className="admin-sidebar" style={{ width: '250px', background: '#333', color: '#fff', minHeight: '100vh', padding: '20px' }}>
-      <h2>Admin Panel</h2>
-      <ul style={{ listStyle: 'none', padding: 0, marginTop: '30px' }}>
-        <li style={{ marginBottom: '15px' }}><Link to="/admin" style={{ color: '#fff', textDecoration: 'none' }}>📊 Dashboard</Link></li>
-        <li style={{ marginBottom: '15px' }}><Link to="/admin/manage-food" style={{ color: '#fff', textDecoration: 'none' }}>🍔 จัดการข้อมูลอาหาร</Link></li>
-        <li style={{ marginBottom: '15px' }}><Link to="/admin/manage-categories" style={{ color: '#fff', textDecoration: 'none' }}>📁 จัดการหมวดหมู่อาหาร</Link></li>
-        <li style={{ marginBottom: '15px' }}><Link to="/admin/manage-users" style={{ color: '#fff', textDecoration: 'none' }}>👥 จัดการสมาชิก</Link></li>
-        <li style={{ marginBottom: '15px' }}><Link to="/admin/manage-reviews" style={{ color: '#fff', textDecoration: 'none' }}>⭐ จัดการรีวิว</Link></li>
+    <div className="admin-sidebar">
+      <div className="admin-logo">
+        <FaHamburger /> MealPlan Admin
+      </div>
+      <ul className="admin-menu-list">
+        <li className="admin-menu-item">
+          <Link to="/admin" className={`admin-menu-link ${location.pathname === '/admin' ? 'active' : ''}`}>
+            <FaChartPie /> Dashboard
+          </Link>
+        </li>
+        <li className="admin-menu-item">
+          <Link to="/admin/manage-food" className={`admin-menu-link ${location.pathname.includes('manage-food') ? 'active' : ''}`}>
+            <FaHamburger /> จัดการอาหาร
+          </Link>
+        </li>
+        <li className="admin-menu-item">
+          <Link to="/admin/manage-categories" className={`admin-menu-link ${location.pathname.includes('manage-categories') ? 'active' : ''}`}>
+            <FaFolderOpen /> หมวดหมู่อาหาร
+          </Link>
+        </li>
+        <li className="admin-menu-item">
+          <Link to="/admin/manage-users" className={`admin-menu-link ${location.pathname.includes('manage-users') ? 'active' : ''}`}>
+            <FaUsers /> จัดการสมาชิก
+          </Link>
+        </li>
+        <li className="admin-menu-item">
+          <Link to="/admin/manage-reviews" className={`admin-menu-link ${location.pathname.includes('manage-reviews') ? 'active' : ''}`}>
+            <FaStar /> ตรวจสอบรีวิว
+          </Link>
+        </li>
       </ul>
     </div>
   );

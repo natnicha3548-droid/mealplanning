@@ -1682,6 +1682,33 @@ app.get("/api/favorite-foods/:userId", (req, res) => {
 
 });
 
+
+// ================= ฝั่งการทำงาน admin =================
+// ================= ADMIN DASHBOARD STATS API =================
+app.get('/api/admin/dashboard-stats', async (req, res) => {
+    const connection = db.promise();
+    try {
+        // นับจำนวนสมาชิกที่เป็น User ธรรมดา
+        const [users] = await connection.query("SELECT COUNT(*) AS total FROM users WHERE role = 'User'");
+        
+        // นับจำนวนอาหารทั้งหมด
+        const [foods] = await connection.query("SELECT COUNT(*) AS total FROM food");
+        
+        // นับจำนวนรีวิวที่รออนุมัติ
+        const [reviews] = await connection.query("SELECT COUNT(*) AS total FROM food_review WHERE review_status = 'รออนุมัติ'");
+
+        // ส่งข้อมูลกลับไปให้หน้าเว็บ
+        res.json({
+            totalUsers: users[0].total,
+            totalFoods: foods[0].total,
+            pendingReviews: reviews[0].total
+        });
+    } catch (error) {
+        console.error("Dashboard Stats Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 // ================= START =================
 app.listen(5000, () => {
 

@@ -1,0 +1,75 @@
+/* src/pages/Admin/DashboardReport.css */
+
+.dashboard-title {
+  margin-bottom: 30px;
+  color: #5c3d00;
+}
+
+.dashboard-stats-container {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1 1 250px;
+}
+
+.stat-card h4 {
+  color: #8c7355;
+  margin: 0;
+}
+
+.stat-card .stat-value span {
+  font-size: 1rem;
+  color: #8c7355;
+  font-weight: normal;
+}
+
+.stat-card .review-stat {
+  color: #ff4d4d;
+}
+
+.download-section h3 {
+  margin-bottom: 20px;
+  color: #5c3d00;
+}
+
+.download-btn-group {
+  display: flex;
+  gap: 15px;
+}
+
+.download-btn {
+  padding: 12px 25px;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+}
+
+.btn-pdf {
+  background: #ff4d4d;
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.2);
+}
+
+.btn-pdf:hover {
+  box-shadow: 0 6px 15px rgba(255, 77, 77, 0.35);
+}
+
+.btn-excel {
+  background: #28a745;
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+}
+
+.btn-excel:hover {
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.35);
+}
