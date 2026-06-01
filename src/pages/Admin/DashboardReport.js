@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'; // <--- 1. เพิ่ม useRef ที่นี่
+import React, { useState, useEffect, useRef } from 'react'; 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -19,7 +19,9 @@ import {
   LuCalendarDays,
   LuDownload, 
   LuFileSpreadsheet, 
-  LuFileText
+  LuFileText,
+  LuUserPlus,  // <--- นำเข้าไอคอนเพิ่ม
+  LuUserMinus  // <--- นำเข้าไอคอนเพิ่ม
 } from "react-icons/lu";
 import { FaChartPie } from "react-icons/fa";
 import * as XLSX from 'xlsx';
@@ -28,7 +30,7 @@ import './DashboardReport.css';
 
 function DashboardReport() {
   const navigate = useNavigate();
-  const reportRef = useRef(null); // <--- สร้าง Ref
+  const reportRef = useRef(null); 
 
   const [timeFilter, setTimeFilter] = useState('7days'); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -39,6 +41,8 @@ function DashboardReport() {
 
   const [stats, setStats] = useState({
     users: 0,
+    newUsers: 0,       // <--- เพิ่ม State รองรับค่าใหม่
+    inactiveUsers: 0,  // <--- เพิ่ม State รองรับค่าใหม่
     foods: 0,
     reviews: 0,
     chartData: [],
@@ -56,6 +60,8 @@ function DashboardReport() {
         if (res.ok) {
           setStats({
             users: data.totalUsers || 0,
+            newUsers: data.newUsers || 0,           // <--- รับค่าผู้ใช้ใหม่
+            inactiveUsers: data.inactiveUsers || 0, // <--- รับค่าคนไม่ได้ใช้งาน
             foods: data.totalFoods || 0,
             reviews: data.pendingReviews || 0,
             chartData: data.chartData || [],
@@ -92,6 +98,8 @@ function DashboardReport() {
       [],
       ["สถิติภาพรวม"],
       ["จำนวนสมาชิกรวม (คน)", stats.users],
+      ["ผู้ใช้งานใหม่ (30 วันล่าสุด)", stats.newUsers],      // <--- เพิ่มลง Excel
+      ["ผู้ที่ไม่ได้ใช้งาน (30 วันล่าสุด)", stats.inactiveUsers], // <--- เพิ่มลง Excel
       ["เมนูอาหารทั้งหมด (เมนู)", stats.foods],
       ["รีวิวรอตรวจสอบ (รายการ)", stats.reviews],
       [],
@@ -128,7 +136,6 @@ function DashboardReport() {
 
   return (
     <>
-      {/* 2. จัดโครงสร้าง Header ให้ปุ่มและข้อความอยู่บรรทัดเดียวกัน */}
       <div className="dashboard-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
         <h2 className="dashboard-main-title" style={{ margin: 0 }}>
           <div className="dashboard-icon-wrapper" style={{ display: 'inline-flex', marginRight: '10px' }}>
@@ -154,18 +161,31 @@ function DashboardReport() {
         </div>
       </div>
       
-      {/* 3. เอา div reportRef มาครอบเนื้อหาทั้งหมด (และเอาแท็กปิดไปไว้ล่างสุด) */}
       <div ref={reportRef} className="dashboard-content-wrapper" style={{ padding: '10px' }}>
         
         <div className="dashboard-stats-container">
+          
+          {/* ======================= การ์ดสมาชิกรวม (ปรับปรุงใหม่) ======================= */}
           <div className="admin-card stat-card" onClick={() => navigate('/admin/manage-users')} style={{ cursor: 'pointer', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '20px', right: '20px', color: '#ff8c42', opacity: 0.5 }}>
               <LuArrowRight size={20} />
             </div>
             <h4><LuUsers className="title-icon" /> จำนวนสมาชิกรวม</h4>
             <div className="stat-value">{stats.users} <span>คน</span></div>
-            <p style={{ margin: '10px 0 0 0', fontSize: '0.85rem', color: '#a68c74' }}>คลิกเพื่อดูทั้งหมด</p>
+            
+            {/* กล่อง Sub-stats สำหรับผู้ใช้ใหม่และคนไม่ได้ใช้งาน */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '2px dashed #f9ece0', fontSize: '0.9rem' }}>
+              <div style={{ color: '#1e8e3e', display: 'flex', alignItems: 'center', gap: '5px' }} title="สมัครใหม่ใน 30 วันล่าสุด">
+                <LuUserPlus size={16} /> ใหม่: <strong>{stats.newUsers}</strong>
+              </div>
+              <div style={{ color: '#d93025', display: 'flex', alignItems: 'center', gap: '5px' }} title="ไม่มีการใช้งานระบบเลยใน 30 วันล่าสุด">
+                <LuUserMinus size={16} /> ไม่ได้ใช้งาน: <strong>{stats.inactiveUsers}</strong>
+              </div>
+            </div>
+
+            <p style={{ margin: '15px 0 0 0', fontSize: '0.85rem', color: '#a68c74', textAlign: 'center' }}>คลิกเพื่อดูทั้งหมด</p>
           </div>
+          {/* ========================================================================= */}
           
           <div className="admin-card stat-card" onClick={() => navigate('/admin/manage-food')} style={{ cursor: 'pointer', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '20px', right: '20px', color: '#ff8c42', opacity: 0.5 }}>
@@ -386,7 +406,7 @@ function DashboardReport() {
           </div>
         </div>
 
-      </div> {/* <-- ปิด div reportRef ที่นี่ */}
+      </div>
     </>
   );
 }

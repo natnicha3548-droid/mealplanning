@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react'; 
-import { LuPlus, LuEye, LuPenLine, LuTrash2, LuSearch, LuX } from "react-icons/lu";
+import { 
+  LuPlus, 
+  LuEye, 
+  LuPenLine, 
+  LuTrash2, 
+  LuSearch, 
+  LuX,
+  LuUserPlus,  // <--- เพิ่มไอคอนผู้ใช้ใหม่
+  LuUserMinus  // <--- เพิ่มไอคอนไม่ได้ใช้งาน
+} from "react-icons/lu";
 import { FaUserCog } from "react-icons/fa";
 import './ManageUsers.css';
 
@@ -10,12 +19,15 @@ function ManageUsers() {
   const [error, setError] = useState(null); 
   const [searchQuery, setSearchQuery] = useState('');
 
+  // ================= State สำหรับสถิติเพิ่มเติม (ใหม่/ไม่ได้ใช้งาน) =================
+  const [extraStats, setExtraStats] = useState({ newUsers: 0, inactiveUsers: 0 });
+
   // ================= State สำหรับ Modal =================
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState(''); // 'view', 'edit', 'add'
   const [selectedUser, setSelectedUser] = useState({
     user_id: '', email: '', password: '', role: 'User'
-  }); // เก็บข้อมูลของ User ที่กำลังดู/แก้ไข หรือเพิ่มใหม่
+  }); 
 
   useEffect(() => {
     fetchUsersData();
@@ -23,11 +35,27 @@ function ManageUsers() {
 
   const fetchUsersData = async () => {
     try {
+      // 1. ดึงข้อมูลตารางผู้ใช้งาน
       const response = await fetch('http://localhost:5000/api/admin/users');
       if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลสมาชิกได้');
       const data = await response.json();
       setUsers(data); 
       setIsLoading(false);
+
+      // 2. แอบไปดึงสถิติผู้ใช้งานใหม่/ไม่ได้ใช้งาน จาก API dashboard
+      try {
+        const statsRes = await fetch('http://localhost:5000/api/admin/dashboard-stats');
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setExtraStats({
+            newUsers: statsData.newUsers || 0,
+            inactiveUsers: statsData.inactiveUsers || 0
+          });
+        }
+      } catch (e) {
+        console.error("Failed to fetch extra stats:", e);
+      }
+
     } catch (err) {
       console.error("Fetch Error:", err);
       setError(err.message);
@@ -64,7 +92,7 @@ function ManageUsers() {
   };
 
   const handleAdd = () => {
-    setSelectedUser({ email: '', password: '', role: 'User' }); // เคลียร์ฟอร์ม
+    setSelectedUser({ email: '', password: '', role: 'User' }); 
     setModalMode('add');
     setIsModalOpen(true);
   };
@@ -73,10 +101,9 @@ function ManageUsers() {
 
   // ================= ฟังก์ชันบันทึกข้อมูล (เพิ่ม / แก้ไข) =================
   const handleSaveModal = async (e) => {
-    e.preventDefault(); // ป้องกันการรีเฟรชหน้า
+    e.preventDefault(); 
     
     if (modalMode === 'add') {
-      // โหมดเพิ่มสมาชิกใหม่
       try {
         const response = await fetch('http://localhost:5000/api/signup', {
           method: 'POST',
@@ -86,7 +113,7 @@ function ManageUsers() {
         const result = await response.json();
         if (response.ok) {
           alert("เพิ่มสมาชิกสำเร็จ!");
-          fetchUsersData(); // ดึงข้อมูลใหม่
+          fetchUsersData(); 
           closeModal();
         } else {
           alert(result.message || "เกิดข้อผิดพลาด");
@@ -95,7 +122,6 @@ function ManageUsers() {
         console.error(err);
       }
     } else if (modalMode === 'edit') {
-      // โหมดแก้ไขสิทธิ์ผู้ใช้งาน
       try {
         const response = await fetch(`http://localhost:5000/api/admin/users/${selectedUser.user_id}`, {
           method: 'PUT',
@@ -104,7 +130,7 @@ function ManageUsers() {
         });
         if (response.ok) {
           alert("อัปเดตข้อมูลสำเร็จ!");
-          fetchUsersData(); // ดึงข้อมูลใหม่
+          fetchUsersData(); 
           closeModal();
         } else {
           alert("เกิดข้อผิดพลาดในการอัปเดต");
@@ -147,17 +173,29 @@ function ManageUsers() {
         </div>
       </div>
 
-      {/* ================= Tab กรองข้อมูล ================= */}
-      <div className="filter-and-stats-row">
+      {/* ================= Tab กรองข้อมูล & สถิติภาพรวม ================= */}
+      <div className="filter-and-stats-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+        
         <div className="role-filter-tabs">
           <button className={`filter-tab tab-all ${activeTab === 'All' ? 'active' : ''}`} onClick={() => setActiveTab('All')}>ทั้งหมด</button>
           <button className={`filter-tab tab-user ${activeTab === 'User' ? 'active' : ''}`} onClick={() => setActiveTab('User')}>ผู้ใช้งาน (User)</button>
           <button className={`filter-tab tab-admin ${activeTab === 'Admin' ? 'active' : ''}`} onClick={() => setActiveTab('Admin')}>แอดมิน (Admin)</button>
         </div>
-        <div className="user-stats-summary">
+
+        {/* ================= เพิ่มแถบสถิติใหม่ ตรงนี้ครับ ================= */}
+        <div className="user-stats-summary" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <span className="stat-pill stat-user">ผู้ใช้งาน <strong>{users.filter(u => u.role === 'User').length}</strong> คน</span>
           <span className="stat-pill stat-admin">แอดมิน <strong>{users.filter(u => u.role === 'Admin').length}</strong> คน</span>
+          
+          <span className="stat-pill" style={{ background: '#e6f4ea', color: '#1e8e3e', border: '1px solid #cce8d6', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <LuUserPlus size={15}/> ใหม่ (30 วัน) <strong>{extraStats.newUsers}</strong> คน
+          </span>
+          <span className="stat-pill" style={{ background: '#fce8e6', color: '#d93025', border: '1px solid #fad2cf', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <LuUserMinus size={15}/> ไม่ได้ใช้งาน <strong>{extraStats.inactiveUsers}</strong> คน
+          </span>
         </div>
+        {/* ========================================================= */}
+
       </div>
 
       {/* ================= ส่วนตารางแสดงข้อมูล ================= */}
@@ -182,7 +220,6 @@ function ManageUsers() {
                   <td><span className={`role-badge ${user.role.toLowerCase()}`}>{user.role}</span></td>
                   <td>
                     <div className="action-buttons">
-                      {/* ส่งข้อมูล user ทั้งก้อนไปให้ฟังก์ชัน */}
                       <button className="btn-action btn-view" title="ดูข้อมูล" onClick={() => handleView(user)}><LuEye size={16} /></button>
                       <button className="btn-action btn-edit" title="แก้ไข" onClick={() => handleEdit(user)}><LuPenLine size={16} /></button>
                       <button className="btn-action btn-delete" title="ลบ" onClick={() => handleDelete(user.user_id)}><LuTrash2 size={16} /></button>
@@ -214,7 +251,6 @@ function ManageUsers() {
             <form onSubmit={handleSaveModal}>
               <div className="modal-body">
                 
-                {/* ช่องอีเมล: ดูและแก้ไขไม่ได้ในโหมด edit */}
                 <div className="form-group">
                   <label>อีเมล (Email)</label>
                   <input 
@@ -227,7 +263,6 @@ function ManageUsers() {
                   />
                 </div>
 
-                {/* ช่องรหัสผ่าน: โชว์เฉพาะตอนเพิ่มคนใหม่ */}
                 {modalMode === 'add' && (
                   <div className="form-group">
                     <label>รหัสผ่าน (Password)</label>
@@ -241,7 +276,6 @@ function ManageUsers() {
                   </div>
                 )}
 
-                {/* ช่องสิทธิ์การใช้งาน */}
                 <div className="form-group">
                   <label>สิทธิ์การใช้งาน (Role)</label>
                   <select 
