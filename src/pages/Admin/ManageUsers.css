@@ -1,0 +1,500 @@
+/* =========================================
+   Container & Header
+   ========================================= */
+.manage-users-container {
+  background-color: transparent; 
+  padding: 0; /* ลบ padding ออกเพื่อให้ขอบพอดีขึ้น */
+  box-shadow: none; /* ลบเงาออก */
+  border: none; /* ลบเส้นขอบออก (ถ้ามี) */
+}
+
+.manage-users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px dashed #ff9531;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d96b27;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.title-icon-wrapper {
+  width: 78px;
+  height: 78px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff1e5, #ffe7d6);
+  color: #ff8c42;
+  font-size: 2rem;
+  border: 1px solid #ffe0cd;
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+  flex-shrink: 0;
+}
+
+.title-icon-wrapper svg {
+  color: #ff8c42;
+  font-size: 2.5rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* =========================================
+   Search Box & Add Button
+   ========================================= */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 5px 5px 5px 50px; /* ลด Padding บน-ล่าง ให้กล่องเตี้ยลง */
+  border: 1px solid #e0d5c1;
+  border-radius: 20px;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.85rem; /* ลดขนาดฟอนต์ลงนิดนึงให้สมส่วน */
+  color: #4a3e3d;
+  height: 35px; /* กำหนดความสูงให้ชัดเจน */
+  width: 300px; /* ลดความกว้างเริ่มต้นลง */
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.search-box input:focus {
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.15);
+  width: 300px; /* ขยายขนาดตอนกดพิมพ์ */
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #a68c74;
+}
+
+.btn-cute {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #a8e6cf 0%, #3dccc7 100%);
+  color: #1a5c59;
+  box-shadow: 0 4px 10px rgba(61, 204, 199, 0.2);
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(61, 204, 199, 0.3);
+}
+
+/* =========================================
+   Table Styling
+   ========================================= */
+.table-wrapper {
+  background-color: #ffffff; /* ใส่พื้นหลังสีขาวให้ตาราง */
+  border-radius: 20px; /* มุมมนๆ */
+  padding: 25px; /* พื้นที่ว่างรอบตารางให้ดูไม่อึดอัด */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04); /* เงาบางๆ ให้ดูลอยขึ้น */
+  border: 1px solid #f9ece0; /* เส้นขอบสีส้มอ่อนๆ เข้าโทน */
+  overflow-x: auto; 
+}
+
+.cute-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.cute-table th {
+  background-color: #fdf2e9; /* พื้นหลังหัวตารางสีพีชอ่อน */
+  color: #d96b27;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border-bottom: 2px solid #ff8c42;
+}
+
+.cute-table td {
+  padding: 16px 15px;
+  border-bottom: 1px solid #f0e6dc;
+  color: #4a3e3d;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.cute-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.cute-table tbody tr:hover {
+  background-color: #faf8f5; /* ไฮไลท์สีไข่ไก่ตอนเอาเมาส์ชี้แถว */
+}
+
+.user-id {
+  color: #a68c74;
+  font-weight: 500;
+}
+
+.text-center {
+  text-align: center;
+}
+/* =========================================
+   สลับสีแถวตาราง (Zebra Striping)
+   ========================================= */
+/* กำหนดให้แถวที่เป็นเลขคู่ (2, 4, 6...) มีสีพื้นหลังอ่อนๆ */
+.cute-table tbody tr:nth-child(even) {
+  background-color: #fdfaf7; /* สีครีมอ่อนๆ สบายตา */
+}
+
+/* ปรับสีตอนเอาเมาส์ชี้ (Hover) ให้สีชัดขึ้นนิดนึง จะได้ตัดกับสีสลับแถว */
+.cute-table tbody tr:hover {
+  background-color: #fcece0; 
+}
+
+/* =========================================
+   Role Badges (ป้ายกำกับสิทธิ์)
+   ========================================= */
+.role-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.role-badge.admin {
+  background-color: #ffe5d9;
+  color: #d93025;
+}
+
+.role-badge.user {
+  background-color: #e6f4ea;
+  color: #1e8e3e;
+}
+
+/* =========================================
+   Action Buttons (ปุ่มจัดการทรงกลม)
+   ========================================= */
+.action-buttons {
+  display: flex;
+  flex-direction: row; /* บังคับให้เรียงปุ่มจากซ้ายไปขวา (แนวนอน) */
+  justify-content: center; /* ให้อยู่กึ่งกลางเซลล์ */
+  align-items: center; /* ให้อยู่ระดับเดียวกัน */
+  gap: 8px; /* ระยะห่างระหว่างปุ่ม */
+  flex-wrap: nowrap; /* ห้ามให้ปุ่มตกลงไปบรรทัดใหม่ */
+  min-width: 130px; /* บังคับความกว้างขั้นต่ำ เพื่อไม่ให้ปุ่มโดนบีบจนตกบรรทัด */
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-view {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+.btn-view:hover { background-color: #bbdefb; transform: scale(1.15); }
+
+.btn-edit {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+.btn-edit:hover { background-color: #ffe0b2; transform: scale(1.15); }
+
+.btn-delete {
+  background-color: #fbe9e7;
+  color: #d32f2f;
+}
+.btn-delete:hover { background-color: #ffccbc; transform: scale(1.15); }
+
+
+/* =========================================
+   Role Filter Tabs (แท็บกรองสิทธิ์ผู้ใช้งาน สไตล์น่ารัก)
+   ========================================= */
+.role-filter-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* สไตล์ปุ่มตอนปกติ (ยังไม่ได้กด) */
+.filter-tab {
+  padding: 8px 22px;
+  border: 2px solid #f0e6dc; /* ขอบหนาขึ้นนิดนึง สีซอฟต์ลง */
+  background-color: #ffffff;
+  color: #a68c74;
+  border-radius: 25px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* เอฟเฟกต์ตอนเอาเมาส์ชี้ (ปุ่มจะเด้งขึ้นนิดๆ) */
+.filter-tab:hover {
+  border-color: #ff8c42;
+  color: #d96b27;
+  background-color: #fdf2e9;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   สีตอนกด Active (แยกตามหมวดหมู่)
+   ========================================= */
+
+/* แท็บ "ทั้งหมด" -> ไล่สีส้ม MealPlan */
+.filter-tab.tab-all.active {
+  background: linear-gradient(135deg, #ffe3a7 0%, #ff9c3f 100%);
+  border-color: #ff9c3f;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+}
+
+/* แท็บ "ผู้ใช้งาน" -> ไล่สีเขียวมิ้นต์น่ารักๆ */
+.filter-tab.tab-user.active {
+  background: linear-gradient(135deg, #a8cde6 0%, #3d80cc 100%);
+  border-color: #3d80cc;
+  color: #1a325c; /* ตัวอักษรสีเขียวเข้มให้อ่านง่าย */
+  box-shadow: 0 4px 12px rgba(61, 163, 204, 0.3);
+}
+
+/* แท็บ "แอดมิน" -> ไล่สีชมพู/คอรัล (Coral) */
+.filter-tab.tab-admin.active {
+  background: linear-gradient(135deg, #ff9a9e 0%, #ff6a88 100%);
+  border-color: #ff6a88;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 106, 136, 0.3);
+}
+
+/* ตอนกดคลิกให้ปุ่มยุบลงไปนิดนึง */
+.filter-tab:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   ส่วนคุม Layout แถวของแท็บและสรุปตัวเลข
+   ========================================= */
+.filter-and-stats-row {
+  display: flex;
+  justify-content: space-between; /* ดันแท็บไปซ้าย สถิติไปขวา */
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* เอา margin-bottom ของเดิมออก เพราะเราจัดการที่กล่องแม่ (filter-and-stats-row) แล้ว */
+.role-filter-tabs {
+  margin-bottom: 0 !important; 
+}
+
+/* =========================================
+   สไตล์ป้ายสรุปตัวเลข (Stat Pills)
+   ========================================= */
+.user-stats-summary {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  border: 1px solid transparent;
+}
+
+.stat-pill strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* สีป้ายสรุปฝั่ง User (โทนเขียว) */
+.stat-pill.stat-user {
+  background-color: #f2fafb;
+  color: #1e6e8e;
+  border-color: #d3e9ea;
+}
+
+/* สีป้ายสรุปฝั่ง Admin (โทนแดง/ส้ม) */
+.stat-pill.stat-admin {
+  background-color: #fff3fa;
+  color: #d9258e;
+  border-color: #fcd9f3;
+}
+
+/* =========================================
+   Modal Styles (ป๊อปอัป)
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #f9ece0;
+  background-color: #fdfaf7;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #d96b27;
+  font-size: 1.2rem;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  color: #a68c74;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.btn-close-modal:hover {
+  background-color: #f0e6dc;
+  color: #5c3d00;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #5c3d00;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e0d5c1;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #4a3e3d;
+  box-sizing: border-box;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: #ff8c42;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.15);
+}
+
+.form-group input[readOnly], .form-group select[disabled] {
+  background-color: #f5f5f5;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.modal-footer {
+  padding: 15px 25px;
+  border-top: 1px solid #f9ece0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  background-color: #fdfaf7;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: 1px solid #e0d5c1;
+  background-color: #ffffff;
+  color: #8c7355;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-cancel:hover { background-color: #f9ece0; }
+
+.btn-save {
+  padding: 10px 20px;
+  border: none;
+  background: linear-gradient(135deg, #ffb3a7 0%, #ff8c42 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-save:hover { box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3); transform: translateY(-2px); }

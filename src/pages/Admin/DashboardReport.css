@@ -13,6 +13,8 @@
   flex-wrap: wrap; 
 }
 
+
+
 /* บังคับให้การ์ดแต่ละใบกว้างเท่าๆ กัน */
 .stat-card {
   flex: 1 1 250px; 
@@ -24,7 +26,16 @@
   margin: 0;
   display: flex;
   align-items: center;
+  font-size: 0.9rem !important;
   gap: 8px;
+}
+
+.stat-card .stat-value {
+    font-size: 1.5rem !important;
+}
+
+.stat-card > div[style*="absolute"] {
+    display: none !important;
 }
 
 /* ================= ส่วนหัวข้อหน้า Dashboard ================= */
@@ -41,7 +52,7 @@
   display: flex;
   align-items: center;
   gap: 15px; 
-  font-size: 1.6rem;
+  font-size: 2rem;
 }
 
 /* ================= สไตล์กรอบวงกลมไอคอน (Glow Effect) ================= */
@@ -116,8 +127,8 @@
 
 .insight-value {
   font-weight: bold;
-  color: #ff8c42;
-  background: #fff4eb;
+  color: #65ab29;
+  background: #e5ff89;
   padding: 2px 10px;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -189,7 +200,7 @@
 .dropdown-header {
   padding: 8px 15px;
   background: #ffffff;
-  border: 2px solid #f9ece0;
+  border: 2px solid #ffe3aa;
   border-radius: 20px;
   color: #ff8c42;
   font-weight: 600;
@@ -203,7 +214,8 @@
 }
 
 .dropdown-header:hover, .dropdown-header.active {
-  border-color: #ff8c42;
+  border-color: #fff281;
+  background: #fff6d3;
   box-shadow: 0 5px 15px rgba(255, 140, 66, 0.15);
 }
 
@@ -260,7 +272,7 @@
   width: 42px;
   height: 42px;
   background: #ffffff;
-  border: 2px solid #f9ece0;
+  border: 2px solid #ffe3aa;
   border-radius: 12px;
   color: #ff8c42;
   cursor: pointer;
@@ -269,8 +281,8 @@
 }
 
 .month-picker-wrapper:hover, .month-picker-wrapper.active {
-  border-color: #ff8c42;
-  background: #fff4eb;
+  border-color: #fff281;
+  background: #fff6d3;
   box-shadow: 0 5px 15px rgba(255, 140, 66, 0.15);
 }
 
@@ -356,4 +368,119 @@
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
   border: 1px solid #ff8c42;
+}
+
+/* =========================================
+   ปุ่ม Export (Cute Style)
+   ========================================= */
+
+/* คลาสพื้นฐานที่ใช้ร่วมกันทั้ง 2 ปุ่ม */
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px; /* มุมมนๆ */
+  font-family: 'Prompt', sans-serif; /* เปลี่ยนเป็นฟอนต์ที่ใช้ในโปรเจกต์คุณได้เลย */
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* เงาบางๆ ให้ปุ่มดูลอยขึ้น */
+}
+
+/* เอฟเฟกต์ตอนชี้เมาส์ (เด้งดึ๋งนิดๆ) */
+.btn-export:hover {
+  transform: translateY(-3px); /* ลอยขึ้น */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* เงาเข้มขึ้น */
+}
+
+/* เอฟเฟกต์ตอนกดปุ่ม */
+.btn-export:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   สไตล์แยกตามสี (Excel & PDF)
+   ========================================= */
+
+/* ปุ่ม Excel - สีเขียวละมุน */
+.btn-export-excel {
+  background: linear-gradient(135deg, #a8e6cf 0%, #4bcc3d 100%); /* ไล่สีเขียวมิ้นต์ */
+  color: #1b5c1a; /* สีตัวอักษรเข้มๆ ให้อ่านง่าย */
+}
+.btn-export-excel:hover {
+  background: linear-gradient(135deg, #b5eed8 0%, #5bdb4d 100%);
+}
+
+/* ปุ่ม PDF - สีส้มอมชมพู (เข้ากับโทนของ MealPlan) */
+.btn-export-pdf {
+  background: linear-gradient(135deg, #ffb3a7 0%, #ff4242 100%); /* ไล่สีพีช-ส้ม */
+  color: #ffffff; /* ตัวอักษรสีขาว */
+}
+.btn-export-pdf:hover {
+  background: linear-gradient(135deg, #ffc2b8 0%, #fa6555 100%);
+}
+
+/* =========================================
+   ตั้งค่า CSS เฉพาะสำหรับการสร้าง PDF หรือ Print (อัปเดตใหม่)
+   ========================================= */
+@media print {
+  /* 1. ซ่อนแถบเมนูต่างๆ */
+  .no-print,
+  .sidebar, 
+  .sidenav,
+  nav,
+  aside {
+    display: none !important;
+  }
+
+  /* 2. ตั้งค่ากระดาษและย่อสเกลหน้าจอ */
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    
+    /* เทคนิคการย่อส่วน: ปรับลดตัวเลขนี้ได้ (เช่น 0.7, 0.8) เพื่อให้พอดี */
+    zoom: 0.75; 
+  }
+
+  /* 3. ขยายกล่องเนื้อหาหลัก */
+  .main-content, 
+  .dashboard-content,
+  .dashboard-content-wrapper,
+  main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 15px !important; /* เพิ่ม Padding นิดนึงไม่ให้ชิดขอบกระดาษเกินไป */
+    box-sizing: border-box !important;
+  }
+
+  /* 4. ป้องกันการ์ดโดนหั่นครึ่งหน้า */
+  .admin-card, 
+  .stat-card,
+  .quick-review-item {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 1px solid #e0e0e0 !important; /* ใส่เส้นขอบบางๆ */
+    box-shadow: none !important; /* ปิดเงา */
+  }
+
+  /* 5. ปรับให้การ์ดสถิติ (3 ใบแรก) กลับมาเรียงแนวนอนแบบเดิม (ถ้าโดนซูมจนตกบรรทัด) */
+  .dashboard-stats-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 15px !important;
+  }
+  .stat-card {
+    flex: 1 1 0 !important;
+    width: auto !important;
+  }
 }

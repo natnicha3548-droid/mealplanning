@@ -47,3 +47,16 @@ body {
   margin: 0 auto;
   padding: 90px 20px 40px;
 }
+
+@media print {
+  /* ซ่อนทุกอย่างที่มีคลาส no-print */
+  .no-print {
+    display: none !important;
+  }
+
+  /* บังคับให้หน้า Dashboard ขยายเต็มจอ (ไม่งั้นจะเหลือขอบขาวด้านซ้ายที่ Sidebar เคยอยู่) */
+  body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

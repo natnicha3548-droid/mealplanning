@@ -6,7 +6,7 @@ function AdminSidebar() {
   const location = useLocation(); // เอาไว้เช็คว่าตอนนี้อยู่หน้าไหน จะได้ทำสีไฮไลท์ถูก
 
   return (
-    <div className="admin-sidebar">
+    <div className="admin-sidebar no-print">
       <div className="admin-logo">
         <FaHamburger /> MealPlan Admin
       </div>

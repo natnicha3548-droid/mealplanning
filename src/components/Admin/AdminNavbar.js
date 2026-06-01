@@ -15,7 +15,7 @@ function AdminNavbar() {
   };
 
   return (
-    <div className="admin-navbar">
+    <div className="admin-navbar no-print">
       <div className="admin-user-info">
         <span className="admin-greeting">สวัสดี, ผู้ดูแลระบบ</span>
         <button className="admin-btn-logout" onClick={handleLogout}>

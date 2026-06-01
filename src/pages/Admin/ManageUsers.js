@@ -1,33 +1,272 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; 
+import { LuPlus, LuEye, LuPenLine, LuTrash2, LuSearch, LuX } from "react-icons/lu";
+import { FaUserCog } from "react-icons/fa";
+import './ManageUsers.css';
 
 function ManageUsers() {
+  const [activeTab, setActiveTab] = useState('All');
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // ================= State สำหรับ Modal =================
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState(''); // 'view', 'edit', 'add'
+  const [selectedUser, setSelectedUser] = useState({
+    user_id: '', email: '', password: '', role: 'User'
+  }); // เก็บข้อมูลของ User ที่กำลังดู/แก้ไข หรือเพิ่มใหม่
+
+  useEffect(() => {
+    fetchUsersData();
+  }, []); 
+
+  const fetchUsersData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/admin/users');
+      if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลสมาชิกได้');
+      const data = await response.json();
+      setUsers(data); 
+      setIsLoading(false);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+
+  // ================= ฟังก์ชันจัดการปุ่มหลัก =================
+  const handleDelete = async (id) => {
+    if (window.confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้งานรหัส #${id}?`)) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/users/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+          setUsers(users.filter(user => user.user_id !== id));
+        } else {
+          alert("เกิดข้อผิดพลาดในการลบข้อมูล");
+        }
+      } catch (err) {
+        console.error("Delete Error:", err);
+      }
+    }
+  };
+
+  const handleView = (user) => {
+    setSelectedUser(user);
+    setModalMode('view');
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setModalMode('edit');
+    setIsModalOpen(true);
+  };
+
+  const handleAdd = () => {
+    setSelectedUser({ email: '', password: '', role: 'User' }); // เคลียร์ฟอร์ม
+    setModalMode('add');
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+
+  // ================= ฟังก์ชันบันทึกข้อมูล (เพิ่ม / แก้ไข) =================
+  const handleSaveModal = async (e) => {
+    e.preventDefault(); // ป้องกันการรีเฟรชหน้า
+    
+    if (modalMode === 'add') {
+      // โหมดเพิ่มสมาชิกใหม่
+      try {
+        const response = await fetch('http://localhost:5000/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: selectedUser.email, password: selectedUser.password, role: selectedUser.role })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          alert("เพิ่มสมาชิกสำเร็จ!");
+          fetchUsersData(); // ดึงข้อมูลใหม่
+          closeModal();
+        } else {
+          alert(result.message || "เกิดข้อผิดพลาด");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (modalMode === 'edit') {
+      // โหมดแก้ไขสิทธิ์ผู้ใช้งาน
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/users/${selectedUser.user_id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: selectedUser.role })
+        });
+        if (response.ok) {
+          alert("อัปเดตข้อมูลสำเร็จ!");
+          fetchUsersData(); // ดึงข้อมูลใหม่
+          closeModal();
+        } else {
+          alert("เกิดข้อผิดพลาดในการอัปเดต");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  // ================= กรองข้อมูล =================
+  const filteredUsers = users.filter(user => {
+    const matchTab = activeTab === 'All' || user.role === activeTab;
+    const matchSearch = user.email.toLowerCase().includes(searchQuery.toLowerCase()) || user.user_id.toString().includes(searchQuery);
+    return matchTab && matchSearch;
+  });
+
   return (
-    <div>
-      <h2>จัดการข้อมูลสมาชิก</h2>
-      <button style={{ marginBottom: '15px', padding: '8px 15px', background: '#28a745', color: '#fff', border: 'none' }}>+ เพิ่มสมาชิก</button>
-      
-      <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
-        <thead style={{ background: '#eee' }}>
-          <tr>
-            <th>User ID</th>
-            <th>อีเมล</th>
-            <th>สิทธิ์ผู้ใช้งาน (Role)</th>
-            <th>ตรวจสอบ/จัดการ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>user@gmail.com</td>
-            <td>User</td>
-            <td>
-              <button style={{ marginRight: '5px', background: '#17a2b8', color: '#fff' }}>ดูข้อมูล</button>
-              <button style={{ marginRight: '5px', background: '#ffc107' }}>แก้ไข</button>
-              <button style={{ background: '#dc3545', color: '#fff' }}>ลบ</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="manage-users-container">
+      {/* ================= ส่วนหัว (Header) ================= */}
+      <div className="manage-users-header">
+        <h2 className="page-title">
+          <div className="title-icon-wrapper"><FaUserCog /></div>
+          จัดการข้อมูลสมาชิก
+        </h2>
+        
+        <div className="header-actions">
+          <div className="search-box">
+            <LuSearch className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="ค้นหาอีเมล หรือ ID..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button className="btn-cute btn-add" onClick={handleAdd}>
+            <LuPlus size={18} /> เพิ่มสมาชิก
+          </button>
+        </div>
+      </div>
+
+      {/* ================= Tab กรองข้อมูล ================= */}
+      <div className="filter-and-stats-row">
+        <div className="role-filter-tabs">
+          <button className={`filter-tab tab-all ${activeTab === 'All' ? 'active' : ''}`} onClick={() => setActiveTab('All')}>ทั้งหมด</button>
+          <button className={`filter-tab tab-user ${activeTab === 'User' ? 'active' : ''}`} onClick={() => setActiveTab('User')}>ผู้ใช้งาน (User)</button>
+          <button className={`filter-tab tab-admin ${activeTab === 'Admin' ? 'active' : ''}`} onClick={() => setActiveTab('Admin')}>แอดมิน (Admin)</button>
+        </div>
+        <div className="user-stats-summary">
+          <span className="stat-pill stat-user">ผู้ใช้งาน <strong>{users.filter(u => u.role === 'User').length}</strong> คน</span>
+          <span className="stat-pill stat-admin">แอดมิน <strong>{users.filter(u => u.role === 'Admin').length}</strong> คน</span>
+        </div>
+      </div>
+
+      {/* ================= ส่วนตารางแสดงข้อมูล ================= */}
+      <div className="table-wrapper">
+        <table className="cute-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>อีเมล</th>
+              <th>สิทธิ์ผู้ใช้งาน (Role)</th>
+              <th className="text-center">ตรวจสอบ/จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr><td colSpan="4" className="text-center" style={{ padding: '30px' }}>กำลังโหลดข้อมูล...</td></tr>
+            ) : filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => (
+                <tr key={user.user_id}>
+                  <td className="user-id">{user.user_id}</td>
+                  <td>{user.email}</td>
+                  <td><span className={`role-badge ${user.role.toLowerCase()}`}>{user.role}</span></td>
+                  <td>
+                    <div className="action-buttons">
+                      {/* ส่งข้อมูล user ทั้งก้อนไปให้ฟังก์ชัน */}
+                      <button className="btn-action btn-view" title="ดูข้อมูล" onClick={() => handleView(user)}><LuEye size={16} /></button>
+                      <button className="btn-action btn-edit" title="แก้ไข" onClick={() => handleEdit(user)}><LuPenLine size={16} /></button>
+                      <button className="btn-action btn-delete" title="ลบ" onClick={() => handleDelete(user.user_id)}><LuTrash2 size={16} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan="4" className="text-center" style={{ padding: '30px' }}>ไม่พบข้อมูล</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ================= MODAL ป๊อปอัป ================= */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            
+            <div className="modal-header">
+              <h3>
+                {modalMode === 'add' ? 'เพิ่มสมาชิกใหม่' : 
+                 modalMode === 'edit' ? 'แก้ไขสิทธิ์การใช้งาน' : 
+                 'รายละเอียดสมาชิก'}
+              </h3>
+              <button className="btn-close-modal" onClick={closeModal}><LuX size={20} /></button>
+            </div>
+
+            <form onSubmit={handleSaveModal}>
+              <div className="modal-body">
+                
+                {/* ช่องอีเมล: ดูและแก้ไขไม่ได้ในโหมด edit */}
+                <div className="form-group">
+                  <label>อีเมล (Email)</label>
+                  <input 
+                    type="email" 
+                    required 
+                    readOnly={modalMode !== 'add'} 
+                    value={selectedUser.email}
+                    onChange={(e) => setSelectedUser({...selectedUser, email: e.target.value})}
+                    placeholder="example@email.com"
+                  />
+                </div>
+
+                {/* ช่องรหัสผ่าน: โชว์เฉพาะตอนเพิ่มคนใหม่ */}
+                {modalMode === 'add' && (
+                  <div className="form-group">
+                    <label>รหัสผ่าน (Password)</label>
+                    <input 
+                      type="password" 
+                      required 
+                      value={selectedUser.password}
+                      onChange={(e) => setSelectedUser({...selectedUser, password: e.target.value})}
+                      placeholder="กำหนดรหัสผ่าน"
+                    />
+                  </div>
+                )}
+
+                {/* ช่องสิทธิ์การใช้งาน */}
+                <div className="form-group">
+                  <label>สิทธิ์การใช้งาน (Role)</label>
+                  <select 
+                    disabled={modalMode === 'view'}
+                    value={selectedUser.role}
+                    onChange={(e) => setSelectedUser({...selectedUser, role: e.target.value})}
+                  >
+                    <option value="User">ผู้ใช้งานทั่วไป (User)</option>
+                    <option value="Admin">แอดมิน (Admin)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn-cancel" onClick={closeModal}>ปิด</button>
+                {modalMode !== 'view' && (
+                  <button type="submit" className="btn-save">บันทึกข้อมูล</button>
+                )}
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

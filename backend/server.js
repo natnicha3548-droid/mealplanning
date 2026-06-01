@@ -1717,6 +1717,15 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             GROUP BY md.food_id ORDER BY count DESC LIMIT 5
         `);
 
+        // === เพิ่มลอจิกจำลองทิศทางลูกศร (Trend) ===
+        const topFoodsWithTrend = topFoods.map((item, index) => {
+            let trend = 'neutral';
+            if (index < 2) trend = 'up'; // อันดับ 1 และ 2 ให้ลูกศรชี้ขึ้น (กำลังฮิต)
+            else if (index > 2) trend = 'down'; // อันดับ 4 และ 5 ให้ลูกศรชี้ลง (ความนิยมลดลง)
+            
+            return { ...item, trend };
+        });
+
         // 4. รายการรีวิวด่วน
         const [recentReviews] = await connection.query(`
             SELECT fr.review_id, u.email, f.food_name, fr.rating, fr.review_text 
@@ -1724,10 +1733,11 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             WHERE fr.review_status = 'รออนุมัติ' ORDER BY fr.created_at DESC LIMIT 3
         `);
 
+        // แก้ไขตรงข้อมูลจำลอง FP-growth ให้มีตัวแปร trend เพิ่มเข้ามา
         const fpGrowthInsights = [
-            { pair: "ข้าวผัดหมู + น้ำซุป", confidence: "85%" },
-            { pair: "สลัดอกไก่ + ไข่ต้ม", confidence: "72%" },
-            { pair: "ผัดกะเพรา + ไข่ดาว", confidence: "90%" }
+            { pair: "ข้าวผัดหมู + น้ำซุป", confidence: "85%", trend: "up" },     // ชี้ขึ้น
+            { pair: "สลัดอกไก่ + ไข่ต้ม", confidence: "72%", trend: "down" },   // ชี้ลง
+            { pair: "ผัดกะเพรา + ไข่ดาว", confidence: "90%", trend: "up" }      // ชี้ขึ้น
         ];
 
         // 5. ส่งข้อมูลกลับไปให้ Frontend
@@ -1736,7 +1746,7 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             totalFoods: foods[0].total,
             pendingReviews: reviews[0].total,
             chartData: chartData.reverse(), // กลับด้านให้วันที่เก่าอยู่ซ้าย ใหม่ยู่ขวา
-            topFoods: topFoods,
+            topFoods: topFoodsWithTrend,
             recentReviews: recentReviews,
             fpGrowthInsights: fpGrowthInsights
         });
@@ -1779,6 +1789,79 @@ app.put('/api/admin/reviews/:id/status', async (req, res) => {
     } catch (error) {
         console.error("Update Review Status Error:", error);
         res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// ================= ADMIN: MANAGE USERS API =================
+// API สำหรับดึงรายชื่อผู้ใช้ทั้งหมด
+app.get('/api/admin/users', async (req, res) => {
+    const connection = db.promise();
+    try {
+        // ดึงข้อมูล user_id, email, และ role มาโชว์ในตาราง
+        const [users] = await connection.query(`
+            SELECT user_id, email, role 
+            FROM users 
+            ORDER BY user_id ASC
+        `);
+        res.json(users);
+    } catch (error) {
+        console.error("Fetch Users Error:", error);
+        res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลสมาชิก" });
+    }
+});
+
+// ================= ADMIN: DELETE USER API =================
+app.delete('/api/admin/users/:id', async (req, res) => {
+    const userId = req.params.id;
+    const connection = db.promise();
+    
+    try {
+        await connection.query("START TRANSACTION"); // เริ่มกระบวนการ
+
+        // 1. ลบข้อมูลที่ผูกกับ User ในตารางย่อยต่างๆ ออกก่อน (เพื่อป้องกัน Foreign Key Error)
+        await connection.query("DELETE FROM food_review WHERE user_id = ?", [userId]);
+        await connection.query("DELETE FROM favorite WHERE user_id = ?", [userId]);
+        await connection.query("DELETE FROM user_calculations WHERE user_id = ?", [userId]);
+
+        // 2. ลบข้อมูลแผนอาหาร (ต้องลบ meal_detail ข้างในออกก่อน)
+        const [plans] = await connection.query("SELECT plan_id FROM meal_plan WHERE user_id = ?", [userId]);
+        if (plans.length > 0) {
+            const planIds = plans.map(p => p.plan_id);
+            // ลบรายละเอียดย่อยในแผน
+            await connection.query("DELETE FROM meal_detail WHERE plan_id IN (?)", [planIds]);
+        }
+        // ลบหัวข้อแผนอาหาร
+        await connection.query("DELETE FROM meal_plan WHERE user_id = ?", [userId]);
+
+        // 3. ท้ายสุด ลบข้อมูลผู้ใช้งานในตารางหลัก
+        await connection.query("DELETE FROM users WHERE user_id = ?", [userId]);
+
+        await connection.query("COMMIT"); // ยืนยันการลบ
+        res.json({ message: "ลบผู้ใช้งานและข้อมูลที่เกี่ยวข้องทั้งหมดสำเร็จ" });
+
+    } catch (error) {
+        await connection.query("ROLLBACK"); // หากพังกลางคัน ให้ยกเลิกการลบทั้งหมด
+        console.error("Delete User Error:", error);
+        res.status(500).json({ message: "เกิดข้อผิดพลาดในการลบข้อมูล" });
+    }
+});
+
+// ================= ADMIN: UPDATE USER ROLE API =================
+app.put('/api/admin/users/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { role } = req.body;
+    
+    if (!role) return res.status(400).json({ message: "ไม่ได้ระบุสิทธิ์ที่ต้องการเปลี่ยน" });
+
+    try {
+        await db.promise().query(
+            "UPDATE users SET role = ? WHERE user_id = ?",
+            [role, userId]
+        );
+        res.json({ message: "อัปเดตสิทธิ์สำเร็จ" });
+    } catch (error) {
+        console.error("Update Role Error:", error);
+        res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดต" });
     }
 });
 
