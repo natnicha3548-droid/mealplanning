@@ -149,7 +149,15 @@ function SearchFood() {
               </button>
 
               <div className="sf-img-wrapper">
-                <img src={food.image} alt={food.food_name} className="sf-food-image" />
+                <img
+                  src={
+                    food.image?.startsWith("http")
+                      ? food.image
+                      : `http://localhost:5000${food.image}`
+                  }
+                  alt={food.food_name}
+                  className="sf-food-image"
+                />
               </div>
               <div className="sf-food-info">
                 <h4>{food.food_name}</h4>

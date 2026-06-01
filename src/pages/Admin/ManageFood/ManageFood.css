@@ -1,0 +1,301 @@
+.food-page {
+    background-color: #ffffff;
+    /* ใส่พื้นหลังสีขาวให้ตาราง */
+    border-radius: 20px;
+    /* มุมมนๆ */
+    padding: 25px;
+    /* พื้นที่ว่างรอบตารางให้ดูไม่อึดอัด */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+    /* เงาบางๆ ให้ดูลอยขึ้น */
+    border: 1px solid #f9ece0;
+    /* เส้นขอบสีส้มอ่อนๆ เข้าโทน */
+    overflow-x: auto;
+}
+
+/* HEADER */
+
+.food-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed #ff9531;
+}
+
+.food-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.food-title-icon {
+    width: 78px;
+    height: 78px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff1e5, #ffe7d6);
+    color: #ff8c42;
+    font-size: 2rem;
+    border: 1px solid #ffe0cd;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+    flex-shrink: 0;
+}
+
+.food-title-icon svg {
+    font-size: 2.5rem;
+}
+
+.food-heading {
+    margin: 0;
+    color: #d96b27;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+
+/* ADD BUTTON */
+
+.food-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+    background: linear-gradient(135deg,
+            #a8e6cf 0%,
+            #3dccc7 100%);
+
+    color: #1a5c59;
+    box-shadow: 0 4px 10px rgba(61,
+            204,
+            199,
+            0.2);
+}
+
+.food-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(61,
+            204,
+            199,
+            0.3);
+}
+
+
+/* TOOLBAR */
+
+.food-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+/* SELECT */
+
+.food-toolbar select {
+    width: 180px;
+    height: 48px;
+    padding: 0 15px;
+    border: 1px solid #e0d5c1;
+    border-radius: 16px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    color: #4a3e3d;
+    cursor: pointer;
+}
+
+.food-toolbar select:focus {
+    outline: none;
+    border-color: #ff8c42;
+    box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+}
+
+/* SEARCH */
+
+.food-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.food-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a68c74;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.food-search-box input {
+    width: 320px;
+    height: 48px;
+    padding: 0 18px 0 48px;
+    border: 1px solid #e0d5c1;
+    border-radius: 16px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    color: #4a3e3d;
+    transition: all .3s ease;
+}
+
+.food-search-box input::placeholder {
+    color: #a68c74;
+}
+
+.food-search-box input:focus {
+    outline: none;
+    border-color: #ff8c42;
+    box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+}
+
+/* FOOD GRID */
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* CARD */
+
+.food-card {
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    transition: .25s;
+    max-width: 380px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+}
+
+.food-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.food-content {
+    padding: 14px;
+}
+
+.food-content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+}
+
+.food-category {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.savory-tag {
+    background: #e8f4ff;
+    color: #2196f3;
+}
+
+.sweet-tag {
+    background: #ffe8f2;
+    color: #d81b60;
+}
+
+.food-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.food-actions button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    transition: .2s;
+}
+
+.food-actions button:hover {
+    transform: scale(1.08);
+}
+
+.edit-btn {
+    background: #fff5d8;
+    color: #f9a825;
+}
+
+.delete-btn {
+    background: #ffe5e5;
+    color: #e53935;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+    .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .food-card {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .food-page {
+        padding: 20px;
+    }
+
+    .food-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .food-card {
+        max-width: 100%;
+    }
+
+   .food-search-box input {
+       width: 100%;
+       min-width: 280px;
+   }
+
+    .food-title h1 {
+        font-size: 30px;
+    }
+
+    .food-image {
+        height: 180px;
+    }
+}

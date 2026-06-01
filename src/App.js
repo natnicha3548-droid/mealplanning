@@ -26,7 +26,8 @@ import AdminLayout from './pages/Admin/AdminLayout';
 import DashboardReport from './pages/Admin/DashboardReport';
 import ManageReviews from './pages/Admin/ManageReviews';
 import ManageCategories from './pages/Admin/ManageCategories';
-import ManageFood from './pages/Admin/ManageFood';
+import ManageFood from "./pages/Admin/ManageFood/ManageFood";
+import AddFood from "./pages/Admin/ManageFood/AddFood";
 import ManageUsers from './pages/Admin/ManageUsers';
 
 /* ================= ROUTER ================= */
@@ -227,6 +228,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardReport />} /> {/* เข้า /admin จะเจอ Dashboard */}
           <Route path="manage-food" element={<ManageFood />} />
+          <Route path="add-food" element={<AddFood />} />
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-categories" element={<ManageCategories />} />
           <Route path="manage-reviews" element={<ManageReviews />} />
