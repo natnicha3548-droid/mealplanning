@@ -174,7 +174,12 @@ function ManageFood() {
 
               <div className="food-actions">
 
-                <button className="edit-btn">
+                <button
+                  className="edit-btn"
+                  onClick={() =>
+                    navigate(`/admin/edit-food/${food.food_id}`)
+                  }
+                >
                   <FaEdit />
                 </button>
 
