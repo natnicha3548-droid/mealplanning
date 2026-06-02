@@ -32,7 +32,7 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
                         <button 
                             className="home-restore-plan-btn" 
                             onClick={() => onRestore()} // 🌟 ตรงนี้เปลี่ยนเป็น () => onRestore() 
-                            title="นำแผนเดิมกลับมาใช้ใหม่"
+                            title="นำแผนอาหารล่าสุดนี้กลับมาใช้ใหม่"
                         >
                             <RotateCcw size={20} />
                         </button>
@@ -100,8 +100,8 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
             <div className="home-meal-card-header">
                 <div>
                     {/* 🌟 เปลี่ยนกลับมาเป็นข้อความธรรมดาตรงนี้ครับ */}
-                    <h2 className="home-meal-card-title">แผนอาหารรายการโปรด</h2>
-                    <p className="home-meal-card-subtitle">แผนที่คุณกดใจเก็บไว้</p>
+                    <h2 className="home-meal-card-title">แผนอาหารโปรดของฉัน</h2>
+                    <p className="home-meal-card-subtitle">แผนอาหารที่คุณกดใจเก็บไว้</p>
                 </div>
                 
                 <div className="home-meal-card-kcal">
@@ -112,7 +112,7 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
                         <button 
                             className="home-restore-plan-btn" 
                             onClick={() => onRestore(planData.plan_date)} 
-                            title="นำแผนเดิมกลับมาใช้ใหม่"
+                            title="นำแผนอาหารโปรดนี้กลับมาใช้ใหม่"
                         >
                             <RotateCcw size={20} />
                         </button>
@@ -309,7 +309,7 @@ function HomePage({ calcResult, formData }) {
                 {latestPlan && (
                     <MealPlanCard 
                         title="แผนอาหารล่าสุดของฉัน" 
-                        subtitle="แผนอาหารที่คุณบันทึกไว้ล่าสุด" 
+                        subtitle="แผนอาหารที่คุณใช้เมื่อวานนี้" 
                         planData={latestPlan} 
                         showRestoreBtn={true} 
                         onRestore={() => handleRestoreLatestPlan(latestPlan)} 
@@ -320,8 +320,8 @@ function HomePage({ calcResult, formData }) {
                 {favoriteFoods.length > 0 && (
                     <div className="home-favorite-section">
                         <div className="home-favorite-header">
-                            <h2 className="home-favorite-title">เมนูอาหารโปรด</h2>
-                            <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและบันทึกไว้</p>
+                            <h2 className="home-favorite-title">เมนูโปรดของฉัน</h2>
+                            <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและกดใจไว้</p>
                         </div>
 
                         <div className="favorite-foods-wrapper"> 
