@@ -80,20 +80,20 @@ function AuthPage({ setUser }) {
                     return;
                 }
 
-                // บันทึกข้อมูล user ลง localStorage
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(userData)
-                );
-
-                // เก็บ user ใน state
+                // เก็บ user ใน state (เพื่อให้ระบบ React รู้จัก)
                 setUser(userData);
 
-                /* ================= เพิ่มโค้ดเช็คสิทธิ์ ADMIN ตรงนี้ ================= */
+                /* ================= แก้ไขการเก็บข้อมูล: แอดมิน VS ผู้ใช้ทั่วไป ================= */
                 if (userData.role === 'Admin') {
-                    // ถ้าเป็นแอดมิน ให้เด้งไปหน้าแอดมินทันที และไม่ต้องไปเช็คฟังก์ชันคำนวณด้านล่าง
+                    // 1. ถ้าเป็นแอดมิน ให้เก็บใน sessionStorage (ปิดเว็บ/ปิดแท็บ = หลุดล็อกอินทันที)
+                    sessionStorage.setItem("user", JSON.stringify(userData));
+                    
+                    // เด้งไปหน้าแอดมินทันที
                     navigate("/admin");
                     return; 
+                } else {
+                    // 2. ถ้าเป็น User ทั่วไป ให้เก็บใน localStorage (ปิดเว็บแล้วเปิดใหม่ยังจำได้อยู่)
+                    localStorage.setItem("user", JSON.stringify(userData));
                 }
                 /* ============================================================= */
 
