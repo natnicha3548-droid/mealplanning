@@ -1,317 +1,368 @@
 import React, { useState, useEffect } from "react";
 import "./HomePage.css";
-import { Link } from "react-router-dom";
-
-import {
-    FaFire,
-    FaBreadSlice,
-    FaDrumstickBite,
-    FaTint,
-    FaCandyCane,
-    FaMortarPestle,
-    FaHeart,
-    FaStar,
-    FaSun,
-    FaCloudSun,
-    FaMoon,
-} from "react-icons/fa";
-
+import { Link, useNavigate } from "react-router-dom";
+import { FaFire, FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle, FaHeart, FaSun, FaCloudSun, FaMoon } from "react-icons/fa";
+import { RotateCcw } from 'lucide-react';
 import slide1 from "../../../assets/sl1.png";
 import slide2 from "../../../assets/sl2.png";
 
+// =================================================================
+// 1. Component: แผนอาหารล่าสุด (MealPlanCard)
+// =================================================================
+const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) => {
+    const getMeals = (data) => Array.isArray(data) ? data : (data ? [data] : []);
+
+    const themeStyles = {
+        breakfast: { bg: "#fff4ea", color: "#ff9800" },
+        lunch: { bg: "#ffebee", color: "#f44336" },
+        dinner: { bg: "#f3e5f5", color: "#9c27b0" }
+    };
+
+    return (
+        <div className="home-meal-plan-card">
+            <div className="home-meal-card-header">
+                <div>
+                    <h2 className="home-meal-card-title">{title}</h2>
+                    <p className="home-meal-card-subtitle">{subtitle}</p>
+                </div>
+                <div className="home-meal-card-kcal">
+                    <span className="home-total-label">รวมทั้งหมด</span>
+                    <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
+                    {showRestoreBtn && (
+                        <button 
+                            className="home-restore-plan-btn" 
+                            onClick={() => onRestore()} // 🌟 ตรงนี้เปลี่ยนเป็น () => onRestore() 
+                            title="นำแผนเดิมกลับมาใช้ใหม่"
+                        >
+                            <RotateCcw size={20} />
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {['breakfast', 'lunch', 'dinner'].map((type) => {
+                const meals = getMeals(planData[type]);
+                if (meals.length === 0) return null;
+                
+                const icons = { 
+                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />, 
+                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />, 
+                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} /> 
+                };
+                const labels = { breakfast: "มื้อเช้า", lunch: "มื้อกลางวัน", dinner: "มื้อเย็น" };
+
+                return (
+                    <div className="home-meal-group" key={type}>
+                        <div className="home-meal-icon-box">
+                            <div className="home-icon-circle" style={{ backgroundColor: themeStyles[type].bg }}>
+                                {icons[type]}
+                            </div>
+                            <span style={{ color: themeStyles[type].color, fontWeight: "600", fontSize: "0.95rem" }}>
+                                {labels[type]}
+                            </span>
+                        </div>
+                        
+                        <div className="home-meal-items-container">
+                            {meals.map((item, idx) => (
+                                <div className="home-meal-food-row" key={idx}>
+                                    <img src={item.image || item.breakfast_image || item.lunch_image || item.dinner_image} alt={item.name} className="home-meal-img" />
+                                    <div className="home-meal-details">
+                                        <h3>{item.name || item.breakfast_name || item.lunch_name || item.dinner_name}</h3>
+                                        <span className="home-portion-badge">{item.serving_size || "1 ส่วน"}</span>
+                                    </div>
+                                    <div className="home-meal-stats">
+                                        <div className="home-cal-text">{Math.round(item.calories || item.breakfast_cal || item.lunch_cal || item.dinner_cal)} kcal</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+// =================================================================
+// 2. Component: แผนอาหารรายการโปรด (FavoritePlanCard)
+// =================================================================
+const FavoritePlanCard = ({ planData, onRestore }) => {
+    const getMeals = (data) => Array.isArray(data) ? data : (data ? [data] : []);
+
+    const themeStyles = {
+        breakfast: { bg: "#fff4ea", color: "#ff9800" },
+        lunch: { bg: "#ffebee", color: "#f44336" },
+        dinner: { bg: "#f3e5f5", color: "#9c27b0" }
+    };
+
+    return (
+        <div className="home-meal-plan-card" style={{ marginBottom: 0 }}>
+            <div className="home-meal-card-header">
+                <div>
+                    {/* 🌟 เปลี่ยนกลับมาเป็นข้อความธรรมดาตรงนี้ครับ */}
+                    <h2 className="home-meal-card-title">แผนอาหารรายการโปรด</h2>
+                    <p className="home-meal-card-subtitle">แผนที่คุณกดใจเก็บไว้</p>
+                </div>
+                
+                <div className="home-meal-card-kcal">
+                    <span className="home-total-label">รวมทั้งหมด</span>
+                    <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
+                    
+                    <div style={{ display: 'flex', gap: '12px', marginLeft: '10px' }}>
+                        <button 
+                            className="home-restore-plan-btn" 
+                            onClick={() => onRestore(planData.plan_date)} 
+                            title="นำแผนเดิมกลับมาใช้ใหม่"
+                        >
+                            <RotateCcw size={20} />
+                        </button>
+
+                        <div 
+                            title="แผนอาหารรายการโปรด"
+                            style={{ 
+                                width: '45px', height: '45px', borderRadius: '50%', 
+                                backgroundColor: '#fff0f3', color: '#ff5b6e', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            <FaHeart size={20} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {['breakfast', 'lunch', 'dinner'].map((type) => {
+                const meals = getMeals(planData[type]);
+                if (meals.length === 0) return null;
+                
+                const icons = { 
+                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />, 
+                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />, 
+                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} /> 
+                };
+                const labels = { breakfast: "มื้อเช้า", lunch: "มื้อกลางวัน", dinner: "มื้อเย็น" };
+
+                return (
+                    <div className="home-meal-group" key={type}>
+                        <div className="home-meal-icon-box">
+                            <div className="home-icon-circle" style={{ backgroundColor: themeStyles[type].bg }}>
+                                {icons[type]}
+                            </div>
+                            <span style={{ color: themeStyles[type].color, fontWeight: "600", fontSize: "0.95rem" }}>
+                                {labels[type]}
+                            </span>
+                        </div>
+                        
+                        <div className="home-meal-items-container">
+                            {meals.map((item, idx) => (
+                                <div className="home-meal-food-row" key={idx}>
+                                    <img src={item.image || item.breakfast_image || item.lunch_image || item.dinner_image} alt={item.name} className="home-meal-img" />
+                                    <div className="home-meal-details">
+                                        <h3>{item.name || item.breakfast_name || item.lunch_name || item.dinner_name}</h3>
+                                        <span className="home-portion-badge">{item.serving_size || "1 ส่วน"}</span>
+                                    </div>
+                                    <div className="home-meal-stats">
+                                        <div className="home-cal-text">{Math.round(item.calories || item.breakfast_cal || item.lunch_cal || item.dinner_cal)} kcal</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+// =================================================================
+// 3. หน้า HomePage หลัก
+// =================================================================
 function HomePage({ calcResult, formData }) {
-
-    // ================= SLIDE =================
-    const slides = [slide1, slide2];
     const [currentSlide, setCurrentSlide] = useState(0);
-
-    // ================= LOCAL STORAGE =================
     const [savedResult, setSavedResult] = useState(null);
-
-    // ================= LATEST PLAN =================
     const [latestPlan, setLatestPlan] = useState(null);
-
-    // ================= FAVORITE FOODS =================
     const [favoriteFoods, setFavoriteFoods] = useState([]);
+    const [favoritePlans, setFavoritePlans] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-    // ================= USE EFFECT =================
+    const navigate = useNavigate();
+
     useEffect(() => {
-        // AUTO SLIDE
-        const interval = setInterval(() => {
-            setCurrentSlide(prev => (prev + 1) % slides.length);
-        }, 3000);
-
-        // LOAD CALC RESULT
+        const interval = setInterval(() => setCurrentSlide(prev => (prev + 1) % 2), 3000);
         const localCalc = JSON.parse(localStorage.getItem("calcResult"));
-        if (localCalc) {
-            setSavedResult(localCalc);
-        }
-
-        // FETCH DATA
-        fetchLatestPlan();
-        fetchFavoriteFoods();
-
+        if (localCalc) setSavedResult(localCalc);
+        fetchData();
         return () => clearInterval(interval);
     }, []);
 
-    // ================= FETCH LATEST PLAN =================
-    const fetchLatestPlan = async () => {
-        try {
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (!user) return;
+    const fetchData = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) return;
+        
+        fetch(`http://localhost:5000/api/latest-meal-plan/${user.user_id}`).then(res => res.json()).then(setLatestPlan).catch(console.log);
+        fetch(`http://localhost:5000/api/favorite-foods/${user.user_id}`).then(res => res.json()).then(setFavoriteFoods).catch(console.log);
+        fetch(`http://localhost:5000/api/favorite-plans/${user.user_id}`).then(res => res.json()).then(setFavoritePlans).catch(console.log);
+    };
 
-            const response = await fetch(
-                `http://localhost:5000/api/latest-meal-plan/${user.user_id}`
-            );
-            const data = await response.json();
-            setLatestPlan(data);
-        } catch (error) {
-            console.log(error);
+    // กู้คืนจากรายการโปรด
+    const handleRestoreFavoritePlan = async (plan) => {
+        if (!window.confirm("ต้องการนำแผนนี้จากรายการโปรดมาใช้ใหม่ใช่หรือไม่?")) return;
+        
+        setIsLoading(true);
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const res = await fetch('http://localhost:5000/api/restore-from-favorite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userId: user?.user_id || 1, 
+                    planId: plan.plan_id, 
+                    targetDate: new Date().toISOString().split('T')[0] 
+                })
+            });
+            
+            if (res.ok) {
+                alert("กู้แผนจากรายการโปรดสำเร็จ!");
+                navigate("/meal-plan");
+            } else {
+                alert("ไม่สามารถกู้แผนได้");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    // ================= FETCH FAVORITE FOODS =================
-    const fetchFavoriteFoods = async () => {
+    // กู้คืนจากแผนล่าสุด
+    const handleRestoreLatestPlan = async (plan) => {
+        if (!window.confirm("ต้องการกู้คืนแผนล่าสุดจากเมื่อวานมาใช้ใหม่ใช่หรือไม่?")) return;
+        
+        setIsLoading(true);
         try {
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (!user) return;
+            const user = JSON.parse(localStorage.getItem('user'));
+            const res = await fetch('http://localhost:5000/api/restore-latest-plan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userId: user?.user_id || 1, 
+                    planId: plan.plan_id, 
+                    targetDate: new Date().toISOString().split('T')[0] 
+                })
+            });
 
-            const response = await fetch(
-                `http://localhost:5000/api/favorite-foods/${user.user_id}`
-            );
-            const data = await response.json();
-            setFavoriteFoods(data);
-        } catch (error) {
-            console.log(error);
+            if (res.ok) {
+                alert("กู้แผนล่าสุดสำเร็จ!");
+                navigate("/meal-plan");
+            } else {
+                alert("ไม่สามารถกู้แผนล่าสุดได้");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    // ================= REMOVE FAVORITE =================
-    const handleRemoveFavorite = async (favoriteId) => {
-        try {
-            await fetch(
-                `http://localhost:5000/api/favorites/food/${favoriteId}`,
-                { method: "DELETE" }
-            );
-            setFavoriteFoods(prev => prev.filter(food => food.favorite_id !== favoriteId));
-        } catch (error) {
-            console.log(error);
-        }
+    const handleRemoveFavoriteFood = async (id) => {
+        await fetch(`http://localhost:5000/api/favorites/food/${id}`, { method: "DELETE" });
+        setFavoriteFoods(prev => prev.filter(f => f.favorite_id !== id));
     };
 
-    // ================= RESULT =================
     const result = calcResult || savedResult;
-
-    // ================= DATA PREPARATION FOR MEALS (ส่วนที่หายไป) =================
-    let breakfastData = [];
-    let lunchData = [];
-    let dinnerData = [];
-
-    if (latestPlan) {
-        // เช็คว่า backend ส่งมาเป็น Array ไหม ถ้าไม่ ให้แปลงใส่ Array ชั่วคราวให้ระบบทำงานได้
-        breakfastData = Array.isArray(latestPlan.breakfast) 
-            ? latestPlan.breakfast 
-            : (latestPlan.breakfast_name ? [{ name: latestPlan.breakfast_name, image: latestPlan.breakfast_image, calories: latestPlan.breakfast_cal }] : []);
-            
-        lunchData = Array.isArray(latestPlan.lunch) 
-            ? latestPlan.lunch 
-            : (latestPlan.lunch_name ? [{ name: latestPlan.lunch_name, image: latestPlan.lunch_image, calories: latestPlan.lunch_cal }] : []);
-            
-        dinnerData = Array.isArray(latestPlan.dinner) 
-            ? latestPlan.dinner 
-            : (latestPlan.dinner_name ? [{ name: latestPlan.dinner_name, image: latestPlan.dinner_image, calories: latestPlan.dinner_cal }] : []);
-    }
 
     return (
         <div>
-            {/* ================= SLIDE ================= */}
             <div className="slideshow">
-                <img src={slides[currentSlide]} alt="slide" className="slide-img" />
+                <img src={currentSlide === 0 ? slide1 : slide2} alt="slide" className="slide-img" />
             </div>
-
-            {/* ================= MAIN CONTAINER ================= */}
+            
             <div className="main-container">
-                {/* ================= QUICK ACTIONS ================= */}
                 <div className="quick-actions">
-                    <Link
-                        to="/calculate"
-                        state={{ formData: formData || JSON.parse(localStorage.getItem("formData")) }}
-                        className="quick-card"
-                    >
+                    <Link to="/calculate" state={{ formData }} className="quick-card">
                         <div className="quick-icon"><FaFire /></div>
-                        <div className="quick-card-content">
-                            <h3>คำนวณพลังงาน</h3>
-                            <p>คลิกเพื่อคำนวณแคลอรี่ที่คุณต้องการ</p>
-                        </div>
+                        <div className="quick-card-content"><h3>คำนวณพลังงาน</h3><p>คลิกเพื่อคำนวณแคลอรี่</p></div>
                     </Link>
-
                     <Link to="/menu" className="quick-card">
                         <div className="quick-icon"><FaBreadSlice /></div>
-                        <div className="quick-card-content">
-                            <h3>ดูเพิ่มเติม</h3>
-                            <p>คลิกเพื่อดูเมนูอาหารทั้งหมด</p>
-                        </div>
+                        <div className="quick-card-content"><h3>ดูเพิ่มเติม</h3><p>คลิกเพื่อดูเมนูทั้งหมด</p></div>
                     </Link>
                 </div>
 
-                {/* ================= NUTRITION CARD ================= */}
                 {result && (
                     <div className="nutrition-card">
                         <h2>พลังงานที่ควรได้รับต่อวัน</h2>
-                        <div className="tdee">
-                            <FaFire />
-                            <span>{Math.round(result.tdee)}</span>
-                            <small>kcal</small>
-                        </div>
+                        <div className="tdee"><FaFire /> <span>{Math.round(result.tdee)}</span><small>kcal</small></div>
                         <div className="macro-box">
-                            <div className="macro carb">
-                                <FaBreadSlice /><p>คาร์บ</p><strong>{Math.round(result.carb)} g</strong>
-                            </div>
-                            <div className="macro protein">
-                                <FaDrumstickBite /><p>โปรตีน</p><strong>{Math.round(result.protein)} g</strong>
-                            </div>
-                            <div className="macro fat">
-                                <FaTint /><p>ไขมัน</p><strong>{Math.round(result.fat)} g</strong>
-                            </div>
+                            <div className="macro carb"><FaBreadSlice /><p>คาร์บ</p><strong>{Math.round(result.carb)} g</strong></div>
+                            <div className="macro protein"><FaDrumstickBite /><p>โปรตีน</p><strong>{Math.round(result.protein)} g</strong></div>
+                            <div className="macro fat"><FaTint /><p>ไขมัน</p><strong>{Math.round(result.fat)} g</strong></div>
                             <div className="macro sugar">
-                                <FaCandyCane /><p>น้ำตาล</p><strong>{Math.round(result.sugar || 25)} g</strong>
+                                <FaCandyCane /><p>น้ำตาล</p><strong>{Math.round(result.sugar)} g</strong>
                             </div>
                             <div className="macro sodium">
-                                <FaMortarPestle /><p>โซเดียม</p><strong>{Math.round(result.sodium || 2000)} mg</strong>
+                                <FaMortarPestle /><p>โซเดียม</p><strong>{Math.round(result.sodium)} mg</strong>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* ================= LATEST MEAL PLAN ================= */}
+                {/* 1. แผนอาหารล่าสุดของฉัน */}
                 {latestPlan && (
-                    <div className="home-meal-plan-card">
-                        <div className="home-meal-card-header">
-                            <h2>เมนูอาหารล่าสุดของฉัน</h2>
-
-                            <div className="home-meal-card-kcal">
-                                <span className="home-total-label">รวมทั้งหมด</span>
-                                <div className="home-total-cal-badge">
-                                    {Math.round(latestPlan.total_calories)} kcal
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* BREAKFAST GROUP */}
-                        {breakfastData.length > 0 && (
-                            <>
-                                <div className="home-meal-group">
-                                    <div className="home-meal-icon-box home-breakfast-theme">
-                                        <div className="home-icon-circle"><FaSun size={26} style={{ color: "#FF9F43" }} /></div>
-                                        <span>มื้อเช้า</span>
-                                    </div>
-                                    <div className="home-meal-items-container">
-                                        {breakfastData.map((item, index) => (
-                                            <div className="home-meal-food-row" key={index}>
-                                                <img src={item.image || item.breakfast_image} alt={item.name} className="home-meal-img" />
-                                                <div className="home-meal-details">
-                                                    <h3>{item.name || item.breakfast_name}</h3>
-                                                    <span className="home-portion-badge">{item.serving_size}</span>
-                                                </div>
-                                                <div className="home-meal-stats">
-                                                    <div className="home-cal-text">{Math.round(item.calories || item.breakfast_cal)} kcal</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {/* LUNCH GROUP */}
-                        {lunchData.length > 0 && (
-                            <>
-                                <div className="home-meal-group">
-                                    <div className="home-meal-icon-box home-lunch-theme">
-                                        <div className="home-icon-circle"><FaCloudSun size={26} style={{ color: "#fb4949" }} /></div>
-                                        <span>มื้อกลางวัน</span>
-                                    </div>
-                                    <div className="home-meal-items-container">
-                                        {lunchData.map((item, index) => (
-                                            <div className="home-meal-food-row" key={index}>
-                                                <img src={item.image || item.lunch_image} alt={item.name} className="home-meal-img" />
-                                                <div className="home-meal-details">
-                                                    <h3>{item.name || item.lunch_name}</h3>
-                                                    <span className="home-portion-badge">{item.serving_size}</span>
-                                                </div>
-                                                <div className="home-meal-stats">
-                                                    <div className="home-cal-text">{Math.round(item.calories || item.lunch_cal)} kcal</div>
-                                                    
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {/* DINNER GROUP */}
-                        {dinnerData.length > 0 && (
-                            <>
-                                <div className="home-meal-group">
-                                    <div className="home-meal-icon-box home-dinner-theme">
-                                        <div className="home-icon-circle"><FaMoon size={24} style={{ color: "#9074ff" }} /></div>
-                                        <span>มื้อเย็น</span>
-                                    </div>
-                                    <div className="home-meal-items-container">
-                                        {dinnerData.map((item, index) => (
-                                            <div className="home-meal-food-row" key={index}>
-                                                <img src={item.image || item.dinner_image} alt={item.name} className="home-meal-img" />
-                                                <div className="home-meal-details">
-                                                    <h3>{item.name || item.dinner_name}</h3>
-                                                    <span className="home-portion-badge">{item.serving_size}</span>
-                                                </div>
-                                                <div className="home-meal-stats">
-                                                    <div className="home-cal-text">{Math.round(item.calories || item.dinner_cal)} kcal</div>
-                                                    
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>  
-                        )}
-
-                    </div>
+                    <MealPlanCard 
+                        title="แผนอาหารล่าสุดของฉัน" 
+                        subtitle="แผนอาหารที่คุณบันทึกไว้ล่าสุด" 
+                        planData={latestPlan} 
+                        showRestoreBtn={true} 
+                        onRestore={() => handleRestoreLatestPlan(latestPlan)} 
+                    />
                 )}
                 
-                {/* ================= FAVORITE FOODS ================= */}
+                {/* 2. รายการอาหารโปรด (ปรับปรุงใหม่) */}
                 {favoriteFoods.length > 0 && (
                     <div className="home-favorite-section">
                         <div className="home-favorite-header">
-                            <div>
-                                <h2 className="home-favorite-title">รายการโปรดจ้า</h2>
-                                <p className="home-favorite-subtitle">เมนูที่คุณบันทึกไว้</p>
+                            <h2 className="home-favorite-title">เมนูอาหารโปรด</h2>
+                            <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและบันทึกไว้</p>
+                        </div>
+
+                        <div className="favorite-foods-wrapper"> 
+                            <div className="favorite-foods-scroll-container">
+                                {favoriteFoods.map((food) => (
+                                    <div key={food.favorite_id} className="food-slide"> {/* ใช้คลาส food-slide */}
+                                        <div className="home-favorite-card">
+                                            <div className="home-favorite-image-wrapper">
+                                                <img src={food.image} alt={food.food_name} className="home-favorite-image" />
+                                                <button className="home-favorite-heart" onClick={() => handleRemoveFavoriteFood(food.favorite_id)}>
+                                                    <FaHeart />
+                                                </button>
+                                            </div>
+                                            <div className="home-favorite-content">
+                                                <h3>{food.food_name}</h3>
+                                                <p>{Math.round(food.calories)} kcal</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="home-favorite-grid">
-                            {favoriteFoods.map((food) => (
-                                <div key={food.favorite_id} className="home-favorite-card">
-                                    <div className="home-favorite-image-wrapper">
-                                        <img src={food.image} alt={food.food_name} className="home-favorite-image" />
-                                        <button className="home-favorite-heart" onClick={() => handleRemoveFavorite(food.favorite_id)}>
-                                            <FaHeart />
-                                        </button>
-                                    </div>
-                                    <div className="home-favorite-content">
-                                        <h3>{food.food_name}</h3>
-                                        <p>{Math.round(food.calories)} kcal</p>
-                                    </div>
+                    </div>
+                )}
+
+                {/* 🌟 3. แผนอาหารรายการโปรด (แบบเลื่อนซ้าย-ขวา) */}
+                {favoritePlans && favoritePlans.length > 0 && (
+                    <div className="favorite-plans-wrapper">
+                        <div className="favorite-plans-scroll-container">
+                            {favoritePlans.map(plan => (
+                                <div className="favorite-plan-slide" key={plan.plan_id}>
+                                    <FavoritePlanCard 
+                                        planData={plan} 
+                                        onRestore={() => handleRestoreFavoritePlan(plan)} 
+                                    />
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
 
-                {/* ================= PAST MEAL PLAN ================= */}
-                <div className="past-meal-plans">
-                    <h2>แผนการกินย้อนหลัง..</h2>
-                </div>
             </div>
         </div>
     );

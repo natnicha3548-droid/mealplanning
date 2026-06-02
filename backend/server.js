@@ -1127,7 +1127,7 @@ app.post('/api/restore-plan', async (req, res) => {
     try {
         // 1. ดึงข้อมูลแผนต้นฉบับ
         const [oldPlans] = await dbPromise.query(
-            'SELECT * FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            'SELECT * FROM meal_plan WHERE user_id = ? AND DATE(plan_date) = ?', 
             [userId, sourceDate]
         );
 
@@ -1141,44 +1141,153 @@ app.post('/api/restore-plan', async (req, res) => {
         await dbPromise.query('START TRANSACTION');
 
         try {
-            // ลบของเดิมวันนี้ออกก่อน (เพื่อกันข้อมูลซ้ำ) โดยลบรายละเอียดก่อนเพื่อกัน Foreign Key Error
+            // 1. ตรวจสอบว่าวันนี้มีแผนอยู่แล้วหรือยัง?
             const [existing] = await dbPromise.query(
                 'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
                 [userId, targetDate]
             );
 
+            let targetPlanId;
+
             if (existing.length > 0) {
-                const planIdToDelete = existing[0].plan_id;
-                await dbPromise.query('DELETE FROM meal_detail WHERE plan_id = ?', [planIdToDelete]);
-                await dbPromise.query('DELETE FROM meal_plan WHERE plan_id = ?', [planIdToDelete]);
+                // ถ้าวันนี้มีแผนอยู่แล้ว ให้ใช้ ID เดิม แล้วแค่เคลียร์เมนูเก่าทิ้ง
+                targetPlanId = existing[0].plan_id;
+                await dbPromise.query('DELETE FROM meal_detail WHERE plan_id = ?', [targetPlanId]);
+            } else {
+                // ถ้าวันนี้ยังไม่มีแผน ให้สร้างแผนใหม่ขึ้นมา
+                const [newPlan] = await dbPromise.query(
+                    'INSERT INTO meal_plan (user_id, plan_date, total_calories) VALUES (?, ?, ?)',
+                    [userId, targetDate, oldPlan.total_calories]
+                );
+                targetPlanId = newPlan.insertId;
             }
 
-            // 3. INSERT หัวข้อแผนใหม่
-            const [newPlan] = await dbPromise.query(
-                'INSERT INTO meal_plan (user_id, plan_date, total_calories, plan_detail) VALUES (?, ?, ?, ?)',
-                [userId, targetDate, oldPlan.total_calories, oldPlan.plan_detail]
+            // 2. คัดลอกรายละเอียดอาหารจากแผนเก่า (sourceDate) มาใส่ในแผนของวันนี้
+            await dbPromise.query(
+                `INSERT INTO meal_detail (plan_id, meal_type, food_id, total_calories)
+                 SELECT ?, meal_type, food_id, total_calories
+                 FROM meal_detail WHERE plan_id = ?`,
+                [targetPlanId, oldPlan.plan_id]
             );
 
-            const newPlanId = newPlan.insertId;
-
-            // 4. คัดลอกรายละเอียดอาหาร
+            // 3. อัปเดตยอดแคลอรี่รวมของแผนวันนี้ให้ตรง
             await dbPromise.query(
-                `INSERT INTO meal_detail (plan_id, meal_type, food_id, food_name_snapshot, quantity, total_calories)
-                 SELECT ?, meal_type, food_id, food_name_snapshot, quantity, total_calories
-                 FROM meal_detail WHERE plan_id = ?`,
-                [newPlanId, oldPlan.plan_id]
+                'UPDATE meal_plan SET total_calories = ? WHERE plan_id = ?',
+                [oldPlan.total_calories, targetPlanId]
             );
 
             await dbPromise.query('COMMIT');
             res.json({ message: "นำแผนกลับมาใช้ใหม่สำเร็จ!" });
 
         } catch (err) {
-            await dbPromise.query('ROLLBACK'); // ยกเลิกรายการหากผิดพลาด
+            await dbPromise.query('ROLLBACK');
             throw err;
         }
     } catch (error) {
         console.error("Restore Error:", error);
         res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์", error: error.message });
+    }
+});
+
+// ================= RESTORE FROM FAVORITE =================
+app.post('/api/restore-from-favorite', async (req, res) => {
+    const { userId, planId, targetDate } = req.body;
+
+    try {
+        await dbPromise.query('START TRANSACTION');
+
+        // 1. ดึงรายละเอียด รวมถึง quantity
+        const [details] = await dbPromise.query(
+            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?', 
+            [planId]
+        );
+
+        // 2. เช็คแผนของวันนี้
+        const [existingPlans] = await dbPromise.query(
+            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            [userId, targetDate]
+        );
+
+        let targetPlanId;
+        if (existingPlans.length > 0) {
+            targetPlanId = existingPlans[0].plan_id;
+            await dbPromise.query('DELETE FROM meal_detail WHERE plan_id = ?', [targetPlanId]);
+        } else {
+            const [newPlan] = await dbPromise.query(
+                'INSERT INTO meal_plan (user_id, plan_date, total_calories) VALUES (?, ?, ?)',
+                [userId, targetDate, 0]
+            );
+            targetPlanId = newPlan.insertId;
+        }
+
+        // 3. วนลูป Insert พร้อม quantity
+        let totalCal = 0;
+        for (const item of details) {
+            await dbPromise.query(
+                'INSERT INTO meal_detail (plan_id, meal_type, food_id, quantity, total_calories) VALUES (?, ?, ?, ?, ?)',
+                [targetPlanId, item.meal_type, item.food_id, item.quantity, item.total_calories]
+            );
+            totalCal += item.total_calories;
+        }
+
+        await dbPromise.query('UPDATE meal_plan SET total_calories = ? WHERE plan_id = ?', [totalCal, targetPlanId]);
+
+        await dbPromise.query('COMMIT');
+        res.json({ message: "นำแผนโปรดมาใช้ใหม่สำเร็จ!", newPlanId: targetPlanId });
+    } catch (error) {
+        await dbPromise.query('ROLLBACK');
+        res.status(500).json({ message: "เกิดข้อผิดพลาด", error: error.message });
+    }
+});
+
+// ================= RESTORE LATEST PLAN =================
+app.post('/api/restore-latest-plan', async (req, res) => {
+    const { userId, planId, targetDate } = req.body;
+
+    try {
+        await dbPromise.query('START TRANSACTION');
+
+        // 1. ดึงรายละเอียด รวมถึง quantity
+        const [details] = await dbPromise.query(
+            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?', 
+            [planId]
+        );
+
+        // 2. เช็คแผนของวันนี้
+        const [existingPlans] = await dbPromise.query(
+            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            [userId, targetDate]
+        );
+
+        let targetPlanId;
+        if (existingPlans.length > 0) {
+            targetPlanId = existingPlans[0].plan_id;
+            await dbPromise.query('DELETE FROM meal_detail WHERE plan_id = ?', [targetPlanId]);
+        } else {
+            const [newPlan] = await dbPromise.query(
+                'INSERT INTO meal_plan (user_id, plan_date, total_calories) VALUES (?, ?, ?)',
+                [userId, targetDate, 0]
+            );
+            targetPlanId = newPlan.insertId;
+        }
+
+        // 3. วนลูป Insert พร้อม quantity
+        let totalCal = 0;
+        for (const item of details) {
+            await dbPromise.query(
+                'INSERT INTO meal_detail (plan_id, meal_type, food_id, quantity, total_calories) VALUES (?, ?, ?, ?, ?)',
+                [targetPlanId, item.meal_type, item.food_id, item.quantity, item.total_calories]
+            );
+            totalCal += item.total_calories;
+        }
+
+        await dbPromise.query('UPDATE meal_plan SET total_calories = ? WHERE plan_id = ?', [totalCal, targetPlanId]);
+
+        await dbPromise.query('COMMIT');
+        res.json({ message: "กู้คืนแผนล่าสุดสำเร็จ!" });
+    } catch (error) {
+        await dbPromise.query('ROLLBACK');
+        res.status(500).json({ message: "เกิดข้อผิดพลาด", error: error.message });
     }
 });
 // เพิ่ม API นี้ใน server.js
@@ -1589,7 +1698,6 @@ app.delete("/api/favorites/plan/:favoriteId", (req, res) => {
 
 });
 
-// ================= LATEST MEAL PLAN =================
 
 // ================= LATEST MEAL PLAN =================
 
@@ -1625,7 +1733,8 @@ app.get("/api/latest-meal-plan/:userId", (req, res) => {
                 md.meal_type,
                 md.total_calories AS calories,
                 f.food_name AS name,
-                f.image
+                f.image,
+                f.serving_size
             FROM meal_detail md
             JOIN food f
             ON md.food_id = f.food_id
@@ -1700,6 +1809,72 @@ app.get("/api/favorite-foods/:userId", (req, res) => {
 
     });
 
+});
+
+// ================= FAVORITE PLANS =================
+app.get("/api/favorite-plans/:userId", (req, res) => {
+    const { userId } = req.params;
+
+    // 1. ค้นหาแผนอาหารที่ user คนนี้กดใจไว้ (ดึงเฉพาะที่ plan_id ไม่เป็น null)
+    const planSql = `
+        SELECT 
+            mp.plan_id, 
+            mp.total_calories, 
+            mp.plan_date, 
+            f.favorite_id
+        FROM favorite f
+        JOIN meal_plan mp ON f.plan_id = mp.plan_id
+        WHERE f.user_id = ? AND f.plan_id IS NOT NULL
+        ORDER BY f.favorite_id DESC
+    `;
+
+    db.query(planSql, [userId], (err, plans) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+
+        // ถ้าไม่มีแผนโปรดเลย ให้ส่ง Array ว่างกลับไป (เพื่อไม่ให้ React พัง)
+        if (plans.length === 0) {
+            return res.json([]); 
+        }
+
+        // 2. นำ plan_id ทั้งหมดไปค้นหาเมนูอาหารย่อยๆ ในแผนนั้น
+        const planIds = plans.map(p => p.plan_id);
+        const detailSql = `
+            SELECT 
+                md.plan_id, 
+                md.meal_type, 
+                md.total_calories AS calories, 
+                f.food_name AS name, 
+                f.image, 
+                f.serving_size
+            FROM meal_detail md
+            JOIN food f ON md.food_id = f.food_id
+            WHERE md.plan_id IN (?)
+        `;
+
+        db.query(detailSql, [planIds], (err, details) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json(err);
+            }
+
+            // 3. จัดกลุ่มอาหารแยกตามมื้อ (เช้า, กลางวัน, เย็น) เพื่อให้ React นำไปแสดงผลได้ทันที
+            const formattedPlans = plans.map(plan => {
+                const planDetails = details.filter(d => d.plan_id === plan.plan_id);
+                
+                return {
+                    ...plan,
+                    breakfast: planDetails.filter(d => d.meal_type === 'เช้า'),
+                    lunch: planDetails.filter(d => d.meal_type === 'กลางวัน'),
+                    dinner: planDetails.filter(d => d.meal_type === 'เย็น')
+                };
+            });
+
+            res.json(formattedPlans); // ส่งข้อมูลกลับให้ Frontend
+        });
+    });
 });
 
 

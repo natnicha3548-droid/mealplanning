@@ -12,6 +12,7 @@ import Profile from "./components/User/Pro/Profile";
 /* ================= PAGES (USER) ================= */
 
 import HomePage from "./pages/User/Home/HomePage";
+import MealPlanCard from "./pages/User/Home/MealPlanCard";
 import MenuFood from "./pages/User/Menu_food/MenuFood";
 import MealPlan from "./pages/User/Meal_plan/MealPlan";
 import NutritionReport from "./pages/User/Meal_plan/NutritionReport";
@@ -220,6 +221,11 @@ function App() {
         <Route
           path="/favourite-food"
           element={<FavFood />}
+        />
+
+        <Route
+          path="/meal-plan-card"
+          element={<MealPlanCard />}
         />
 
 

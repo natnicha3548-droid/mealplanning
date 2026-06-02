@@ -1,5 +1,4 @@
 /* ================= SLIDESHOW ================= */
-
 .slideshow {
     width: 100%;
     height: calc(100vh - 80px);
@@ -43,7 +42,6 @@
 }
 
 /* ================= MAIN CONTAINER ================= */
-
 .main-container {
     box-sizing: border-box;
     padding: 110px 10% 40px;
@@ -53,7 +51,6 @@
 }
 
 /* ================= QUICK ACTION ================= */
-
 .quick-actions {
     display: flex;
     gap: 20px;
@@ -112,7 +109,6 @@
 }
 
 /* ================= NUTRITION CARD ================= */
-
 .nutrition-card {
     width: 100%;
     padding: 40px;
@@ -149,7 +145,7 @@
 .macro-box {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
     margin-top: 20px;
     flex-wrap: wrap;
 }
@@ -196,39 +192,9 @@
     color: #1565c0;
 }
 
-/* ================= SECTION ================= */
 
-.latest-meal-plan,
-.favorite-items,
-.past-meal-plans {
-    width: 100%;
-    margin-bottom: 25px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    box-sizing: border-box;
-    transition: transform 0.3s ease;
-}
-
-.latest-meal-plan:hover,
-.favorite-items:hover,
-.past-meal-plans:hover {
-    transform: translateY(-5px);
-}
-
-.latest-meal-plan h2,
-.favorite-items h2,
-.past-meal-plans h2 {
-    margin: 0;
-    color: #ff8c42;
-    font-size: 1.6rem;
-    font-weight: 700;
-}
 
 /* ================= HOME FAVORITE ================= */
-
 .home-favorite-section {
     width: 100%;
     margin-bottom: 30px;
@@ -246,12 +212,14 @@
 }
 
 /* HEADER */
-
 .home-favorite-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    /* ลบ display: flex ออก หรือเอา comment ครอบไว้ */
+    /* display: flex; */
+    /* justify-content: space-between; */
+    
     margin-bottom: 26px;
+    width: 100%;
+    /* ปล่อยให้มันเป็นบล็อกปกติ มันจะเรียงแนวตั้งเอง */
 }
 
 .home-favorite-title {
@@ -262,22 +230,12 @@
 }
 
 .home-favorite-subtitle {
-    margin-top: 6px;
+    margin-top: 6px; /* ระยะห่างระหว่างชื่อกับคำอธิบาย */
     color: #9b7b67;
     font-size: 0.95rem;
 }
 
-/* ================= GRID ================= */
-
-.home-favorite-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    width: 100%;
-}
-
 /* ================= CARD ================= */
-
 .home-favorite-card {
     width: 100%;
     height: 280px;
@@ -296,7 +254,6 @@
 }
 
 /* IMAGE */
-
 .home-favorite-image-wrapper {
     position: relative;
     width: 100%;
@@ -316,7 +273,6 @@
 }
 
 /* HEART BUTTON */
-
 .home-favorite-heart {
     position: absolute;
     top: 14px;
@@ -342,7 +298,6 @@
 }
 
 /* CONTENT */
-
 .home-favorite-content {
     padding: 18px;
 }
@@ -362,202 +317,24 @@
     margin: 0;
 }
 
-/* ================= NEW MEAL PLAN CARD ================= */
-
-.home-meal-plan-card {
-    background: #fffcf9; 
-    border-radius: 20px;
-    padding: 30px 40px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    align-items: stretch;
-}
-
-.home-meal-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 25px;
-}
-
-.home-meal-card-header h2 {
-    font-size:2rem;
-    color: #ff7a2f;
-    margin: 0;
-    font-weight: 800;
-}
-
-/* ================= MEAL GROUP ================= */
-
-.home-meal-group {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    gap: 25px;
-    padding: 25px 0;
-    box-sizing: border-box;
-    border-bottom: 2px dotted #f4aab9 ;
-}
-
-.home-meal-items-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.home-meal-food-row {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 20px;
-    padding: 10px 0;
-}
-
-/* Icons & Themes */
-.home-meal-icon-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 80px;
-    gap: 8px;
-    margin-top: 5px;
-}
-.home-icon-circle {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-}
-.home-meal-icon-box span { font-size: 0.9rem; font-weight: 600; }
-.home-breakfast-theme .home-icon-circle { background: #fff4ea; color: #ff9800; }
-.home-breakfast-theme span { color: #ff9800; }
-.home-lunch-theme .home-icon-circle { background: #ffebee; color: #f44336; }
-.home-lunch-theme span { color: #f44336; }
-.home-dinner-theme .home-icon-circle { background: #f3e5f5; color: #9c27b0; }
-.home-dinner-theme span { color: #9c27b0; }
-
-/* Image */
-.home-meal-img {
-    width: 140px;
-    height: 90px;
-    border-radius: 16px;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-/* Details */
-.home-meal-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
-    text-align: left;
-}
-.home-meal-details h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #2b2b2b;
-    font-weight: 700;
-}
-.home-portion-badge {
-    background: #f0f2f5;
-    color: #666;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    width: fit-content;
-}
-
-/* Stats */
-.home-meal-stats {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    min-width: 100px;
-}
-.home-cal-text {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #ff8c42;
-}
-.home-review-text {
-    color: #c4aca1;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: 600;
-}
-
-/* เปลี่ยนชื่อคลาสจาก .home-meal-card-footer เป็น .home-meal-card-kcal */
-.home-meal-card-kcal {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 0;
-}
-
-.home-total-label {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #4a4a4a;
-}
-
-.home-total-cal-badge {
-    color: #f55b14;
-    padding: 6px 16px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 800;
-}
-/* ================= RESPONSIVE (MOBILE FOR HOME MEAL) ================= */
-@media screen and (max-width: 768px) {
-    .home-meal-food-row {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    .home-meal-details {
-        align-items: center;
-    }
-    .home-meal-stats {
-        align-items: center;
-        text-align: center;
-    }
-    .home-meal-card-footer {
-        flex-direction: column;
-        justify-content: center;
-    }
-}
-
 /* ================= RESPONSIVE (MOBILE) ================= */
+/* (ผมเก็บอันนี้ไว้ให้เผื่อว่าคลาส .meal-food-row มีการใช้งานที่ส่วนอื่นครับ) */
 @media screen and (max-width: 768px) {
     .meal-food-row {
         flex-direction: column;
         text-align: center;
         gap: 15px;
     }
+
     .meal-details {
         align-items: center;
     }
+
     .meal-stats {
         align-items: center;
         text-align: center;
     }
+
     .meal-card-footer {
         flex-direction: column;
         justify-content: center;
@@ -565,19 +342,14 @@
 }
 
 /* ================= TABLET ================= */
-
 @media screen and (max-width: 992px) {
-
     .home-favorite-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-
 }
 
 /* ================= MOBILE ================= */
-
 @media screen and (max-width: 768px) {
-
     .quick-actions {
         flex-direction: column;
     }
@@ -600,18 +372,6 @@
         padding: 25px 20px 60px;
     }
 
-    .latest-meal-plan,
-    .favorite-items,
-    .past-meal-plans {
-        margin: 20px 15px;
-        padding: 22px;
-    }
-
-    .latest-meal-plan h2,
-    .favorite-items h2,
-    .past-meal-plans h2 {
-        font-size: 1.2rem;
-    }
 
     .home-favorite-section {
         padding: 22px;
@@ -641,6 +401,137 @@
     .home-favorite-content h3 {
         font-size: 1rem;
     }
-
 }
 
+
+/* ================= FAVORITE PLANS SCROLL ================= */
+.favorite-plans-wrapper {
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.favorite-plans-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 20px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; /* ให้มือถือปัดลื่นๆ */
+}
+
+/* ปรับแต่งหน้าตา Scrollbar ให้ดูสะอาด */
+.favorite-plans-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+.favorite-plans-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.favorite-plans-scroll-container::-webkit-scrollbar-thumb {
+    background: #ffcda3;
+    border-radius: 10px;
+}
+
+.favorite-plan-slide {
+    flex: 0 0 92%; /* มือถือ: กินพื้นที่ 92% เพื่อให้เห็นการ์ดถัดไปโผล่มาแง้มๆ */
+    min-width: 92%;
+    scroll-snap-align: center;
+}
+/* ================= FAVORITE PLANS SCROLL (เลื่อนด้านบน) ================= */
+.favorite-plans-wrapper {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.favorite-plans-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    
+    transform: rotateX(180deg); 
+    
+    /* 🌟 ปรับ 2 ค่านี้ เพื่อขยับแถบให้ชิดการ์ด */
+    padding-bottom: 1px; /* ดึงแถบเลื่อนให้ลงมาแนบชิดติดขอบการ์ด */
+    padding-top: 15px;   /* เผื่อพื้นที่ด้านล่างการ์ดเอาไว้ให้เงา (Shadow) ไม่โดนตัด */
+    
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ปรับแต่งแถบเลื่อนให้สวยงาม */
+.favorite-plans-scroll-container::-webkit-scrollbar {
+    height: 5px; /* ปรับบางลงนิดนึง จะได้ดูแนบเนียนไปกับการ์ด */
+}
+.favorite-plans-scroll-container::-webkit-scrollbar-track {
+    background: #fff7f2;
+    border-radius: 10px;
+}
+.favorite-plans-scroll-container::-webkit-scrollbar-thumb {
+    background: #ffaa5a;
+    border-radius: 10px;
+}
+
+
+
+/* คอนเทนเนอร์หลักของอาหารโปรด */
+.favorite-foods-wrapper {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.favorite-foods-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 15px; /* เว้นที่ให้ Scrollbar */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ปรับแต่ง Scrollbar ให้เหมือนกัน */
+.favorite-foods-scroll-container::-webkit-scrollbar {
+    height: 5px;
+}
+.favorite-foods-scroll-container::-webkit-scrollbar-track {
+    background: #fff7f2;
+    border-radius: 10px;
+}
+.favorite-foods-scroll-container::-webkit-scrollbar-thumb {
+    background: #ffaa5a;
+    border-radius: 10px;
+}
+
+/* คลาสสำหรับการ์ดแต่ละใบของอาหารโปรด */
+.food-slide {
+    flex: 0 0 220px; /* บังคับขนาดการ์ดไม่ให้โดนยืดหรือหด */
+    min-width: 220px;
+    scroll-snap-align: start;
+}
+
+
+
+.favorite-plan-slide {
+    transform: rotateX(180deg); 
+    flex: 0 0 90%; 
+    min-width: 90%;
+    scroll-snap-align: center;
+    
+    /* 🌟 บังคับไม่ให้มีขอบลอย */
+    margin-bottom: 0 !important;
+}
+
+@media (min-width: 768px) {
+    .favorite-plan-slide {
+        flex: 0 0 85%;
+        min-width: 85%;
+        scroll-snap-align: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .favorite-plan-slide {
+        flex: 0 0 100%; /* จอคอม: ให้การ์ดกว้าง 100% */
+        min-width: 100%;
+        scroll-snap-align: start;
+    }
+}
