@@ -274,7 +274,7 @@ function HomePage({ calcResult, formData }) {
                                         ))}
                                     </div>
                                 </div>
-                            </>
+                            </>  
                         )}
 
                     </div>
