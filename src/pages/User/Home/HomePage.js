@@ -10,7 +10,10 @@ import {
     FaCandyCane,
     FaMortarPestle,
     FaHeart,
-    FaStar
+    FaStar,
+    FaSun,
+    FaCloudSun,
+    FaMoon,
 } from "react-icons/fa";
 
 import slide1 from "../../../assets/sl1.png";
@@ -182,103 +185,98 @@ function HomePage({ calcResult, formData }) {
 
                 {/* ================= LATEST MEAL PLAN ================= */}
                 {latestPlan && (
-                    <div className="meal-plan-card">
-                        <div className="meal-card-header">
-                            <h2>เมนูอาหารของฉัน</h2>
-                            <FaHeart className="header-heart-icon" />
+                    <div className="home-meal-plan-card">
+                        <div className="home-meal-card-header">
+                            <h2>เมนูอาหารล่าสุดของฉัน</h2>
+
+                            <div className="home-meal-card-kcal">
+                                <span className="home-total-label">รวมทั้งหมด</span>
+                                <div className="home-total-cal-badge">
+                                    {Math.round(latestPlan.total_calories)} kcal
+                                </div>
+                            </div>
                         </div>
 
                         {/* BREAKFAST GROUP */}
                         {breakfastData.length > 0 && (
                             <>
-                                <div className="meal-group">
-                                    <div className="meal-icon-box breakfast-theme">
-                                        <div className="icon-circle">☀️</div>
+                                <div className="home-meal-group">
+                                    <div className="home-meal-icon-box home-breakfast-theme">
+                                        <div className="home-icon-circle"><FaSun size={26} style={{ color: "#FF9F43" }} /></div>
                                         <span>มื้อเช้า</span>
                                     </div>
-                                    <div className="meal-items-container">
+                                    <div className="home-meal-items-container">
                                         {breakfastData.map((item, index) => (
-                                            <div className="meal-food-row" key={index}>
-                                                <img src={item.image || item.breakfast_image} alt={item.name} className="meal-img" />
-                                                <div className="meal-details">
+                                            <div className="home-meal-food-row" key={index}>
+                                                <img src={item.image || item.breakfast_image} alt={item.name} className="home-meal-img" />
+                                                <div className="home-meal-details">
                                                     <h3>{item.name || item.breakfast_name}</h3>
-                                                    <span className="portion-badge">1 ส่วน</span>
+                                                    <span className="home-portion-badge">{item.serving_size}</span>
                                                 </div>
-                                                <div className="meal-stats">
-                                                    <div className="cal-text">{Math.round(item.calories || item.breakfast_cal)} kcal</div>
-                                                    <div className="review-text"><FaStar /> รีวิว</div>
+                                                <div className="home-meal-stats">
+                                                    <div className="home-cal-text">{Math.round(item.calories || item.breakfast_cal)} kcal</div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                                <div className="meal-divider"></div>
                             </>
                         )}
 
                         {/* LUNCH GROUP */}
                         {lunchData.length > 0 && (
                             <>
-                                <div className="meal-group">
-                                    <div className="meal-icon-box lunch-theme">
-                                        <div className="icon-circle">🌤️</div>
+                                <div className="home-meal-group">
+                                    <div className="home-meal-icon-box home-lunch-theme">
+                                        <div className="home-icon-circle"><FaCloudSun size={26} style={{ color: "#fb4949" }} /></div>
                                         <span>มื้อกลางวัน</span>
                                     </div>
-                                    <div className="meal-items-container">
+                                    <div className="home-meal-items-container">
                                         {lunchData.map((item, index) => (
-                                            <div className="meal-food-row" key={index}>
-                                                <img src={item.image || item.lunch_image} alt={item.name} className="meal-img" />
-                                                <div className="meal-details">
+                                            <div className="home-meal-food-row" key={index}>
+                                                <img src={item.image || item.lunch_image} alt={item.name} className="home-meal-img" />
+                                                <div className="home-meal-details">
                                                     <h3>{item.name || item.lunch_name}</h3>
-                                                    <span className="portion-badge">1 ส่วน</span>
+                                                    <span className="home-portion-badge">{item.serving_size}</span>
                                                 </div>
-                                                <div className="meal-stats">
-                                                    <div className="cal-text">{Math.round(item.calories || item.lunch_cal)} kcal</div>
-                                                    <div className="review-text"><FaStar /> รีวิว</div>
+                                                <div className="home-meal-stats">
+                                                    <div className="home-cal-text">{Math.round(item.calories || item.lunch_cal)} kcal</div>
+                                                    
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                                <div className="meal-divider"></div>
                             </>
                         )}
 
                         {/* DINNER GROUP */}
                         {dinnerData.length > 0 && (
                             <>
-                                <div className="meal-group">
-                                    <div className="meal-icon-box dinner-theme">
-                                        <div className="icon-circle">🌙</div>
+                                <div className="home-meal-group">
+                                    <div className="home-meal-icon-box home-dinner-theme">
+                                        <div className="home-icon-circle"><FaMoon size={24} style={{ color: "#9074ff" }} /></div>
                                         <span>มื้อเย็น</span>
                                     </div>
-                                    <div className="meal-items-container">
+                                    <div className="home-meal-items-container">
                                         {dinnerData.map((item, index) => (
-                                            <div className="meal-food-row" key={index}>
-                                                <img src={item.image || item.dinner_image} alt={item.name} className="meal-img" />
-                                                <div className="meal-details">
+                                            <div className="home-meal-food-row" key={index}>
+                                                <img src={item.image || item.dinner_image} alt={item.name} className="home-meal-img" />
+                                                <div className="home-meal-details">
                                                     <h3>{item.name || item.dinner_name}</h3>
-                                                    <span className="portion-badge">1 ส่วน</span>
+                                                    <span className="home-portion-badge">{item.serving_size}</span>
                                                 </div>
-                                                <div className="meal-stats">
-                                                    <div className="cal-text">{Math.round(item.calories || item.dinner_cal)} kcal</div>
-                                                    <div className="review-text"><FaStar /> รีวิว</div>
+                                                <div className="home-meal-stats">
+                                                    <div className="home-cal-text">{Math.round(item.calories || item.dinner_cal)} kcal</div>
+                                                    
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                                <div className="meal-divider"></div>
                             </>
                         )}
 
-                        {/* FOOTER */}
-                        <div className="meal-card-footer">
-                            <span className="total-label">รวมทั้งหมด</span>
-                            <div className="total-cal-badge">
-                                {Math.round(latestPlan.total_calories)} kcal
-                            </div>
-                        </div>
                     </div>
                 )}
                 
