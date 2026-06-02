@@ -28,6 +28,7 @@ import ManageReviews from './pages/Admin/ManageReviews';
 import ManageCategories from './pages/Admin/ManageCategories';
 import ManageFood from "./pages/Admin/ManageFood/ManageFood";
 import AddFood from "./pages/Admin/ManageFood/AddFood";
+import EditFood from "./pages/Admin/ManageFood/EditFood";
 import ManageUsers from './pages/Admin/ManageUsers';
 
 /* ================= ROUTER ================= */
@@ -229,6 +230,7 @@ function App() {
           <Route index element={<DashboardReport />} /> {/* เข้า /admin จะเจอ Dashboard */}
           <Route path="manage-food" element={<ManageFood />} />
           <Route path="add-food" element={<AddFood />} />
+          <Route path="/admin/edit-food/:id" element={<EditFood />}/>
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-categories" element={<ManageCategories />} />
           <Route path="manage-reviews" element={<ManageReviews />} />

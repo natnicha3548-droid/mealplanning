@@ -2033,6 +2033,155 @@ app.post(
 
     }
 );
+
+// ================= GET FOOD BY ID API =================
+
+app.get('/api/foods/:id', (req, res) => {
+
+    const foodId = req.params.id;
+
+    db.query(
+        `
+        SELECT *
+        FROM food
+        WHERE food_id = ?
+        `,
+        [foodId],
+        (err, results) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    success: false
+                });
+
+            }
+
+            if (results.length === 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "ไม่พบข้อมูลอาหาร"
+                });
+
+            }
+
+            res.json({
+                success: true,
+                food: results[0]
+            });
+
+        }
+    );
+
+});
+
+// ================= UPDATE FOOD API =================
+
+app.put(
+    "/api/foods/:id",
+    upload.single("image"),
+    async (req, res) => {
+
+        const foodId = req.params.id;
+
+        try {
+
+            const {
+                food_name,
+                category_id,
+                serving_size,
+                calories,
+                protein,
+                fat,
+                carbohydrates,
+                sugar,
+                sodium,
+                description
+            } = req.body;
+
+            // ดึงรูปเดิม
+            const [foods] = await db.promise().query(
+                `
+                SELECT image
+                FROM food
+                WHERE food_id = ?
+                `,
+                [foodId]
+            );
+
+            if (foods.length === 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "ไม่พบอาหาร"
+                });
+
+            }
+
+            let image = foods[0].image;
+
+            // ถ้ามีอัปโหลดรูปใหม่
+            if (req.file) {
+
+                image =
+                    `/uploads/${req.file.filename}`;
+
+            }
+
+            await db.promise().query(
+                `
+                UPDATE food
+                SET
+                    food_name = ?,
+                    category_id = ?,
+                    serving_size = ?,
+                    calories = ?,
+                    protein = ?,
+                    fat = ?,
+                    carbohydrates = ?,
+                    sugar = ?,
+                    sodium = ?,
+                    description = ?,
+                    image = ?
+                WHERE food_id = ?
+                `,
+                [
+                    food_name,
+                    category_id,
+                    serving_size,
+                    calories,
+                    protein,
+                    fat,
+                    carbohydrates,
+                    sugar,
+                    sodium,
+                    description,
+                    image,
+                    foodId
+                ]
+            );
+
+            res.json({
+                success: true,
+                message: "แก้ไขอาหารสำเร็จ"
+            });
+
+        } catch (error) {
+
+            console.log(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Server Error"
+            });
+
+        }
+
+    }
+);
 // ================= START =================
 app.listen(5000, () => {
 
