@@ -1591,6 +1591,8 @@ app.delete("/api/favorites/plan/:favoriteId", (req, res) => {
 
 // ================= LATEST MEAL PLAN =================
 
+// ================= LATEST MEAL PLAN =================
+
 app.get("/api/latest-meal-plan/:userId", (req, res) => {
 
     const { userId } = req.params;
@@ -1617,12 +1619,12 @@ app.get("/api/latest-meal-plan/:userId", (req, res) => {
 
         const latestPlan = result[0];
 
-        // ดึงรายการอาหารในแผน
+        // ดึงรายการอาหารในแผน (เปลี่ยนชื่อตัวแปรให้ตรงกับที่ React คาดหวัง)
         const detailSql = `
             SELECT
                 md.meal_type,
-                md.total_calories,
-                f.food_name,
+                md.total_calories AS calories,
+                f.food_name AS name,
                 f.image
             FROM meal_detail md
             JOIN food f
@@ -1637,43 +1639,28 @@ app.get("/api/latest-meal-plan/:userId", (req, res) => {
                 return res.status(500).json(err2);
             }
 
-            let breakfast = {};
-            let lunch = {};
-            let dinner = {};
+            // เปลี่ยนจาก Object {} เป็น Array [] เพื่อเก็บหลายเมนู
+            let breakfast = [];
+            let lunch = [];
+            let dinner = [];
 
             details.forEach((item) => {
-
                 if (item.meal_type === "เช้า") {
-                    breakfast = item;
+                    breakfast.push(item);
+                } else if (item.meal_type === "กลางวัน") {
+                    lunch.push(item);
+                } else if (item.meal_type === "เย็น") {
+                    dinner.push(item);
                 }
-
-                if (item.meal_type === "กลางวัน") {
-                    lunch = item;
-                }
-
-                if (item.meal_type === "เย็น") {
-                    dinner = item;
-                }
-
             });
 
+            // ส่งข้อมูลกลับไปเป็น Array
             res.json({
-
                 plan_id: latestPlan.plan_id,
                 total_calories: latestPlan.total_calories,
-
-                breakfast_name: breakfast.food_name,
-                breakfast_image: breakfast.image,
-                breakfast_cal: breakfast.total_calories,
-
-                lunch_name: lunch.food_name,
-                lunch_image: lunch.image,
-                lunch_cal: lunch.total_calories,
-
-                dinner_name: dinner.food_name,
-                dinner_image: dinner.image,
-                dinner_cal: dinner.total_calories
-
+                breakfast: breakfast,
+                lunch: lunch,
+                dinner: dinner
             });
 
         });

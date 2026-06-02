@@ -45,7 +45,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
-  border-bottom: 2px solid #f9ece0;
+  border-bottom: 2px dashed #ff9531;
   padding-bottom: 15px;
 }
 
