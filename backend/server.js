@@ -5,6 +5,9 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const multer = require("multer");
+const path = require("path");
+
 
 // ================= CREATE APP =================
 const app = express();
@@ -105,6 +108,38 @@ app.post('/api/signup', async (req, res) => {
     }
 
 });
+
+// ================= MULTER UPLOAD =================
+
+const storage = multer.diskStorage({
+
+    destination: (req, file, cb) => {
+
+        cb(null, "uploads/");
+
+    },
+
+    filename: (req, file, cb) => {
+
+        cb(
+            null,
+            Date.now() +
+            path.extname(file.originalname)
+        );
+
+    }
+
+});
+
+const upload = multer({
+    storage
+});
+
+// เปิดให้เข้าถึงรูปภาพ
+app.use(
+    "/uploads",
+    express.static("uploads")
+);
 
 // ================= LOGIN API =================
 app.post('/api/login', (req, res) => {
@@ -1886,6 +1921,131 @@ app.put('/api/admin/users/:id', async (req, res) => {
     }
 });
 
+// ================= DELETE FOOD API =================
+
+app.delete('/api/foods/:id', async (req, res) => {
+
+    const foodId = req.params.id;
+
+    try {
+
+        await db.promise().query(
+            "DELETE FROM food WHERE food_id = ?",
+            [foodId]
+        );
+
+        res.json({
+            success: true,
+            message: "ลบอาหารสำเร็จ"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "ลบอาหารไม่สำเร็จ"
+        });
+
+    }
+
+});
+
+// ================= ADD FOOD API =================
+
+app.post(
+    "/api/foods",
+    upload.single("image"),
+    (req, res) => {
+
+        try {
+
+            const {
+                food_name,
+                category_id,
+                serving_size,
+                calories,
+                protein,
+                fat,
+                carbohydrates,
+                sugar,
+                sodium,
+                description
+            } = req.body;
+
+            const image = req.file
+                ? `/uploads/${req.file.filename}`
+                : null;
+
+            const sql = `
+                INSERT INTO food
+                (
+                    food_name,
+                    category_id,
+                    serving_size,
+                    calories,
+                    protein,
+                    fat,
+                    carbohydrates,
+                    sugar,
+                    sodium,
+                    description,
+                    image
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+
+            db.query(
+                sql,
+                [
+                    food_name,
+                    category_id,
+                    serving_size,
+                    calories,
+                    protein,
+                    fat,
+                    carbohydrates,
+                    sugar,
+                    sodium,
+                    description,
+                    image
+                ],
+                (err, result) => {
+
+                    if (err) {
+
+                        console.log(err);
+
+                        return res.status(500).json({
+                            success: false,
+                            message: "เพิ่มอาหารไม่สำเร็จ"
+                        });
+
+                    }
+
+                    res.json({
+                        success: true,
+                        message: "เพิ่มอาหารสำเร็จ",
+                        food_id: result.insertId
+                    });
+
+                }
+            );
+
+        } catch (error) {
+
+            console.log(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Server Error"
+            });
+
+        }
+
+    }
+);
 // ================= START =================
 app.listen(5000, () => {
 

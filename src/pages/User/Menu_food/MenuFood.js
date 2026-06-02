@@ -85,7 +85,7 @@ function MenuFood() {
             lunch: "กลางวัน",
             dinner: "เย็น"
         };
-
+        
         const newItem = {
             id: Date.now(),
             food_id: selectedFood.food_id,
@@ -184,7 +184,14 @@ function MenuFood() {
                                 {favFoodIds.includes(food.food_id) ? <FaHeart /> : <FaRegHeart />}
                             </button>
                             <div className="food-img-wrapper">
-                                <img src={food.image} alt={food.food_name} />
+                                <img
+                                    src={
+                                        food.image?.startsWith("http")
+                                            ? food.image
+                                            : `http://localhost:5000${food.image}`
+                                    }
+                                    alt={food.food_name}
+                                />
                             </div>
                             <div className="food-info">
                                 <h3>{food.food_name}</h3>
