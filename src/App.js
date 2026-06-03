@@ -195,8 +195,8 @@ function App() {
           path="/profile"
           element={
             <Profile
-              avatar={avatar}
-              setAvatar={setAvatar}
+              user={user}
+              setUser={setUser}
             />
           }
         />
