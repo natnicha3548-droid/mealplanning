@@ -118,15 +118,10 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
                         </button>
 
                         <div 
+                            className="home-favorite-plan-icon"
                             title="แผนอาหารรายการโปรด"
-                            style={{ 
-                                width: '45px', height: '45px', borderRadius: '50%', 
-                                backgroundColor: '#fff0f3', color: '#ff5b6e', 
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-                            }}
                         >
-                            <FaHeart size={20} />
+                            <FaHeart size={25} />
                         </div>
                     </div>
                 </div>
@@ -331,7 +326,8 @@ function HomePage({ calcResult, formData }) {
                                         <div className="home-favorite-card">
                                             <div className="home-favorite-image-wrapper">
                                                 <img src={food.image} alt={food.food_name} className="home-favorite-image" />
-                                                <button className="home-favorite-heart" onClick={() => handleRemoveFavoriteFood(food.favorite_id)}>
+                                                {/* <button className="home-favorite-heart" onClick={() => handleRemoveFavoriteFood(food.favorite_id)}> */}
+                                                <button className="home-favorite-heart" style={{ cursor: 'default' }}>
                                                     <FaHeart />
                                                 </button>
                                             </div>
@@ -339,6 +335,7 @@ function HomePage({ calcResult, formData }) {
                                                 <h3>{food.food_name}</h3>
                                                 <p>{Math.round(food.calories)} kcal</p>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                 ))}

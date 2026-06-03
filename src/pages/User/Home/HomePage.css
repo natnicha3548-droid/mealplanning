@@ -192,6 +192,26 @@
     color: #1565c0;
 }
 
+.home-favorite-plan-icon {
+    width: 50px;          
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff0f3;
+    color: #ff5b6e;
+    
+    /* จัดหัวใจให้อยู่ตรงกลางด้วย Flexbox */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.home-favorite-plan-icon:hover {
+    transform: scale(1.05);
+}
+
 
 
 /* ================= HOME FAVORITE ================= */
