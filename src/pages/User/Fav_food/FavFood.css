@@ -84,6 +84,7 @@
 /* ปุ่มแท็บ */
 .tab-btn {
     border: 1px solid #ececec;
+    overflow: hidden;
     outline: none;
     padding: 12px 26px;
     border-radius: 999px;
