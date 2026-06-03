@@ -7,11 +7,35 @@ import {
     FaRulerVertical,
     FaFire,
     FaSave,
+    FaEdit,
     FaEye,
     FaEyeSlash
 } from "react-icons/fa";
 
 import "./Profile.css";
+
+const avatars = [
+    "/avatars/0d625718d4.svg",
+    "/avatars/1a45d3c9d0.svg",
+    "/avatars/3e028494a4.svg",
+    "/avatars/5d0a632c84.svg",
+    "/avatars/8acb2d394c.svg",
+    "/avatars/18b8385cef.svg",
+    "/avatars/28e472d082.svg",
+    "/avatars/44d3e84246.svg",
+    "/avatars/46ea0c5776.svg",
+    "/avatars/77c1b1d163.svg",
+    "/avatars/82a9d62df5.svg",
+    "/avatars/96ecfa6ee2.svg",
+    "/avatars/561fbe6338.svg",
+    "/avatars/7125e34119.svg",
+    "/avatars/9473d70c32.svg",
+    "/avatars/39959acaba.svg",
+    "/avatars/a226f271a1.svg",
+    "/avatars/bd51b3202c.svg",
+    "/avatars/beab43e87c.svg",
+    "/avatars/cec5d18000.svg"
+];
 
 function Profile() {
 
@@ -31,6 +55,11 @@ function Profile() {
     const [otp, setOtp] = useState("");
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [countdown, setCountdown] = useState(180);
+    const [healthData, setHealthData] = useState(null);
+    const [selectedAvatar, setSelectedAvatar] = useState(
+        localStorage.getItem("avatar") || avatars[0]
+    );
+    const [showAvatarModal, setShowAvatarModal] = useState(false);
 
     useEffect(() => {
 
@@ -47,6 +76,7 @@ function Profile() {
                 email: storedUser.email || ""
             }));
 
+            loadHealthData(storedUser.user_id);
         }
 
     }, []);
@@ -277,6 +307,26 @@ function Profile() {
 
     };
 
+    async function loadHealthData(userId) {
+
+        try {
+
+            const res = await fetch(
+                `http://localhost:5000/api/get-calculation/${userId}`
+            );
+
+            const data = await res.json();
+
+            setHealthData(data);
+
+        } catch (err) {
+
+            console.log(err);
+
+        }
+
+    }
+
     
 
     return (
@@ -286,8 +336,78 @@ function Profile() {
             <div className="profile-card">
 
                 <div className="profile-avatar">
-                    {user?.email?.charAt(0)?.toUpperCase()}
+
+                    <img
+                        src={selectedAvatar}
+                        alt="avatar"
+                        className="profile-avatar-img"
+                    />
+
+                    <button
+                        className="avatar-edit-btn"
+                        onClick={() => setShowAvatarModal(true)}
+                    >
+                        <FaEdit />
+                    </button>
+
                 </div>
+
+                {
+                    showAvatarModal && (
+
+                        <div
+                            className="avatar-modal-overlay"
+                            onClick={() => setShowAvatarModal(false)}
+                        >
+
+                            <div
+                                className="avatar-modal"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+
+                                <h3>เลือกรูปโปรไฟล์</h3>
+
+                                <div className="avatar-modal-grid">
+
+                                    {avatars.map((avatar, index) => (
+
+                                        <img
+                                            key={index}
+                                            src={avatar}
+                                            alt=""
+                                            className={
+                                                selectedAvatar === avatar
+                                                    ? "avatar-item active"
+                                                    : "avatar-item"
+                                            }
+                                            onClick={() => {
+
+                                                setSelectedAvatar(avatar);
+
+                                                localStorage.setItem(
+                                                    "avatar",
+                                                    avatar
+                                                );
+
+                                                window.dispatchEvent(
+                                                    new Event("avatarChanged")
+                                                );
+
+                                                setShowAvatarModal(false);
+
+                                            }}
+                                        />
+
+                                    ))}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    )
+                }
 
                 <h1 className="profile-title">
                     โปรไฟล์ของฉัน
@@ -490,25 +610,31 @@ function Profile() {
                         <div className="health-card">
                             <FaWeight />
                             <h4>น้ำหนัก</h4>
-                            <span>65 kg</span>
+                            <span>
+                                {healthData?.weight ? Math.round(healthData.weight) : "-"} kg
+                            </span>
                         </div>
 
                         <div className="health-card">
                             <FaRulerVertical />
                             <h4>ส่วนสูง</h4>
-                            <span>170 cm</span>
+                            <span>
+                                {healthData?.height ? Math.round(healthData.height) : "-"} cm
+                            </span>
                         </div>
 
                         <div className="health-card">
                             <FaUser />
                             <h4>BMI</h4>
-                            <span>22.5</span>
+                            <span>{healthData?.bmi || "-"}</span>
                         </div>
 
                         <div className="health-card">
                             <FaFire />
                             <h4>เป้าหมาย</h4>
-                            <span>1800 kcal</span>
+                            <span>
+                                {healthData?.tdee ? Math.round(healthData.tdee) : "-"} kcal
+                            </span>
                         </div>
 
                     </div>

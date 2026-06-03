@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Navbar.css";
 import logo from "../../../assets/logo.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -6,21 +6,55 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const Navbar = ({ user, setUser, setCalcResult }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [avatar, setAvatar] = useState(
+        localStorage.getItem("avatar") ||
+        "/avatars/0d625718d4.svg"
+    );
 
     const location = useLocation();
     const navigate = useNavigate();
+    useEffect(() => {
+
+        const updateAvatar = () => {
+
+            setAvatar(
+                localStorage.getItem("avatar") ||
+                "/avatars/0d625718d4.svg"
+            );
+
+        };
+
+        window.addEventListener(
+            "avatarChanged",
+            updateAvatar
+        );
+
+        return () => {
+
+            window.removeEventListener(
+                "avatarChanged",
+                updateAvatar
+            );
+
+        };
+
+    }, []);
 
     const handleClose = () => setIsOpen(false);
 
     const handleLogout = () => {
         localStorage.removeItem("user");
+        localStorage.removeItem("avatar");
+
         setUser(null);
         setCalcResult(null);
         setProfileOpen(false);
+
         navigate("/");
     };
 
     const isActive = (path) => location.pathname === path;
+    
 
     return (
         <nav className="main-nav">
@@ -100,7 +134,7 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                                 style={{ position: "relative" }}
                             >
                                 <img
-                                    src={`https://ui-avatars.com/api/?name=${user.email}&background=ff8c42&color=fff`}
+                                    src={avatar}
                                     alt="avatar"
                                     className="avatar"
                                     onClick={() => setProfileOpen(!profileOpen)}
