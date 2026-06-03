@@ -2579,6 +2579,330 @@ app.put("/api/categories/:id", async (req, res) => {
 
 });
 
+// ================= CHANGE PASSWORD API =================
+app.post("/api/change-password", async (req, res) => {
+
+    const {
+        user_id,
+        oldPassword,
+        newPassword
+    } = req.body;
+
+    try {
+
+        // ตรวจสอบข้อมูล
+        if (!user_id || !oldPassword || !newPassword) {
+
+            return res.status(400).json({
+                message: "กรอกข้อมูลไม่ครบ"
+            });
+
+        }
+
+        // ค้นหาผู้ใช้
+        db.query(
+            "SELECT * FROM users WHERE user_id = ?",
+            [user_id],
+
+            async (err, result) => {
+
+                if (err) {
+
+                    console.log(err);
+
+                    return res.status(500).json({
+                        message: "Server Error"
+                    });
+
+                }
+
+                if (result.length === 0) {
+
+                    return res.status(404).json({
+                        message: "ไม่พบผู้ใช้"
+                    });
+
+                }
+
+                const user = result[0];
+
+                // ตรวจสอบรหัสผ่านเดิม
+                const match = await bcrypt.compare(
+                    oldPassword,
+                    user.password
+                );
+
+                if (!match) {
+
+                    return res.status(400).json({
+                        message: "รหัสผ่านเดิมไม่ถูกต้อง"
+                    });
+
+                }
+
+                // เข้ารหัสรหัสผ่านใหม่
+                const hashedPassword =
+                    await bcrypt.hash(newPassword, 10);
+
+                // อัปเดตรหัสผ่าน
+                db.query(
+                    "UPDATE users SET password = ? WHERE user_id = ?",
+                    [hashedPassword, user_id],
+
+                    async (updateErr) => {
+
+                        if (updateErr) {
+
+                            console.log(updateErr);
+
+                            return res.status(500).json({
+                                message: "ไม่สามารถอัปเดตรหัสผ่านได้"
+                            });
+
+                        }
+
+                        // ส่งอีเมลแจ้งเตือน
+                        try {
+
+                            await transporter.sendMail({
+
+                                to: user.email,
+
+                                subject:
+                                    "MealPlan - เปลี่ยนรหัสผ่านสำเร็จ",
+
+                                html: `
+                                    <div style="font-family: Arial; padding:20px;">
+                                        <h2 style="color:#ff8c42;">
+                                            เปลี่ยนรหัสผ่านสำเร็จ
+                                        </h2>
+
+                                        <p>
+                                            บัญชี MealPlan ของคุณมีการเปลี่ยนรหัสผ่านเรียบร้อยแล้ว
+                                        </p>
+
+                                        <p>
+                                            เวลา:
+                                            ${new Date().toLocaleString("th-TH")}
+                                        </p>
+
+                                        <hr>
+
+                                        <p>
+                                            หากคุณไม่ได้เป็นผู้ดำเนินการ
+                                            กรุณารีเซ็ตรหัสผ่านทันที
+                                        </p>
+
+                                        <p>
+                                            MealPlan Team
+                                        </p>
+                                    </div>
+                                `
+                            });
+
+                        } catch (mailErr) {
+
+                            console.log(
+                                "MAIL ERROR:",
+                                mailErr
+                            );
+
+                        }
+
+                        res.json({
+                            message:
+                                "เปลี่ยนรหัสผ่านสำเร็จ"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server Error"
+        });
+
+    }
+
+});
+
+// ================= SEND EMAIL OTP =================
+app.post("/api/send-email-otp", async (req, res) => {
+
+    const { user_id, newEmail } = req.body;
+
+    if (!newEmail) {
+
+        return res.status(400).json({
+            message: "กรุณากรอกอีเมลใหม่"
+        });
+
+    }
+
+    // ================= CHECK EMAIL EXISTS =================
+
+    db.query(
+        "SELECT user_id FROM users WHERE email = ?",
+        [newEmail],
+
+        async (err, result) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Server Error"
+                });
+
+            }
+
+            // อีเมลนี้มีอยู่แล้ว และไม่ใช่ของผู้ใช้คนปัจจุบัน
+            if (
+                result.length > 0 &&
+                Number(result[0].user_id) !== Number(user_id)
+            ) {
+
+                return res.status(400).json({
+                    message: "อีเมลนี้ถูกใช้งานแล้ว"
+                });
+
+            }
+
+            const otp = Math.floor(
+                100000 + Math.random() * 900000
+            );
+
+            // ลบ OTP เก่าออกก่อน
+            db.query(
+                "DELETE FROM email_otp WHERE user_id = ?",
+                [user_id]
+            );
+
+            db.query(
+                `
+                INSERT INTO email_otp
+                (
+                    user_id,
+                    new_email,
+                    otp
+                )
+                VALUES (?, ?, ?)
+                `,
+                [
+                    user_id,
+                    newEmail,
+                    otp
+                ],
+
+                async (err) => {
+
+                    if (err) {
+
+                        console.log(err);
+
+                        return res.status(500).json({
+                            message: "Server Error"
+                        });
+
+                    }
+
+                    try {
+
+                        await transporter.sendMail({
+
+                            to: newEmail,
+
+                            subject: "MealPlan OTP Verification",
+
+                            html: `
+                                <h2>ยืนยันการเปลี่ยนอีเมล</h2>
+
+                                <p>OTP ของคุณคือ</p>
+
+                                <h1>${otp}</h1>
+
+                                <p>OTP นี้ใช้ได้ครั้งเดียว</p>
+                            `
+                        });
+
+                        res.json({
+                            message: "ส่ง OTP สำเร็จ"
+                        });
+
+                    } catch (mailErr) {
+
+                        console.log(mailErr);
+
+                        res.status(500).json({
+                            message: "ส่งอีเมลไม่สำเร็จ"
+                        });
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+});
+
+// ================= VERIFY EMAIL OTP =================
+app.post("/api/verify-email-otp", (req, res) => {
+
+    const { user_id, otp } = req.body;
+
+    db.query(
+        `
+        SELECT *
+        FROM email_otp
+        WHERE user_id = ?
+        AND otp = ?
+        AND created_at >= NOW() - INTERVAL 3 MINUTE
+        ORDER BY id DESC
+        LIMIT 1
+        `,
+        [user_id, otp],
+
+        (err, result) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Server Error"
+                });
+
+            }
+
+            if (result.length === 0) {
+
+                return res.status(400).json({
+                    message: "OTP ไม่ถูกต้องหรือหมดอายุแล้ว"
+                });
+
+            }
+
+            const row = result[0];
+
+            return res.json({
+                message: "เปลี่ยนอีเมลสำเร็จ",
+                email: row.new_email
+            });
+
+        }
+    );
+
+});
+
 // ================= START =================
 app.listen(5000, () => {
 
