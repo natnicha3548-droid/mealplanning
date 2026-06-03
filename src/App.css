@@ -1,4 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+/* ซ่อน Scrollbar ทั้งเว็บ */
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;  /* สำหรับ IE และ Edge */
+  scrollbar-width: none;     /* สำหรับ Firefox */
+}
 
 html,
 body,
