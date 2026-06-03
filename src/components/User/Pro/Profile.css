@@ -13,16 +13,15 @@
 }
 
 .profile-avatar {
+    position: relative;
     width: 130px;
     height: 130px;
     margin: auto;
-    border-radius: 50%;
     background: linear-gradient(135deg,
-            #ff8a3d,
-            #ffbc45);
-    color: white;
-    font-size: 48px;
-    font-weight: 700;
+                #ffb347,
+                #ffcc70);
+    border: 2px solid #ff8c42;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,15 +146,11 @@
 .otp-modal-overlay {
     position: fixed;
     inset: 0;
-
     background: rgba(0, 0, 0, .45);
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     z-index: 9999;
-
     padding: 20px;
 }
 
@@ -164,17 +159,11 @@
 .otp-modal {
     width: 100%;
     max-width: 500px;
-
     background: #fff;
-
     border-radius: 28px;
-
     padding: 35px 30px;
-
     text-align: center;
-
     box-shadow: 0 25px 60px rgba(0, 0, 0, .15);
-
     animation: otpFade .25s ease;
 }
 
@@ -193,7 +182,6 @@
 .otp-modal h3 {
     font-size: 30px;
     color: #4d2d00;
-
     margin-bottom: 12px;
 }
 
@@ -260,6 +248,81 @@
 
 .otp-confirm:hover {
     transform: translateY(-2px);
+}
+
+.profile-avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-item {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: .2s;
+}
+
+.avatar-item.active {
+    border-color: #ff9800;
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #ff8c42;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    transition: .2s;
+}
+
+.avatar-edit-btn:hover {
+    transform: scale(1.08);
+}
+
+.avatar-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.avatar-modal {
+    width: 90%;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
+}
+
+.avatar-modal h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #4d2d00;
+}
+
+.avatar-modal-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
 }
 
 /* Mobile */

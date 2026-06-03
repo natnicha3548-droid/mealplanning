@@ -51,6 +51,11 @@ function App() {
   // เก็บข้อมูลฟอร์มคำนวณ
   const [formData, setFormData] = useState(null);
 
+  const [avatar, setAvatar] = useState(
+    localStorage.getItem("avatar") ||
+    "/avatars/0d625718d4.svg"
+  );
+
   const location = useLocation();
   
   // เช็คว่า URL ปัจจุบันเป็นของฝั่ง Admin หรือไม่
@@ -147,6 +152,7 @@ function App() {
           user={user}
           setUser={setUser}
           setCalcResult={setCalcResult}
+          avatar={avatar}
         />
       )}
 
@@ -187,7 +193,12 @@ function App() {
 
         <Route
           path="/profile"
-          element={<Profile />}
+          element={
+            <Profile
+              avatar={avatar}
+              setAvatar={setAvatar}
+            />
+          }
         />
 
         <Route
