@@ -3,7 +3,16 @@ import React, { useEffect, useState } from "react";
 import {
     FaHeart,
     FaUtensils,
-    FaCalendarAlt
+    FaCalendarAlt,
+    FaSun, 
+    FaCloudSun,
+    FaMoon,
+    FaFire, 
+    FaBreadSlice, 
+    FaDrumstickBite, 
+    FaTint,
+    FaCandyCane,     
+    FaMortarPestle
 } from "react-icons/fa";
 
 import "./FavFood.css";
@@ -323,181 +332,180 @@ function FavFood() {
             {/* ================= PLAN ================= */}
 
             {activeTab === "plans" && (
+            <>
+                <div className="section-top">
+                    <h2>
+                        แผนการกินโปรด ({favPlans.length})
+                    </h2>
+                </div>
 
-                <>
+                {favPlans.length === 0 ? (
+                    <div className="empty-box">ยังไม่มีรายการโปรดแผนอาหาร</div>
+                ) : (
+                    <div className="meal-plan-list">
+                        {favPlans.map((plan, index) => ( // 🌟 เพิ่ม index ตรงนี้เพื่อให้รันตัวเลขได้
+                            <div key={plan.favorite_id} className="meal-plan-full-card">
+                                
+                                {/* ================= HEADER ของแผน ================= */}
+                                <div className="plan-header">
+                                    <div className="plan-header-left">
+                                        <h2>
+                                            {plan.plan_name || `แผนการกินที่ ${index + 1}`}
+                                        </h2>
+                                        <p className="plan-subtitle">
+                                            แผนอาหารที่คุณกดใจเก็บไว้
+                                        </p>
+                                    </div>
+                                    <div className="plan-header-right">
+                                        {/* ส่วนตัวเลขแคลอรี */}
+                                        <div className="plan-cal-box">
+                                            <span className="plan-cal-label">
+                                                รวมทั้งหมด
+                                            </span>
+                                            <span className="plan-cal-value">
+                                                {parseInt(plan.total_calories || 0)} kcal
+                                            </span>
+                                        </div>
+                                        <button className="meal-fav-btn" onClick={() => removeFavoritePlan(plan.favorite_id)}>
+                                            <FaHeart />
+                                        </button>
+                                    </div>
+                                </div>
 
-                    <div className="section-top">
+                                {/* ================= MEAL ROWS ================= */}
+                                {['breakfast', 'lunch', 'dinner'].map((type) => {
+                                    const name = plan[`${type}_name`];
+                                    const image = plan[`${type}_image`];
+                                    const cal = plan[`${type}_cal`];
+                                    // ถ้าใน DB มี serving size ให้ใช้ ถ้าไม่มีให้เว้นว่างหรือใส่ค่าเริ่มต้น
+                                    const serving = plan[`${type}_serving`]; 
 
-                        <h2>
-                            แผนการกินโปรด ({favPlans.length})
-                        </h2>
+                                    if (!name) return null;
 
-                    </div>
+                                    // กำหนดสีและไอคอนตามมื้ออาหารให้เหมือนภาพที่ 2
+                                    const themeStyles = {
+                                        breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={24} /> },
+                                        lunch: { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} /> },
+                                        dinner: { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} /> }
+                                    };
 
-                    {favPlans.length === 0 ? (
+                                    const theme = themeStyles[type];
+                                    const label = type === 'breakfast' ? 'มื้อเช้า' : type === 'lunch' ? 'มื้อกลางวัน' : 'มื้อเย็น';
 
-                        <div className="empty-box">
-                            ยังไม่มีรายการโปรดแผนอาหาร
-                        </div>
-
-                    ) : (
-
-                        <div className="meal-plan-list">
-
-                                {favPlans.map((plan, index) => (
-
-                                    <div
-                                        key={plan.favorite_id}
-                                        className="meal-plan-full-card"
-                                    >
-
-                                        {/* HEADER */}
-                                        <div className="plan-header">
-
-                                            <div>
-
-                                                <h2>
-                                                    {plan.plan_name || `แผนการกินที่ ${index + 1}`}
-                                                </h2>
-
-                                                <p>
-                                                    รวม {parseInt(plan.total_calories)} kcal
-                                                </p>
-
+                                    return (
+                                        <div className="meal-row" key={type}>
+                                            
+                                            {/* 1. ไอคอนและชื่อมื้ออาหาร (จัดแนวตั้ง) */}
+                                            <div className="meal-type-stacked">
+                                                <div className="meal-icon-circle" style={{ backgroundColor: theme.bg, color: theme.color }}>
+                                                    {theme.icon}
+                                                </div>
+                                                <span style={{ color: theme.color, fontWeight: "700", marginTop: "8px", fontSize: "0.95rem" }}>
+                                                    {label}
+                                                </span>
                                             </div>
 
-                                            <button
-                                                className="meal-fav-btn"
-                                                onClick={() =>
-                                                    removeFavoritePlan(plan.favorite_id)
-                                                }
-                                            >
-                                                <FaHeart />
-                                            </button>
+                                            {/* 2. รูปอาหาร */}
+                                            <img
+                                                src={image || "https://via.placeholder.com/120"}
+                                                alt={name}
+                                                className="meal-image"
+                                            />
+
+                                            {/* 3. ชื่ออาหารและปริมาณ */}
+                                            <div className="meal-info">
+                                                <h3>{name}</h3>
+                                                {serving && (
+                                                    <span className="home-portion-badge">{serving}</span>
+                                                )}
+                                            </div>
+
+                                            {/* 4. แคลอรี (จัดชิดขวา) */}
+                                            <div className="meal-cal-right">
+                                                {parseInt(cal || 0)} kcal
+                                            </div>
 
                                         </div>
-                                    {/* BREAKFAST */}
-                                    <div className="meal-row">
-
-                                        <div className="meal-type">
-                                            🌤️ มื้อเช้า
+                                    );
+                                })}
+                                {/* ================= SUMMARY ================= */}
+                                <div className="plan-summary">
+                                    
+                                    {/* กล่องแคลอรี */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap cal-icon">
+                                            <FaFire />
                                         </div>
-
-                                        <img
-                                            src={
-                                                plan.breakfast_image ||
-                                                "https://via.placeholder.com/120"
-                                            }
-                                            alt={plan.breakfast_name}
-                                            className="meal-image"
-                                        />
-
-                                        <div className="meal-info">
-
-                                            <h3>
-                                                {plan.breakfast_name}
-                                            </h3>
-
-                                            <span>
-                                                {parseInt(plan.breakfast_cal)} kcal
-                                            </span>
-
+                                        <div className="sum-info">
+                                            <span className="sum-val">{parseInt(plan.total_calories || 0)}</span>
+                                            <span className="sum-unit">kcal</span>
                                         </div>
-
                                     </div>
 
-                                    {/* LUNCH */}
-                                    <div className="meal-row">
-
-                                        <div className="meal-type">
-                                            ☀️ มื้อกลางวัน
+                                    {/* กล่องคาร์บ */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap carb-icon">
+                                            <FaBreadSlice />
                                         </div>
-
-                                        <img
-                                            src={
-                                                plan.lunch_image ||
-                                                "https://via.placeholder.com/120"
-                                            }
-                                            alt={plan.lunch_name}
-                                            className="meal-image"
-                                        />
-
-                                        <div className="meal-info">
-
-                                            <h3>
-                                                {plan.lunch_name}
-                                            </h3>
-
-                                            <span>
-                                                {parseInt(plan.lunch_cal)} kcal
-                                            </span>
-
+                                        <div className="sum-info">
+                                            <span className="sum-label">คาร์บ</span>
+                                            <span className="sum-val">{parseInt(plan.carbs || 0)}g</span>
                                         </div>
-
                                     </div>
 
-                                    {/* DINNER */}
-                                    <div className="meal-row">
-
-                                        <div className="meal-type">
-                                            🌙 มื้อเย็น
+                                    {/* กล่องโปรตีน */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap pro-icon">
+                                            <FaDrumstickBite />
                                         </div>
-
-                                        <img
-                                            src={
-                                                plan.dinner_image ||
-                                                "https://via.placeholder.com/120"
-                                            }
-                                            alt={plan.dinner_name}
-                                            className="meal-image"
-                                        />
-
-                                        <div className="meal-info">
-
-                                            <h3>
-                                                {plan.dinner_name}
-                                            </h3>
-
-                                            <span>
-                                                {parseInt(plan.dinner_cal)} kcal
-                                            </span>
-
+                                        <div className="sum-info">
+                                            <span className="sum-label">โปรตีน</span>
+                                            <span className="sum-val">{parseInt(plan.protein || 0)}g</span>
                                         </div>
-
                                     </div>
 
-                                    {/* SUMMARY */}
-                                    <div className="plan-summary">
-
-                                        <div className="summary-box">
-                                            🔥 {parseInt(plan.total_calories)} kcal
+                                    {/* กล่องไขมัน */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap fat-icon">
+                                            <FaTint />
                                         </div>
-
-                                        <div className="summary-box">
-                                            🍚 คาร์บ {parseInt(plan.carbs || 0)}g
+                                        <div className="sum-info">
+                                            <span className="sum-label">ไขมัน</span>
+                                            <span className="sum-val">{parseInt(plan.fat || 0)}g</span>
                                         </div>
+                                    </div>
 
-                                        <div className="summary-box">
-                                            🥩 โปรตีน {parseInt(plan.protein || 0)}g
+                                    {/* กล่องน้ำตาล */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap sugar-icon">
+                                            <FaCandyCane />
                                         </div>
-
-                                        <div className="summary-box">
-                                            🥑 ไขมัน {parseInt(plan.fat || 0)}g
+                                        <div className="sum-info">
+                                            <span className="sum-label">น้ำตาล</span>
+                                            <span className="sum-val">{parseInt(plan.sugar || 0)}g</span>
                                         </div>
+                                    </div>
 
+                                    {/* กล่องโซเดียม */}
+                                    <div className="summary-box">
+                                        <div className="sum-icon-wrap sodium-icon">
+                                            <FaMortarPestle />
+                                        </div>
+                                        <div className="sum-info">
+                                            <span className="sum-label">โซเดียม</span>
+                                            {/* โซเดียมใช้หน่วยเป็น mg (มิลลิกรัม) นะครับ */}
+                                            <span className="sum-val">{parseInt(plan.sodium || 0)}mg</span> 
+                                        </div>
                                     </div>
 
                                 </div>
 
-                            ))}
-
-                        </div>
-
-                    )}
-
-                </>
-
-            )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </>
+        )}
 
         </div>
 
