@@ -7,9 +7,19 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const [avatar, setAvatar] = useState(
+        user?.avatar ||
         localStorage.getItem("avatar") ||
         "/avatars/0d625718d4.svg"
     );
+    useEffect(() => {
+
+        if (user?.avatar) {
+
+            setAvatar(user.avatar);
+
+        }
+
+    }, [user]);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -142,7 +152,6 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                                     className="avatar"
                                     onClick={() => setProfileOpen(!profileOpen)}
                                 />
-
                                 {profileOpen && (
                                     <div
                                         style={{

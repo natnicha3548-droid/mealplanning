@@ -1,6 +1,6 @@
 .profile-page {
     min-height: 100vh;
-    padding: 120px 20px 50px;
+    padding: 120px 20px 50px
 }
 
 .profile-card {
@@ -9,7 +9,7 @@
     background: #fff;
     border-radius: 35px;
     padding: 50px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, .08);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .08)
 }
 
 .profile-avatar {
@@ -17,257 +17,19 @@
     width: 130px;
     height: 130px;
     margin: auto;
-    background: linear-gradient(135deg,
-                #ffb347,
-                #ffcc70);
+    background: linear-gradient(135deg, #ffb347, #ffcc70);
     border: 2px solid #ff8c42;
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
-}
-
-.profile-title {
-    text-align: center;
-    margin-top: 20px;
-    color: #4d2d00;
-}
-
-.profile-email {
-    text-align: center;
-    color: #888;
-    margin-bottom: 40px;
-}
-
-.section {
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 1px solid #eee;
-}
-
-.section-header {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.section-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #fff2e5;
-    color: #ff8a3d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    height: 60px;
-    border: 2px solid #f0dfcf;
-    border-radius: 18px;
-    padding: 0 20px;
-    margin-bottom: 20px;
-}
-
-.input-wrapper input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 16px;
-}
-
-.save-btn {
-    width: 100%;
-    height: 60px;
-    border: none;
-    border-radius: 18px;
-
-    background: linear-gradient(90deg,
-            #ff7f2a,
-            #ffc24d);
-
-    color: white;
-    font-size: 18px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.health-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.health-card {
-    text-align: center;
-    padding: 25px;
-    border-radius: 20px;
-    background: #fafafa;
-}
-
-.health-card svg {
-    font-size: 28px;
-    color: #ff8a3d;
-}
-
-.health-card span {
-    display: block;
-    margin-top: 10px;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.password-toggle {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-size: 18px;
-    color: #666;
-    margin-left: 10px;
-}
-
-.password-toggle:hover {
-    color: #ff8c42;
-}
-
-/* Overlay */
-
-.otp-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .45);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    padding: 20px;
-}
-
-/* Card */
-
-.otp-modal {
-    width: 100%;
-    max-width: 500px;
-    background: #fff;
-    border-radius: 28px;
-    padding: 35px 30px;
-    text-align: center;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, .15);
-    animation: otpFade .25s ease;
-}
-
-@keyframes otpFade {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.otp-modal h3 {
-    font-size: 30px;
-    color: #4d2d00;
-    margin-bottom: 12px;
-}
-
-.otp-modal p {
-    color: #777;
-    line-height: 1.8;
-    margin-bottom: 25px;
-}
-
-/* Input */
-
-.otp-modal input {
-    width: 100%;
-    box-sizing: border-box;
-    height: 65px;
-    border: 2px solid #f0dfcf;
-    border-radius: 18px;
-    padding: 0 20px;
-    font-size: 22px;
-    font-weight: 600;
-    text-align: center;
-    outline: none;
-    transition: .2s;
-}
-
-.otp-modal input:focus {
-    border-color: #ff9f43;
-}
-
-/* Buttons */
-
-.otp-btn-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-.otp-btn-group button {
-    flex: 1;
-    height: 58px;
-    border: none;
-    border-radius: 18px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.otp-cancel {
-    background: #eceff3;
-    color: #555;
-}
-
-.otp-cancel:hover {
-    transform: translateY(-2px);
-}
-
-.otp-confirm {
-    color: white;
-    background: linear-gradient(90deg,
-            #ff7f2a,
-            #ffc24d);
-}
-
-.otp-confirm:hover {
-    transform: translateY(-2px);
+    justify-content: center
 }
 
 .profile-avatar-img {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    object-fit: cover;
-}
-
-.avatar-item {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: .2s;
-}
-
-.avatar-item.active {
-    border-color: #ff9800;
+    object-fit: cover
 }
 
 .avatar-edit-btn {
@@ -286,70 +48,516 @@
     cursor: pointer;
     font-size: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
-    transition: .2s;
+    transition: .2s
 }
 
 .avatar-edit-btn:hover {
-    transform: scale(1.08);
+    transform: scale(1.08)
 }
+
+.profile-title {
+    text-align: center;
+    margin-top: 20px;
+    color: #4d2d00
+}
+
+.profile-email {
+    text-align: center;
+    color: #888;
+    margin-bottom: 40px
+}
+
+.section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee
+}
+
+.section-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fff2e5;
+    color: #ff8a3d;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 60px;
+    border: 2px solid #f0dfcf;
+    border-radius: 18px;
+    padding: 0 20px;
+    margin-bottom: 20px
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px
+}
+
+.save-btn {
+    width: 100%;
+    height: 60px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(90deg, #ff7f2a, #ffc24d);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+}
+
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+.health-card {
+    height: 220px;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: .25s;
+}
+
+.health-card:hover {
+    transform: translateY(-5px);
+}
+
+.health-card svg {
+    font-size: 34px;
+    margin-bottom: 18px;
+}
+
+.health-card h4 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.health-card span {
+    margin-top: 22px;
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+/* น้ำหนัก */
+.health-card.weight {
+    background: #fdf4e8;
+}
+
+.health-card.weight svg,
+.health-card.weight h4,
+.health-card.weight span {
+    color: #f97316;
+}
+
+/* ส่วนสูง */
+.health-card.height {
+    background: #f7f1df;
+}
+
+.health-card.height svg,
+.health-card.height h4,
+.health-card.height span {
+    color: #d97706;
+}
+
+/* BMI */
+.health-card.bmi {
+    background: #fceaea;
+}
+
+.health-card.bmi svg,
+.health-card.bmi h4,
+.health-card.bmi span {
+    color: #dc2626;
+}
+
+/* เป้าหมาย */
+.health-card.goal {
+    background: #efe7ff;
+}
+
+.health-card.goal svg,
+.health-card.goal h4,
+.health-card.goal span {
+    color: #7c3aed;
+}
+
+.password-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    color: #666;
+    margin-left: 10px
+}
+
+.password-toggle:hover {
+    color: #ff8c42
+}
+
+/* OTP */
+
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px
+}
+
+.otp-modal {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 28px;
+    padding: 35px 30px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .15);
+    animation: otpFade .25s ease
+}
+
+@keyframes otpFade {
+    from {
+        opacity: 0;
+        transform: translateY(15px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+.otp-modal h3 {
+    font-size: 30px;
+    color: #4d2d00;
+    margin-bottom: 12px
+}
+
+.otp-modal p {
+    color: #777;
+    line-height: 1.8;
+    margin-bottom: 25px
+}
+
+.otp-modal input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 65px;
+    border: 2px solid #f0dfcf;
+    border-radius: 18px;
+    padding: 0 20px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+    transition: .2s
+}
+
+.otp-modal input:focus {
+    border-color: #ff9f43
+}
+
+.otp-btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px
+}
+
+.otp-btn-group button {
+    flex: 1;
+    height: 58px;
+    border: none;
+    border-radius: 18px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s
+}
+
+.otp-cancel {
+    background: #eceff3;
+    color: #555
+}
+
+.otp-cancel:hover {
+    transform: translateY(-2px)
+}
+
+.otp-confirm {
+    color: #fff;
+    background: linear-gradient(90deg, #ff7f2a, #ffc24d)
+}
+
+.otp-confirm:hover {
+    transform: translateY(-2px)
+}
+
+/* AVATAR MODAL */
 
 .avatar-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .5);
+    background: rgba(15, 23, 42, .45);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 40px 20px;
     z-index: 99999;
 }
 
-.avatar-modal {
-    width: 90%;
+.modern-avatar-modal {
+    width: 100%;
     max-width: 700px;
-    background: #fff;
-    border-radius: 24px;
-    padding: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
+    background: linear-gradient(135deg, #fff7ea 0%, #fff 50%, #f3efff 100%);
+    border-radius: 35px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .18);
+    animation: avatarModalShow .3s ease
 }
 
-.avatar-modal h3 {
+@keyframes avatarModalShow {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.95)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+    }
+}
+
+.avatar-close-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+    transition: .25s
+}
+
+.avatar-close-btn:hover {
+    transform: rotate(90deg)
+}
+
+.avatar-header {
     text-align: center;
-    margin-bottom: 25px;
-    color: #4d2d00;
+    margin-bottom: 20px
+}
+
+.avatar-header-icon {
+    width: 70px;
+    height: 70px;
+    margin: auto auto 15px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb347, #ff8c42);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 10px 30px rgba(255, 140, 66, .35)
+}
+
+.avatar-header h2 {
+    font-size: 30px;
+    margin: 15px 0 8px;
+    color: #2d3142;
+    
+}
+
+.avatar-header p {
+    font-size: 15px;
+    color: #777
 }
 
 .avatar-modal-grid {
     display: grid;
-    grid-template-columns:
-        repeat(auto-fill, minmax(80px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 14px
 }
 
-/* Mobile */
+.avatar-card {
+    background: #fff;
+    border-radius: 23px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: .25s;
+    border: 2px solid transparent;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .05);
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
 
-@media (max-width: 600px) {
+.avatar-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, .12)
+}
 
+.avatar-card.active {
+    border: 3px solid #ff9800;
+    box-shadow: 0 0 0 8px rgba(255, 152, 0, .15)
+}
+
+.avatar-item {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover
+}
+
+.avatar-selected {
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff9800, #ffb347);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, .4)
+}
+
+.avatar-selected svg {
+    font-size: 13px
+}
+
+.avatar-footer {
+    margin-top: 35px;
+    padding: 25px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, .7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.avatar-footer-left h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2d3142;
+    font-size: 18px
+}
+
+.avatar-footer-left h4 svg {
+    color: #8b5cf6
+}
+
+.avatar-footer-left p {
+    margin-top: 8px;
+    color: #777
+}
+
+.avatar-save-btn {
+    height: 60px;
+    padding: 0 35px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: .25s
+}
+
+.avatar-save-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(124, 58, 237, .3)
+}
+
+@media(max-width:768px) {
+    .profile-card {
+        padding: 30px
+    }
+
+    .health-grid {
+        grid-template-columns: 1fr 1fr
+    }
+
+    .modern-avatar-modal {
+        padding: 25px
+    }
+
+    .avatar-header h2 {
+        font-size: 34px
+    }
+
+    .avatar-footer {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center
+    }
+
+    .avatar-save-btn {
+        width: 100%;
+        justify-content: center
+    }
+}
+
+@media(max-width:600px) {
     .otp-modal {
-        padding: 25px;
+        padding: 25px
     }
 
     .otp-modal h3 {
-        font-size: 24px;
+        font-size: 24px
     }
 
     .otp-modal input {
         height: 58px;
-        font-size: 20px;
-    }
-}
-
-@media(max-width:768px) {
-
-    .profile-card {
-        padding: 30px;
-    }
-
-    .health-grid {
-        grid-template-columns: 1fr 1fr;
+        font-size: 20px
     }
 }

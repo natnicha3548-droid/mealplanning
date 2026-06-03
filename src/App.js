@@ -51,11 +51,6 @@ function App() {
   // เก็บข้อมูลฟอร์มคำนวณ
   const [formData, setFormData] = useState(null);
 
-  const [avatar, setAvatar] = useState(
-    localStorage.getItem("avatar") ||
-    "/avatars/0d625718d4.svg"
-  );
-
   const location = useLocation();
   
   // เช็คว่า URL ปัจจุบันเป็นของฝั่ง Admin หรือไม่
@@ -79,8 +74,29 @@ function App() {
       // แปลงข้อมูล user จาก string เป็น object
       const parsedUser = JSON.parse(storedUser);
 
-      // เก็บข้อมูล user ลง state
-      setUser(parsedUser);
+      try {
+
+        const userRes = await fetch(
+          `http://localhost:5000/api/user/${parsedUser.user_id}`
+        );
+
+        const latestUser = await userRes.json();
+
+        setUser(latestUser);
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(latestUser)
+        );
+
+      } catch (err) {
+
+        console.error("LOAD USER ERROR:", err);
+
+        setUser(parsedUser);
+
+      }
+
 
       try {
         // เรียก API โหลดข้อมูลคำนวณล่าสุด
@@ -152,7 +168,6 @@ function App() {
           user={user}
           setUser={setUser}
           setCalcResult={setCalcResult}
-          avatar={avatar}
         />
       )}
 

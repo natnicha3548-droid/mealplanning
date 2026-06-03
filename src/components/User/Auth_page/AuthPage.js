@@ -94,10 +94,7 @@ function AuthPage({ setUser }) {
                 } else {
                     // 2. ถ้าเป็น User ทั่วไป ให้เก็บใน localStorage (ปิดเว็บแล้วเปิดใหม่ยังจำได้อยู่)
                     localStorage.setItem("user", JSON.stringify(userData));
-                    localStorage.setItem(
-                        "avatar",
-                        userData.avatar || "/avatars/0d625718d4.svg"
-                    );
+        
                 }
                 /* ============================================================= */
 

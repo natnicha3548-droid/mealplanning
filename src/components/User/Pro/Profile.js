@@ -9,7 +9,10 @@ import {
     FaSave,
     FaEdit,
     FaEye,
-    FaEyeSlash
+    FaEyeSlash,
+    FaTimes,
+    FaShieldAlt,
+    FaCheck
 } from "react-icons/fa";
 
 import "./Profile.css";
@@ -57,19 +60,26 @@ function Profile({ user, setUser }) {
     const [countdown, setCountdown] = useState(180);
     const [healthData, setHealthData] = useState(null);
     const [selectedAvatar, setSelectedAvatar] = useState(
-        localStorage.getItem("avatar") || avatars[0]
+        user?.avatar || avatars[0]
     );
+
+    useEffect(() => {
+        if (user?.avatar) {
+            setSelectedAvatar(user.avatar);
+        }
+    }, [user]);
+
     useEffect(() => {
 
         const updateAvatar = () => {
 
-            setSelectedAvatar(
-                localStorage.getItem("avatar") || avatars[0]
-            );
+            const storedAvatar = localStorage.getItem("avatar");
+
+            if (storedAvatar) {
+                setSelectedAvatar(storedAvatar);
+            }
 
         };
-
-        updateAvatar();
 
         window.addEventListener(
             "avatarChanged",
@@ -384,58 +394,133 @@ function Profile({ user, setUser }) {
                         >
 
                             <div
-                                className="avatar-modal"
+                                className="modern-avatar-modal"
                                 onClick={(e) => e.stopPropagation()}
                             >
 
-                                <h3>เลือกรูปโปรไฟล์</h3>
+                                <button
+                                    className="avatar-close-btn"
+                                    onClick={() => setShowAvatarModal(false)}
+                                >
+                                    <FaTimes />
+                                </button>
+
+                                <div className="avatar-header">
+
+                                    <div className="avatar-header-icon">
+                                        <FaUser />
+                                    </div>
+
+                                    <h2>
+                                        เลือกรูปโปรไฟล์ของคุณ
+                                    </h2>
+
+                                    <p>
+                                        เลือกอวาตาร์ที่ใช่ สะท้อนตัวตนของคุณ
+                                    </p>
+
+                                </div>
 
                                 <div className="avatar-modal-grid">
 
-                                    {avatars.map((avatar, index) => (
+                                    {
+                                        avatars.map((avatar, index) => (
 
-                                        <img
-                                            key={index}
-                                            src={avatar}
-                                            alt=""
-                                            className={
-                                                selectedAvatar === avatar
-                                                    ? "avatar-item active"
-                                                    : "avatar-item"
-                                            }
-                                            onClick={async () => {
+                                            <div
+                                                key={index}
+                                                className={
+                                                    selectedAvatar === avatar
+                                                        ? "avatar-card active"
+                                                        : "avatar-card"
+                                                }
+                                                onClick={async () => {
 
-                                                setSelectedAvatar(avatar);
+                                                    setSelectedAvatar(avatar);
 
-                                                await fetch(
-                                                    "http://localhost:5000/api/update-avatar",
-                                                    {
-                                                        method: "POST",
-                                                        headers: {
-                                                            "Content-Type": "application/json"
-                                                        },
-                                                        body: JSON.stringify({
-                                                            user_id: user.user_id,
-                                                            avatar
-                                                        })
-                                                    }
-                                                );
+                                                    await fetch(
+                                                        "http://localhost:5000/api/update-avatar",
+                                                        {
+                                                            method: "POST",
+                                                            headers: {
+                                                                "Content-Type": "application/json"
+                                                            },
+                                                            body: JSON.stringify({
+                                                                user_id: user.user_id,
+                                                                avatar
+                                                            })
+                                                        }
+                                                    );
 
-                                                localStorage.setItem(
-                                                    "avatar",
-                                                    avatar
-                                                );
+                                                    localStorage.setItem(
+                                                        "avatar",
+                                                        avatar
+                                                    );
 
-                                                window.dispatchEvent(
-                                                    new Event("avatarChanged")
-                                                );
+                                                    const updatedUser = {
+                                                        ...user,
+                                                        avatar
+                                                    };
 
-                                                setShowAvatarModal(false);
+                                                    localStorage.setItem(
+                                                        "user",
+                                                        JSON.stringify(updatedUser)
+                                                    );
 
-                                            }}
-                                        />
+                                                    setUser(updatedUser);
 
-                                    ))}
+                                                    window.dispatchEvent(
+                                                        new Event("avatarChanged")
+                                                    );
+
+                                                }}
+                                            >
+
+                                                <img
+                                                    src={avatar}
+                                                    alt=""
+                                                    className="avatar-item"
+                                                />
+
+                                                {
+                                                    selectedAvatar === avatar &&
+                                                    (
+                                                        <span className="avatar-selected">
+                                                            <FaCheck />
+                                                        </span>
+                                                    )
+                                                }
+
+                                            </div>
+
+                                        ))
+                                    }
+
+                                </div>
+
+                                <div className="avatar-footer">
+
+                                    <div className="avatar-footer-left">
+
+                                        <h4>
+                                            <FaShieldAlt />
+                                            <span>
+                                                ข้อมูลของคุณปลอดภัย
+                                            </span>
+                                        </h4>
+
+                                        <p>
+                                            รูปโปรไฟล์จะถูกใช้เฉพาะในระบบ MealPlan
+                                        </p>
+
+                                    </div>
+
+                                    <button
+                                        className="avatar-save-btn"
+                                        onClick={() => setShowAvatarModal(false)}
+                                    >
+                                        <FaCheck />
+                                        บันทึกโปรไฟล์
+                                    </button>
 
                                 </div>
 
@@ -491,7 +576,9 @@ function Profile({ user, setUser }) {
                         <FaEnvelope />
 
                         <input
-                            type="email"
+                            type="text"
+                            name="new_email_address"
+                            autoComplete="off"
                             placeholder="กรอกอีเมลใหม่"
                             value={newEmail}
                             onChange={(e) =>
@@ -536,10 +623,16 @@ function Profile({ user, setUser }) {
 
                         <input
                             type={showOldPassword ? "text" : "password"}
-                            name="password"
+                            name="current_password_profile"
+                            autoComplete="off"
                             value={form.password}
                             placeholder="กรอกรหัสผ่านเดิม"
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                setForm({
+                                    ...form,
+                                    password: e.target.value
+                                })
+                            }
                         />
 
                         <span
@@ -566,6 +659,7 @@ function Profile({ user, setUser }) {
                         <input
                             type={showNewPassword ? "text" : "password"}
                             name="newPassword"
+                            autoComplete="new-password"
                             value={form.newPassword}
                             placeholder="กรอกรหัสผ่านใหม่"
                             onChange={handleChange}
@@ -595,6 +689,7 @@ function Profile({ user, setUser }) {
                         <input
                             type={showConfirmPassword ? "text" : "password"}
                             name="confirmPassword"
+                            autoComplete="new-password"
                             value={form.confirmPassword}
                             placeholder="ยืนยันรหัสผ่านใหม่"
                             onChange={handleChange}
@@ -644,7 +739,7 @@ function Profile({ user, setUser }) {
 
                     <div className="health-grid">
 
-                        <div className="health-card">
+                        <div className="health-card weight">
                             <FaWeight />
                             <h4>น้ำหนัก</h4>
                             <span>
@@ -652,7 +747,7 @@ function Profile({ user, setUser }) {
                             </span>
                         </div>
 
-                        <div className="health-card">
+                        <div className="health-card height">
                             <FaRulerVertical />
                             <h4>ส่วนสูง</h4>
                             <span>
@@ -660,13 +755,13 @@ function Profile({ user, setUser }) {
                             </span>
                         </div>
 
-                        <div className="health-card">
+                        <div className="health-card bmi">
                             <FaUser />
                             <h4>BMI</h4>
                             <span>{healthData?.bmi || "-"}</span>
                         </div>
 
-                        <div className="health-card">
+                        <div className="health-card goal">
                             <FaFire />
                             <h4>เป้าหมาย</h4>
                             <span>
