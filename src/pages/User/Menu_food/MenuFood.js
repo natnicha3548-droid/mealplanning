@@ -162,7 +162,12 @@ function MenuFood() {
                 <button className={activeCategory === "all" ? "active" : ""} onClick={() => setActiveCategory("all")}>ทั้งหมด</button>
                 <button className={activeCategory === 1 ? "active" : ""} onClick={() => setActiveCategory(1)}>ของคาว</button>
                 <button className={activeCategory === 2 ? "active" : ""} onClick={() => setActiveCategory(2)}>ของหวาน</button>
-                <button className={activeCategory === "fav" ? "active" : ""} onClick={() => setActiveCategory("fav")}>❤️ รายการโปรด</button>
+                <button 
+                    className={activeCategory === "fav" ? "active" : ""} 
+                    onClick={() => setActiveCategory("fav")}
+                >
+                    <FaHeart size={16}/> รายการโปรด
+                </button>
             </div>
 
             {/* GRID */}

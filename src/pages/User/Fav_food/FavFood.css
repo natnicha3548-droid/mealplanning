@@ -135,7 +135,6 @@
 .section-top {
     margin-bottom: 24px;
     padding-bottom: 12px;
-    border-bottom: 2px solid #f3e8df;
 }
 
 /* หัวข้อหมวด */
@@ -408,7 +407,7 @@
     align-items: center;
     gap: 20px;
     padding: 20px 0;
-    border-bottom: 1px dashed #de5e83; /* เส้นประ */
+    border-bottom: 1px dashed #e56589ae; /* เส้นประ */
 }
 
 /* ซ่อนเส้นประของแถวสุดท้าย (ก่อนถึง Summary) */

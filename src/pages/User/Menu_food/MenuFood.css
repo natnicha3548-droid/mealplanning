@@ -213,7 +213,7 @@
     margin-bottom: 40px;
 
     overflow-x: auto;
-
+    align-items: center;
     padding-bottom: 5px;
 }
 
@@ -222,35 +222,39 @@
 }
 
 .category-tabs button {
+    display: flex;             /* เพิ่มบรรทัดนี้ */
+    align-items: center;       /* จัดไอคอนให้อยู่แนวกลางในแนวตั้ง */
+    justify-content: center;   /* จัดให้อยู่กึ่งกลางแนวนอน */
+    gap: 8px;                  /* เว้นระยะห่างระหว่างไอคอนกับข้อความ */
+    
     border: 1px solid #ececec;
-
     outline: none;
-
     padding: 12px 26px;
-
     border-radius: 999px;
-
     background: white;
-
     color: #666;
-
     font-family: 'Kanit', sans-serif;
-
     font-size: 0.95rem;
     font-weight: 500;
-
     cursor: pointer;
-
     white-space: nowrap;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.03);
-
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
     transition: 0.2s;
+}
+/* เพิ่มสไตล์สำหรับไอคอนภายในปุ่ม */
+.category-tabs button svg {
+    color: #ff5a5f;            /* สีชมพูสำหรับหัวใจ */
+    transition: color 0.2s;
+}
+
+/* ปรับสีไอคอนให้เป็นสีขาวเมื่อปุ่มถูกกด (Active) */
+.category-tabs button.active svg {
+    color: white;              /* หัวใจจะเปลี่ยนเป็นสีขาวเมื่อปุ่มเป็นสีส้ม */
 }
 
 .category-tabs button:hover {
     transform: translateY(-2px);
+    color: rgb(236, 110, 68);
 }
 
 .category-tabs button.active {
