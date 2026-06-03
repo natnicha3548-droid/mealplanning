@@ -1,12 +1,11 @@
 .profile-page {
     min-height: 100vh;
-    padding: 50px 20px;
-    background: #fff7f0;
+    padding: 120px 20px 50px;
 }
 
 .profile-card {
     max-width: 850px;
-    margin: auto;
+    margin: 0 auto 80px;
     background: #fff;
     border-radius: 35px;
     padding: 50px;
@@ -128,6 +127,157 @@
     margin-top: 10px;
     font-size: 24px;
     font-weight: 700;
+}
+
+.password-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    color: #666;
+    margin-left: 10px;
+}
+
+.password-toggle:hover {
+    color: #ff8c42;
+}
+
+/* Overlay */
+
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, .45);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+
+    padding: 20px;
+}
+
+/* Card */
+
+.otp-modal {
+    width: 100%;
+    max-width: 500px;
+
+    background: #fff;
+
+    border-radius: 28px;
+
+    padding: 35px 30px;
+
+    text-align: center;
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .15);
+
+    animation: otpFade .25s ease;
+}
+
+@keyframes otpFade {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.otp-modal h3 {
+    font-size: 30px;
+    color: #4d2d00;
+
+    margin-bottom: 12px;
+}
+
+.otp-modal p {
+    color: #777;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+/* Input */
+
+.otp-modal input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 65px;
+    border: 2px solid #f0dfcf;
+    border-radius: 18px;
+    padding: 0 20px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+    transition: .2s;
+}
+
+.otp-modal input:focus {
+    border-color: #ff9f43;
+}
+
+/* Buttons */
+
+.otp-btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.otp-btn-group button {
+    flex: 1;
+    height: 58px;
+    border: none;
+    border-radius: 18px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.otp-cancel {
+    background: #eceff3;
+    color: #555;
+}
+
+.otp-cancel:hover {
+    transform: translateY(-2px);
+}
+
+.otp-confirm {
+    color: white;
+    background: linear-gradient(90deg,
+            #ff7f2a,
+            #ffc24d);
+}
+
+.otp-confirm:hover {
+    transform: translateY(-2px);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .otp-modal {
+        padding: 25px;
+    }
+
+    .otp-modal h3 {
+        font-size: 24px;
+    }
+
+    .otp-modal input {
+        height: 58px;
+        font-size: 20px;
+    }
 }
 
 @media(max-width:768px) {
