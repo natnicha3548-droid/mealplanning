@@ -37,9 +37,9 @@ const avatars = [
     "/avatars/cec5d18000.svg"
 ];
 
-function Profile() {
+function Profile({ user, setUser }) {
 
-    const [user, setUser] = useState(null);
+    console.log("PROFILE USER =", user);
 
     const [form, setForm] = useState({
         email: "",
@@ -59,27 +59,48 @@ function Profile() {
     const [selectedAvatar, setSelectedAvatar] = useState(
         localStorage.getItem("avatar") || avatars[0]
     );
+    useEffect(() => {
+
+        const updateAvatar = () => {
+
+            setSelectedAvatar(
+                localStorage.getItem("avatar") || avatars[0]
+            );
+
+        };
+
+        updateAvatar();
+
+        window.addEventListener(
+            "avatarChanged",
+            updateAvatar
+        );
+
+        return () => {
+
+            window.removeEventListener(
+                "avatarChanged",
+                updateAvatar
+            );
+
+        };
+
+    }, []);
     const [showAvatarModal, setShowAvatarModal] = useState(false);
 
     useEffect(() => {
 
-        const storedUser = JSON.parse(
-            localStorage.getItem("user")
-        );
-
-        if (storedUser) {
-
-            setUser(storedUser);
+        if (user) {
 
             setForm(prev => ({
                 ...prev,
-                email: storedUser.email || ""
+                email: user.email || ""
             }));
 
-            loadHealthData(storedUser.user_id);
+            loadHealthData(user.user_id);
         }
 
-    }, []);
+    }, [user]);
 
     useEffect(() => {
 
@@ -329,6 +350,8 @@ function Profile() {
 
     
 
+    
+
     return (
 
         <div className="profile-page">
@@ -338,7 +361,7 @@ function Profile() {
                 <div className="profile-avatar">
 
                     <img
-                        src={selectedAvatar}
+                        src={`${selectedAvatar}?t=${Date.now()}`}
                         alt="avatar"
                         className="profile-avatar-img"
                     />
@@ -380,9 +403,23 @@ function Profile() {
                                                     ? "avatar-item active"
                                                     : "avatar-item"
                                             }
-                                            onClick={() => {
+                                            onClick={async () => {
 
                                                 setSelectedAvatar(avatar);
+
+                                                await fetch(
+                                                    "http://localhost:5000/api/update-avatar",
+                                                    {
+                                                        method: "POST",
+                                                        headers: {
+                                                            "Content-Type": "application/json"
+                                                        },
+                                                        body: JSON.stringify({
+                                                            user_id: user.user_id,
+                                                            avatar
+                                                        })
+                                                    }
+                                                );
 
                                                 localStorage.setItem(
                                                     "avatar",

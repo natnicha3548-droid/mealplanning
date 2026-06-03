@@ -17,10 +17,13 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
 
         const updateAvatar = () => {
 
-            setAvatar(
+            const newAvatar =
                 localStorage.getItem("avatar") ||
-                "/avatars/0d625718d4.svg"
-            );
+                "/avatars/0d625718d4.svg";
+
+            console.log("AVATAR UPDATED:", newAvatar);
+
+            setAvatar(newAvatar);
 
         };
 

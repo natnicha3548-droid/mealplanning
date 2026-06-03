@@ -189,7 +189,8 @@ app.post('/api/login', (req, res) => {
                 user: {
                     user_id: user.user_id,
                     email: user.email,
-                    role: user.role
+                    role: user.role,
+                    avatar: user.avatar
                 }
             });
 
@@ -2871,6 +2872,30 @@ app.post("/api/send-email-otp", async (req, res) => {
 
                 }
             );
+
+        }
+    );
+
+});
+
+app.post("/api/update-avatar", (req, res) => {
+
+    const { user_id, avatar } = req.body;
+
+    db.query(
+        "UPDATE users SET avatar = ? WHERE user_id = ?",
+        [avatar, user_id],
+        (err) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "error"
+                });
+            }
+
+            res.json({
+                success: true
+            });
 
         }
     );
