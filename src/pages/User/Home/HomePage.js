@@ -342,7 +342,7 @@ function HomePage({ calcResult, formData }) {
                             </div>
                         </div>
                     </div>
-                )}
+                )} 
 
                 {/* 🌟 3. แผนอาหารรายการโปรด (แบบเลื่อนซ้าย-ขวา) */}
                 {favoritePlans && favoritePlans.length > 0 && (
