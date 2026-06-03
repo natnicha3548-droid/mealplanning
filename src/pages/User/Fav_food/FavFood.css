@@ -82,14 +82,15 @@
 }
 
 /* ปุ่มแท็บ */
+/* ปุ่มแท็บ (สถานะปกติ - ไม่ถูกเลือก) */
 .tab-btn {
-    border: 1px solid #ececec;
+    border: 1px solid #f0f0f0; /* ปรับขอบให้อ่อนลงเล็กน้อย */
     overflow: hidden;
     outline: none;
     padding: 12px 26px;
-    border-radius: 999px;
-    background: white;
-    color: #666;
+    border-radius: 999px !important;
+    background: #ffffff;      /* สีพื้นหลังขาว */
+    color: #8c7b70;           /* ใช้สีน้ำตาลตุ่นๆ แทนเทา เพื่อให้เข้ากับธีม */
     font-family: 'Kanit', sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
@@ -99,18 +100,23 @@
     align-items: center;
     gap: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    transition: 0.2s;
+    transition: 0.3s ease;    /* ปรับให้ transition นุ่มขึ้น */
 }
 
+/* เอฟเฟกต์ตอนเอาเมาส์ไปชี้ปุ่มที่ไม่ได้เลือก */
 .tab-btn:hover {
     transform: translateY(-2px);
+    background: #fff9f5;      /* เพิ่มสีส้มอ่อนๆ เวลา Hover จะได้ดูมีลูกเล่น */
+    border-color: #ffdab9;
+    color: #ff7b2c;
 }
 
-/* ปุ่มแท็บที่ถูกเลือก */
+/* ปุ่มแท็บที่ถูกเลือก (อันนี้ใช้เหมือนเดิม) */
 .tab-btn.active {
     background: linear-gradient(135deg, #ff9b54, #ff7b2c);
     color: white;
     border-color: transparent;
+    border-radius: 999px;
     box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
 }
 
