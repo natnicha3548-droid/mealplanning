@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { 
   Sun, CloudSun, Moon, RefreshCw, 
-  History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw
+  History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw,
 } from 'lucide-react';
-import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar } from "react-icons/fa";
+import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar,
+  FaSnowflake, FaMountain, FaGift, FaTree, FaSeedling, 
+  FaUmbrellaBeach, FaLeaf, FaCloudRain, FaUmbrella, 
+  FaWater, FaWind, FaGhost, FaCampground, FaFire, FaSnowman } from "react-icons/fa";
 import './PastPlans.css';
 
 import { LuCalendarClock } from "react-icons/lu";
@@ -98,18 +101,18 @@ const PastPlans = () => {
   const [reviewText, setReviewText] = useState("");
 
   const monthsData = [
-    { id: '01', name: 'มกราคม', light: '#ffedd5', main: '#f97316', icon: '❄️🏔️' },
-    { id: '02', name: 'กุมภาพันธ์', light: '#fce7f3', main: '#ec4899', icon: '💖🎈' },
-    { id: '03', name: 'มีนาคม', light: '#dcfce7', main: '#22c55e', icon: '🌳🌼' },
-    { id: '04', name: 'เมษายน', light: '#fef08a', main: '#eab308', icon: '🏖️🌴' },
-    { id: '05', name: 'พฤษภาคม', light: '#ccfbf1', main: '#14b8a6', icon: '🌱🌼' },
-    { id: '06', name: 'มิถุนายน', light: '#f3e8ff', main: '#a855f7', icon: '☂️🌸' },
-    { id: '07', name: 'กรกฎาคม', light: '#ffedd5', main: '#f97316', icon: '⛱️🦀' },
-    { id: '08', name: 'สิงหาคม', light: '#ecfccb', main: '#84cc16', icon: '🌻🍃' },
-    { id: '09', name: 'กันยายน', light: '#fef3c7', main: '#f59e0b', icon: '🍂🍁' },
-    { id: '10', name: 'ตุลาคม', light: '#ffedd5', main: '#ea580c', icon: '🎃🦇' },
-    { id: '11', name: 'พฤศจิกายน', light: '#e0f2fe', main: '#0ea5e9', icon: '🏕️⛰️' },
-    { id: '12', name: 'ธันวาคม', light: '#fae8ff', main: '#d946ef', icon: '🎄🎁' },
+    { id: '01', name: 'มกราคม', light: '#ffedd5', main: '#f97316', icon: <><FaSnowflake size={24} /> <FaMountain size={24} /></> },
+    { id: '02', name: 'กุมภาพันธ์', light: '#fce7f3', main: '#ec4899', icon: <><FaHeart size={24} /> <FaGift size={24} /></> },
+    { id: '03', name: 'มีนาคม', light: '#dcfce7', main: '#22c55e', icon: <><FaTree size={24} /> <FaSeedling size={24} /></> },
+    { id: '04', name: 'เมษายน', light: '#fef08a', main: '#eab308', icon: <><FaSun size={24} /> <FaUmbrellaBeach size={24} /></> },
+    { id: '05', name: 'พฤษภาคม', light: '#ccfbf1', main: '#14b8a6', icon: <><FaLeaf size={24} /> <FaCloudRain size={24} /></> },
+    { id: '06', name: 'มิถุนายน', light: '#f3e8ff', main: '#a855f7', icon: <><FaUmbrella size={24} /> <FaWater size={24} /></> },
+    { id: '07', name: 'กรกฎาคม', light: '#ffedd5', main: '#f97316', icon: <><FaSun size={24} /> <FaWater size={24} /></> },
+    { id: '08', name: 'สิงหาคม', light: '#ecfccb', main: '#84cc16', icon: <><FaSun size={24} /> <FaLeaf size={24} /></> },
+    { id: '09', name: 'กันยายน', light: '#fef3c7', main: '#f59e0b', icon: <><FaLeaf size={24} /> <FaWind size={24} /></> },
+    { id: '10', name: 'ตุลาคม', light: '#ffedd5', main: '#ea580c', icon: <><FaGhost size={24} /> <FaMoon size={24} /></> },
+    { id: '11', name: 'พฤศจิกายน', light: '#e0f2fe', main: '#0ea5e9', icon: <><FaCampground size={24} /> <FaFire size={24} /></> },
+    { id: '12', name: 'ธันวาคม', light: '#fae8ff', main: '#d946ef', icon: <><FaTree size={24} /> <FaSnowman size={24} /></> },
   ];
 
   // ================= API Fetching =================

@@ -137,20 +137,35 @@
 }
 
 .home-restore-plan-btn { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 50px; 
     height: 50px; 
     border-radius: 50%; 
     border: 1px solid #ffedd5; 
-    background: #fff7ed; 
+    background: #fff4e8; 
     color: #F97316; 
     cursor: pointer; 
     transition: 0.3s; 
 }
 
+.home-restore-plan-btn svg { 
+    width: 27px;  /* ปรับขนาดตามต้องการได้เลย */
+    height: 27px; 
+    
+    /* บังคับให้ไอคอนไม่โดนบีบ */
+    display: block; 
+}
+
 .home-restore-plan-btn:hover { 
     transform: rotate(180deg); 
-    background: #f97316; 
+    background: #fe9d57; 
     color: #fff; 
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); 
 }
 
+.home-restore-plan-btn:active {
+    transform: scale(0.95); /* ยุบตัวลงเวลาคลิก */
+}

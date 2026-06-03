@@ -323,16 +323,21 @@
     width: 52px;
     height: 52px;
     border: none;
-    border-radius: 16px;
+    border-radius: 50%;
     background: #fff2f2;
     color: #ff5a5a;
-    font-size: 1rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     cursor: pointer;
     transition: 0.2s ease;
 }
 
 .meal-fav-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.08); /* ขยายขึ้นนิดนึงตอนชี้ */
+    background: #ffe3e3; /* สีเข้มขึ้นนิดนึงให้ดูมีมิติ */
 }
 
 /* ================= EMPTY ================= */
@@ -352,13 +357,11 @@
 
 /* การ์ดแผนอาหารแบบเต็ม */
 .meal-plan-full-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
     border-radius: 28px;
-    padding: 28px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f4ece5;
-    overflow: hidden;
-    position: relative;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 /* ================= PLAN HEADER ================= */
@@ -370,7 +373,7 @@
     align-items: center;
     margin-bottom: 28px;
     padding-bottom: 18px;
-    border-bottom: 1px solid #f3ebe5;
+    
 }
 
 /* หัวข้อ */
@@ -394,19 +397,33 @@
 /* แถวอาหาร */
 .meal-row {
     display: grid;
-    grid-template-columns: 180px 150px 1fr 120px;
+    grid-template-columns: 80px 140px 1fr 100px; /* สัดส่วน: ไอคอน - รูป - ชื่อ - แคลอรี */
     align-items: center;
-    gap: 22px;
-    padding: 20px;
-    border-radius: 22px;
-    background: linear-gradient(135deg, #fffaf6, #fff4ed);
-    margin-bottom: 18px;
-    transition: 0.25s ease;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px dashed #de5e83; /* เส้นประ */
 }
 
-.meal-row:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+/* ซ่อนเส้นประของแถวสุดท้าย (ก่อนถึง Summary) */
+.meal-row:last-of-type {
+    border-bottom: none;
+}
+/* ไอคอนมื้ออาหาร (จัดแนวตั้ง) */
+.meal-type-stacked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.meal-icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* ================= MEAL TYPE ================= */
@@ -422,9 +439,9 @@
 
 /* รูปในแถวอาหาร */
 .meal-row .meal-image {
-    width: 150px;
-    height: 110px;
-    border-radius: 18px;
+    width: 140px;
+    height: 90px;
+    border-radius: 16px;
     object-fit: cover;
 }
 
@@ -432,10 +449,10 @@
 
 /* ชื่ออาหาร */
 .meal-row .meal-info h3 {
-    margin: 0 0 8px;
-    font-size: 1.2rem;
+   margin: 0 0 8px;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #2d1b12;
+    color: #552e1b;
 }
 
 /* รายละเอียด */
@@ -444,42 +461,181 @@
     font-size: 0.95rem;
 }
 
+/* ป้ายบอกปริมาณ (1 ถ้วย / 1 จาน) */
+.fav-portion-badge {
+    display: inline-block;
+    background-color: #f3ebe5;
+    color: #8c7b70;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.meal-cal-right {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ff7a00;
+}
+
 /* ================= CALORIES ================= */
 
 /* กล่องแคลอรี */
 .meal-cal {
-    font-size: 1.1rem;
+    text-align: right;
     font-weight: 700;
-    color: #ff7a00;
-    background: white;
-    padding: 14px 18px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    color: #ff8c42;
+    font-size: 1.1rem;
 }
 
-/* ================= SUMMARY ================= */
-
-/* สรุปข้อมูล */
+/* ================= SUMMARY BOX ================= */
 .plan-summary {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    /* grid-template-columns: repeat(6, 1fr); */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 5px;
     margin-top: 30px;
 }
 
-/* กล่องสรุป */
 .summary-box {
-    background: linear-gradient(135deg, #fff6ef, #ffe9d7);
-    border-radius: 20px;
-    padding: 20px;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ff7a00;
-    border: 1px solid #ffe0c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #fef5eb, #ffe4d1);
+    padding: 13px;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(181, 97, 58, 0.02);
+    transition: transform 0.2s ease;
 }
 
+.summary-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
+}
+
+/* กรอบสีของไอคอนแต่ละประเภท */
+.sum-icon-wrap {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+/* แยกสีไอคอนให้สวยงาม */
+.cal-icon { 
+    color: #f96743; /* ส้มสว่าง (สีหลักของเว็บ) */
+}   
+
+.carb-icon { 
+    color: #f96743; /* เหลืองทองอุ่นๆ */
+}  
+
+.pro-icon {  
+    color: #f96743; /* ส้มอมแดง/คอรัล (ดูเป็นเนื้อสัตว์แต่ยังอยู่ในโทนอุ่น) */
+}   
+
+.fat-icon { 
+    color: #f96743; /* น้ำตาลคาราเมลอ่อน (ดูซอฟต์ ไม่แย่งซีน) */
+}
+.sugar-icon { 
+    color: #f96743; /* สีชมพูอมส้มตุ่นๆ ให้เข้ากับธีม */
+} 
+.sodium-icon { 
+    color: #f96743; /* สีฟ้าอมเทา เพื่อความสบายตา ไม่แย่งซีนสีส้ม */
+}
+
+/* การจัดเรียงข้อความ */
+.sum-info {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.sum-label {
+    font-size: 0.9rem;
+    color: #774f35;
+    font-weight: 600;
+}
+
+.sum-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #6e3b22; /* ใช้สีเข้มให้ตัวเลขเด่นขึ้น */
+}
+
+.sum-unit {
+    font-size: 1rem;
+    color: #fb934e;
+    font-weight: 500;
+}
+
+/* Responsive สำหรับมือถือ */
+@media (max-width: 768px) {
+    .plan-summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+/* ================= PLAN HEADER ================= */
+
+
+/* ซ้าย: คำบรรยายใต้ชื่อแผน */
+
+.plan-header-left h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff7b39;
+    margin: 0;
+}
+
+.plan-header-left p {
+    color: #ae8a72;
+    font-size: 1rem;
+    margin: 4px 0 0;
+}
+
+/* ขวา: คลุมทั้งตัวเลขแคลอรีและปุ่มหัวใจ */
+.plan-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+/* กล่องจัดกลุ่มแคลอรีรวม */
+.plan-cal-box {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-right: 5px;
+}
+
+/* คำว่า "รวมทั้งหมด" */
+.plan-cal-label {
+    color: #a5785a;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ตัวเลข kcal */
+.plan-cal-value {
+    color: #ff7a00;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Responsive เผื่อสำหรับจอมือถือเล็กๆ */
+@media (max-width: 600px) {
+    .plan-header-right {
+        margin-top: 15px; /* ดันลงมานิดนึงถ้ามันตกลงมาอีกบรรทัด */
+    }
+}
 /* ================= RESPONSIVE ================= */
 
 /* Tablet */
