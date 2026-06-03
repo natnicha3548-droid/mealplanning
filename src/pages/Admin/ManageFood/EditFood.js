@@ -63,6 +63,13 @@ function EditFood() {
 
                 const food = data.food;
 
+                console.log("PROTEIN =", food.protein);
+                console.log("CALORIES =", food.calories);
+                console.log("CARBS =", food.carbohydrates);
+                console.log("FAT =", food.fat);
+                console.log("SUGAR =", food.sugar);
+                console.log("SODIUM =", food.sodium);
+
                 setFormData({
                     food_name: food.food_name || "",
                     category_id: String(food.category_id || ""),
@@ -77,7 +84,11 @@ function EditFood() {
                 });
 
                 if (food.image) {
-                    setPreview(food.image);
+                    setPreview(
+                        food.image.startsWith("http")
+                            ? food.image
+                            : `http://localhost:5000${food.image}`
+                    );
                 }
             }
 
@@ -158,9 +169,6 @@ function EditFood() {
 
                 <div className="food-header-content">
                     <h1>แก้ไขข้อมูลอาหาร</h1>
-                    <p>
-                        แก้ไขข้อมูลเมนูอาหารและข้อมูลโภชนาการ
-                    </p>
                 </div>
 
             </div>

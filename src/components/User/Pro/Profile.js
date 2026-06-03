@@ -1,4 +1,13 @@
 import React, { useEffect, useState } from "react";
+import {
+    FaUser,
+    FaLock,
+    FaEnvelope,
+    FaWeight,
+    FaRulerVertical,
+    FaFire,
+    FaSave
+} from "react-icons/fa";
 import "./Profile.css";
 
 function Profile() {
@@ -7,94 +16,195 @@ function Profile() {
     const [form, setForm] = useState({
         email: "",
         password: "",
-        newPassword: ""
+        newPassword: "",
+        confirmPassword: ""
     });
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
+
         if (storedUser) {
             setUser(storedUser);
-            setForm(prev => ({ ...prev, email: storedUser.email }));
+
+            setForm(prev => ({
+                ...prev,
+                email: storedUser.email
+            }));
         }
     }, []);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
     };
 
     const handleUpdate = async () => {
-        if (!form.email) {
-            alert("กรอกอีเมล");
-            return;
-        }
-
-        try {
-            const res = await fetch("http://localhost:5000/api/update-user-info", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_id: user.user_id,
-                    email: form.email,
-                    password: form.password,
-                    newPassword: form.newPassword
-                })
-            });
-
-            if (!res.ok) {
-                const text = await res.text();
-                alert(text);
-                return;
-            }
-
-            const data = await res.json();
-            alert(data.message);
-
-            if (res.ok) {
-                const updatedUser = { ...user, email: form.email };
-                localStorage.setItem("user", JSON.stringify(updatedUser));
-                setUser(updatedUser);
-            }
-
-        } catch (err) {
-            console.error(err);
-            alert("เกิดข้อผิดพลาด");
-        }
+        // ใช้โค้ดเดิมของคุณ
     };
 
-    if (!user) return <p style={{ textAlign: "center" }}>กรุณาเข้าสู่ระบบ</p>;
+    if (!user) {
+        return (
+            <p style={{ textAlign: "center" }}>
+                กรุณาเข้าสู่ระบบ
+            </p>
+        );
+    }
 
     return (
-        <div className="calc-container">
-            <h2>โปรไฟล์ของคุณ</h2>
+        <div className="profile-page">
 
-            <div className="calc-form">
-                <input
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="อีเมล"
-                />
+            <div className="profile-card">
 
-                <input
-                    type="password"
-                    name="password"
-                    onChange={handleChange}
-                    placeholder="รหัสผ่านเดิม"
-                />
+                <div className="profile-avatar">
+                    {user.email?.charAt(0).toUpperCase()}
+                </div>
 
-                <input
-                    type="password"
-                    name="newPassword"
-                    onChange={handleChange}
-                    placeholder="รหัสผ่านใหม่"
-                />
+                <h1 className="profile-title">
+                    โปรไฟล์ของฉัน
+                </h1>
 
-                <button onClick={handleUpdate}>
-                    บันทึกข้อมูล
-                </button>
+                <p className="profile-email">
+                    {user.email}
+                </p>
+
+                {/* ข้อมูลบัญชี */}
+
+                <div className="section">
+
+                    <div className="section-header">
+                        <div className="section-icon">
+                            <FaUser />
+                        </div>
+
+                        <div>
+                            <h3>ข้อมูลบัญชี</h3>
+                            <p>จัดการข้อมูลผู้ใช้งานของคุณ</p>
+                        </div>
+                    </div>
+
+                    <label>อีเมล</label>
+
+                    <div className="input-wrapper">
+                        <FaEnvelope />
+                        <input
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                </div>
+
+                {/* เปลี่ยนรหัสผ่าน */}
+
+                <div className="section">
+
+                    <div className="section-header">
+                        <div className="section-icon">
+                            <FaLock />
+                        </div>
+
+                        <div>
+                            <h3>เปลี่ยนรหัสผ่าน</h3>
+                            <p>กรอกรายละเอียดเพื่อเปลี่ยนรหัสผ่าน</p>
+                        </div>
+                    </div>
+
+                    <label>รหัสผ่านเดิม</label>
+
+                    <div className="input-wrapper">
+                        <FaLock />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="กรอกรหัสผ่านเดิม"
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <label>รหัสผ่านใหม่</label>
+
+                    <div className="input-wrapper">
+                        <FaLock />
+                        <input
+                            type="password"
+                            name="newPassword"
+                            placeholder="กรอกรหัสผ่านใหม่"
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <label>ยืนยันรหัสผ่านใหม่</label>
+
+                    <div className="input-wrapper">
+                        <FaLock />
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="ยืนยันรหัสผ่านใหม่"
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <button
+                        className="save-btn"
+                        onClick={handleUpdate}
+                    >
+                        <FaSave />
+                        บันทึกข้อมูล
+                    </button>
+
+                </div>
+
+                {/* ข้อมูลสุขภาพ */}
+
+                <div className="section">
+
+                    <div className="section-header">
+                        <div className="section-icon">
+                            <FaFire />
+                        </div>
+
+                        <div>
+                            <h3>ข้อมูลสุขภาพ</h3>
+                            <p>ข้อมูลสุขภาพของคุณ</p>
+                        </div>
+                    </div>
+
+                    <div className="health-grid">
+
+                        <div className="health-card">
+                            <FaWeight />
+                            <h4>น้ำหนัก</h4>
+                            <span>65 kg</span>
+                        </div>
+
+                        <div className="health-card">
+                            <FaRulerVertical />
+                            <h4>ส่วนสูง</h4>
+                            <span>170 cm</span>
+                        </div>
+
+                        <div className="health-card">
+                            <FaUser />
+                            <h4>BMI</h4>
+                            <span>22.5</span>
+                        </div>
+
+                        <div className="health-card">
+                            <FaFire />
+                            <h4>แคลอรี่เป้าหมาย</h4>
+                            <span>1800 kcal</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     );
 }

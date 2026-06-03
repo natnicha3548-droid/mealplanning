@@ -26,7 +26,9 @@ import FavFood from "./pages/User/Fav_food/FavFood";
 import AdminLayout from './pages/Admin/AdminLayout';
 import DashboardReport from './pages/Admin/DashboardReport';
 import ManageReviews from './pages/Admin/ManageReviews';
-import ManageCategories from './pages/Admin/ManageCategories';
+import ManageCategories from "./pages/Admin/ManageCategories/ManageCategories";
+import AddCategory from "./pages/Admin/ManageCategories/AddCategory";
+import EditCategory from "./pages/Admin/ManageCategories/EditCategory";
 import ManageFood from "./pages/Admin/ManageFood/ManageFood";
 import AddFood from "./pages/Admin/ManageFood/AddFood";
 import EditFood from "./pages/Admin/ManageFood/EditFood";
@@ -239,6 +241,8 @@ function App() {
           <Route path="/admin/edit-food/:id" element={<EditFood />}/>
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-categories" element={<ManageCategories />} />
+          <Route path="/admin/add-category" element={<AddCategory />} />
+          <Route path="/admin/edit-category/:id" element={<EditCategory />} />
           <Route path="manage-reviews" element={<ManageReviews />} />
         </Route>
 

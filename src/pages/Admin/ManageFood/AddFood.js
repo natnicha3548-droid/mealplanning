@@ -92,10 +92,6 @@ function AddFood() {
 
                 <div className="food-header-content">
                     <h1>เพิ่มข้อมูลอาหาร</h1>
-
-                    <p>
-                        เพิ่มเมนูอาหารเข้าสู่ระบบและจัดการข้อมูลโภชนาการ
-                    </p>
                 </div>
             </div>
 
