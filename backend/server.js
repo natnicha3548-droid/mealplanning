@@ -2260,6 +2260,8 @@ app.put(
     upload.single("image"),
     async (req, res) => {
 
+        console.log("BODY =", req.body);
+
         const foodId = req.params.id;
 
         try {
@@ -2276,6 +2278,10 @@ app.put(
                 sodium,
                 description
             } = req.body;
+
+            console.log("CALORIES =", calories);
+            console.log("PROTEIN =", protein);
+            console.log("FAT =", fat);
 
             // ดึงรูปเดิม
             const [foods] = await db.promise().query(
@@ -2357,6 +2363,222 @@ app.put(
 
     }
 );
+
+// ================= GET ALL CATEGORIES =================
+app.get("/api/categories", async (req, res) => {
+
+    try {
+
+        // ดึงข้อมูลหมวดหมู่ทั้งหมด
+        const [rows] = await db.promise().query(`
+            SELECT *
+            FROM food_category
+            ORDER BY category_id DESC
+        `);
+
+        // ส่งข้อมูลกลับไปยัง Frontend
+        res.json(rows);
+
+    } catch (error) {
+
+        console.log(error);
+
+        // Server Error
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+
+});
+
+
+// ================= CREATE CATEGORY =================
+app.post("/api/categories", async (req, res) => {
+
+    try {
+
+        // รับข้อมูลจาก Frontend
+        const {
+            category_name,
+            description,
+            status
+        } = req.body;
+
+        // เพิ่มหมวดหมู่ใหม่
+        await db.promise().query(
+            `
+            INSERT INTO food_category
+            (
+                category_name,
+                description,
+                status
+            )
+            VALUES (?, ?, ?)
+            `,
+            [
+                category_name,
+                description,
+                status
+            ]
+        );
+
+        // ส่งผลลัพธ์กลับ
+        res.json({
+            success: true,
+            message: "เพิ่มหมวดหมู่สำเร็จ"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        // Server Error
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+
+});
+
+
+// ================= DELETE CATEGORY =================
+app.delete("/api/categories/:id", async (req, res) => {
+
+    try {
+
+        // รับ ID จาก URL
+        const categoryId = req.params.id;
+
+        // ลบข้อมูลหมวดหมู่
+        await db.promise().query(
+            `
+            DELETE FROM food_category
+            WHERE category_id = ?
+            `,
+            [categoryId]
+        );
+
+        // ส่งผลลัพธ์กลับ
+        res.json({
+            success: true,
+            message: "ลบหมวดหมู่สำเร็จ"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        // Server Error
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+
+});
+
+
+// ================= GET CATEGORY BY ID =================
+app.get("/api/categories/:id", async (req, res) => {
+
+    try {
+
+        // รับ ID จาก URL
+        const { id } = req.params;
+
+        // ค้นหาหมวดหมู่ตาม ID
+        const [rows] = await db.promise().query(
+            `
+            SELECT *
+            FROM food_category
+            WHERE category_id = ?
+            `,
+            [id]
+        );
+
+        // ไม่พบข้อมูล
+        if (rows.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "ไม่พบข้อมูล"
+            });
+
+        }
+
+        // ส่งข้อมูลกลับ
+        res.json(rows[0]);
+
+    } catch (error) {
+
+        console.log(error);
+
+        // Server Error
+        res.status(500).json({
+            success: false
+        });
+
+    }
+
+});
+
+
+// ================= UPDATE CATEGORY =================
+app.put("/api/categories/:id", async (req, res) => {
+
+    try {
+
+        // รับ ID จาก URL
+        const { id } = req.params;
+
+        // รับข้อมูลใหม่
+        const {
+            category_name,
+            description,
+            status
+        } = req.body;
+
+        // อัปเดตข้อมูลหมวดหมู่
+        await db.promise().query(
+            `
+            UPDATE food_category
+            SET
+                category_name = ?,
+                description = ?,
+                status = ?
+            WHERE category_id = ?
+            `,
+            [
+                category_name,
+                description,
+                status,
+                id
+            ]
+        );
+
+        // ส่งผลลัพธ์กลับ
+        res.json({
+            success: true
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        // Server Error
+        res.status(500).json({
+            success: false
+        });
+
+    }
+
+});
+
 // ================= START =================
 app.listen(5000, () => {
 

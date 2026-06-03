@@ -1,0 +1,137 @@
+.edit-category-page,
+.edit-category-page * {
+    box-sizing: border-box;
+}
+
+.edit-category-card {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    border-radius: 32px;
+    padding: 38px;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, .08);
+}
+
+.edit-category-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 2px dashed #ffd0a8;
+}
+
+.header-icon {
+    width: 95px;
+    height: 95px;
+    border-radius: 28px;
+    background: linear-gradient(135deg,
+            #fff2e6,
+            #ffe2c7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 38px;
+    color: #ff8c42;
+}
+
+.edit-category-header h1 {
+    margin: 0;
+    color: #d96b27;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #3b2f12;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    border: 1px solid #ecd2b5;
+    border-radius: 18px;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: .25s;
+    background: #fff;
+}
+
+.form-group textarea {
+    min-height: 170px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #ff8c42;
+    box-shadow: 0 0 0 4px rgba(255, 140, 66, .12);
+}
+
+.save-btn {
+    border: none;
+    cursor: pointer;
+    height: 58px;
+    border-radius: 18px;
+    background: linear-gradient(135deg,
+            #ffa64d,
+            #ff7b39);
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: .3s;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(255, 123, 57, .25);
+}
+
+@media (max-width:768px) {
+
+    .edit-category-page {
+        padding: 15px;
+    }
+
+    .edit-category-card {
+        padding: 25px;
+    }
+
+    .edit-category-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .edit-category-header h1 {
+        font-size: 30px;
+    }
+
+    .header-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+    }
+}

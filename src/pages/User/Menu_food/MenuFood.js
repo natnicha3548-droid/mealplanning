@@ -214,7 +214,15 @@ function MenuFood() {
 
                         {/* LEFT */}
                         <div className="food-modal-left">
-                            <img src={selectedFood.image} alt={selectedFood.food_name} className="food-modal-image" />
+                            <img
+                                src={
+                                    selectedFood.image?.startsWith("http")
+                                        ? selectedFood.image
+                                        : `http://localhost:5000${selectedFood.image}`
+                                }
+                                alt={selectedFood.food_name}
+                                className="food-modal-image"
+                            />
                             <div className="food-section">
                                 <h4>รายละเอียดอาหาร</h4>
                                 <div className="food-box detail-text">

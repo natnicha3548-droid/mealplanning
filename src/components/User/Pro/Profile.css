@@ -1,75 +1,142 @@
-/* ================= PROFILE ================= */
-
-.calc-container {
-    max-width: 440px;
-    margin: 120px auto 60px;
-    padding: 40px 30px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
-    position: relative;
-    animation: fadeIn 0.6s ease;
+.profile-page {
+    min-height: 100vh;
+    padding: 50px 20px;
+    background: #fff7f0;
 }
 
-.calc-container h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #5c3d00;
-    font-weight: 600;
-    font-size: 1.6rem;
+.profile-card {
+    max-width: 850px;
+    margin: auto;
+    background: #fff;
+    border-radius: 35px;
+    padding: 50px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .08);
 }
 
-.calc-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.calc-form input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    border: 1.5px solid #e0c3a3;
-    background: #fffdf8;
-    box-sizing: border-box;
-    font-family: 'Kanit', sans-serif;
-    outline: none;
-    transition: 0.3s;
-}
-
-.calc-form input:focus {
-    border-color: #ff8c42;
-    box-shadow: 0 0 10px rgba(255, 140, 66, 0.3);
-}
-
-.calc-form button {
-    width: 100%;
-    margin-top: 16px;
-    padding: 14px;
-    border-radius: 16px;
-    border: none;
-    background: linear-gradient(90deg, #ff8c42, #ffd166);
+.profile-avatar {
+    width: 130px;
+    height: 130px;
+    margin: auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg,
+            #ff8a3d,
+            #ffbc45);
     color: white;
+    font-size: 48px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-title {
+    text-align: center;
+    margin-top: 20px;
+    color: #4d2d00;
+}
+
+.profile-email {
+    text-align: center;
+    color: #888;
+    margin-bottom: 40px;
+}
+
+.section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.section-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fff2e5;
+    color: #ff8a3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    height: 60px;
+    border: 2px solid #f0dfcf;
+    border-radius: 18px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.save-btn {
+    width: 100%;
+    height: 60px;
+    border: none;
+    border-radius: 18px;
+
+    background: linear-gradient(90deg,
+            #ff7f2a,
+            #ffc24d);
+
+    color: white;
+    font-size: 18px;
     font-weight: 600;
-    font-size: 1rem;
+
     cursor: pointer;
-    transition: 0.25s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
-.calc-form button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(255, 140, 66, 0.4);
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+.health-card {
+    text-align: center;
+    padding: 25px;
+    border-radius: 20px;
+    background: #fafafa;
+}
+
+.health-card svg {
+    font-size: 28px;
+    color: #ff8a3d;
+}
+
+.health-card span {
+    display: block;
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+@media(max-width:768px) {
+
+    .profile-card {
+        padding: 30px;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .health-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
