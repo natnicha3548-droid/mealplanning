@@ -1534,35 +1534,58 @@ app.get("/api/favorites/:userId", (req, res) => {
             mp.plan_date,
             mp.total_calories,
 
+            /* ข้อมูลมื้อเช้า */
             breakfast.food_name AS breakfast_name,
             breakfast.image AS breakfast_image,
             md_breakfast.total_calories AS breakfast_cal,
+            breakfast.serving_size AS breakfast_serving,
 
+            /* ข้อมูลมื้อกลางวัน */
             lunch.food_name AS lunch_name,
             lunch.image AS lunch_image,
             md_lunch.total_calories AS lunch_cal,
+            lunch.serving_size AS lunch_serving,
 
+            /* ข้อมูลมื้อเย็น */
             dinner.food_name AS dinner_name,
             dinner.image AS dinner_image,
             md_dinner.total_calories AS dinner_cal,
+            dinner.serving_size AS dinner_serving,
 
+            /* คำนวณโปรตีนรวม */
             (
                 IFNULL(breakfast.protein * md_breakfast.quantity, 0) +
                 IFNULL(lunch.protein * md_lunch.quantity, 0) +
                 IFNULL(dinner.protein * md_dinner.quantity, 0)
             ) AS protein,
 
+            /* คำนวณคาร์บรวม */
             (
                 IFNULL(breakfast.carbohydrates * md_breakfast.quantity, 0) +
                 IFNULL(lunch.carbohydrates * md_lunch.quantity, 0) +
                 IFNULL(dinner.carbohydrates * md_dinner.quantity, 0)
             ) AS carbs,
 
+            /* คำนวณไขมันรวม */
             (
                 IFNULL(breakfast.fat * md_breakfast.quantity, 0) +
                 IFNULL(lunch.fat * md_lunch.quantity, 0) +
                 IFNULL(dinner.fat * md_dinner.quantity, 0)
-            ) AS fat
+            ) AS fat,
+
+            /* 🌟 คำนวณน้ำตาลรวม (ที่เพิ่มใหม่) */
+            (
+                IFNULL(breakfast.sugar * md_breakfast.quantity, 0) +
+                IFNULL(lunch.sugar * md_lunch.quantity, 0) +
+                IFNULL(dinner.sugar * md_dinner.quantity, 0)
+            ) AS sugar,
+
+            /* 🌟 คำนวณโซเดียมรวม (ที่เพิ่มใหม่) */
+            (
+                IFNULL(breakfast.sodium * md_breakfast.quantity, 0) +
+                IFNULL(lunch.sodium * md_lunch.quantity, 0) +
+                IFNULL(dinner.sodium * md_dinner.quantity, 0)
+            ) AS sodium
 
         FROM favorite f
 

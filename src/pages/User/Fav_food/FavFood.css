@@ -462,7 +462,7 @@
 }
 
 /* ป้ายบอกปริมาณ (1 ถ้วย / 1 จาน) */
-.home-portion-badge {
+.fav-portion-badge {
     display: inline-block;
     background-color: #f3ebe5;
     color: #8c7b70;
@@ -581,7 +581,9 @@
     }
 }
 
+
 /* ================= PLAN HEADER ================= */
+
 
 /* ซ้าย: คำบรรยายใต้ชื่อแผน */
 

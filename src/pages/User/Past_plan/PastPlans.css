@@ -11,14 +11,15 @@ body {
 .past-icon {
   width: 78px;
   height: 78px;
-  border-radius: 50%;
-  background: #fff5ee;
-  border: 1px solid #ffe3d2;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff1e5, #ffe7d6);
   color: #ff8c42;
-  font-size: 1.8rem;
+  font-size: 2rem;
+  border: 1px solid #ffe0cd;
+   box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
   flex-shrink: 0;
 }
 
@@ -544,30 +545,47 @@ body {
 }
 
 .calendar-card {
-  background-color: #FFFFFF;
-  border-radius: 20px;
-  height: 160px;
-  position: relative;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  overflow: hidden; 
-  display: flex;
-  flex-direction: column;
+  background: #fffcf9cc;
+    border-radius: 20px;
+    position: relative;
+    
+    /* 🌟 ปรับตรงนี้ครับ */
+    min-height: 100px;      /* เพิ่มความสูงขั้นต่ำของการ์ด */
+    padding: 30px 20px;     /* เพิ่ม padding บน-ล่าง ให้เนื้อหาอยู่กลางมากขึ้น */
+    
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 10px 20px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    
+    /* เพิ่ม flex เพื่อจัดเนื้อหาให้อยู่กลางแนวตั้ง */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .calendar-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(var(--theme-main), 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
 .calendar-top-bar {
-  height: 18px;
-  background-color: var(--theme-light);
-  width: 100%;
+  position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background-color: var(--theme-main); /* ใช้สีหลักของเดือนนั้น */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    opacity: 0.8;
 }
 
 .calendar-rings {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
   position: absolute;
   top: -8px;
   left: 0;
@@ -579,13 +597,12 @@ body {
 }
 
 .ring {
-  width: 12px;
-  height: 25px;
-  background: linear-gradient(to bottom, #fdfdfd, #e0e0e0);
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 2px rgba(0,0,0,0.1);
+  width: 10px;
+    height: 15px;
+    background: #d1d5db;
+    border-radius: 10px;
+    box-shadow: inset 0 2px 2px rgba(0,0,0,0.2); /* ทำให้ห่วงดูโค้งมนมีมิติ */
 }
-
 .calendar-content {
   padding: 20px 20px;
   flex-grow: 1;
@@ -620,23 +637,21 @@ body {
 }
 
 .month-art {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background: linear-gradient(to top, var(--theme-light) 0%, transparent 100%);
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  padding: 10px 15px;
-  opacity: 0.9;
+  position: absolute !important;
+    bottom: 1px !important;
+    right: 10px !important;
+    display: flex !important;
+    gap: 8px;
+    /* ใช้ฟิลเตอร์เงาให้ไอคอนดูนูน */
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
 }
 
-.art-emoji {
-  font-size: 2.5rem;
-  line-height: 1;
-  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.05));
+.month-art svg {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.calendar-card:hover .month-art svg {
+    transform: scale(1.2) rotate(-5deg);
 }
 
 /* ส่วนพื้นหลัง */
@@ -710,6 +725,45 @@ body {
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* กรอบไอคอนสวยๆ สไตล์ Frosted Glass */
+.month-art {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    
+    /* สร้างกรอบสีขาวกึ่งโปร่งใส */
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    
+    /* จัดทรงแคปซูล */
+    padding: 8px 14px;
+    border-radius: 30px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    
+    /* 🌟 เวทมนตร์อยู่ตรงนี้: ดึงสีหลักของเดือนนั้นๆ มาถมลงบนไอคอนอัตโนมัติ */
+    color: var(--theme-main);
+    
+    transition: all 0.3s ease;
+}
+
+/* อนิเมชันตอนเอาเมาส์ชี้การ์ดปฏิทิน */
+.calendar-card:hover .month-art {
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px) scale(1.02);
+}
+
+/* ลบ style เดิมที่เคยใส่ flex ในแท็ก span ทิ้งไปเลย เพื่อกันมันตีกัน */
+.art-emoji {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* =========================================
@@ -800,12 +854,12 @@ body {
 }
 
 .week-selector::-webkit-scrollbar-track {
-  background: #f8efeb; 
+  background: #ffdbcb; 
   border-radius: 10px;
 }
 
 .week-selector::-webkit-scrollbar-thumb {
-  background: #f1dbd0; 
+  background: #fb9461; 
   border-radius: 10px;
 }
 

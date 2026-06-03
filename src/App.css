@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
-/* ซ่อน Scrollbar ทั้งเว็บ */
-::-webkit-scrollbar {
-  display: none;
+/* 🌟 ซ่อนเฉพาะ Scrollbar หลักของหน้าเว็บ (แถบสีเทาด้านขวา) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0 !important; 
+    display: none !important;
 }
 
-body {
-  -ms-overflow-style: none;  /* สำหรับ IE และ Edge */
-  scrollbar-width: none;     /* สำหรับ Firefox */
+/* 🌟 สำหรับเบราว์เซอร์ Firefox และ Edge */
+html, body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
 
 html,

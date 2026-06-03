@@ -416,7 +416,7 @@ function FavFood() {
                                             <div className="meal-info">
                                                 <h3>{name}</h3>
                                                 {serving && (
-                                                    <span className="home-portion-badge">{serving}</span>
+                                                    <span className="fav-portion-badge">{serving}</span>
                                                 )}
                                             </div>
 
