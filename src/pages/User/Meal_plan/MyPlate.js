@@ -36,12 +36,12 @@ function MyPlate() {
   const calendarRef = useRef(null);
 
   const [goalData, setGoalData] = useState({
-    tdee: 2000,
-    carb: 200,
-    protein: 150,
-    fat: 60,
-    sugar: 25,
-    sodium: 2000
+    tdee: 0,
+    carb: 0,
+    protein: 0,
+    fat: 0,
+    sugar: 0,
+    sodium: 0
   });
 
   const mealCategories = [
@@ -78,7 +78,7 @@ function MyPlate() {
 
   // ================= LOAD =================
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || { user_id: 1 };
+    const storedUser = JSON.parse(localStorage.getItem("user"));
     
     // 🌟 ดึงข้อมูลจากตะกร้าที่ถูกต้อง
     const draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
@@ -94,22 +94,55 @@ function MyPlate() {
     generateWeekForDate(today);
 
     const fetchGoalData = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/get-calculation/${storedUser.user_id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setGoalData({
-            tdee: Number(data.tdee) || 2000,
-            carb: Number(data.carb) || 200,
-            protein: Number(data.protein) || 150,
-            fat: Number(data.fat) || 60,
-            sugar: Number(data.sugar) || 25,
-            sodium: Number(data.sodium) || 2000
-          });
+
+      if (storedUser?.user_id) {
+
+        try {
+
+          const response = await fetch(
+            `http://localhost:5000/api/get-calculation/${storedUser.user_id}`
+          );
+
+          if (response.ok) {
+
+            const data = await response.json();
+
+            setGoalData({
+              tdee: Number(data.tdee) || 0,
+              carb: Number(data.carb) || 0,
+              protein: Number(data.protein) || 0,
+              fat: Number(data.fat) || 0,
+              sugar: Number(data.sugar) || 0,
+              sodium: Number(data.sodium) || 0
+            });
+
+          }
+
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error("Error fetching goal data:", error);
+
+      } else {
+
+        const calcResult = JSON.parse(
+          localStorage.getItem("calcResult")
+        );
+
+        if (calcResult) {
+
+          setGoalData({
+            tdee: Number(calcResult.tdee) || 0,
+            carb: Number(calcResult.carb) || 0,
+            protein: Number(calcResult.protein) || 0,
+            fat: Number(calcResult.fat) || 0,
+            sugar: Number(calcResult.sugar) || 0,
+            sodium: Number(calcResult.sodium) || 0
+          });
+
+        }
+
       }
+
     };
 
     fetchGoalData();
@@ -188,9 +221,20 @@ function MyPlate() {
 
   // ================= SAVE =================
   const handleSavePlan = async () => {
-    if (meals.length === 0) return alert("กรุณาเพิ่มอาหารลงจานก่อน");
 
-    const storedUser = JSON.parse(localStorage.getItem("user")) || { user_id: 1 };
+    if (meals.length === 0) {
+      return alert("กรุณาเพิ่มอาหารลงจานก่อน");
+    }
+
+    const storedUser = JSON.parse(
+      localStorage.getItem("user")
+    );
+
+    if (!storedUser?.user_id) {
+      alert("กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนบันทึกแผนอาหาร");
+      return;
+    }
+
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");

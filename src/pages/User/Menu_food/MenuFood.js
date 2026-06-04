@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaSearch, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaSearch, FaHeart, FaRegHeart, FaFire, FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle } from "react-icons/fa";
 import { MdDinnerDining } from "react-icons/md";
 import { LuSoup } from "react-icons/lu";
+import { MdLocalFireDepartment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import "./MenuFood.css";
 
@@ -12,6 +13,9 @@ function MenuFood() {
     const [activeCategory, setActiveCategory] = useState("all");
     const [selectedFood, setSelectedFood] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
+    const formatNumber = (value) => {
+        return Number(value || 0).toFixed(0);
+    };
     const [quantity, setQuantity] = useState(1);
 
     useEffect(() => {
@@ -27,7 +31,7 @@ function MenuFood() {
 
     const [favFoodIds, setFavFoodIds] = useState([]);
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    const currentUserId = storedUser?.user_id || 1;
+    const currentUserId = storedUser?.user_id || null;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,10 +40,12 @@ function MenuFood() {
                 const foodData = await foodRes.json();
                 setFoods(foodData);
 
-                const favRes = await fetch(`http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`);
-                const favData = await favRes.json();
-                if (favRes.ok) {
-                    setFavFoodIds(favData.map(f => f.food_id));
+                if (currentUserId) {
+                    const favRes = await fetch(`http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`);
+                    const favData = await favRes.json();
+                    if (favRes.ok) {
+                        setFavFoodIds(favData.map(f => f.food_id));
+                    }
                 }
             } catch (err) {
                 console.error(err);
@@ -52,7 +58,14 @@ function MenuFood() {
 
     // ================= FAVORITE =================
     const toggleFavorite = async (e, foodId) => {
+
         e.stopPropagation();
+
+        if (!storedUser) {
+            alert("กรุณาเข้าสู่ระบบก่อนเพิ่มรายการโปรด");
+            return;
+        }
+
         const isFav = favFoodIds.includes(foodId);
 
         if (isFav) {
@@ -62,11 +75,19 @@ function MenuFood() {
         }
 
         try {
-            await fetch("http://localhost:5000/api/favorite-food", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: currentUserId, food_id: foodId })
-            });
+            await fetch(
+                "http://localhost:5000/api/favorite-food",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUserId,
+                        food_id: foodId
+                    })
+                }
+            );
         } catch (err) {
             console.error(err);
         }
@@ -162,13 +183,23 @@ function MenuFood() {
                 <button className={activeCategory === "all" ? "active" : ""} onClick={() => setActiveCategory("all")}>ทั้งหมด</button>
                 <button className={activeCategory === 1 ? "active" : ""} onClick={() => setActiveCategory(1)}>ของคาว</button>
                 <button className={activeCategory === 2 ? "active" : ""} onClick={() => setActiveCategory(2)}>ของหวาน</button>
-                <button 
-                    className={activeCategory === "fav" ? "active" : ""} 
-                    onClick={() => setActiveCategory("fav")}
+                <button
+                    className={activeCategory === "fav" ? "active" : ""}
+                    onClick={() => {
+
+                        if (!storedUser) {
+                            alert("กรุณาเข้าสู่ระบบก่อนดูรายการโปรด");
+                            return;
+                        }
+
+                        setActiveCategory("fav");
+                    }}
                 >
-                    <FaHeart size={16}/> รายการโปรด
+                    <FaHeart size={16} />
+                    รายการโปรด
                 </button>
             </div>
+
 
             {/* GRID */}
             <div className="food-grid">
@@ -242,12 +273,42 @@ function MenuFood() {
                             <div className="food-section">
                                 <h4>คุณค่าทางโภชนาการ</h4>
                                 <div className="nutrition-grid">
-                                    <div>🔥<span>{selectedFood.calories} kcal</span>แคลอรี่</div>
-                                    <div>🍞<span>{selectedFood.carbohydrates} g</span>คาร์โบไฮเดรต</div>
-                                    <div>🥩<span>{selectedFood.protein} g</span>โปรตีน</div>
-                                    <div>🧈<span>{selectedFood.fat} g</span>ไขมัน</div>
-                                    <div>🍭<span>{selectedFood.sugar} g</span>น้ำตาล</div>
-                                    <div>🧂<span>{selectedFood.sodium} mg</span>โซเดียม</div>
+                                    <div className="nutri-card calorie">
+                                        <MdLocalFireDepartment className="nutri-icon" />
+                                        <p className="nutri-label">แคลอรี่</p>
+                                        <span>{formatNumber(selectedFood.calories)} kcal</span>
+                                    </div>
+
+                                    <div className="nutri-card carb">
+                                        <FaBreadSlice className="nutri-icon" />
+                                        <p className="nutri-label">คาร์บ</p>
+                                        <span>{formatNumber(selectedFood.carbohydrates)} g</span>
+                                    </div>
+
+                                    <div className="nutri-card protein">
+                                        <FaDrumstickBite className="nutri-icon" />
+                                        <p className="nutri-label">โปรตีน</p>
+                                        <span>{formatNumber(selectedFood.protein)} g</span>
+                                    </div>
+
+                                    <div className="nutri-card fat">
+                                        <FaTint className="nutri-icon" />
+                                        <p className="nutri-label">ไขมัน</p>
+                                        <span>{formatNumber(selectedFood.fat)} g</span>
+                                    </div>
+
+                                    <div className="nutri-card sugar">
+                                        <FaCandyCane className="nutri-icon" />
+                                        <p className="nutri-label">น้ำตาล</p>
+                                        <span>{formatNumber(selectedFood.sugar)} g</span>
+                                    </div>
+
+                                    <div className="nutri-card sodium">
+                                        <FaMortarPestle className="nutri-icon" />
+                                        <p className="nutri-label">โซเดียม</p>
+                                        <span>{formatNumber(selectedFood.sodium)} mg</span>
+                                    </div>
+
                                 </div>
                             </div>
 

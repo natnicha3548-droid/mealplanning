@@ -173,7 +173,7 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
 // =================================================================
 // 3. หน้า HomePage หลัก
 // =================================================================
-function HomePage({ calcResult, formData }) {
+function HomePage({ user, calcResult, formData }) {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [savedResult, setSavedResult] = useState(null);
     const [latestPlan, setLatestPlan] = useState(null);
@@ -186,9 +186,15 @@ function HomePage({ calcResult, formData }) {
 
     useEffect(() => {
         const interval = setInterval(() => setCurrentSlide(prev => (prev + 1) % 2), 3000);
-        const localCalc = JSON.parse(localStorage.getItem("calcResult"));
-        if (localCalc) setSavedResult(localCalc);
-        fetchData();
+
+        const activeCalc = JSON.parse(
+            sessionStorage.getItem("activeCalcResult")
+        );
+
+        if (activeCalc) {
+            setSavedResult(activeCalc);
+        }
+
         return () => clearInterval(interval);
     }, []);
 
@@ -200,6 +206,22 @@ function HomePage({ calcResult, formData }) {
         fetch(`http://localhost:5000/api/favorite-foods/${user.user_id}`).then(res => res.json()).then(setFavoriteFoods).catch(console.log);
         fetch(`http://localhost:5000/api/favorite-plans/${user.user_id}`).then(res => res.json()).then(setFavoritePlans).catch(console.log);
     };
+
+    useEffect(() => {
+
+        if (!user) {
+
+            setLatestPlan(null);
+            setFavoriteFoods([]);
+            setFavoritePlans([]);
+            setSavedResult(null);
+
+            return;
+        }
+
+        fetchData();
+
+    }, [user]);
 
     // กู้คืนจากรายการโปรด
     const handleRestoreFavoritePlan = async (plan) => {
@@ -332,7 +354,15 @@ function HomePage({ calcResult, formData }) {
                                     <div key={food.favorite_id} className="food-slide"> {/* ใช้คลาส food-slide */}
                                         <div className="home-favorite-card">
                                             <div className="home-favorite-image-wrapper">
-                                                <img src={food.image} alt={food.food_name} className="home-favorite-image" />
+                                                <img
+                                                    src={
+                                                        food.image?.startsWith("http")
+                                                            ? food.image
+                                                            : `http://localhost:5000${food.image}`
+                                                    }
+                                                    alt={food.food_name}
+                                                    className="home-favorite-image"
+                                                />
                                                 {/* <button className="home-favorite-heart" onClick={() => handleRemoveFavoriteFood(food.favorite_id)}> */}
                                                 <button className="home-favorite-heart" style={{ cursor: 'default' }}>
                                                     <FaHeart />

@@ -158,8 +158,8 @@ function ManageUsers() {
         </h2>
         
         <div className="header-actions">
-          <div className="search-box">
-            <LuSearch className="search-icon" />
+          <div className="menu-search-box">
+            <LuSearch className="menu-search-icon" />
             <input 
               type="text" 
               placeholder="ค้นหาอีเมล หรือ ID..." 
@@ -167,7 +167,7 @@ function ManageUsers() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="btn-cute btn-add" onClick={handleAdd}>
+          <button className="menu-btn-cute menu-btn-add" onClick={handleAdd}>
             <LuPlus size={18} /> เพิ่มสมาชิก
           </button>
         </div>

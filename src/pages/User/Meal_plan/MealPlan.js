@@ -135,6 +135,10 @@ function MealPlan() {
 
   const handleEditPlan = () => {
     if (mealPlan.length === 0) return;
+    if (!isLoggedIn) {
+      alert("กรุณาเข้าสู่ระบบก่อนแก้ไขแผนการกิน");
+      return;
+    }
     
     const draftPlate = mealPlan.map(meal => ({
       id: meal.meal_detail_id, 
@@ -159,7 +163,11 @@ function MealPlan() {
   };
 
   const handleSaveFavoritePlan = async () => {
-    if (!mealPlan || mealPlan.length === 0) return; 
+    if (!mealPlan || mealPlan.length === 0) return;
+    if (!isLoggedIn) {
+      alert("กรุณาเข้าสู่ระบบก่อนบันทึกแผนโปรด");
+      return;
+    } 
     
     const planId = mealPlan[0].plan_id;
     const storedUser = localStorage.getItem("user");
@@ -195,6 +203,10 @@ function MealPlan() {
         alert("ลบแผนอาหารของวันนี้สำเร็จ");
         fetchMealPlanFromDB(weekDays[selectedDay].fullDate); 
       }
+      if (!isLoggedIn) {
+        alert("กรุณาเข้าสู่ระบบก่อนลบแผนการกิน");
+        return;
+      }
     } catch (error) {
       console.error(error);
     }
@@ -209,12 +221,18 @@ function MealPlan() {
         setRating(5);
         setReviewText("");
     }
+    if (!isLoggedIn) {
+      alert("กรุณาเข้าสู่ระบบก่อนรีวิวอาหาร");
+      return;
+    }
   };
 
   const handleConfirmReview = async () => {
     if (!reviewText.trim()) return alert("กรุณาพิมพ์ข้อความรีวิวด้วยครับ");
     const storedUser = localStorage.getItem("user");
-    const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
+    const currentUserId = storedUser
+      ? JSON.parse(storedUser).user_id
+      : null;
     try {
       const response = await fetch("http://localhost:5000/api/review", {
         method: "POST",
@@ -277,6 +295,9 @@ function MealPlan() {
     return acc;
   }, {});
 
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = !!storedUser;
+
   return (
     <div className="meal-page">
       <header className="meal-top">
@@ -288,12 +309,12 @@ function MealPlan() {
           </div>
         </div>
         {/* 🌟 ลิงก์แนบ ?mode=plan และลบแค่ plan_plate */}
-        <Link 
-          to="/MyPlate?mode=plan" 
-          className="create-btn" 
-          style={{ textDecoration: 'none' }}
+        <Link
+          to="/MyPlate?mode=plan"
+          className="create-btn"
+          style={{ textDecoration: "none" }}
           onClick={() => {
-            localStorage.removeItem("plan_plate"); 
+            localStorage.removeItem("plan_plate");
           }}
         >
           <FaPlus /> สร้างแผนใหม่

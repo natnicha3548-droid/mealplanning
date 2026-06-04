@@ -22,7 +22,7 @@ function SearchFood() {
   
   const [favFoodIds, setFavFoodIds] = useState([]);
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  const currentUserId = storedUser ? storedUser.user_id : 1;
+  const currentUserId = storedUser?.user_id || null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,18 +44,30 @@ function SearchFood() {
   }, [currentUserId]);
 
   const toggleFavorite = async (e, foodId) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
+
+    // ยังไม่ได้เข้าสู่ระบบ
+    if (!currentUserId) {
+      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มรายการโปรด");
+      return;
+    }
+
     if (favFoodIds.includes(foodId)) {
-      setFavFoodIds(favFoodIds.filter(id => id !== foodId)); 
+      setFavFoodIds(favFoodIds.filter(id => id !== foodId));
     } else {
-      setFavFoodIds([...favFoodIds, foodId]); 
+      setFavFoodIds([...favFoodIds, foodId]);
     }
 
     try {
       await fetch("http://localhost:5000/api/favorite-food", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: currentUserId, food_id: foodId })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id: currentUserId,
+          food_id: foodId
+        })
       });
     } catch (err) {
       console.error("Error toggling favorite:", err);

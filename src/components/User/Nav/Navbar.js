@@ -3,7 +3,12 @@ import "./Navbar.css";
 import logo from "../../../assets/logo.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Navbar = ({ user, setUser, setCalcResult }) => {
+const Navbar = ({
+    user,
+    setUser,
+    setCalcResult,
+    setFormData
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const [avatar, setAvatar] = useState(
@@ -56,14 +61,21 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
     const handleClose = () => setIsOpen(false);
 
     const handleLogout = () => {
+
         localStorage.removeItem("user");
         localStorage.removeItem("avatar");
+        localStorage.removeItem("token");
 
         setUser(null);
         setCalcResult(null);
+        setFormData(null);
+
         setProfileOpen(false);
 
-        navigate("/");
+        navigate("/", {
+            replace: true
+        });
+
     };
 
     const isActive = (path) => location.pathname === path;
@@ -100,45 +112,71 @@ const Navbar = ({ user, setUser, setCalcResult }) => {
                         </Link>
                     </li>
 
-                    <li>
-                        <Link
-                            to="/menu"
-                            onClick={handleClose}
-                            className={isActive("/menu") ? "active" : ""}
-                        >
-                            เมนูอาหารของฉัน
-                        </Link>
-                    </li>
+                    {user ? (
+                        <>
+                            <li>
+                                <Link
+                                    to="/menu"
+                                    onClick={handleClose}
+                                    className={isActive("/menu") ? "active" : ""}
+                                >
+                                    เมนูอาหารของฉัน
+                                </Link>
+                            </li>
 
-                    <li>
-                        <Link
-                            to="/meal-plan"
-                            onClick={handleClose}
-                            className={isActive("/meal-plan") ? "active" : ""}
-                        >
-                            แผนการกินของฉัน
-                        </Link>
-                    </li>
+                            <li>
+                                <Link
+                                    to="/meal-plan"
+                                    onClick={handleClose}
+                                    className={isActive("/meal-plan") ? "active" : ""}
+                                >
+                                    แผนการกินของฉัน
+                                </Link>
+                            </li>
 
-                    <li>
-                        <Link
-                            to="/favourite-food"
-                            onClick={handleClose}
-                            className={isActive("/favourite-food") ? "active" : ""}
-                        >
-                            รายการโปรดของฉัน
-                        </Link>
-                    </li>
+                            <li>
+                                <Link
+                                    to="/favourite-food"
+                                    onClick={handleClose}
+                                    className={isActive("/favourite-food") ? "active" : ""}
+                                >
+                                    รายการโปรดของฉัน
+                                </Link>
+                            </li>
 
-                    <li>
-                        <Link
-                            to="/past-plans"
-                            onClick={handleClose}
-                            className={isActive("/past-plans") ? "active" : ""}
-                        >
-                            แผนการกินย้อนหลัง
-                        </Link>
-                    </li>
+                            <li>
+                                <Link
+                                    to="/past-plans"
+                                    onClick={handleClose}
+                                    className={isActive("/past-plans") ? "active" : ""}
+                                >
+                                    แผนการกินย้อนหลัง
+                                </Link>
+                            </li>
+                        </>
+                    ) : (
+                        <>
+                            <li>
+                                <Link
+                                    to="/menu"
+                                    onClick={handleClose}
+                                    className={isActive("/menu") ? "active" : ""}
+                                >
+                                    เมนูอาหาร
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link
+                                    to="/meal-plan"
+                                    onClick={handleClose}
+                                    className={isActive("/meal-plan") ? "active" : ""}
+                                >
+                                    แผนการกินของฉัน
+                                </Link>
+                            </li>
+                        </>
+                    )}
 
                     <li>
                         {user ? (

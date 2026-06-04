@@ -28,7 +28,6 @@ function ManageFood() {
   };
 
   const handleDelete = async (foodId) => {
-
     const confirmDelete = window.confirm(
       "ต้องการลบอาหารนี้หรือไม่ ?"
     );
@@ -36,7 +35,6 @@ function ManageFood() {
     if (!confirmDelete) return;
 
     try {
-
       const res = await fetch(
         `http://localhost:5000/api/foods/${foodId}`,
         {
@@ -47,7 +45,6 @@ function ManageFood() {
       const data = await res.json();
 
       if (data.success) {
-
         setFoods(
           foods.filter(
             (food) => food.food_id !== foodId
@@ -55,23 +52,16 @@ function ManageFood() {
         );
 
         alert("ลบอาหารสำเร็จ");
-
       } else {
-
         alert(data.message);
-
       }
-
     } catch (err) {
-
       console.log(err);
       alert("เกิดข้อผิดพลาด");
-
     }
   };
 
   const filteredFoods = foods.filter((food) => {
-
     const matchSearch = food.food_name
       .toLowerCase()
       .includes(search.toLowerCase());
@@ -82,7 +72,6 @@ function ManageFood() {
       (category === "ของหวาน" && food.category_id !== 1);
 
     return matchSearch && matchCategory;
-
   });
 
   return (
@@ -111,34 +100,41 @@ function ManageFood() {
           <FaPlus />
           เพิ่มรายการอาหาร
         </button>
+
       </div>
 
       <div className="food-toolbar">
 
         <div className="custom-dropdown">
-        <div className="dropdown-selected" onClick={() => setIsOpen(!isOpen)}>
-          {category}
-          <span className={`arrow ${isOpen ? "open" : ""}`}>▼</span>
-        </div>
-        
-        {isOpen && (
-          <div className="dropdown-menu">
-            {["ทั้งหมด", "ของคาว", "ของหวาน"].map((cat) => (
-              <div 
-                key={cat} 
-                className="dropdown-item" 
-                onClick={() => {
-                  setCategory(cat);
-                  setIsOpen(false);
-                }}
-              >
-                {cat}
-              </div>
-            ))}
+
+          <div
+            className="dropdown-selected"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {category}
+            <span className={`arrow ${isOpen ? "open" : ""}`}>
+              ▼
+            </span>
           </div>
+
+          {isOpen && (
+            <div className="dropdown-menu">
+              {["ทั้งหมด", "ของคาว", "ของหวาน"].map((cat) => (
+                <div
+                  key={cat}
+                  className="dropdown-item"
+                  onClick={() => {
+                    setCategory(cat);
+                    setIsOpen(false);
+                  }}
+                >
+                  {cat}
+                </div>
+              ))}
+            </div>
           )}
-          </div>
-          
+
+        </div>
 
         <div className="food-search-box">
 
@@ -155,12 +151,12 @@ function ManageFood() {
 
       </div>
 
-      <div className="food-grid">
+      <div className="admin-food-grid">
 
         {filteredFoods.map((food) => (
 
           <div
-            className="food-card"
+            className="admin-food-card"
             key={food.food_id}
           >
 
@@ -171,15 +167,15 @@ function ManageFood() {
                   : `http://localhost:5000${food.image}`
               }
               alt={food.food_name}
-              className="food-image"
+              className="admin-food-image"
             />
 
-            <div className="food-content">
+            <div className="admin-food-content">
 
               <h3>{food.food_name}</h3>
 
               <span
-                className={`food-category ${food.category_id === 1
+                className={`admin-food-category ${food.category_id === 1
                     ? "savory-tag"
                     : "sweet-tag"
                   }`}
@@ -189,7 +185,7 @@ function ManageFood() {
                   : "ของหวาน"}
               </span>
 
-              <div className="food-actions">
+              <div className="admin-food-actions">
 
                 <button
                   className="edit-btn"

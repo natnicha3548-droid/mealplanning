@@ -4,10 +4,8 @@
   /* 1. เพิ่ม padding-top เป็น 120px หรือมากกว่า เพื่อดันเนื้อหาหลบเมนูด้านบน */
   /* รูปแบบ: padding: บน ซ้ายขวา ล่าง; */
   padding: 120px 10% 50px; 
-  
   /* 2. ขยายความกว้าง ปรับจาก 800px เป็น 1400px หรือ 100% เพื่อให้กว้างเต็มจอ */
   max-width: 1400px; 
-  
   margin: auto;
   font-family: 'Kanit', sans-serif;
   min-height: 100vh;

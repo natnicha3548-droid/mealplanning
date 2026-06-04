@@ -71,6 +71,8 @@ function App() {
         return;
       }
 
+      
+
       // แปลงข้อมูล user จาก string เป็น object
       const parsedUser = JSON.parse(storedUser);
 
@@ -168,6 +170,7 @@ function App() {
           user={user}
           setUser={setUser}
           setCalcResult={setCalcResult}
+          setFormData={setFormData}
         />
       )}
 
@@ -181,6 +184,7 @@ function App() {
           path="/"
           element={
             <HomePage
+              user={user}
               calcResult={calcResult}
               formData={formData}
             />
@@ -279,6 +283,7 @@ function App() {
           path="*"
           element={
             <HomePage
+              user={user}
               calcResult={calcResult}
               formData={formData}
             />

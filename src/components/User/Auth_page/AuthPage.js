@@ -130,8 +130,21 @@ function AuthPage({ setUser }) {
                 }
             }
 
+            
             // สมัครสมาชิกสำเร็จ
             else {
+
+                const calcResult = JSON.parse(
+                    localStorage.getItem("calcResult")
+                );
+
+                if (calcResult) {
+                    sessionStorage.setItem(
+                        "activeCalcResult",
+                        JSON.stringify(calcResult)
+                    );
+                }
+
                 alert("สมัครสำเร็จ กรุณาเข้าสู่ระบบ");
                 setIsLogin(true);
             }

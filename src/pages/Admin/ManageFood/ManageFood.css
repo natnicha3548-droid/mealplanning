@@ -1,8 +1,8 @@
 .food-page {
-    background-color: transparent; 
-    padding: 0; /* ลบ padding ออกเพื่อให้ขอบพอดีขึ้น */
-    box-shadow: none; /* ลบเงาออก */
-    border: none; /* ลบเส้นขอบออก (ถ้ามี) */
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
 }
 
 /* HEADER */
@@ -48,7 +48,6 @@
     font-weight: 700;
 }
 
-
 /* ADD BUTTON */
 
 .food-add-btn {
@@ -62,25 +61,15 @@
     font-weight: 600;
     cursor: pointer;
     transition: all .3s;
-    background: linear-gradient(135deg,
-            #a8e6cf 0%,
-            #3dccc7 100%);
-
+    background: linear-gradient(135deg, #a8e6cf 0%, #3dccc7 100%);
     color: #1a5c59;
-    box-shadow: 0 4px 10px rgba(61,
-            204,
-            199,
-            0.2);
+    box-shadow: 0 4px 10px rgba(61, 204, 199, 0.2);
 }
 
 .food-add-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(61,
-            204,
-            199,
-            0.3);
+    box-shadow: 0 6px 15px rgba(61, 204, 199, 0.3);
 }
-
 
 /* TOOLBAR */
 
@@ -95,62 +84,78 @@
 /* SELECT */
 
 .custom-dropdown {
-  position: relative; /* สำคัญมาก: เพื่อให้เมนูอ้างอิงตำแหน่งจากตรงนี้ */
-  width: 100px;
-  z-index: 1000;
+    position: relative;
+    width: 100px;
+    z-index: 1000;
 }
 
 .dropdown-selected {
-  width: 100%;
-  height: 50px;
-  padding: 0 16px;
-  border: 2px solid #ffe0cd;
-  border-radius: 25px; /* กลมดิ๊ก */
-  background: #fff;
-  color: #ff8c42;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: 0.3s;
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    border: 2px solid #ffe0cd;
+    border-radius: 25px;
+    background: #fff;
+    color: #ff8c42;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.dropdown-selected:hover { border-color: #ffb78c; }
+.dropdown-selected:hover {
+    border-color: #ffb78c;
+}
 
-.arrow { font-size: 10px; transition: 0.3s; }
-.arrow.open { transform: rotate(180deg); }
+.arrow {
+    font-size: 10px;
+    transition: 0.3s;
+}
+
+.arrow.open {
+    transform: rotate(180deg);
+}
 
 .dropdown-menu {
-  position: absolute;
-  top: 60px;          /* ระยะห่างจากกล่องตัวเลือกหลัก */
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* เพิ่มเงาให้ดูมีมิติ */
-  padding: 10px;
-  z-index: 1000;      /* เน้นย้ำให้ Z-index อยู่บนสุด */
-  border: 1px solid #ffe0cd; /* เพิ่มขอบสีส้มบางๆ */
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    z-index: 1000;
+    border: 1px solid #ffe0cd;
 }
 
 .dropdown-item {
-  padding: 12px 15px;
-  cursor: pointer;
-  border-radius: 12px; /* กลมมนข้างใน */
-  color: #ff8c42;
-  font-weight: 500;
-  transition: 0.2s;
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 12px;
+    color: #ff8c42;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
 .dropdown-item:hover {
-  background: #fff9f5;
+    background: #fff9f5;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
 /* SEARCH */
 
 .food-search-box {
@@ -194,7 +199,7 @@
 
 /* FOOD GRID */
 
-.food-grid {
+.admin-food-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
@@ -202,7 +207,7 @@
 
 /* CARD */
 
-.food-card {
+.admin-food-card {
     background: #fff;
     border-radius: 18px;
     overflow: hidden;
@@ -213,28 +218,28 @@
     margin: 0 auto;
 }
 
-.food-card:hover {
+.admin-food-card:hover {
     transform: translateY(-4px);
 }
 
-.food-image {
+.admin-food-image {
     width: 100%;
     height: 160px;
     object-fit: cover;
 }
 
-.food-content {
+.admin-food-content {
     padding: 14px;
 }
 
-.food-content h3 {
+.admin-food-content h3 {
     margin: 0 0 10px;
     font-size: 18px;
     font-weight: 700;
     color: #222;
 }
 
-.food-category {
+.admin-food-category {
     display: inline-block;
     padding: 6px 12px;
     border-radius: 20px;
@@ -253,13 +258,13 @@
     color: #d81b60;
 }
 
-.food-actions {
+.admin-food-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-.food-actions button {
+.admin-food-actions button {
     width: 40px;
     height: 40px;
     border: none;
@@ -272,7 +277,7 @@
     transition: .2s;
 }
 
-.food-actions button:hover {
+.admin-food-actions button:hover {
     transform: scale(1.08);
 }
 
@@ -289,17 +294,16 @@
 /* RESPONSIVE */
 
 @media (max-width: 1200px) {
-    .food-grid {
+    .admin-food-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .food-card {
+    .admin-food-card {
         max-width: 100%;
     }
 }
 
 @media (max-width: 768px) {
-
     .food-page {
         padding: 20px;
     }
@@ -309,24 +313,24 @@
         align-items: flex-start;
     }
 
-    .food-grid {
+    .admin-food-grid {
         grid-template-columns: 1fr;
     }
 
-    .food-card {
+    .admin-food-card {
         max-width: 100%;
     }
 
-   .food-search-box input {
-       width: 100%;
-       min-width: 280px;
-   }
+    .food-search-box input {
+        width: 100%;
+        min-width: 280px;
+    }
 
     .food-title h1 {
         font-size: 30px;
     }
 
-    .food-image {
+    .admin-food-image {
         height: 180px;
     }
 }

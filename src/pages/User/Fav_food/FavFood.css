@@ -162,7 +162,7 @@
 /* Grid อาหาร */
 .favorite-food-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
 }
 
@@ -170,18 +170,17 @@
 
 /* การ์ดอาหาร */
 .favorite-food-card {
-    position: relative;
     background: white;
-    border-radius: 24px;
+    border-radius: 20px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .favorite-food-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 /* ================= IMAGE ================= */
@@ -189,9 +188,8 @@
 /* กล่องรูป */
 .favorite-food-image-box {
     width: 100%;
-    height: 170px;
+    height: 130px;
     overflow: hidden;
-    position: relative;
 }
 
 /* รูปอาหาร */
@@ -199,7 +197,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.35s ease;
+    transition: 0.3s;
 }
 
 /* Zoom รูปตอน hover */
@@ -238,15 +236,15 @@
 
 /* ข้อมูลอาหาร */
 .favorite-food-info {
-    padding: 16px;
+    padding: 15px;
 }
 
 /* ชื่ออาหาร */
 .favorite-food-info h3 {
-    margin: 0 0 6px;
+    margin: 0 0 5px;
     font-size: 1.05rem;
-    font-weight: 600;
-    color: #2d1b12;
+    color: #333;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -256,8 +254,8 @@
 .favorite-food-info p {
     margin: 0;
     color: #ff8c42;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 /* ================= PLAN ================= */
@@ -350,13 +348,12 @@
 
 /* กล่องว่าง */
 .empty-box {
-    background: rgba(255, 255, 255, 0.70);
-    border-radius: 24px;
-    padding: 60px 20px;
+    grid-column: 1 / -1;
     text-align: center;
+    padding: 40px;
     color: #999;
-    font-size: 1rem;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+    background: white;
+    border-radius: 20px;
 }
 
 /* ================= FULL PLAN CARD ================= */

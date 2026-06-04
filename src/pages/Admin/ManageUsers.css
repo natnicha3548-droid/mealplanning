@@ -55,39 +55,48 @@
 /* =========================================
    Search Box & Add Button
    ========================================= */
-.search-box {
+
+/* เปลี่ยนจาก .search-box */
+.menu-search-box {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.search-box input {
-  padding: 5px 5px 5px 50px; /* ลด Padding บน-ล่าง ให้กล่องเตี้ยลง */
+.menu-search-box input {
+  padding: 5px 5px 5px 50px;
+  /* ลด Padding บน-ล่าง ให้กล่องเตี้ยลง */
   border: 1px solid #e0d5c1;
   border-radius: 20px;
   outline: none;
   font-family: inherit;
-  font-size: 0.85rem; /* ลดขนาดฟอนต์ลงนิดนึงให้สมส่วน */
+  font-size: 0.85rem;
+  /* ลดขนาดฟอนต์ลงนิดนึงให้สมส่วน */
   color: #4a3e3d;
-  height: 35px; /* กำหนดความสูงให้ชัดเจน */
-  width: 300px; /* ลดความกว้างเริ่มต้นลง */
+  height: 35px;
+  /* กำหนดความสูงให้ชัดเจน */
+  width: 300px;
+  /* ลดความกว้างเริ่มต้นลง */
   transition: all 0.3s ease;
   background-color: #fff;
 }
 
-.search-box input:focus {
+.menu-search-box input:focus {
   border-color: #ff8c42;
   box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.15);
-  width: 300px; /* ขยายขนาดตอนกดพิมพ์ */
+  width: 300px;
+  /* ขยายขนาดตอนกดพิมพ์ */
 }
 
-.search-icon {
+/* เปลี่ยนจาก .search-icon */
+.menu-search-icon {
   position: absolute;
   left: 14px;
   color: #a68c74;
 }
 
-.btn-cute {
+/* เปลี่ยนจาก .btn-cute */
+.menu-btn-cute {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -100,13 +109,14 @@
   transition: all 0.3s;
 }
 
-.btn-add {
+/* เปลี่ยนจาก .btn-add */
+.menu-btn-add {
   background: linear-gradient(135deg, #a8e6cf 0%, #3dccc7 100%);
   color: #1a5c59;
   box-shadow: 0 4px 10px rgba(61, 204, 199, 0.2);
 }
 
-.btn-add:hover {
+.menu-btn-add:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(61, 204, 199, 0.3);
 }

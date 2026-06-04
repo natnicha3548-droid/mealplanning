@@ -41,71 +41,112 @@ function Calc() {
     // เก็บผลลัพธ์การคำนวณ
     const [result, setResult] = useState(null);
 
-    // โหลดข้อมูลผู้ใช้
     useEffect(() => {
+
+    const loadData = async () => {
 
         const user = JSON.parse(
             localStorage.getItem("user")
         );
 
-        if (user) {
+        // ================= GUEST =================
+        if (!user) {
 
-            fetch(`http://localhost:5000/api/user/${user.user_id}`)
-                .then(res => res.json())
-                .then(data => {
+            const savedResult = JSON.parse(
+                localStorage.getItem("calcResult")
+            );
 
-                    if (data) {
+            if (savedResult) {
 
-                        setForm({
-                            weight: data.weight || "",
-                            height: data.height || "",
-                            age: data.age || "",
-                            gender: data.gender || "",
-                            activity: data.activity_level || "",
+                setResult(savedResult);
 
-                            diseases: data.chronic_disease
-                                ? (
-                                    data.chronic_disease.startsWith("[")
-                                        ? JSON.parse(data.chronic_disease)
-                                        : [data.chronic_disease]
-                                )
-                                : []
-                        });
+                setForm({
+                    weight: savedResult.weight || "",
+                    height: savedResult.height || "",
+                    age: savedResult.age || "",
+                    gender: savedResult.gender || "",
+                    activity: savedResult.activity || "",
+                    diseases: savedResult.diseases || []
+                });
 
-                    }
+            }
 
-                })
-                .catch(err => console.error(err));
+            return;
+        }
+
+        // ================= USER =================
+
+        try {
+
+            const userRes = await fetch(
+                `http://localhost:5000/api/user/${user.user_id}`
+            );
+
+            const userData = await userRes.json();
+
+            if (userData) {
+
+                setForm({
+                    weight: userData.weight || "",
+                    height: userData.height || "",
+                    age: userData.age || "",
+                    gender: userData.gender || "",
+                    activity: userData.activity_level || "",
+                    diseases: userData.chronic_disease
+                        ? (
+                            userData.chronic_disease.startsWith("[")
+                                ? JSON.parse(userData.chronic_disease)
+                                : [userData.chronic_disease]
+                        )
+                        : []
+                });
+
+            }
+
+        } catch (err) {
+
+            console.error("Load User Error:", err);
 
         }
 
-    }, []);
-
-    // โหลดผลการคำนวณเดิม
-    useEffect(() => {
-
-        const user = JSON.parse(
-            localStorage.getItem("user")
+        // โหลดผลคำนวณจาก session ก่อน
+        const activeCalc = JSON.parse(
+            sessionStorage.getItem("activeCalcResult")
         );
 
-        if (user) {
+        if (activeCalc) {
 
-            fetch(`http://localhost:5000/api/get-calculation/${user.user_id}`)
-                .then(res => res.json())
-                .then(data => {
+            setResult(activeCalc);
 
-                    if (data) {
+            return;
+        }
 
-                        setResult(data);
+        // ถ้าไม่มีใน session ค่อยโหลดจาก DB
+        try {
 
-                    }
+            const calcRes = await fetch(
+                `http://localhost:5000/api/get-calculation/${user.user_id}`
+            );
 
-                })
-                .catch(err => console.error(err));
+            const calcData = await calcRes.json();
+
+            if (calcData) {
+
+                setResult(calcData);
+
+            }
+
+        } catch (err) {
+
+            console.error("Load Calculation Error:", err);
 
         }
 
-    }, []);
+    };
+
+    loadData();
+
+}, []);
 
     // อัปเดตค่าจาก input
     const handleChange = (e) => {
@@ -325,6 +366,16 @@ function Calc() {
             JSON.stringify(finalResult)
         );
 
+        sessionStorage.setItem(
+            "activeCalcResult",
+            JSON.stringify(finalResult)
+        );
+
+        sessionStorage.setItem(
+            "calcForm",
+            JSON.stringify(form)
+        );
+
     };
 
     // บันทึกข้อมูลและไปหน้าหลัก
@@ -378,6 +429,10 @@ function Calc() {
             );
 
         }
+        sessionStorage.setItem(
+            "activeCalcResult",
+            JSON.stringify(result)
+        );
 
         // กลับหน้าหลัก
         navigate("/", {
