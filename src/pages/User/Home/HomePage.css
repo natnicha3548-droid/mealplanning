@@ -212,6 +212,25 @@
     transform: scale(1.05);
 }
 
+.home-view-more-text-btn {
+    margin-top: 2px; /* ปรับค่านี้เพื่อให้ตรงกับความสูงของ h2 */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #ff8c4a;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.home-view-more-text-btn:hover {
+    color: #ff6822;
+    transform: translateX(5px); /* ลูกศรจะขยับไปทางขวาเล็กน้อยเมื่อเอาเมาส์ชี้ */
+}
 
 
 /* ================= HOME FAVORITE ================= */
@@ -233,16 +252,20 @@
 
 /* HEADER */
 .home-favorite-header {
-    /* ลบ display: flex ออก หรือเอา comment ครอบไว้ */
-    /* display: flex; */
-    /* justify-content: space-between; */
-    
-    margin-bottom: 26px;
-    width: 100%;
-    /* ปล่อยให้มันเป็นบล็อกปกติ มันจะเรียงแนวตั้งเอง */
+    display: flex;
+    justify-content: space-between; /* ดันปุ่มไปขวาสุด */
+    align-items: flex-start;        /* จัดให้เริ่มที่ด้านบนสุด */
+    margin-bottom: 20px;
+}
+
+.header-text-group {
+    display: flex;
+    flex-direction: column;         /* ให้หัวข้อและคำอธิบายเรียงแนวตั้ง */
+    gap: 4px;                       /* ระยะห่างระหว่างหัวข้อและคำอธิบาย */
 }
 
 .home-favorite-title {
+    margin: 0;
     font-size: 2rem;
     font-weight: 800;
     color: #ff7a2f;
@@ -250,6 +273,7 @@
 }
 
 .home-favorite-subtitle {
+    margin: 0;
     margin-top: 6px; /* ระยะห่างระหว่างชื่อกับคำอธิบาย */
     color: #9b7b67;
     font-size: 0.95rem;

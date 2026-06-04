@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./HomePage.css";
 import { Link, useNavigate } from "react-router-dom";
-import { FaFire, FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle, FaHeart, FaSun, FaCloudSun, FaMoon } from "react-icons/fa";
+import { FaFire, FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle, FaHeart, FaSun, FaCloudSun, FaMoon, FaChevronRight } from "react-icons/fa";
 import { RotateCcw } from 'lucide-react';
 import slide1 from "../../../assets/sl1.png";
 import slide2 from "../../../assets/sl2.png";
@@ -315,10 +315,17 @@ function HomePage({ calcResult, formData }) {
                 {favoriteFoods.length > 0 && (
                     <div className="home-favorite-section">
                         <div className="home-favorite-header">
-                            <h2 className="home-favorite-title">เมนูโปรดของฉัน</h2>
-                            <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและกดใจไว้</p>
+                            <div className="header-text-group">
+                                <h2 className="home-favorite-title">เมนูโปรดของฉัน</h2>
+                                <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและกดใจไว้</p>
+                            </div>
+                            <button 
+                            className="home-view-more-text-btn"
+                            onClick={() => navigate("/favourite-food", { state: { tab: "foods" } })}
+                            >
+                                ดูเพิ่มเติม <FaChevronRight size={12} />
+                            </button>
                         </div>
-
                         <div className="favorite-foods-wrapper"> 
                             <div className="favorite-foods-scroll-container">
                                 {favoriteFoods.map((food) => (
