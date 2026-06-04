@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaChartPie, FaHamburger, FaFolderOpen, FaUsers, FaStar } from 'react-icons/fa';
+  import { FaChartPie, FaHamburger, FaUtensils, FaUserCog, FaFolderOpen, FaUsers, FaStar, FaTags, FaComments } from 'react-icons/fa';
 
 function AdminSidebar() {
   const location = useLocation(); // เอาไว้เช็คว่าตอนนี้อยู่หน้าไหน จะได้ทำสีไฮไลท์ถูก
@@ -18,22 +18,22 @@ function AdminSidebar() {
         </li>
         <li className="admin-menu-item">
           <Link to="/admin/manage-food" className={`admin-menu-link ${location.pathname.includes('manage-food') ? 'active' : ''}`}>
-            <FaHamburger /> จัดการอาหาร
+            <FaUtensils/> จัดการข้อมูลอาหาร
           </Link>
         </li>
         <li className="admin-menu-item">
           <Link to="/admin/manage-categories" className={`admin-menu-link ${location.pathname.includes('manage-categories') ? 'active' : ''}`}>
-            <FaFolderOpen /> หมวดหมู่อาหาร
+            <FaTags /> จัดการหมวดหมู่อาหาร
           </Link>
         </li>
         <li className="admin-menu-item">
           <Link to="/admin/manage-users" className={`admin-menu-link ${location.pathname.includes('manage-users') ? 'active' : ''}`}>
-            <FaUsers /> จัดการสมาชิก
+            <FaUserCog /> จัดการข้อมูลสมาชิก
           </Link>
         </li>
         <li className="admin-menu-item">
           <Link to="/admin/manage-reviews" className={`admin-menu-link ${location.pathname.includes('manage-reviews') ? 'active' : ''}`}>
-            <FaStar /> ตรวจสอบรีวิว
+            <FaComments /> จัดการรีวิวจากผู้ใช้
           </Link>
         </li>
       </ul>

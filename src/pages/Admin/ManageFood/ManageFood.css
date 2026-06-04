@@ -1,15 +1,8 @@
 .food-page {
-    background-color: #ffffff;
-    /* ใส่พื้นหลังสีขาวให้ตาราง */
-    border-radius: 20px;
-    /* มุมมนๆ */
-    padding: 25px;
-    /* พื้นที่ว่างรอบตารางให้ดูไม่อึดอัด */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
-    /* เงาบางๆ ให้ดูลอยขึ้น */
-    border: 1px solid #f9ece0;
-    /* เส้นขอบสีส้มอ่อนๆ เข้าโทน */
-    overflow-x: auto;
+    background-color: transparent; 
+    padding: 0; /* ลบ padding ออกเพื่อให้ขอบพอดีขึ้น */
+    box-shadow: none; /* ลบเงาออก */
+    border: none; /* ลบเส้นขอบออก (ถ้ามี) */
 }
 
 /* HEADER */
@@ -94,32 +87,70 @@
 .food-toolbar {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 50px;
     margin-bottom: 25px;
     flex-wrap: wrap;
 }
 
 /* SELECT */
 
-.food-toolbar select {
-    width: 180px;
-    height: 48px;
-    padding: 0 15px;
-    border: 1px solid #e0d5c1;
-    border-radius: 16px;
-    background: #fff;
-    font-family: inherit;
-    font-size: 15px;
-    color: #4a3e3d;
-    cursor: pointer;
+.custom-dropdown {
+  position: relative; /* สำคัญมาก: เพื่อให้เมนูอ้างอิงตำแหน่งจากตรงนี้ */
+  width: 100px;
+  z-index: 1000;
 }
 
-.food-toolbar select:focus {
-    outline: none;
-    border-color: #ff8c42;
-    box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+.dropdown-selected {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border: 2px solid #ffe0cd;
+  border-radius: 25px; /* กลมดิ๊ก */
+  background: #fff;
+  color: #ff8c42;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+.dropdown-selected:hover { border-color: #ffb78c; }
+
+.arrow { font-size: 10px; transition: 0.3s; }
+.arrow.open { transform: rotate(180deg); }
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;          /* ระยะห่างจากกล่องตัวเลือกหลัก */
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* เพิ่มเงาให้ดูมีมิติ */
+  padding: 10px;
+  z-index: 1000;      /* เน้นย้ำให้ Z-index อยู่บนสุด */
+  border: 1px solid #ffe0cd; /* เพิ่มขอบสีส้มบางๆ */
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-radius: 12px; /* กลมมนข้างใน */
+  color: #ff8c42;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #fff9f5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 /* SEARCH */
 
 .food-search-box {
@@ -142,12 +173,12 @@
     width: 320px;
     height: 48px;
     padding: 0 18px 0 48px;
-    border: 1px solid #e0d5c1;
-    border-radius: 16px;
+    border: 1px solid #f7cfbe;
+    border-radius: 20px;
     background: #fff;
     font-family: inherit;
     font-size: 15px;
-    color: #4a3e3d;
+    color: #3d4a46;
     transition: all .3s ease;
 }
 

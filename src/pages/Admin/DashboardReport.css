@@ -47,12 +47,13 @@
 
 /* จัดเรียงหัวข้อให้อยู่ตรงกลางบรรทัดกับไอคอน */
 .dashboard-main-title {
-  color: #5c3d00;
+  color: #d96b27;
+  font-weight: 700;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 15px; 
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 /* ================= สไตล์กรอบวงกลมไอคอน (Glow Effect) ================= */

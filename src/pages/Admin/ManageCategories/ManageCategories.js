@@ -13,7 +13,7 @@ import {
   FaPizzaSlice,
   FaFish,
   FaAppleAlt,
-  FaUtensils,
+  FaTags,
   FaGlassWhiskey
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -121,7 +121,7 @@ function ManageCategories() {
       return <FaHamburger />;
     }
 
-    return <FaUtensils />;
+    return <FaTags />;
   };
 
   const filteredCategories = categories.filter((item) =>
@@ -134,35 +134,19 @@ function ManageCategories() {
     <div className="mc-page">
 
       <div className="mc-hero">
-
         <div className="mc-hero-content">
-
-          <div className="mc-hero-icon">
-            <FaUtensils />
-          </div>
-
-          <div>
-
-            <h1>
-              จัดการหมวดหมู่อาหาร
-            </h1>
-
-            <p>
-              เพิ่ม แก้ไข และลบหมวดหมู่อาหารในระบบ
-            </p>
-
-          </div>
-
+            {/* ไอคอนที่อยู่ในวงกลม */}
+            <div className="mc-hero-icon">
+                <FaTags />
+            </div>
+            <div>
+                <h2>จัดการหมวดหมู่อาหาร</h2>
+            </div>
         </div>
-
-        <button
-          className="mc-add-btn"
-          onClick={() =>
-            navigate("/admin/add-category")
-          }
-        >
-          <FaPlus />
-          เพิ่มหมวดหมู่
+        
+        {/* ปุ่มเพิ่มรายการ */}
+        <button className="mc-add-btn" onClick={() => navigate("/admin/add-category")}>
+            <FaPlus /> เพิ่มหมวดหมู่
         </button>
 
       </div>
@@ -172,7 +156,7 @@ function ManageCategories() {
         <div className="mc-stat-card">
 
           <div className="mc-stat-icon orange">
-            <FaUtensils />
+            <FaTags />
           </div>
 
           <div>

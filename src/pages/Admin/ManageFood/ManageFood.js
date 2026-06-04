@@ -14,6 +14,7 @@ function ManageFood() {
   const [foods, setFoods] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("ทั้งหมด");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     loadFoods();
@@ -114,14 +115,30 @@ function ManageFood() {
 
       <div className="food-toolbar">
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option>ทั้งหมด</option>
-          <option>ของคาว</option>
-          <option>ของหวาน</option>
-        </select>
+        <div className="custom-dropdown">
+        <div className="dropdown-selected" onClick={() => setIsOpen(!isOpen)}>
+          {category}
+          <span className={`arrow ${isOpen ? "open" : ""}`}>▼</span>
+        </div>
+        
+        {isOpen && (
+          <div className="dropdown-menu">
+            {["ทั้งหมด", "ของคาว", "ของหวาน"].map((cat) => (
+              <div 
+                key={cat} 
+                className="dropdown-item" 
+                onClick={() => {
+                  setCategory(cat);
+                  setIsOpen(false);
+                }}
+              >
+                {cat}
+              </div>
+            ))}
+          </div>
+          )}
+          </div>
+          
 
         <div className="food-search-box">
 
