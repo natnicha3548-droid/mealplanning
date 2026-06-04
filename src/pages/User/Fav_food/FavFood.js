@@ -161,7 +161,11 @@ function FavFood() {
                     <div className="favorite-food-image-box">
 
                         <img
-                            src={food.image}
+                            src={
+                                food.image?.startsWith("http")
+                                    ? food.image
+                                    : `http://localhost:5000${food.image}`
+                            }
                             alt={food.food_name}
                             className="favorite-food-image"
                         />
@@ -407,7 +411,13 @@ function FavFood() {
 
                                             {/* 2. รูปอาหาร */}
                                             <img
-                                                src={image || "https://via.placeholder.com/120"}
+                                                src={
+                                                    image
+                                                        ? image.startsWith("http")
+                                                            ? image
+                                                            : `http://localhost:5000${image}`
+                                                        : "https://via.placeholder.com/120"
+                                                }
                                                 alt={name}
                                                 className="meal-image"
                                             />
