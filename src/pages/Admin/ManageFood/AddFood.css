@@ -82,7 +82,9 @@
     border-radius: 15px;
     border: 2px solid #ecd9c4;
     background: #fffdfb;
-    font-size: 15px;
+    font-size: 16px;                  /* 🌟 ปรับขนาดให้เท่ากับกล่องด้านล่าง */
+    color: #555;                      /* 🌟 สีตัวหนังสือตอนพิมพ์ */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     transition: .3s;
 }
 
@@ -97,6 +99,13 @@
 .form-group textarea {
     resize: vertical;
     min-height: 180px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #ad927d;
+    font-weight: 400;
+    font-family: 'Kanit', sans-serif;
 }
 
 /* ================= IMAGE ================= */
@@ -202,7 +211,9 @@
     border-radius: 15px;
     border: 2px solid #ecd9c4;
     background: #fffdfb;
-    font-size: 15px;
+    font-size: 16px;
+    color: #555;
+    font-family: 'Kanit', sans-serif;
     transition: .3s;
 }
 
@@ -210,6 +221,11 @@
     outline: none;
     border-color: #ff9f43;
     box-shadow: 0 0 0 5px rgba(255, 159, 67, .15);
+}
+
+.nutrition-item input::placeholder {
+    color: #ad927d;
+    font-family: 'Kanit', sans-serif;
 }
 
 /* ================= BUTTON ================= */
@@ -309,9 +325,10 @@
     border-radius: 15px;
     border: 2px solid #ecd9c4;
     background: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    color: #8b5e34;
+    font-size: 18px;          /* 🌟 ปรับขนาดให้ใหญ่ขึ้น */
+    font-weight: 600;         /* 🌟 ทำให้ตัวหนาขึ้น */
+    color: #e67e22;           /* 🌟 ใช้สีส้มโทนเดียวกับหัวข้อ */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     transition: 0.3s;
 }
 
@@ -321,14 +338,36 @@
     box-shadow: 0 0 0 4px rgba(255, 159, 67, .15);
 }
 
+/* ================= เปลี่ยนสีข้อความแนะนำ (Placeholder) ================= */
+
+/* 1. ข้อความแนะนำในกล่อง "ชื่อส่วนประกอบหลัก..." */
+.section-header input::placeholder {
+    color: #8f7660; /* 🌟 เปลี่ยนสีข้อความแนะนำตรงนี้ (ปัจจุบันเป็นสีน้ำตาลอ่อน) */
+    font-weight: 400;
+}
+
+/* 2. ข้อความแนะนำในกล่อง "หัวข้อย่อย..." */
+.dynamic-block input::placeholder {
+    color: #9d8571; /* 🌟 เปลี่ยนสีข้อความแนะนำตรงนี้ */
+    font-weight: 400;
+}
+
+/* 3. ข้อความแนะนำในกล่อง "รายละเอียด..." */
+.dynamic-block textarea::placeholder {
+    color: #b6a190; /* 🌟 เปลี่ยนสีข้อความแนะนำตรงนี้ */
+    font-weight: 400;
+}
+
 .delete-section-btn {
-    background: #fff0f0;
+   background: #fff0f0;
     color: #ff4d4f;
     border: none;
     padding: 12px 18px;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 15px;                  /* 🌟 ปรับขนาดตัวอักษรให้พอดี */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     display: flex;
     align-items: center;
     gap: 8px;
@@ -367,8 +406,10 @@
     padding: 12px 15px;
     border-radius: 12px;
     border: 2px solid #ecd9c4;
-    font-size: 15px;
-    color: #555;
+    font-size: 16px;          /* 🌟 ปรับขนาด */
+    font-weight: 500;
+    color: #8b5e34;           /* 🌟 ใช้สีน้ำตาลให้อ่านง่าย */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     transition: 0.3s;
 }
 
@@ -404,9 +445,12 @@
     padding: 15px;
     border-radius: 15px;
     border: 2px solid #ecd9c4;
-    font-size: 15px;
+    font-size: 15px;          /* 🌟 ปรับขนาดให้พอดีอ่าน */
+    color: #444;              /* 🌟 ใช้สีเทาเข้ม */
     resize: vertical;
     min-height: 100px;
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
+    line-height: 1.6;         /* 🌟 เพิ่มระยะห่างบรรทัดให้ข้อความยาวๆ อ่านง่ายขึ้น */
     transition: 0.3s;
 }
 
@@ -419,6 +463,8 @@
     border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 15px;                  /* 🌟 ปรับขนาดตัวอักษร */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -441,7 +487,8 @@
     border-radius: 18px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 16px;                  /* 🌟 ปรับขนาดตัวอักษร */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     display: flex;
     align-items: center;
     justify-content: center;
