@@ -61,17 +61,11 @@ function EditFood() {
     }, [id]);
 
     const fetchFood = async () => {
-
         try {
-
-            const res = await fetch(
-                `http://localhost:5000/api/foods/${id}`
-            );
-
+            const res = await fetch(`http://localhost:5000/api/foods/${id}`);
             const data = await res.json();
 
             if (data.success && data.food) {
-
                 const food = data.food;
 
                 setFormData({
@@ -88,14 +82,12 @@ function EditFood() {
                     notes: food.notes || ""
                 });
 
-                // แปลงข้อมูล recipe_details (JSON) กลับมาเป็น Array
                 if (food.recipe_details) {
                     try {
                         const parsedDetails = typeof food.recipe_details === "string" 
                             ? JSON.parse(food.recipe_details) 
                             : food.recipe_details;
                         
-                        // ถ้ามีข้อมูลให้เซ็ตค่า ถ้าไม่มีให้ใช้ค่าเริ่มต้น
                         if (parsedDetails && parsedDetails.length > 0) {
                             setRecipeSections(parsedDetails);
                         }
@@ -112,12 +104,10 @@ function EditFood() {
                     );
                 }
             }
-
         } catch (err) {
             console.log(err);
             alert("ไม่สามารถโหลดข้อมูลอาหารได้");
         }
-
     };
 
     const handleChange = (e) => {
@@ -130,7 +120,6 @@ function EditFood() {
         });
     };
 
-    // --- ฟังก์ชันจัดการ Dynamic Boxes ---
     const addSection = () => {
         setRecipeSections([
             ...recipeSections,
@@ -167,86 +156,63 @@ function EditFood() {
         newSections[sectionIndex].blocks[blockIndex][field] = text;
         setRecipeSections(newSections);
     };
-    // ---------------------------------
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         try {
-
             const submitData = new FormData();
 
-            // ใส่ข้อมูลพื้นฐาน
             Object.keys(formData).forEach((key) => {
                 submitData.append(key, formData[key]);
             });
 
-            // ใส่ข้อมูลกล่องย่อยเป็น JSON String
             submitData.append("recipe_details", JSON.stringify(recipeSections));
 
             if (image) {
                 submitData.append("image", image);
             }
 
-            const res = await fetch(
-                `http://localhost:5000/api/foods/${id}`,
-                {
-                    method: "PUT",
-                    body: submitData
-                }
-            );
+            const res = await fetch(`http://localhost:5000/api/foods/${id}`, {
+                method: "PUT",
+                body: submitData
+            });
 
             const result = await res.json();
 
             if (result.success) {
-
                 alert("อัปเดตข้อมูลสำเร็จ");
                 navigate("/admin/manage-food");
-
             } else {
-
                 alert(result.message || "อัปเดตไม่สำเร็จ");
-
             }
-
         } catch (err) {
-
             console.log(err);
             alert("เกิดข้อผิดพลาด");
-
         }
-
     };
 
     return (
         <div className="edit-food-page">
 
-            <div className="food-page-header">
-
-                <div className="food-header-icon">
+            <div className="edit-food-page-header">
+                <div className="edit-food-header-icon">
                     <FaUtensils />
                 </div>
-
-                <div className="food-header-content">
-                    <h1>แก้ไขข้อมูลอาหาร</h1>
+                <div className="edit-food-header-content">
+                    <h2>แก้ไขข้อมูลอาหาร</h2>
                 </div>
-
             </div>
 
-            <div className="header-line"></div>
+            <div className="edit-header-line"></div>
 
-            <form
-                className="edit-food-form"
-                onSubmit={handleSubmit}
-            >
+            <form className="edit-food-form" onSubmit={handleSubmit}>
 
                 {/* --- ส่วนที่ 1: ข้อมูลพื้นฐาน --- */}
                 <div className="edit-form-group">
                     <label>รูปภาพอาหาร</label>
                     <div className="edit-image-upload">
                         <div className="edit-upload-row">
-                            <FaImage className="upload-icon" />
+                            <FaImage className="edit-upload-icon" />
                             <label className="edit-upload-btn">
                                 เปลี่ยนรูปภาพ
                                 <input
@@ -319,27 +285,27 @@ function EditFood() {
                     <div className="edit-nutrition-list">
                         <div className="edit-nutrition-item">
                             <label><FaFire /> แคลอรี</label>
-                            <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} />
+                            <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><FaDrumstickBite /> โปรตีน</label>
-                            <input type="number" name="protein" value={formData.protein} onChange={handleChange} />
+                            <input type="number" step="0.01" name="protein" value={formData.protein} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><FaTint /> ไขมัน</label>
-                            <input type="number" name="fat" value={formData.fat} onChange={handleChange} />
+                            <input type="number" step="0.01" name="fat" value={formData.fat} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><GiWheat /> คาร์โบไฮเดรต</label>
-                            <input type="number" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} />
+                            <input type="number" step="0.01" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><GiSugarCane /> น้ำตาล</label>
-                            <input type="number" name="sugar" value={formData.sugar} onChange={handleChange} />
+                            <input type="number" step="0.01" name="sugar" value={formData.sugar} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><MdOutlineSoupKitchen /> โซเดียม</label>
-                            <input type="number" name="sodium" value={formData.sodium} onChange={handleChange} />
+                            <input type="number" step="0.01" name="sodium" value={formData.sodium} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                     </div>
                 </div>
@@ -351,16 +317,17 @@ function EditFood() {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
+                        placeholder="อธิบายสั้นๆ เกี่ยวกับอาหาร..."
                     />
                 </div>
 
                 {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
-                <div className="recipe-details-section">
+                <div className="edit-recipe-details-section">
                     <h3>รายละเอียดส่วนผสมและวิธีทำ</h3>
 
                     {recipeSections.map((section, sIndex) => (
-                        <div key={sIndex} className="dynamic-section-card">
-                            <div className="section-header">
+                        <div key={sIndex} className="edit-dynamic-section-card">
+                            <div className="edit-section-header">
                                 <input
                                     type="text"
                                     placeholder="ชื่อส่วนประกอบหลัก เช่น น้ำจิ้ม, หมูหมัก..."
@@ -369,7 +336,7 @@ function EditFood() {
                                 />
                                 <button
                                     type="button"
-                                    className="delete-section-btn"
+                                    className="edit-delete-section-btn"
                                     onClick={() => removeSection(sIndex)}
                                 >
                                     <FaTrash /> ลบส่วนนี้
@@ -378,8 +345,8 @@ function EditFood() {
 
                             {/* กล่องย่อย (Blocks) */}
                             {section.blocks.map((block, bIndex) => (
-                                <div key={bIndex} className="dynamic-block">
-                                    <div className="dynamic-block-header">
+                                <div key={bIndex} className="edit-dynamic-block">
+                                    <div className="edit-dynamic-block-header">
                                         <input
                                             type="text"
                                             placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
@@ -388,7 +355,7 @@ function EditFood() {
                                         />
                                         <button
                                             type="button"
-                                            className="delete-block-btn"
+                                            className="edit-delete-block-btn"
                                             onClick={() => removeBlock(sIndex, bIndex)}
                                         >
                                             <FaTrash />
@@ -405,7 +372,7 @@ function EditFood() {
 
                             <button
                                 type="button"
-                                className="add-block-btn"
+                                className="edit-add-block-btn"
                                 onClick={() => addBlock(sIndex)}
                             >
                                 <FaPlusCircle /> เพิ่มหัวข้อย่อยในกลุ่มนี้
@@ -415,7 +382,7 @@ function EditFood() {
 
                     <button
                         type="button"
-                        className="add-section-btn"
+                        className="edit-add-section-btn"
                         onClick={addSection}
                     >
                         <FaPlus /> เพิ่มส่วนประกอบหลัก (กล่องใหม่)
@@ -436,7 +403,7 @@ function EditFood() {
 
                 <button
                     type="submit"
-                    className="update-btn"
+                    className="edit-update-btn"
                     style={{ marginTop: '20px' }}
                 >
                     <FaEdit />
@@ -444,7 +411,6 @@ function EditFood() {
                 </button>
 
             </form>
-
         </div>
     );
 }
