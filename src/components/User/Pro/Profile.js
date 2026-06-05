@@ -42,8 +42,6 @@ const avatars = [
 
 function Profile({ user, setUser }) {
 
-    console.log("PROFILE USER =", user);
-
     const [form, setForm] = useState({
         email: "",
         password: "",
@@ -108,6 +106,10 @@ function Profile({ user, setUser }) {
             }));
 
             loadHealthData(user.user_id);
+
+        } else {
+            // ✅ FIX: Guest ที่ยังไม่ได้ login → โหลดจาก localStorage
+            loadHealthData(null);
         }
 
     }, [user]);
@@ -208,20 +210,6 @@ function Profile({ user, setUser }) {
         }
 
     };
-
-    if (!user) {
-
-        return (
-            <div className="profile-page">
-                <div className="profile-card">
-                    <h2 style={{ textAlign: "center" }}>
-                        กรุณาเข้าสู่ระบบ
-                    </h2>
-                </div>
-            </div>
-        );
-
-    }
 
     const handleSendOtp = async () => {
 
@@ -338,8 +326,19 @@ function Profile({ user, setUser }) {
 
     };
 
+    // ✅ FIX: loadHealthData รองรับทั้ง guest (userId = null) และ user ที่ login แล้ว
     async function loadHealthData(userId) {
 
+        // Guest → โหลดจาก localStorage
+        if (!userId) {
+            const calcResult = JSON.parse(localStorage.getItem("calcResult"));
+            if (calcResult) {
+                setHealthData(calcResult);
+            }
+            return;
+        }
+
+        // User ที่ login → โหลดจาก DB
         try {
 
             const res = await fetch(
@@ -354,13 +353,72 @@ function Profile({ user, setUser }) {
 
             console.log(err);
 
+            // ถ้า API ล้มเหลว fallback ไปใช้ localStorage
+            const calcResult = JSON.parse(localStorage.getItem("calcResult"));
+            if (calcResult) {
+                setHealthData(calcResult);
+            }
+
         }
 
     }
 
-    
+    if (!user) {
 
-    
+        return (
+            <div className="profile-page">
+                <div className="profile-card">
+                    <h2 style={{ textAlign: "center" }}>
+                        กรุณาเข้าสู่ระบบ
+                    </h2>
+
+                    {/* ✅ FIX: แสดงข้อมูลสุขภาพจาก localStorage แม้ยังไม่ได้ login */}
+                    {healthData && (
+                        <div className="section">
+                            <div className="section-header">
+                                <div className="section-icon">
+                                    <FaFire />
+                                </div>
+                                <div>
+                                    <h3>ข้อมูลสุขภาพ (ผลคำนวณล่าสุด)</h3>
+                                    <p>สมัครสมาชิกเพื่อบันทึกข้อมูลถาวร</p>
+                                </div>
+                            </div>
+                            <div className="health-grid">
+                                <div className="health-card weight">
+                                    <FaWeight />
+                                    <h4>น้ำหนัก</h4>
+                                    <span>
+                                        {healthData?.weight ? Math.round(healthData.weight) : "-"} kg
+                                    </span>
+                                </div>
+                                <div className="health-card height">
+                                    <FaRulerVertical />
+                                    <h4>ส่วนสูง</h4>
+                                    <span>
+                                        {healthData?.height ? Math.round(healthData.height) : "-"} cm
+                                    </span>
+                                </div>
+                                <div className="health-card bmi">
+                                    <FaUser />
+                                    <h4>BMI</h4>
+                                    <span>{healthData?.bmi || "-"}</span>
+                                </div>
+                                <div className="health-card goal">
+                                    <FaFire />
+                                    <h4>เป้าหมาย</h4>
+                                    <span>
+                                        {healthData?.tdee ? Math.round(healthData.tdee) : "-"} kcal
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+
+    }
 
     return (
 
@@ -772,7 +830,7 @@ function Profile({ user, setUser }) {
                     </div>
 
                 </div>
-                
+
                 {/* OTP Modal */}
                 {showOtpModal && (
                     <div className="otp-modal-overlay">
@@ -825,10 +883,8 @@ function Profile({ user, setUser }) {
                 )}
 
             </div>
-            
 
         </div>
-        
 
     );
 

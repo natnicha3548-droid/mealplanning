@@ -16,55 +16,39 @@ const Navbar = ({
         localStorage.getItem("avatar") ||
         "/avatars/0d625718d4.svg"
     );
+
     useEffect(() => {
-
         if (user?.avatar) {
-
             setAvatar(user.avatar);
-
         }
-
     }, [user]);
 
     const location = useLocation();
     const navigate = useNavigate();
+
     useEffect(() => {
-
         const updateAvatar = () => {
-
             const newAvatar =
                 localStorage.getItem("avatar") ||
                 "/avatars/0d625718d4.svg";
-
-            console.log("AVATAR UPDATED:", newAvatar);
-
             setAvatar(newAvatar);
-
         };
 
-        window.addEventListener(
-            "avatarChanged",
-            updateAvatar
-        );
-
-        return () => {
-
-            window.removeEventListener(
-                "avatarChanged",
-                updateAvatar
-            );
-
-        };
-
+        window.addEventListener("avatarChanged", updateAvatar);
+        return () => window.removeEventListener("avatarChanged", updateAvatar);
     }, []);
 
     const handleClose = () => setIsOpen(false);
 
     const handleLogout = () => {
-
         localStorage.removeItem("user");
         localStorage.removeItem("avatar");
         localStorage.removeItem("token");
+
+        // ✅ ล้างค่า cal ที่เคยกด "เสร็จสิ้น" ออก
+        // ไม่ให้ MealPlan/MyPlate โชว์ค่าเก่าหลัง logout
+        // (localStorage["calcResult"] ยังคงอยู่ เพื่อ pre-fill หน้า Cal ถ้า guest กลับมา)
+        sessionStorage.removeItem("activeCalcResult");
 
         setUser(null);
         setCalcResult(null);
@@ -72,31 +56,21 @@ const Navbar = ({
 
         setProfileOpen(false);
 
-        navigate("/", {
-            replace: true
-        });
-
+        navigate("/", { replace: true });
     };
 
     const isActive = (path) => location.pathname === path;
-    
 
     return (
         <nav className="main-nav">
             <div className="nav-top">
 
-                <div
-                    className="nav-logo"
-                    onClick={() => navigate("/")}
-                >
+                <div className="nav-logo" onClick={() => navigate("/")}>
                     <img src={logo} alt="logo" />
                     <span>MealPlan</span>
                 </div>
 
-                <div
-                    className="hamburger"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
+                <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
                     {isOpen ? '✖' : '☰'}
                 </div>
 
@@ -180,10 +154,7 @@ const Navbar = ({
 
                     <li>
                         {user ? (
-                            <div
-                                className="profile-box"
-                                style={{ position: "relative" }}
-                            >
+                            <div className="profile-box" style={{ position: "relative" }}>
                                 <img
                                     src={avatar}
                                     alt="avatar"
@@ -204,10 +175,7 @@ const Navbar = ({
                                         }}
                                     >
                                         <div
-                                            style={{
-                                                padding: "8px",
-                                                cursor: "pointer"
-                                            }}
+                                            style={{ padding: "8px", cursor: "pointer" }}
                                             onClick={() => {
                                                 navigate("/profile");
                                                 setProfileOpen(false);

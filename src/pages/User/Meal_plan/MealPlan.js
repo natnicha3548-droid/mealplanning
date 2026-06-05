@@ -22,20 +22,16 @@ const generateNext7Days = () => {
     "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
   ];
   const days = [];
-
   for (let i = 0; i < 7; i++) {
     const d = new Date();
     d.setDate(d.getDate() + i);
-
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    const fullDate = `${yyyy}-${mm}-${dd}`;
-
     days.push({
       name: dayNames[d.getDay()],
       date: `${d.getDate()} ${monthNames[d.getMonth()]}`,
-      fullDate: fullDate,
+      fullDate: `${yyyy}-${mm}-${dd}`,
     });
   }
   return days;
@@ -48,14 +44,14 @@ function MealPlan() {
   const [selectedDay, setSelectedDay] = useState(Number(sessionStorage.getItem("meal_selectedDay")) || 0);
   const [isLoading, setIsLoading] = useState(true);
   const [isPlanFav, setIsPlanFav] = useState(false);
-
   const [reviewedStatus, setReviewedStatus] = useState({});
   const [reviewTarget, setReviewTarget] = useState(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
 
+  // ✅ goalData เริ่มต้นเป็น 0 ทุกค่า
   const [goalData, setGoalData] = useState({
-    tdee: 1600, carb: 0, protein: 0, fat: 0, sugar: 25, sodium: 2000
+    tdee: 0, carb: 0, protein: 0, fat: 0, sugar: 0, sodium: 0
   });
 
   const fetchMealPlanFromDB = async (date) => {
@@ -63,18 +59,25 @@ function MealPlan() {
     setIsPlanFav(false);
     setReviewedStatus({});
 
-    try {
-      const storedUser = localStorage.getItem("user");
-      const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
-      const response = await fetch(`http://localhost:5000/api/meals?date=${date}&userId=${currentUserId}`);
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
+    // ✅ guest ไม่ดึง DB เลย
+    if (!parsedUser?.user_id) {
+      setMealPlan([]);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const currentUserId = parsedUser.user_id;
+      const response = await fetch(`http://localhost:5000/api/meals?date=${date}&userId=${currentUserId}`);
       if (!response.ok) throw new Error("เกิดข้อผิดพลาด");
       const dataFromDB = await response.json();
       setMealPlan(dataFromDB);
 
       if (dataFromDB.length > 0) {
         const planId = dataFromDB[0].plan_id;
-
         fetch(`http://localhost:5000/api/favorite-status?user_id=${currentUserId}&plan_id=${planId}`)
           .then(res => res.json())
           .then(data => setIsPlanFav(data.isFav))
@@ -86,10 +89,7 @@ function MealPlan() {
             .then(res => res.json())
             .then(data => {
               if (data.isReviewed) {
-                setReviewedStatus(prev => ({
-                  ...prev,
-                  [foodId]: data
-                }));
+                setReviewedStatus(prev => ({ ...prev, [foodId]: data }));
               }
             })
             .catch(err => console.error("Error fetching review status:", err));
@@ -111,19 +111,42 @@ function MealPlan() {
   useEffect(() => {
     const days = generateNext7Days();
     setWeekDays(days);
-    const storedUser = localStorage.getItem("user");
-    const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
 
-    fetch(`http://localhost:5000/api/get-calculation/${currentUserId}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data) {
-          setGoalData({
-            tdee: data.tdee || 1600, carb: data.carb || 0, protein: data.protein || 0,
-            fat: data.fat || 0, sugar: data.sugar || 25, sodium: data.sodium || 2000
-          });
-        }
-      }).catch(err => console.error(err));
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+    if (parsedUser?.user_id) {
+      // ✅ สมาชิก → ดึง goalData จาก DB
+      fetch(`http://localhost:5000/api/get-calculation/${parsedUser.user_id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data) {
+            setGoalData({
+              tdee: data.tdee || 0,
+              carb: data.carb || 0,
+              protein: data.protein || 0,
+              fat: data.fat || 0,
+              sugar: data.sugar || 0,
+              sodium: data.sodium || 0
+            });
+          }
+        }).catch(err => console.error(err));
+    } else {
+      // ✅ Guest → อ่านจาก sessionStorage["activeCalcResult"] เท่านั้น
+      // sessionStorage จะถูกเซ็ตก็ต่อเมื่อกด "เสร็จสิ้น" ที่หน้า Calc
+      // ถ้ายังไม่ได้กด → goalData ยังคงเป็น 0 ทุกค่า
+      const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+      if (activeCalc) {
+        setGoalData({
+          tdee: activeCalc.tdee || 0,
+          carb: activeCalc.carb || 0,
+          protein: activeCalc.protein || 0,
+          fat: activeCalc.fat || 0,
+          sugar: activeCalc.sugar || 0,
+          sodium: activeCalc.sodium || 0
+        });
+      }
+    }
 
     fetchMealPlanFromDB(days[0].fullDate);
   }, []);
@@ -133,13 +156,12 @@ function MealPlan() {
     fetchMealPlanFromDB(weekDays[index].fullDate);
   };
 
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = !!storedUser;
+
   const handleEditPlan = () => {
     if (mealPlan.length === 0) return;
-    if (!isLoggedIn) {
-      alert("กรุณาเข้าสู่ระบบก่อนแก้ไขแผนการกิน");
-      return;
-    }
-
+    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนแก้ไขแผนการกิน"); return; }
     const draftPlate = mealPlan.map(meal => ({
       id: meal.meal_detail_id,
       food_id: meal.food_id,
@@ -156,36 +178,25 @@ function MealPlan() {
         sodium: Number(meal.sodium)
       }
     }));
-
     localStorage.setItem("plan_plate", JSON.stringify(draftPlate));
     navigate("/MyPlate?mode=plan");
   };
 
   const handleSaveFavoritePlan = async () => {
     if (!mealPlan || mealPlan.length === 0) return;
-    if (!isLoggedIn) {
-      alert("กรุณาเข้าสู่ระบบก่อนบันทึกแผนโปรด");
-      return;
-    }
-
+    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนบันทึกแผนโปรด"); return; }
     const planId = mealPlan[0].plan_id;
-    const storedUser = localStorage.getItem("user");
-    const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
-
+    const currentUserId = storedUser.user_id;
     try {
       const response = await fetch("http://localhost:5000/api/favorite-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: currentUserId, plan_id: planId })
       });
-
       if (response.ok) {
         const data = await response.json();
         setIsPlanFav(data.isFav);
-
-        if (data.isFav) {
-          alert("บันทึกแผนอาหารของวันนี้เป็นเซ็ตโปรดเรียบร้อยแล้ว! ❤️");
-        }
+        if (data.isFav) alert("บันทึกแผนอาหารของวันนี้เป็นเซ็ตโปรดเรียบร้อยแล้ว! ❤️");
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -193,18 +204,13 @@ function MealPlan() {
   };
 
   const handleDeletePlan = async (planId) => {
+    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนลบแผนการกิน"); return; }
     if (!window.confirm("คุณต้องการลบแผนอาหารทั้งหมดของวันนี้ใช่หรือไม่? ข้อมูลทั้งหมดจะหายไป")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/plan/${planId}`, {
-        method: "DELETE"
-      });
+      const response = await fetch(`http://localhost:5000/api/plan/${planId}`, { method: "DELETE" });
       if (response.ok) {
         alert("ลบแผนอาหารของวันนี้สำเร็จ");
         fetchMealPlanFromDB(weekDays[selectedDay].fullDate);
-      }
-      if (!isLoggedIn) {
-        alert("กรุณาเข้าสู่ระบบก่อนลบแผนการกิน");
-        return;
       }
     } catch (error) {
       console.error(error);
@@ -212,6 +218,7 @@ function MealPlan() {
   };
 
   const handleOpenReviewModal = (meal) => {
+    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนรีวิวอาหาร"); return; }
     setReviewTarget(meal);
     if (reviewedStatus[meal.food_id]) {
       setRating(reviewedStatus[meal.food_id].rating);
@@ -220,18 +227,11 @@ function MealPlan() {
       setRating(5);
       setReviewText("");
     }
-    if (!isLoggedIn) {
-      alert("กรุณาเข้าสู่ระบบก่อนรีวิวอาหาร");
-      return;
-    }
   };
 
   const handleConfirmReview = async () => {
     if (!reviewText.trim()) return alert("กรุณาพิมพ์ข้อความรีวิวด้วยครับ");
-    const storedUser = localStorage.getItem("user");
-    const currentUserId = storedUser
-      ? JSON.parse(storedUser).user_id
-      : null;
+    const currentUserId = storedUser ? JSON.parse(localStorage.getItem("user")).user_id : null;
     try {
       const response = await fetch("http://localhost:5000/api/review", {
         method: "POST",
@@ -260,8 +260,8 @@ function MealPlan() {
   const totalSodium = mealPlan.reduce((sum, meal) => sum + (Number(meal.sodium || 0) * (meal.quantity || 1)), 0);
 
   const goalCalories = goalData.tdee;
-  const progressWidth = Math.min((totalCalories / goalCalories) * 100, 100);
-  const fillPercentage = Math.min((totalCalories / goalCalories) * 100, 100);
+  const progressWidth = goalCalories > 0 ? Math.min((totalCalories / goalCalories) * 100, 100) : 0;
+  const fillPercentage = goalCalories > 0 ? Math.min((totalCalories / goalCalories) * 100, 100) : 0;
   const totalMacros = totalCarbs + totalProtein + totalFat + totalSugar + (totalSodium / 1000) || 1;
 
   const pCarb = Math.round((totalCarbs / totalMacros) * 100) || 0;
@@ -294,9 +294,6 @@ function MealPlan() {
     return acc;
   }, {});
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const isLoggedIn = !!storedUser;
-
   return (
     <div className="meal-page">
       <header className="meal-top">
@@ -311,9 +308,7 @@ function MealPlan() {
           to="/MyPlate?mode=plan"
           className="create-btn"
           style={{ textDecoration: "none" }}
-          onClick={() => {
-            localStorage.removeItem("plan_plate");
-          }}
+          onClick={() => localStorage.removeItem("plan_plate")}
         >
           <FaPlus /> สร้างแผนใหม่
         </Link>
@@ -336,7 +331,6 @@ function MealPlan() {
             <div className="empty-msg">ยังไม่มีแผนการกินในวันนี้</div>
           ) : (
             <div className="unified-plan-card">
-
               <div className="card-top-header-actions">
                 <span className="card-header-date-title">เมนูอาหารของฉัน</span>
                 <div className="global-icon-actions-group">
@@ -344,7 +338,7 @@ function MealPlan() {
                     className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`}
                     style={{ color: isPlanFav ? "red" : "#ddaa9d" }}
                     title="บันทึกแผนนี้เป็นเซ็ตโปรด"
-                    onClick={() => handleSaveFavoritePlan()}
+                    onClick={handleSaveFavoritePlan}
                   >
                     <FaHeart />
                   </button>
@@ -364,7 +358,6 @@ function MealPlan() {
                         ) : (
                           <div className="meal-time-column-placeholder"></div>
                         )}
-
                         <img
                           src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
                           alt={meal.food_name}
@@ -372,13 +365,11 @@ function MealPlan() {
                         />
                         <div className="row-details">
                           <h2>{meal.food_name}</h2>
-                          {/* แสดง serving_size ตรงๆ เหมือน HomePage แทนการตัดตัวเลขออก */}
                           <span className="row-qty-tag">
                             {meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}
                           </span>
                         </div>
                       </div>
-
                       <div className="meal-item-right">
                         <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
                         <button
@@ -407,14 +398,18 @@ function MealPlan() {
                   </button>
                 </div>
               </div>
-
             </div>
           )}
         </section>
 
         <aside className="summary-card">
           <h2>สรุป{selectedDay === 0 ? "วันนี้" : `วัน${weekDays[selectedDay]?.name}`}</h2>
-          <div className="circle-box"><div className="circle" style={circleStyle}><h1>{totalCalories.toFixed(0)}</h1><span>kcal</span></div></div>
+          <div className="circle-box">
+            <div className="circle" style={circleStyle}>
+              <h1>{totalCalories.toFixed(0)}</h1>
+              <span>kcal</span>
+            </div>
+          </div>
           <div className="summary-list">
             <NutritionItem label="คาร์โบไฮเดรต" value={`${pCarb}%`} grams={`${totalCarbs.toFixed(1)} / ${Number(goalData.carb).toFixed(0)}g`} />
             <NutritionItem label="โปรตีน" value={`${pPro}%`} grams={`${totalProtein.toFixed(1)} / ${Number(goalData.protein).toFixed(0)}g`} />
@@ -423,13 +418,17 @@ function MealPlan() {
             <NutritionItem label="โซเดียม" value={`${pSod}%`} grams={`${totalSodium.toFixed(0)} / ${Number(goalData.sodium).toFixed(0)}mg`} />
           </div>
           <div className="goal-box">
-            <div className="goal-top"><span>เป้าหมายรายวัน</span><strong>{totalCalories.toFixed(0)} / {Number(goalCalories).toFixed(0)} kcal</strong></div>
-            <div className="goal-bar"><div className="goal-fill" style={{ width: `${progressWidth}%` }}></div></div>
+            <div className="goal-top">
+              <span>เป้าหมายรายวัน</span>
+              <strong>
+                {totalCalories.toFixed(0)} / {goalCalories > 0 ? Number(goalCalories).toFixed(0) : "0"} kcal
+              </strong>
+            </div>
+            <div className="goal-bar">
+              <div className="goal-fill" style={{ width: `${progressWidth}%` }}></div>
+            </div>
           </div>
-          <button
-            className="nutrition-report-btn"
-            onClick={() => navigate("/report")}
-          >
+          <button className="nutrition-report-btn" onClick={() => navigate("/report")}>
             <FaChartPie /> ดูรายงานโภชนาการ
           </button>
         </aside>

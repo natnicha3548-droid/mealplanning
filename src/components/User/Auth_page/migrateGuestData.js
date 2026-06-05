@@ -1,0 +1,58 @@
+export const migrateGuestData = async (userId) => {
+
+    const calcResult = JSON.parse(localStorage.getItem("calcResult"));
+
+    // ไม่มีข้อมูล guest → ไม่ต้องทำอะไร
+    if (!calcResult || !userId) return;
+
+    try {
+
+        // ── ขั้นที่ 1: เช็คก่อนว่า user มีข้อมูลใน DB แล้วหรือยัง ──
+        const checkRes = await fetch(
+            `http://localhost:5000/api/get-calculation/${userId}`
+        );
+        const existingData = await checkRes.json();
+
+        if (existingData && existingData.tdee) {
+            // user มีข้อมูลใน DB แล้ว → ไม่ migrate (ไม่ทับข้อมูลของ user)
+            // แค่ลบ guest data ออกจาก localStorage ทิ้ง
+            localStorage.removeItem("calcResult");
+            return;
+        }
+
+        // ── ขั้นที่ 2: user ยังไม่มีข้อมูลใน DB → migrate ข้อมูล guest เข้า DB ──
+
+        await fetch("http://localhost:5000/api/update-user-info", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: userId,
+                weight: calcResult.weight,
+                height: calcResult.height,
+                age: calcResult.age,
+                gender: calcResult.gender,
+                activity: calcResult.activity,
+                chronic_disease: JSON.stringify(calcResult.diseases || [])
+            })
+        });
+
+        await fetch("http://localhost:5000/api/save-calculation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: userId,
+                ...calcResult
+            })
+        });
+
+        // เก็บไว้ใน sessionStorage เพื่อให้หน้า Calc แสดงผลได้ทันที
+        sessionStorage.setItem("activeCalcResult", JSON.stringify(calcResult));
+
+        // ลบออกจาก localStorage (ข้อมูลอยู่ใน DB แล้ว)
+        localStorage.removeItem("calcResult");
+
+    } catch (err) {
+        console.error("migrateGuestData error:", err);
+    }
+
+};

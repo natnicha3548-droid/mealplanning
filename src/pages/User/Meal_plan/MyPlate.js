@@ -33,9 +33,9 @@ function MyPlate() {
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
 
-  // state สำหรับ modal แจ้งเตือน login
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  // ✅ goalData เริ่มต้นเป็น 0 ทุกค่า
   const [goalData, setGoalData] = useState({
     tdee: 0,
     carb: 0,
@@ -51,7 +51,6 @@ function MyPlate() {
     { id: "dinner", title: "มื้อเย็น", dbType: "เย็น", icon: <FaMoon /> }
   ];
 
-  // ================= WEEK =================
   const generateWeekForDate = (dateToGenerate) => {
     const targetDate = new Date(dateToGenerate);
     const days = [];
@@ -77,7 +76,6 @@ function MyPlate() {
     setCurrentWeekDays(days);
   };
 
-  // ================= LOAD =================
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -95,6 +93,7 @@ function MyPlate() {
 
     const fetchGoalData = async () => {
       if (storedUser?.user_id) {
+        // ✅ สมาชิก → ดึง goalData จาก DB
         try {
           const response = await fetch(
             `http://localhost:5000/api/get-calculation/${storedUser.user_id}`
@@ -114,15 +113,18 @@ function MyPlate() {
           console.error(error);
         }
       } else {
-        const calcResult = JSON.parse(localStorage.getItem("calcResult"));
-        if (calcResult) {
+        // ✅ Guest → อ่านจาก sessionStorage["activeCalcResult"] เท่านั้น
+        // sessionStorage จะถูกเซ็ตก็ต่อเมื่อกด "เสร็จสิ้น" ที่หน้า Calc
+        // ถ้ายังไม่ได้กด → goalData ยังคงเป็น 0 ทุกค่า
+        const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+        if (activeCalc) {
           setGoalData({
-            tdee: Number(calcResult.tdee) || 0,
-            carb: Number(calcResult.carb) || 0,
-            protein: Number(calcResult.protein) || 0,
-            fat: Number(calcResult.fat) || 0,
-            sugar: Number(calcResult.sugar) || 0,
-            sodium: Number(calcResult.sodium) || 0
+            tdee: Number(activeCalc.tdee) || 0,
+            carb: Number(activeCalc.carb) || 0,
+            protein: Number(activeCalc.protein) || 0,
+            fat: Number(activeCalc.fat) || 0,
+            sugar: Number(activeCalc.sugar) || 0,
+            sodium: Number(activeCalc.sodium) || 0
           });
         }
       }
@@ -140,7 +142,6 @@ function MyPlate() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [storageKey]);
 
-  // ================= CALENDAR =================
   const handleCalendarChange = (pickedDate) => {
     const yyyy = pickedDate.getFullYear();
     const mm = String(pickedDate.getMonth() + 1).padStart(2, "0");
@@ -156,7 +157,6 @@ function MyPlate() {
     setShowCalendar(false);
   };
 
-  // ================= TOTALS =================
   const calculateTotals = () => {
     let totalCal = 0, totalCarbs = 0, totalProtein = 0, totalFat = 0, totalSugar = 0, totalSodium = 0;
 
@@ -177,7 +177,6 @@ function MyPlate() {
   const totals = calculateTotals();
   const remainingCal = Number(goalData.tdee || 0) - Number(totals.totalCal || 0);
 
-  // ================= UPDATE =================
   const updateQty = (id, amount) => {
     const updatedMeals = meals.map((meal) =>
       meal.id === id ? { ...meal, qty: Math.max(1, meal.qty + amount) } : meal
@@ -186,14 +185,12 @@ function MyPlate() {
     localStorage.setItem(storageKey, JSON.stringify(updatedMeals));
   };
 
-  // ================= REMOVE =================
   const removeMeal = (id) => {
     const updatedMeals = meals.filter((meal) => meal.id !== id);
     setMeals(updatedMeals);
     localStorage.setItem(storageKey, JSON.stringify(updatedMeals));
   };
 
-  // ================= DATE =================
   const toggleDateSelection = (dateString) => {
     if (selectedDates.includes(dateString)) {
       setSelectedDates(selectedDates.filter(d => d !== dateString));
@@ -202,7 +199,6 @@ function MyPlate() {
     }
   };
 
-  // ================= SAVE =================
   const handleSavePlan = async () => {
     if (meals.length === 0) {
       return alert("กรุณาเพิ่มอาหารลงจานก่อน");
@@ -210,7 +206,6 @@ function MyPlate() {
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
-    // ถ้ายังไม่ได้ login → แสดง modal แทน alert
     if (!storedUser?.user_id) {
       setShowLoginPrompt(true);
       return;
@@ -260,7 +255,7 @@ function MyPlate() {
   return (
     <div className="my-plate-container">
 
-      {/* ================= LOGIN PROMPT MODAL ================= */}
+      {/* LOGIN PROMPT MODAL */}
       {showLoginPrompt && (
         <div
           style={{
@@ -287,31 +282,19 @@ function MyPlate() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
-            <h3 style={{
-              fontSize: "1.25rem",
-              fontWeight: "700",
-              color: "#333",
-              marginBottom: "10px"
-            }}>
+            <h3 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#333", marginBottom: "10px" }}>
               กรุณาเข้าสู่ระบบ
             </h3>
-            <p style={{
-              color: "#888",
-              fontSize: "0.95rem",
-              marginBottom: "28px",
-              lineHeight: "1.7"
-            }}>
+            <p style={{ color: "#888", fontSize: "0.95rem", marginBottom: "28px", lineHeight: "1.7" }}>
               คุณต้องเข้าสู่ระบบก่อน<br />
               จึงจะสามารถบันทึกแผนอาหารได้<br />
               <span style={{ color: "#4caf50", fontSize: "0.88rem" }}>
                 ✓ ข้อมูลในจานอาหารจะยังคงอยู่ครบ
               </span>
             </p>
-
             <button
               onClick={() => {
                 setShowLoginPrompt(false);
-                // ส่ง returnTo พร้อม mode เพื่อกลับมาหน้าเดิมพร้อมข้อมูล
                 navigate("/auth", {
                   state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` }
                 });
@@ -334,7 +317,6 @@ function MyPlate() {
             >
               เข้าสู่ระบบ
             </button>
-
             <button
               onClick={() => setShowLoginPrompt(false)}
               style={{
@@ -363,11 +345,11 @@ function MyPlate() {
           <div className="plate-title"><h1>จานอาหารของฉัน</h1></div>
         </div>
         <div className="cal-info">
-          <h2>เป้าหมาย {Number(goalData.tdee || 0).toLocaleString()} kcal</h2>
+          <h2>เป้าหมาย {goalData.tdee > 0 ? Number(goalData.tdee).toLocaleString() : "0"} kcal</h2>
           <p>
             ใช้ไป {Number(totals.totalCal || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })} kcal
             {" | "}
-            เหลือ {Math.max(0, remainingCal).toLocaleString(undefined, { maximumFractionDigits: 0 })} kcal
+            เหลือ {goalData.tdee > 0 ? Math.max(0, remainingCal).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "0"} kcal
           </p>
         </div>
       </header>
@@ -495,7 +477,7 @@ function NutritionBar({ label, current, limit, unit, isFullWidth, className }) {
         <div className="plate-macro-pill-text">
           {Number(current || 0).toFixed(1)}
           {" / "}
-          {limit > 0 ? Number(limit || 0).toFixed(0) : "--"} {unit}
+          {limit > 0 ? Number(limit || 0).toFixed(0) : "0"} {unit}
         </div>
       </div>
       {isExceeded && (

@@ -6,7 +6,6 @@ function AuthPage({ setUser }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // รับ returnTo จาก state ที่ส่งมาตอน navigate (เช่น จากหน้า FavFood)
     const returnTo = location.state?.returnTo || null;
 
     const [isLogin, setIsLogin] = useState(true);
@@ -78,13 +77,11 @@ function AuthPage({ setUser }) {
                     localStorage.setItem("user", JSON.stringify(userData));
                 }
 
-                // ถ้ามี returnTo ให้กลับไปหน้านั้นเลย (เช่น /favourite-food)
                 if (returnTo) {
                     navigate(returnTo);
                     return;
                 }
 
-                // ไม่มี returnTo → ใช้ logic เดิม (ตรวจสอบการคำนวณ)
                 try {
                     const calcRes = await fetch(
                         `http://localhost:5000/api/get-calculation/${userData.user_id}`
@@ -111,16 +108,10 @@ function AuthPage({ setUser }) {
                     alert("โหลดข้อมูลไม่สำเร็จ");
                 }
             } else {
-                const calcResult = JSON.parse(
-                    localStorage.getItem("calcResult")
-                );
-
-                if (calcResult) {
-                    sessionStorage.setItem(
-                        "activeCalcResult",
-                        JSON.stringify(calcResult)
-                    );
-                }
+                // ✅ ผู้ใช้ใหม่เริ่มต้นใหม่: ล้างข้อมูล guest ออกทั้งหมด
+                // ไม่ inherit calcResult ของ guest มาให้ account ใหม่
+                localStorage.removeItem("calcResult");
+                sessionStorage.removeItem("activeCalcResult");
 
                 alert("สมัครสำเร็จ กรุณาเข้าสู่ระบบ");
                 setIsLogin(true);
@@ -175,7 +166,6 @@ function AuthPage({ setUser }) {
                     {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
                 </h2>
 
-                {/* แสดงข้อความเมื่อมี returnTo */}
                 {returnTo && isLogin && (
                     <p style={{
                         color: "#ff9800",
@@ -187,10 +177,7 @@ function AuthPage({ setUser }) {
                     </p>
                 )}
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="auth-form"
-                >
+                <form onSubmit={handleSubmit} className="auth-form">
 
                     <div className="input-group">
                         <i><FaUser /></i>
