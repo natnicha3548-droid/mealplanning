@@ -1,90 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
 
-.sf-container {
-  /* 1. เพิ่ม padding-top เป็น 120px หรือมากกว่า เพื่อดันเนื้อหาหลบเมนูด้านบน */
-  /* รูปแบบ: padding: บน ซ้ายขวา ล่าง; */
-  padding: 120px 10% 50px; 
-  /* 2. ขยายความกว้าง ปรับจาก 800px เป็น 1400px หรือ 100% เพื่อให้กว้างเต็มจอ */
-  max-width: 1400px; 
-  margin: auto;
-  font-family: 'Kanit', sans-serif;
-  min-height: 100vh;
+.sf-container,
+.sf-container * {
+  box-sizing: border-box;
 }
 
-/* Header */
+/* ================= PAGE ================= */
+
+.sf-container {
+  max-width: 1400px;
+  min-height: 100vh;
+  margin: auto;
+  padding: 120px 10% 50px;
+  font-family: 'Kanit', sans-serif;
+  animation: fadeInPage 0.5s ease;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= HEADER ================= */
+
 .sf-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 18px;
+  margin-bottom: 35px;
 }
 
 .sf-back-icon {
-  background: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #333;
+  border-radius: 18px;
+  background: white;
+  border: none;
+  color: #ff8c42;
+  font-size: 1.1rem;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: 0.2s;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  transition: 0.2s ease;
 }
 
 .sf-back-icon:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
 }
 
 .sf-title {
   margin: 0;
-  font-size: 1.6rem;
-  color: #222;
-  font-weight: 600;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2d1b12;
+  line-height: 1.1;
 }
 
-/* Search Bar */
+/* ================= SEARCH ================= */
+
 .sf-search-wrapper {
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 }
 
 .sf-search-icon {
   position: absolute;
+  left: 22px;
   top: 50%;
-  left: 20px;
   transform: translateY(-50%);
-  color: #999;
+  color: #b7a79b;
+  font-size: 1rem;
 }
 
 .sf-search-input {
   width: 100%;
-  padding: 16px 20px 16px 50px;
+  height: 58px;
   border: none;
-  border-radius: 20px;
-  background: white;
-  font-family: 'Kanit', sans-serif;
-  font-size: 1rem;
-  color: #333;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   outline: none;
-  transition: 0.3s;
-  box-sizing: border-box;
+  border-radius: 999px;
+  padding: 0 22px 0 55px;
+  background: white;
+  font-size: 1rem;
+  font-family: 'Kanit', sans-serif;
+  color: #333;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+  transition: 0.25s;
 }
 
 .sf-search-input:focus {
-  box-shadow: 0 4px 20px rgba(255, 140, 66, 0.15);
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.18);
 }
 
-/* Tabs หมวดหมู่ */
+/* ================= CATEGORY ================= */
+
 .sf-category-tabs {
   display: flex;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 14px;
+  margin-bottom: 40px;
   overflow-x: auto;
+  align-items: center;
   padding-bottom: 5px;
 }
 
@@ -93,31 +118,63 @@
 }
 
 .sf-tab {
-  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #ececec;
+  outline: none;
+  padding: 12px 26px;
+  border-radius: 999px;
   background: white;
-  border: 1px solid #eee;
-  border-radius: 20px;
+  color: #666;
   font-family: 'Kanit', sans-serif;
   font-size: 0.95rem;
-  color: #666;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
   transition: 0.2s;
 }
 
-.sf-tab.active {
-  background: #ff8c42;
-  color: white;
-  border-color: #ff8c42;
-  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.2);
+.sf-tab svg {
+  color: #ff5a5f;
+  transition: color 0.2s;
 }
 
-/* Food Grid */
+.sf-tab:hover {
+  transform: translateY(-2px);
+  color: rgb(236, 110, 68);
+}
+
+.sf-tab.active {
+  background: linear-gradient(135deg, #ff9b54, #ff7b2c);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
+}
+
+.sf-tab.active svg {
+  color: white;
+}
+
+/* ================= GRID ================= */
+
 .sf-food-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
 }
+
+.sf-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-family: 'Kanit', sans-serif;
+}
+
+/* ================= CARD ================= */
 
 .sf-food-card {
   background: white;
@@ -126,12 +183,15 @@
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 
 .sf-food-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
+
+/* ================= IMAGE ================= */
 
 .sf-img-wrapper {
   width: 100%;
@@ -150,6 +210,34 @@
   transform: scale(1.05);
 }
 
+/* ================= FAVORITE (on card) ================= */
+
+.sf-card-fav-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+  color: #ff5a5f;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.sf-card-fav-btn:hover {
+  transform: scale(1.08);
+}
+
+/* ================= INFO ================= */
+
 .sf-food-info {
   padding: 15px;
 }
@@ -157,7 +245,7 @@
 .sf-food-info h4 {
   margin: 0 0 5px;
   font-size: 1.05rem;
-  color: #333;
+  color: #2d1b12;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -171,6 +259,8 @@
   font-weight: 500;
 }
 
+/* ================= EMPTY ================= */
+
 .sf-empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -180,119 +270,407 @@
   border-radius: 20px;
 }
 
-/* Modal Popup */
+/* ================= MODAL ================= */
+
 .sf-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 35px 20px;
+  z-index: 99999;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sf-modal-overlay::-webkit-scrollbar {
+  display: none;
 }
 
 .sf-modal-content {
+  width: 100%;
+  max-width: 1120px;
   background: white;
-  padding: 35px 30px;
-  border-radius: 28px;
-  width: 90%;
-  max-width: 320px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border-radius: 30px;
+  overflow: hidden;
+  margin: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
   animation: modalFadeIn 0.3s ease;
 }
 
 @keyframes modalFadeIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.sf-modal-title {
-  margin: 0 0 5px;
-  font-size: 1.3rem;
-  color: #222;
+/* ================= DETAIL MODAL ================= */
+
+.sf-detail-modal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  position: relative;
 }
 
-.sf-modal-cal {
-  color: #888;
-  font-size: 0.9rem;
-  margin-bottom: 25px;
+/* ================= BOOKMARK (modal) ================= */
+
+.sf-bookmark-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #ff6b2c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 50;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.sf-bookmark-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ================= LEFT / RIGHT ================= */
+
+.sf-detail-left,
+.sf-detail-right {
+  padding: 30px;
+  min-width: 0;
+}
+
+.sf-detail-right {
+  overflow-y: auto;
+}
+
+/* ================= DETAIL IMAGE ================= */
+
+.sf-detail-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 24px;
+  margin-bottom: 24px;
+}
+
+/* ================= DETAIL TITLE ================= */
+
+.sf-detail-title {
+  margin: 0 0 18px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2d1b12;
+}
+
+/* ================= KCAL BOX ================= */
+
+.sf-kcal-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff4e6, #ffe0c2);
+  color: #ff6b00;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: 1px solid #ffc38a;
+}
+
+/* ================= DETAIL SECTION ================= */
+
+.sf-detail-section {
+  margin-bottom: 24px;
+}
+
+.sf-detail-section h4 {
+  margin-bottom: 12px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2d1b12;
+}
+
+.sf-detail-description {
+  background: #f8f3f0;
+  border-radius: 20px;
+  padding: 20px;
+  line-height: 1.8;
+  color: #444;
+  font-size: 1rem;
+  white-space: pre-line;
+}
+
+/* ================= NUTRITION GRID ================= */
+
+.sf-nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* ================= NUTRITION CARD ================= */
+
+.sf-nutrition-card {
+  padding: 14px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.sf-nutrition-card:hover {
+  transform: translateY(-3px);
+}
+
+.sf-nutrition-icon {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.sf-nutrition-card p {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.sf-nutrition-card span {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.sf-nutrition-card.calorie {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff4e6, #ffe0c2);
+  color: #ff6b00;
+  border: 1px solid #ffc38a;
+  padding: 18px;
+}
+
+.sf-nutrition-card.calorie .sf-nutrition-icon {
+  font-size: 28px;
+  color: #ff6b00;
+}
+
+.sf-nutrition-card.calorie span {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.sf-nutrition-card.carb {
+  background: #fff3e0;
+  color: #ff6d00;
+}
+
+.sf-nutrition-card.protein {
+  background: #fff8e1;
+  color: #ff8f00;
+}
+
+.sf-nutrition-card.fat {
+  background: #ffebee;
+  color: #e53935;
+}
+
+.sf-nutrition-card.sugar {
+  background: #f3e5f5;
+  color: #8e24aa;
+}
+
+.sf-nutrition-card.sodium {
+  background: #e3f2fd;
+  color: #1e88e5;
+}
+
+/* ================= QUANTITY ================= */
 
 .sf-qty-controls {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: 16px;
+  margin-top: 10px;
+  margin-bottom: 24px;
 }
 
 .sf-qty-btn {
-  background: #f5f5f5;
+  width: 42px;
+  height: 42px;
   border: none;
-  width: 45px;
-  height: 45px;
   border-radius: 14px;
-  font-size: 1.5rem;
-  color: #555;
+  background: #fff5ef;
+  color: #ff7b2c;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: 0.2s;
 }
 
 .sf-qty-btn:hover {
-  background: #e0e0e0;
+  transform: translateY(-2px);
+  background: #ffe7d6;
 }
 
 .sf-qty-number {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  width: 40px;
+  min-width: 24px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d1b12;
 }
+
+/* ================= ACTION BUTTONS ================= */
 
 .sf-action-btns {
   display: flex;
   gap: 12px;
+  margin-top: 16px;
 }
 
 .sf-cancel-btn {
   flex: 1;
-  padding: 14px;
-  background: #f5f5f5;
-  color: #555;
+  height: 58px;
   border: none;
-  border-radius: 16px;
-  font-family: 'Kanit';
+  border-radius: 18px;
+  background: #f1f1f1;
+  font-family: 'Kanit', sans-serif;
   font-size: 1rem;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.25s;
 }
 
 .sf-cancel-btn:hover {
-  background: #e0e0e0;
+  background: #e5e5e5;
 }
 
 .sf-add-btn {
   flex: 1;
-  padding: 14px;
-  background: #ff8c42;
-  color: white;
+  height: 58px;
   border: none;
-  border-radius: 16px;
-  font-family: 'Kanit';
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff9b54, #ff6b1a);
+  color: white;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.25s;
 }
 
 .sf-add-btn:hover {
-  background: #e67e33;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 123, 44, 0.25);
+}
+
+/* ================= MODAL SCROLL LOCK ================= */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1200px) {
+  .sf-food-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .sf-food-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .sf-detail-modal {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-detail-left,
+  .sf-detail-right {
+    padding: 24px;
+  }
+
+  .sf-detail-image {
+    height: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sf-container {
+    padding: 110px 6% 40px;
+  }
+
+  .sf-food-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sf-nutrition-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-detail-title {
+    font-size: 2rem;
+  }
+
+  .sf-detail-image {
+    height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sf-container {
+    padding: 100px 5% 30px;
+  }
+
+  .sf-food-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-modal-overlay {
+    padding: 20px 12px;
+  }
+
+  .sf-detail-left,
+  .sf-detail-right {
+    padding: 18px;
+  }
+
+  .sf-detail-title {
+    font-size: 1.7rem;
+  }
+
+  .sf-detail-image {
+    height: 210px;
+    border-radius: 18px;
+  }
+
+  .sf-bookmark-btn {
+    width: 46px;
+    height: 46px;
+  }
 }
