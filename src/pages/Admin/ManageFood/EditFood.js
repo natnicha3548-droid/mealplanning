@@ -285,27 +285,27 @@ function EditFood() {
                     <div className="edit-nutrition-list">
                         <div className="edit-nutrition-item">
                             <label><FaFire /> แคลอรี</label>
-                            <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} />
+                            <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><FaDrumstickBite /> โปรตีน</label>
-                            <input type="number" name="protein" value={formData.protein} onChange={handleChange} />
+                            <input type="number" step="0.01" name="protein" value={formData.protein} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><FaTint /> ไขมัน</label>
-                            <input type="number" name="fat" value={formData.fat} onChange={handleChange} />
+                            <input type="number" step="0.01" name="fat" value={formData.fat} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><GiWheat /> คาร์โบไฮเดรต</label>
-                            <input type="number" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} />
+                            <input type="number" step="0.01" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><GiSugarCane /> น้ำตาล</label>
-                            <input type="number" name="sugar" value={formData.sugar} onChange={handleChange} />
+                            <input type="number" step="0.01" name="sugar" value={formData.sugar} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                         <div className="edit-nutrition-item">
                             <label><MdOutlineSoupKitchen /> โซเดียม</label>
-                            <input type="number" name="sodium" value={formData.sodium} onChange={handleChange} />
+                            <input type="number" step="0.01" name="sodium" value={formData.sodium} onChange={handleChange} onWheel={(e) => e.target.blur()} />
                         </div>
                     </div>
                 </div>
@@ -317,6 +317,7 @@ function EditFood() {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
+                        placeholder="อธิบายสั้นๆ เกี่ยวกับอาหาร..."
                     />
                 </div>
 

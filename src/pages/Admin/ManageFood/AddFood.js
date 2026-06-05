@@ -37,6 +37,7 @@ function AddFood() {
     carbohydrates: "",
     sugar: "",
     sodium: "",
+    description: "",
     notes: "" 
   });
 
@@ -211,7 +212,7 @@ function AddFood() {
             name="serving_size"
             value={formData.serving_size}
             onChange={handleChange}
-            placeholder="เช่น 1 จาน, 1 ถ้วย (250 กรัม)"
+            placeholder="เช่น 1 จาน, 1 ถ้วย (250 กรัม), 1 สูตร (450 กรัม / 1-3 จาน)"
           />
         </div>
 
@@ -220,29 +221,41 @@ function AddFood() {
           <div className="add-nutrition-list">
             <div className="add-nutrition-item">
               <label><FaFire /> แคลอรี</label>
-              <input type="number" name="calories" value={formData.calories} onChange={handleChange} />
+              <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
             <div className="add-nutrition-item">
               <label><FaDrumstickBite /> โปรตีน</label>
-              <input type="number" name="protein" value={formData.protein} onChange={handleChange} />
+              <input type="number" step="0.01" name="protein" value={formData.protein} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
             <div className="add-nutrition-item">
               <label><FaTint /> ไขมัน</label>
-              <input type="number" name="fat" value={formData.fat} onChange={handleChange} />
+              <input type="number" step="0.01" name="fat" value={formData.fat} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
             <div className="add-nutrition-item">
               <label><GiWheat /> คาร์โบไฮเดรต</label>
-              <input type="number" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} />
+              <input type="number" step="0.01" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
             <div className="add-nutrition-item">
               <label><GiSugarCane /> น้ำตาล</label>
-              <input type="number" name="sugar" value={formData.sugar} onChange={handleChange} />
+              <input type="number" step="0.01" name="sugar" value={formData.sugar} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
             <div className="add-nutrition-item">
               <label><MdOutlineSoupKitchen /> โซเดียม</label>
-              <input type="number" name="sodium" value={formData.sodium} onChange={handleChange} />
+              <input type="number" step="0.01" name="sodium" value={formData.sodium} onChange={handleChange} onWheel={(e) => e.target.blur()} />
             </div>
           </div>
+        </div>
+
+        {/* --- คำอธิบายสั้นๆ (Description) --- */}
+        <div className="add-form-group" style={{ marginTop: '20px' }}>
+          <label style={{ fontWeight: 'bold' }}>คำอธิบายสั้นๆ (Description)</label>
+          <textarea
+            rows="4"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="อธิบายสั้นๆ เกี่ยวกับอาหาร..."
+          />
         </div>
 
         {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
