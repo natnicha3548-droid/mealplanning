@@ -504,6 +504,7 @@ function NutritionBar({ label, current, limit, unit, isFullWidth, className }) {
         </div>
       )}
     </div>
+    
   );
 }
 
