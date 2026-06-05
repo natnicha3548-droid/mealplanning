@@ -397,7 +397,9 @@ app.get('/api/foods', (req, res) => {
             carbohydrates,
             sugar,
             sodium,
-            description
+            description,
+            recipe_details,
+            notes
         FROM food
         `,
 
@@ -1504,12 +1506,21 @@ app.get("/api/favorites/:userId", (req, res) => {
 
     const foodQuery = `
 
-        SELECT 
+    SELECT 
             f.favorite_id,
             food.food_id,
             food.food_name,
             food.image,
             food.calories,
+            food.protein,
+            food.fat,
+            food.carbohydrates,
+            food.sugar,
+            food.sodium,
+            food.serving_size,
+            food.description,
+            food.recipe_details,
+            food.notes,
             fc.category_name AS category
 
         FROM favorite f

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // 🌟 นำเข้า useLocation
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaTrash,
   FaPlus,
@@ -19,13 +19,11 @@ import { LuSalad } from "react-icons/lu";
 function MyPlate() {
 
   const navigate = useNavigate();
-  const location = useLocation(); // 🌟
+  const location = useLocation();
 
-  // 🌟 อ่านโหมดจาก URL
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode") || "normal";
-  // 🌟 ถ้ามาจากหน้าสร้างแผน จะใช้ตะกร้า plan_plate นอกนั้นใช้ myplate
-  const storageKey = mode === "plan" ? "plan_plate" : "myplate"; 
+  const storageKey = mode === "plan" ? "plan_plate" : "myplate";
 
   const [meals, setMeals] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
@@ -34,6 +32,9 @@ function MyPlate() {
 
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
+
+  // state สำหรับ modal แจ้งเตือน login
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const [goalData, setGoalData] = useState({
     tdee: 0,
@@ -79,8 +80,7 @@ function MyPlate() {
   // ================= LOAD =================
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    
-    // 🌟 ดึงข้อมูลจากตะกร้าที่ถูกต้อง
+
     const draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
     setMeals(draftPlate);
 
@@ -94,19 +94,13 @@ function MyPlate() {
     generateWeekForDate(today);
 
     const fetchGoalData = async () => {
-
       if (storedUser?.user_id) {
-
         try {
-
           const response = await fetch(
             `http://localhost:5000/api/get-calculation/${storedUser.user_id}`
           );
-
           if (response.ok) {
-
             const data = await response.json();
-
             setGoalData({
               tdee: Number(data.tdee) || 0,
               carb: Number(data.carb) || 0,
@@ -115,21 +109,13 @@ function MyPlate() {
               sugar: Number(data.sugar) || 0,
               sodium: Number(data.sodium) || 0
             });
-
           }
-
         } catch (error) {
           console.error(error);
         }
-
       } else {
-
-        const calcResult = JSON.parse(
-          localStorage.getItem("calcResult")
-        );
-
+        const calcResult = JSON.parse(localStorage.getItem("calcResult"));
         if (calcResult) {
-
           setGoalData({
             tdee: Number(calcResult.tdee) || 0,
             carb: Number(calcResult.carb) || 0,
@@ -138,11 +124,8 @@ function MyPlate() {
             sugar: Number(calcResult.sugar) || 0,
             sodium: Number(calcResult.sodium) || 0
           });
-
         }
-
       }
-
     };
 
     fetchGoalData();
@@ -155,7 +138,7 @@ function MyPlate() {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [storageKey]); // 🌟
+  }, [storageKey]);
 
   // ================= CALENDAR =================
   const handleCalendarChange = (pickedDate) => {
@@ -200,14 +183,14 @@ function MyPlate() {
       meal.id === id ? { ...meal, qty: Math.max(1, meal.qty + amount) } : meal
     );
     setMeals(updatedMeals);
-    localStorage.setItem(storageKey, JSON.stringify(updatedMeals)); // 🌟
+    localStorage.setItem(storageKey, JSON.stringify(updatedMeals));
   };
 
   // ================= REMOVE =================
   const removeMeal = (id) => {
     const updatedMeals = meals.filter((meal) => meal.id !== id);
     setMeals(updatedMeals);
-    localStorage.setItem(storageKey, JSON.stringify(updatedMeals)); // 🌟
+    localStorage.setItem(storageKey, JSON.stringify(updatedMeals));
   };
 
   // ================= DATE =================
@@ -221,17 +204,15 @@ function MyPlate() {
 
   // ================= SAVE =================
   const handleSavePlan = async () => {
-
     if (meals.length === 0) {
       return alert("กรุณาเพิ่มอาหารลงจานก่อน");
     }
 
-    const storedUser = JSON.parse(
-      localStorage.getItem("user")
-    );
+    const storedUser = JSON.parse(localStorage.getItem("user"));
 
+    // ถ้ายังไม่ได้ login → แสดง modal แทน alert
     if (!storedUser?.user_id) {
-      alert("กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนบันทึกแผนอาหาร");
+      setShowLoginPrompt(true);
       return;
     }
 
@@ -264,7 +245,7 @@ function MyPlate() {
 
       if (response.ok) {
         alert("บันทึกแผนอาหารสำเร็จ!");
-        localStorage.removeItem(storageKey); // 🌟 ลบเฉพาะตะกร้าที่ใช้อยู่
+        localStorage.removeItem(storageKey);
         navigate("/meal-plan");
       } else {
         const errData = await response.json();
@@ -278,6 +259,104 @@ function MyPlate() {
 
   return (
     <div className="my-plate-container">
+
+      {/* ================= LOGIN PROMPT MODAL ================= */}
+      {showLoginPrompt && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999
+          }}
+          onClick={() => setShowLoginPrompt(false)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "20px",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
+              padding: "40px 36px",
+              maxWidth: "380px",
+              width: "90%",
+              textAlign: "center"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
+            <h3 style={{
+              fontSize: "1.25rem",
+              fontWeight: "700",
+              color: "#333",
+              marginBottom: "10px"
+            }}>
+              กรุณาเข้าสู่ระบบ
+            </h3>
+            <p style={{
+              color: "#888",
+              fontSize: "0.95rem",
+              marginBottom: "28px",
+              lineHeight: "1.7"
+            }}>
+              คุณต้องเข้าสู่ระบบก่อน<br />
+              จึงจะสามารถบันทึกแผนอาหารได้<br />
+              <span style={{ color: "#4caf50", fontSize: "0.88rem" }}>
+                ✓ ข้อมูลในจานอาหารจะยังคงอยู่ครบ
+              </span>
+            </p>
+
+            <button
+              onClick={() => {
+                setShowLoginPrompt(false);
+                // ส่ง returnTo พร้อม mode เพื่อกลับมาหน้าเดิมพร้อมข้อมูล
+                navigate("/auth", {
+                  state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` }
+                });
+              }}
+              style={{
+                background: "linear-gradient(135deg, #ff9800, #f44336)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                padding: "13px 0",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                width: "100%",
+                marginBottom: "12px",
+                transition: "opacity 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "0.88"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
+            >
+              เข้าสู่ระบบ
+            </button>
+
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              style={{
+                background: "transparent",
+                color: "#aaa",
+                border: "1.5px solid #e0e0e0",
+                borderRadius: "12px",
+                padding: "11px 0",
+                fontSize: "0.95rem",
+                cursor: "pointer",
+                width: "100%",
+                transition: "border-color 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.borderColor = "#bbb"}
+              onMouseOut={(e) => e.currentTarget.style.borderColor = "#e0e0e0"}
+            >
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      )}
+
       <header className="header-section">
         <div className="logo-title">
           <div className="plate-left-icon"><LuSalad /></div>
@@ -309,7 +388,11 @@ function MyPlate() {
                   {categoryMeals.map((meal) => (
                     <div key={meal.id} className="cute-food-item">
                       <div className="cfi-image-wrapper">
-                        <img src={meal.image} alt={meal.name} className="cfi-image" />
+                        <img
+                          src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
+                          alt={meal.name}
+                          className="cfi-image"
+                        />
                         <div className="cfi-overlay">
                           <h3 className="cfi-name">{meal.name}</h3>
                           <span className="cfi-kcal">{(meal.calPerUnit * meal.qty).toFixed(0)} kcal</span>
@@ -331,7 +414,6 @@ function MyPlate() {
               )}
 
               <button
-                // 🌟 ส่งค่า mode ต่อไปยังหน้าค้นหาด้วย
                 onClick={() => navigate(`/SearchFood?type=${category.title}&mode=${mode}`)}
                 className="add-meal-btn-wide"
               >

@@ -367,7 +367,11 @@ function MealPlan() {
                         <div className="meal-time-column-placeholder"></div>
                       )}
 
-                      <img src={meal.image} alt={meal.food_name} className="row-img" />
+                      <img
+                        src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
+                        alt={meal.food_name}
+                        className="row-img"
+                      />
                       <div className="row-details">
                         <h2>{meal.food_name}</h2>
                         <span className="row-qty-tag">

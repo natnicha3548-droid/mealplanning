@@ -1,26 +1,22 @@
 import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function AuthPage({ setUser }) {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // เก็บสถานะว่าอยู่หน้า Login หรือ Signup
+    // รับ returnTo จาก state ที่ส่งมาตอน navigate (เช่น จากหน้า FavFood)
+    const returnTo = location.state?.returnTo || null;
+
     const [isLogin, setIsLogin] = useState(true);
-
-    // แสดงหรือซ่อนรหัสผ่าน
     const [showPassword, setShowPassword] = useState(false);
-
-    // เก็บข้อมูล form
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
-
-    // เก็บรหัสผ่านยืนยัน
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    // อัปเดตค่าจาก input
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -28,30 +24,25 @@ function AuthPage({ setUser }) {
         });
     };
 
-    // ส่งข้อมูล Login / Signup
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // ตรวจสอบข้อมูลตอนสมัครสมาชิก
         if (!isLogin) {
             if (form.password.length < 6) {
                 alert("รหัสผ่านต้องมีอย่างน้อย 6 ตัว");
                 return;
             }
-
             if (form.password !== confirmPassword) {
                 alert("รหัสผ่านไม่ตรงกัน");
                 return;
             }
         }
 
-        // เลือก API ตามสถานะ
         const url = isLogin
             ? "http://localhost:5000/api/login"
             : "http://localhost:5000/api/signup";
 
         try {
-            // ส่งข้อมูลไปยัง server
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -62,7 +53,6 @@ function AuthPage({ setUser }) {
 
             const data = await res.json();
 
-            // ตรวจสอบ response
             if (!res.ok) {
                 alert(data.message);
                 return;
@@ -70,35 +60,31 @@ function AuthPage({ setUser }) {
 
             alert(data.message);
 
-            // ทำงานหลัง Login สำเร็จ
             if (isLogin) {
                 const userData = data.user;
 
-                // ตรวจสอบข้อมูลผู้ใช้
                 if (!userData || !userData.user_id) {
                     alert("เกิดข้อผิดพลาด");
                     return;
                 }
 
-                // เก็บ user ใน state (เพื่อให้ระบบ React รู้จัก)
                 setUser(userData);
 
-                /* ================= แก้ไขการเก็บข้อมูล: แอดมิน VS ผู้ใช้ทั่วไป ================= */
                 if (userData.role === 'Admin') {
-                    // 1. ถ้าเป็นแอดมิน ให้เก็บใน sessionStorage (ปิดเว็บ/ปิดแท็บ = หลุดล็อกอินทันที)
                     sessionStorage.setItem("user", JSON.stringify(userData));
-                    
-                    // เด้งไปหน้าแอดมินทันที
                     navigate("/admin");
-                    return; 
+                    return;
                 } else {
-                    // 2. ถ้าเป็น User ทั่วไป ให้เก็บใน localStorage (ปิดเว็บแล้วเปิดใหม่ยังจำได้อยู่)
                     localStorage.setItem("user", JSON.stringify(userData));
-        
                 }
-                /* ============================================================= */
 
-                // ตรวจสอบว่าผู้ใช้เคยคำนวณหรือยัง (สำหรับ User ทั่วไป)
+                // ถ้ามี returnTo ให้กลับไปหน้านั้นเลย (เช่น /favourite-food)
+                if (returnTo) {
+                    navigate(returnTo);
+                    return;
+                }
+
+                // ไม่มี returnTo → ใช้ logic เดิม (ตรวจสอบการคำนวณ)
                 try {
                     const calcRes = await fetch(
                         `http://localhost:5000/api/get-calculation/${userData.user_id}`
@@ -106,21 +92,17 @@ function AuthPage({ setUser }) {
 
                     const calcData = await calcRes.json();
 
-                    // ถ้าเคยคำนวณแล้ว
                     if (calcData) {
                         localStorage.setItem(
                             "calculation",
                             JSON.stringify(calcData)
                         );
-
                         navigate("/", {
                             state: {
                                 calcResult: calcData,
                             },
                         });
-                    }
-                    // ถ้ายังไม่เคยคำนวณ
-                    else {
+                    } else {
                         navigate("/calculate");
                     }
 
@@ -128,12 +110,7 @@ function AuthPage({ setUser }) {
                     console.error(err);
                     alert("โหลดข้อมูลไม่สำเร็จ");
                 }
-            }
-
-            
-            // สมัครสมาชิกสำเร็จ
-            else {
-
+            } else {
                 const calcResult = JSON.parse(
                     localStorage.getItem("calcResult")
                 );
@@ -155,7 +132,6 @@ function AuthPage({ setUser }) {
         }
     };
 
-    // ลืมรหัสผ่าน
     const handleForgotPassword = async () => {
         if (!form.email) {
             alert("กรุณากรอกอีเมลก่อน");
@@ -195,17 +171,27 @@ function AuthPage({ setUser }) {
         <div className="auth-container">
             <div className="auth-card">
 
-                {/* หัวข้อ */}
                 <h2>
                     {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
-                </h2> 
+                </h2>
+
+                {/* แสดงข้อความเมื่อมี returnTo */}
+                {returnTo && isLogin && (
+                    <p style={{
+                        color: "#ff9800",
+                        fontSize: "0.9rem",
+                        marginBottom: "12px",
+                        textAlign: "center"
+                    }}>
+                        กรุณาเข้าสู่ระบบเพื่อดูรายการโปรด
+                    </p>
+                )}
 
                 <form
                     onSubmit={handleSubmit}
                     className="auth-form"
                 >
 
-                    {/* Email */}
                     <div className="input-group">
                         <i><FaUser /></i>
                         <input
@@ -217,7 +203,6 @@ function AuthPage({ setUser }) {
                         />
                     </div>
 
-                    {/* Password */}
                     <div className="input-group">
                         <i><FaLock /></i>
                         <input
@@ -229,7 +214,6 @@ function AuthPage({ setUser }) {
                         />
                     </div>
 
-                    {/* Confirm Password */}
                     {!isLogin && (
                         <div className="input-group">
                             <i><FaLock /></i>
@@ -242,7 +226,6 @@ function AuthPage({ setUser }) {
                         </div>
                     )}
 
-                    {/* แสดงรหัสผ่าน */}
                     <div style={{ textAlign: "left", marginTop: "5px" }}>
                         <label style={{ fontSize: "0.85rem" }}>
                             <input
@@ -253,7 +236,6 @@ function AuthPage({ setUser }) {
                         </label>
                     </div>
 
-                    {/* ลืมรหัสผ่าน */}
                     {isLogin && (
                         <div style={{ textAlign: "right", marginTop: "5px" }}>
                             <span
@@ -265,14 +247,12 @@ function AuthPage({ setUser }) {
                         </div>
                     )}
 
-                    {/* ปุ่ม Submit */}
                     <button type="submit">
                         {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
                     </button>
 
                 </form>
 
-                {/* Footer */}
                 <div className="auth-footer">
                     {isLogin ? "ยังไม่มีบัญชี?" : "มีบัญชีแล้ว?"}
                     <span onClick={() => setIsLogin(!isLogin)}>

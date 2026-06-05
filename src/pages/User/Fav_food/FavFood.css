@@ -1,6 +1,5 @@
 /* ================= PAGE ================= */
 
-/* หน้า Favorite */
 .favorite-page {
     max-width: 1400px;
     min-height: 100vh;
@@ -9,7 +8,6 @@
     animation: fadeInPage 0.5s ease;
 }
 
-/* Animation ตอนโหลด */
 @keyframes fadeInPage {
     from {
         opacity: 0;
@@ -24,7 +22,6 @@
 
 /* ================= HEADER ================= */
 
-/* ส่วนหัว */
 .favorite-header {
     display: flex;
     align-items: center;
@@ -33,7 +30,6 @@
     flex-wrap: wrap;
 }
 
-/* วงกลมไอคอน */
 .favorite-icon {
     width: 78px;
     height: 78px;
@@ -49,7 +45,6 @@
     flex-shrink: 0;
 }
 
-/* หัวข้อ */
 .favorite-header h1 {
     margin: 0;
     font-size: 2.2rem;
@@ -58,7 +53,6 @@
     line-height: 1.1;
 }
 
-/* คำอธิบาย */
 .favorite-header p {
     margin-top: 6px;
     color: #8c7b70;
@@ -67,7 +61,6 @@
 
 /* ================= TABS ================= */
 
-/* แถบเมนู */
 .favorite-tabs {
     display: flex;
     gap: 14px;
@@ -76,21 +69,18 @@
     padding-bottom: 5px;
 }
 
-/* ซ่อน scrollbar */
 .favorite-tabs::-webkit-scrollbar {
     display: none;
 }
 
-/* ปุ่มแท็บ */
-/* ปุ่มแท็บ (สถานะปกติ - ไม่ถูกเลือก) */
 .tab-btn {
-    border: 1px solid #f0f0f0; /* ปรับขอบให้อ่อนลงเล็กน้อย */
+    border: 1px solid #f0f0f0;
     overflow: hidden;
     outline: none;
     padding: 12px 26px;
     border-radius: 999px !important;
-    background: #ffffff;      /* สีพื้นหลังขาว */
-    color: #8c7b70;           /* ใช้สีน้ำตาลตุ่นๆ แทนเทา เพื่อให้เข้ากับธีม */
+    background: #ffffff;
+    color: #8c7b70;
     font-family: 'Kanit', sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
@@ -100,18 +90,16 @@
     align-items: center;
     gap: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    transition: 0.3s ease;    /* ปรับให้ transition นุ่มขึ้น */
+    transition: 0.3s ease;
 }
 
-/* เอฟเฟกต์ตอนเอาเมาส์ไปชี้ปุ่มที่ไม่ได้เลือก */
 .tab-btn:hover {
     transform: translateY(-2px);
-    background: #fff9f5;      /* เพิ่มสีส้มอ่อนๆ เวลา Hover จะได้ดูมีลูกเล่น */
+    background: #fff9f5;
     border-color: #ffdab9;
     color: #ff7b2c;
 }
 
-/* ปุ่มแท็บที่ถูกเลือก (อันนี้ใช้เหมือนเดิม) */
 .tab-btn.active {
     background: linear-gradient(135deg, #ff9b54, #ff7b2c);
     color: white;
@@ -122,7 +110,6 @@
 
 /* ================= CATEGORY ================= */
 
-/* หมวดอาหาร */
 .food-category {
     margin-bottom: 50px;
 }
@@ -131,13 +118,11 @@
     margin-bottom: 0;
 }
 
-/* ส่วนหัวหมวด */
 .section-top {
     margin-bottom: 24px;
     padding-bottom: 12px;
 }
 
-/* หัวข้อหมวด */
 .section-top h2 {
     font-size: 1.8rem;
     font-weight: 700;
@@ -148,7 +133,6 @@
     margin: 0;
 }
 
-/* เส้นสีด้านหน้า */
 .section-top h2::before {
     content: "";
     width: 8px;
@@ -159,7 +143,6 @@
 
 /* ================= FOOD GRID ================= */
 
-/* Grid อาหาร */
 .favorite-food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -168,7 +151,6 @@
 
 /* ================= FOOD CARD ================= */
 
-/* การ์ดอาหาร */
 .favorite-food-card {
     background: white;
     border-radius: 20px;
@@ -176,6 +158,7 @@
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
 }
 
 .favorite-food-card:hover {
@@ -183,16 +166,13 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* ================= IMAGE ================= */
-
-/* กล่องรูป */
 .favorite-food-image-box {
     width: 100%;
     height: 130px;
     overflow: hidden;
+    position: relative;
 }
 
-/* รูปอาหาร */
 .favorite-food-image {
     width: 100%;
     height: 100%;
@@ -200,14 +180,12 @@
     transition: 0.3s;
 }
 
-/* Zoom รูปตอน hover */
 .favorite-food-card:hover .favorite-food-image {
     transform: scale(1.05);
 }
 
 /* ================= FAVORITE BUTTON ================= */
 
-/* ปุ่มหัวใจ */
 .favorite-heart-btn {
     position: absolute;
     top: 14px;
@@ -225,7 +203,7 @@
     color: #ff5a5f;
     font-size: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .favorite-heart-btn:hover {
@@ -234,12 +212,10 @@
 
 /* ================= FOOD INFO ================= */
 
-/* ข้อมูลอาหาร */
 .favorite-food-info {
     padding: 15px;
 }
 
-/* ชื่ออาหาร */
 .favorite-food-info h3 {
     margin: 0 0 5px;
     font-size: 1.05rem;
@@ -250,7 +226,6 @@
     text-overflow: ellipsis;
 }
 
-/* แคลอรี */
 .favorite-food-info p {
     margin: 0;
     color: #ff8c42;
@@ -260,14 +235,12 @@
 
 /* ================= PLAN ================= */
 
-/* รายการแผนอาหาร */
 .meal-plan-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-/* การ์ดแผนอาหาร */
 .meal-plan-card {
     background: white;
     border-radius: 24px;
@@ -284,14 +257,12 @@
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* ฝั่งซ้าย */
 .meal-left {
     display: flex;
     align-items: center;
     gap: 24px;
 }
 
-/* รูปอาหาร */
 .meal-image {
     width: 210px;
     height: 155px;
@@ -299,7 +270,6 @@
     object-fit: cover;
 }
 
-/* ชื่อแผน */
 .meal-info h3 {
     margin: 0 0 10px;
     font-size: 1.6rem;
@@ -307,14 +277,12 @@
     color: #2d1b12;
 }
 
-/* รายละเอียด */
 .meal-info p {
     margin: 0 0 14px;
     color: #8c7b70;
     font-size: 0.95rem;
 }
 
-/* ข้อมูลเพิ่มเติม */
 .meal-detail {
     display: flex;
     gap: 20px;
@@ -322,7 +290,6 @@
     font-size: 0.95rem;
 }
 
-/* ปุ่ม Favorite */
 .meal-fav-btn {
     width: 52px;
     height: 52px;
@@ -334,19 +301,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
     cursor: pointer;
     transition: 0.2s ease;
 }
 
 .meal-fav-btn:hover {
-    transform: scale(1.08); /* ขยายขึ้นนิดนึงตอนชี้ */
-    background: #ffe3e3; /* สีเข้มขึ้นนิดนึงให้ดูมีมิติ */
+    transform: scale(1.08);
+    background: #ffe3e3;
 }
 
 /* ================= EMPTY ================= */
 
-/* กล่องว่าง */
 .empty-box {
     grid-column: 1 / -1;
     text-align: center;
@@ -358,7 +323,6 @@
 
 /* ================= FULL PLAN CARD ================= */
 
-/* การ์ดแผนอาหารแบบเต็ม */
 .meal-plan-full-card {
     background: rgba(255, 255, 255, 0.75);
     border-radius: 28px;
@@ -367,19 +331,14 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* ================= PLAN HEADER ================= */
-
-/* ส่วนหัวแผนอาหาร */
 .plan-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 28px;
     padding-bottom: 18px;
-    
 }
 
-/* หัวข้อ */
 .plan-header h2 {
     margin: 0 0 8px;
     font-size: 2rem;
@@ -387,7 +346,6 @@
     color: #2d1b12;
 }
 
-/* รายละเอียด */
 .plan-header p {
     margin: 0;
     color: #ff8c42;
@@ -395,23 +353,19 @@
     font-weight: 600;
 }
 
-/* ================= MEAL ROW ================= */
-
-/* แถวอาหาร */
 .meal-row {
     display: grid;
-    grid-template-columns: 80px 140px 1fr 100px; /* สัดส่วน: ไอคอน - รูป - ชื่อ - แคลอรี */
+    grid-template-columns: 80px 140px 1fr 100px;
     align-items: center;
     gap: 20px;
     padding: 20px 0;
-    border-bottom: 1px dashed #e56589ae; /* เส้นประ */
+    border-bottom: 1px dashed #e56589ae;
 }
 
-/* ซ่อนเส้นประของแถวสุดท้าย (ก่อนถึง Summary) */
 .meal-row:last-of-type {
     border-bottom: none;
 }
-/* ไอคอนมื้ออาหาร (จัดแนวตั้ง) */
+
 .meal-type-stacked {
     display: flex;
     flex-direction: column;
@@ -429,18 +383,12 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* ================= MEAL TYPE ================= */
-
-/* ประเภทมื้อ */
 .meal-type {
     font-size: 1.1rem;
     font-weight: 700;
     color: #ff8c42;
 }
 
-/* ================= IMAGE ================= */
-
-/* รูปในแถวอาหาร */
 .meal-row .meal-image {
     width: 140px;
     height: 90px;
@@ -448,23 +396,18 @@
     object-fit: cover;
 }
 
-/* ================= INFO ================= */
-
-/* ชื่ออาหาร */
 .meal-row .meal-info h3 {
-   margin: 0 0 8px;
+    margin: 0 0 8px;
     font-size: 1.25rem;
     font-weight: 700;
     color: #552e1b;
 }
 
-/* รายละเอียด */
 .meal-row .meal-info span {
     color: #888;
     font-size: 0.95rem;
 }
 
-/* ป้ายบอกปริมาณ (1 ถ้วย / 1 จาน) */
 .fav-portion-badge {
     display: inline-block;
     background-color: #f3ebe5;
@@ -482,9 +425,6 @@
     color: #ff7a00;
 }
 
-/* ================= CALORIES ================= */
-
-/* กล่องแคลอรี */
 .meal-cal {
     text-align: right;
     font-weight: 700;
@@ -493,9 +433,9 @@
 }
 
 /* ================= SUMMARY BOX ================= */
+
 .plan-summary {
     display: grid;
-    /* grid-template-columns: repeat(6, 1fr); */
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 5px;
     margin-top: 30px;
@@ -518,7 +458,6 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
 }
 
-/* กรอบสีของไอคอนแต่ละประเภท */
 .sum-icon-wrap {
     width: 20px;
     height: 20px;
@@ -529,30 +468,15 @@
     font-size: 1.1rem;
 }
 
-/* แยกสีไอคอนให้สวยงาม */
-.cal-icon { 
-    color: #f96743; /* ส้มสว่าง (สีหลักของเว็บ) */
-}   
-
-.carb-icon { 
-    color: #f96743; /* เหลืองทองอุ่นๆ */
-}  
-
-.pro-icon {  
-    color: #f96743; /* ส้มอมแดง/คอรัล (ดูเป็นเนื้อสัตว์แต่ยังอยู่ในโทนอุ่น) */
-}   
-
-.fat-icon { 
-    color: #f96743; /* น้ำตาลคาราเมลอ่อน (ดูซอฟต์ ไม่แย่งซีน) */
-}
-.sugar-icon { 
-    color: #f96743; /* สีชมพูอมส้มตุ่นๆ ให้เข้ากับธีม */
-} 
-.sodium-icon { 
-    color: #f96743; /* สีฟ้าอมเทา เพื่อความสบายตา ไม่แย่งซีนสีส้ม */
+.cal-icon,
+.carb-icon,
+.pro-icon,
+.fat-icon,
+.sugar-icon,
+.sodium-icon {
+    color: #f96743;
 }
 
-/* การจัดเรียงข้อความ */
 .sum-info {
     display: flex;
     align-items: baseline;
@@ -568,7 +492,7 @@
 .sum-val {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #6e3b22; /* ใช้สีเข้มให้ตัวเลขเด่นขึ้น */
+    color: #6e3b22;
 }
 
 .sum-unit {
@@ -577,18 +501,7 @@
     font-weight: 500;
 }
 
-/* Responsive สำหรับมือถือ */
-@media (max-width: 768px) {
-    .plan-summary {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-
 /* ================= PLAN HEADER ================= */
-
-
-/* ซ้าย: คำบรรยายใต้ชื่อแผน */
 
 .plan-header-left h2 {
     font-size: 2rem;
@@ -603,15 +516,12 @@
     margin: 4px 0 0;
 }
 
-/* ขวา: คลุมทั้งตัวเลขแคลอรีและปุ่มหัวใจ */
 .plan-header-right {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-
-/* กล่องจัดกลุ่มแคลอรีรวม */
 .plan-cal-box {
     display: flex;
     align-items: baseline;
@@ -619,39 +529,383 @@
     margin-right: 5px;
 }
 
-/* คำว่า "รวมทั้งหมด" */
 .plan-cal-label {
     color: #a5785a;
     font-weight: 600;
     font-size: 1rem;
 }
 
-/* ตัวเลข kcal */
 .plan-cal-value {
     color: #ff7a00;
     font-weight: 700;
     font-size: 1.5rem;
 }
 
-/* Responsive เผื่อสำหรับจอมือถือเล็กๆ */
-@media (max-width: 600px) {
-    .plan-header-right {
-        margin-top: 15px; /* ดันลงมานิดนึงถ้ามันตกลงมาอีกบรรทัด */
-    }
+/* ================= FOOD MODAL OVERLAY ================= */
+
+.fav-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 35px 20px;
+    z-index: 99999;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
+
+.fav-modal-overlay::-webkit-scrollbar {
+    display: none;
+}
+
+.fav-modal-content {
+    width: 100%;
+    max-width: 1120px;
+    background: white;
+    border-radius: 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* ================= BOOKMARK (modal) ================= */
+
+.fav-modal-bookmark-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #ff5a5f;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 50;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    transition: 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fav-modal-bookmark-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ================= LEFT / RIGHT ================= */
+
+.fav-modal-left,
+.fav-modal-right {
+    padding: 30px;
+    min-width: 0;
+}
+
+.fav-modal-right {
+    overflow-y: auto;
+}
+
+.fav-modal-image {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 24px;
+    margin-bottom: 24px;
+}
+
+.fav-modal-right h2 {
+    margin: 0 0 18px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #2d1b12;
+}
+
+/* ================= SECTION ================= */
+
+.fav-modal-section {
+    margin-bottom: 20px;
+}
+
+.fav-modal-section h4 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* ================= BOX ================= */
+
+.fav-modal-box {
+    background: #f8f3f0;
+    border-radius: 16px;
+    padding: 16px 18px;
+    line-height: 1.75;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.fav-modal-detail-text {
+    white-space: pre-line;
+}
+
+.fav-modal-box--note {
+    background: #f9f5f2;
+    border-left: 4px solid #ffb98a;
+    border-radius: 0 14px 14px 0;
+    font-style: italic;
+    color: #8c7b70;
+    font-size: 0.9rem;
+}
+
+/* ================= RECIPE SECTIONS ================= */
+
+.fav-recipe-section-block {
+    margin-bottom: 16px;
+}
+
+.fav-recipe-section-name {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ff7b2c;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #ffe0cd;
+}
+
+.fav-recipe-block {
+    margin-bottom: 10px;
+}
+
+.fav-recipe-block-title {
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2d1b12;
+}
+
+.fav-recipe-block-content {
+    margin-top: 0;
+}
+
+/* ================= NUTRITION GRID ================= */
+
+.fav-nutri-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.fav-nutri-card {
+    padding: 12px 8px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.fav-nutri-card:hover {
+    transform: translateY(-3px);
+}
+
+.fav-nutri-icon {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.fav-nutri-label {
+    font-size: 12px;
+    margin: 3px 0;
+}
+
+.fav-nutri-card span {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.fav-nutri-calorie {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff4e6, #ffe0c2);
+    color: #ff6b00;
+    border: 1px solid #ffc38a;
+    padding: 16px;
+}
+
+.fav-nutri-calorie .fav-nutri-icon {
+    font-size: 26px;
+    color: #ff6b00;
+}
+
+.fav-nutri-calorie .fav-nutri-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.fav-nutri-calorie span {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.fav-nutri-carb {
+    background: #fff3e0;
+    color: #ff6d00;
+}
+
+.fav-nutri-protein {
+    background: #fff8e1;
+    color: #ff8f00;
+}
+
+.fav-nutri-fat {
+    background: #ffebee;
+    color: #e53935;
+}
+
+.fav-nutri-sugar {
+    background: #f3e5f5;
+    color: #8e24aa;
+}
+
+.fav-nutri-sodium {
+    background: #e3f2fd;
+    color: #1e88e5;
+}
+
+/* ================= MEAL BUTTONS ================= */
+
+.fav-meal-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.fav-meal-buttons button {
+    flex: 1;
+    min-width: 80px;
+    height: 44px;
+    border-radius: 999px;
+    border: 2px solid #ff7b2c;
+    background: white;
+    color: #ff7b2c;
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fav-meal-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+.fav-meal-buttons button.active {
+    background: linear-gradient(135deg, #ff9b54, #ff6b1a);
+    color: white;
+    border-color: transparent;
+}
+
+/* ================= QUANTITY ================= */
+
+.fav-qty-section {
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.fav-qty-section h4 {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+.fav-qty-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.fav-qty-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #fff5ef;
+    color: #ff7b2c;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fav-qty-btn:hover {
+    transform: translateY(-2px);
+    background: #ffe7d6;
+}
+
+.fav-qty-value {
+    min-width: 24px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* ================= ADD BUTTON ================= */
+
+.fav-add-btn {
+    width: 100%;
+    height: 54px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff9b54, #ff6b1a);
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: 0.25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fav-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(255, 123, 44, 0.25);
+}
+
+/* ================= SCROLL LOCK ================= */
+
+body.modal-open {
+    overflow: hidden;
+}
+
 /* ================= RESPONSIVE ================= */
 
-/* Tablet */
 @media (max-width: 1200px) {
-
     .favorite-food-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-/* Tablet กลาง */
 @media (max-width: 992px) {
-
     .favorite-food-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -661,11 +915,42 @@
         align-items: flex-start;
         gap: 20px;
     }
+
+    .fav-modal-content {
+        grid-template-columns: 1fr;
+    }
+
+    .fav-modal-left,
+    .fav-modal-right {
+        padding: 24px;
+    }
+
+    .fav-modal-image {
+        height: 260px;
+    }
+
+    .meal-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .meal-row .meal-image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .plan-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .plan-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
-
     .favorite-page {
         padding: 110px 6% 40px;
     }
@@ -693,11 +978,47 @@
     .meal-info h3 {
         font-size: 1.4rem;
     }
+
+    .fav-nutri-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fav-nutri-calorie {
+        grid-column: 1 / -1;
+    }
+
+    .fav-modal-right h2 {
+        font-size: 1.8rem;
+    }
+
+    .fav-modal-image {
+        height: 230px;
+    }
+
+    .plan-summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-/* Mobile เล็ก */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+    .plan-summary {
+        grid-template-columns: 1fr;
+    }
 
+    .meal-plan-full-card {
+        padding: 20px;
+    }
+
+    .plan-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .plan-header-right {
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
     .favorite-page {
         padding: 100px 5% 30px;
     }
@@ -717,44 +1038,35 @@
     .favorite-food-image {
         height: 220px;
     }
-}
 
-/* Responsive Meal Row */
-@media (max-width: 992px) {
-
-    .meal-row {
-        grid-template-columns: 1fr;
-        text-align: center;
+    .fav-modal-overlay {
+        padding: 20px 12px;
     }
 
-    .meal-row .meal-image {
-        width: 100%;
-        height: 220px;
+    .fav-modal-left,
+    .fav-modal-right {
+        padding: 18px;
     }
 
-    .plan-summary {
+    .fav-modal-right h2 {
+        font-size: 1.6rem;
+    }
+
+    .fav-modal-image {
+        height: 210px;
+        border-radius: 18px;
+    }
+
+    .fav-nutri-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .plan-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-}
-
-/* Responsive เล็กมาก */
-@media (max-width: 600px) {
-
-    .plan-summary {
-        grid-template-columns: 1fr;
+    .fav-nutri-calorie {
+        grid-column: 1 / -1;
     }
 
-    .meal-plan-full-card {
-        padding: 20px;
-    }
-
-    .plan-header h2 {
-        font-size: 1.6rem;
+    .fav-modal-bookmark-btn {
+        width: 46px;
+        height: 46px;
     }
 }

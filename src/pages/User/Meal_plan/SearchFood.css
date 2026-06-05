@@ -380,43 +380,73 @@
   color: #2d1b12;
 }
 
-/* ================= KCAL BOX ================= */
-
-.sf-kcal-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-  padding: 18px 20px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #fff4e6, #ffe0c2);
-  color: #ff6b00;
-  font-size: 1.2rem;
-  font-weight: 700;
-  border: 1px solid #ffc38a;
-}
-
 /* ================= DETAIL SECTION ================= */
 
 .sf-detail-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .sf-detail-section h4 {
-  margin-bottom: 12px;
-  font-size: 1.35rem;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #2d1b12;
 }
 
+/* ================= DETAIL DESCRIPTION BOX ================= */
+
 .sf-detail-description {
   background: #f8f3f0;
-  border-radius: 20px;
-  padding: 20px;
-  line-height: 1.8;
-  color: #444;
-  font-size: 1rem;
+  border-radius: 16px;
+  padding: 16px 18px;
+  line-height: 1.75;
+  color: #555;
+  font-size: 0.95rem;
   white-space: pre-line;
+}
+
+/* ================= NOTE BOX ================= */
+
+.sf-detail-note {
+  background: #f9f5f2;
+  border-left: 4px solid #ffb98a;
+  border-radius: 0 14px 14px 0;
+  padding: 16px 18px;
+  line-height: 1.75;
+  font-style: italic;
+  color: #8c7b70;
+  font-size: 0.9rem;
+  white-space: pre-line;
+}
+
+/* ================= RECIPE SECTIONS (จาก recipe_details) ================= */
+
+.sf-recipe-section-block {
+  margin-bottom: 16px;
+}
+
+.sf-recipe-section-name {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ff7b2c;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #ffe0cd;
+}
+
+.sf-recipe-block {
+  margin-bottom: 10px;
+}
+
+.sf-recipe-block-title {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d1b12;
+}
+
+.sf-recipe-block-content {
+  margin-top: 0;
 }
 
 /* ================= NUTRITION GRID ================= */
@@ -630,7 +660,11 @@ body.modal-open {
   }
 
   .sf-nutrition-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sf-nutrition-card.calorie {
+    grid-column: 1 / -1;
   }
 
   .sf-detail-title {
@@ -667,6 +701,14 @@ body.modal-open {
   .sf-detail-image {
     height: 210px;
     border-radius: 18px;
+  }
+
+  .sf-nutrition-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sf-nutrition-card.calorie {
+    grid-column: 1 / -1;
   }
 
   .sf-bookmark-btn {
