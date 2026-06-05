@@ -1,26 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./MealPlan.css";
-import {
-  FaSun,
-  FaCloudSun,
-  FaMoon,
-  FaPlus,
-  FaTrash,
-  FaHeart,
-  FaPen,
-  FaStar,
-  FaRegStar,
-  FaChartPie
-} from "react-icons/fa";
+import { FaSun, FaCloudSun, FaMoon, FaPlus, FaTrash, FaHeart, FaPen, FaStar, FaRegStar, FaChartPie } from "react-icons/fa";
 import { LuNotebookPen } from "react-icons/lu";
 
 const generateNext7Days = () => {
   const dayNames = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
-  const monthNames = [
-    "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
-    "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
-  ];
+  const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
   const days = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date();
@@ -28,11 +14,7 @@ const generateNext7Days = () => {
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    days.push({
-      name: dayNames[d.getDay()],
-      date: `${d.getDate()} ${monthNames[d.getMonth()]}`,
-      fullDate: `${yyyy}-${mm}-${dd}`,
-    });
+    days.push({ name: dayNames[d.getDay()], date: `${d.getDate()} ${monthNames[d.getMonth()]}`, fullDate: `${yyyy}-${mm}-${dd}` });
   }
   return days;
 };
@@ -49,10 +31,11 @@ function MealPlan() {
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
 
-  // ✅ goalData เริ่มต้นเป็น 0 ทุกค่า
-  const [goalData, setGoalData] = useState({
-    tdee: 0, carb: 0, protein: 0, fat: 0, sugar: 0, sodium: 0
-  });
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [loginPromptReturnTo, setLoginPromptReturnTo] = useState("/meal-plan");
+
+  // goalData เริ่มต้น 0 ทุกค่า — จะถูก set ก็ต่อเมื่อมีข้อมูลจริง
+  const [goalData, setGoalData] = useState({ tdee: 0, carb: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 });
 
   const fetchMealPlanFromDB = async (date) => {
     setIsLoading(true);
@@ -62,7 +45,6 @@ function MealPlan() {
     const storedUser = localStorage.getItem("user");
     const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-    // ✅ guest ไม่ดึง DB เลย
     if (!parsedUser?.user_id) {
       setMealPlan([]);
       setIsLoading(false);
@@ -81,21 +63,16 @@ function MealPlan() {
         fetch(`http://localhost:5000/api/favorite-status?user_id=${currentUserId}&plan_id=${planId}`)
           .then(res => res.json())
           .then(data => setIsPlanFav(data.isFav))
-          .catch(err => console.error("Error fetching favorite status:", err));
+          .catch(err => console.error(err));
 
         const uniqueFoodIds = [...new Set(dataFromDB.map(m => m.food_id))];
         uniqueFoodIds.forEach(foodId => {
           fetch(`http://localhost:5000/api/review-status?user_id=${currentUserId}&food_id=${foodId}`)
             .then(res => res.json())
-            .then(data => {
-              if (data.isReviewed) {
-                setReviewedStatus(prev => ({ ...prev, [foodId]: data }));
-              }
-            })
-            .catch(err => console.error("Error fetching review status:", err));
+            .then(data => { if (data.isReviewed) setReviewedStatus(prev => ({ ...prev, [foodId]: data })); })
+            .catch(err => console.error(err));
         });
       }
-
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -104,9 +81,7 @@ function MealPlan() {
     }
   };
 
-  useEffect(() => {
-    sessionStorage.setItem("meal_selectedDay", selectedDay);
-  }, [selectedDay]);
+  useEffect(() => { sessionStorage.setItem("meal_selectedDay", selectedDay); }, [selectedDay]);
 
   useEffect(() => {
     const days = generateNext7Days();
@@ -116,67 +91,39 @@ function MealPlan() {
     const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
     if (parsedUser?.user_id) {
-      // ✅ สมาชิก → ดึง goalData จาก DB
+      // สมาชิก → ดึง goalData จาก DB
       fetch(`http://localhost:5000/api/get-calculation/${parsedUser.user_id}`)
         .then(res => res.json())
         .then(data => {
-          if (data) {
-            setGoalData({
-              tdee: data.tdee || 0,
-              carb: data.carb || 0,
-              protein: data.protein || 0,
-              fat: data.fat || 0,
-              sugar: data.sugar || 0,
-              sodium: data.sodium || 0
-            });
-          }
+          if (data) setGoalData({ tdee: data.tdee || 0, carb: data.carb || 0, protein: data.protein || 0, fat: data.fat || 0, sugar: data.sugar || 0, sodium: data.sodium || 0 });
         }).catch(err => console.error(err));
     } else {
-      // ✅ Guest → อ่านจาก sessionStorage["activeCalcResult"] เท่านั้น
-      // sessionStorage จะถูกเซ็ตก็ต่อเมื่อกด "เสร็จสิ้น" ที่หน้า Calc
-      // ถ้ายังไม่ได้กด → goalData ยังคงเป็น 0 ทุกค่า
+      // Guest → อ่านจาก sessionStorage เท่านั้น
+      // ถ้าปิดแท็บเปิดใหม่โดยยังไม่ได้กดเสร็จสิ้น → goalData = 0
       const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
-      if (activeCalc) {
-        setGoalData({
-          tdee: activeCalc.tdee || 0,
-          carb: activeCalc.carb || 0,
-          protein: activeCalc.protein || 0,
-          fat: activeCalc.fat || 0,
-          sugar: activeCalc.sugar || 0,
-          sodium: activeCalc.sodium || 0
-        });
-      }
+      if (activeCalc) setGoalData({ tdee: activeCalc.tdee || 0, carb: activeCalc.carb || 0, protein: activeCalc.protein || 0, fat: activeCalc.fat || 0, sugar: activeCalc.sugar || 0, sodium: activeCalc.sodium || 0 });
     }
 
     fetchMealPlanFromDB(days[0].fullDate);
   }, []);
 
-  const handleDayClick = (index) => {
-    setSelectedDay(index);
-    fetchMealPlanFromDB(weekDays[index].fullDate);
-  };
+  const handleDayClick = (index) => { setSelectedDay(index); fetchMealPlanFromDB(weekDays[index].fullDate); };
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!storedUser;
 
+  const requireLogin = (returnPath = "/meal-plan") => {
+    setLoginPromptReturnTo(returnPath);
+    setShowLoginPrompt(true);
+  };
+
   const handleEditPlan = () => {
     if (mealPlan.length === 0) return;
-    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนแก้ไขแผนการกิน"); return; }
+    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
     const draftPlate = mealPlan.map(meal => ({
-      id: meal.meal_detail_id,
-      food_id: meal.food_id,
-      name: meal.food_name,
-      image: meal.image,
-      calPerUnit: Number(meal.calories),
-      qty: Number(meal.quantity),
-      meal_type: meal.meal_type,
-      macros: {
-        carbs: Number(meal.carbohydrates),
-        protein: Number(meal.protein),
-        fat: Number(meal.fat),
-        sugar: Number(meal.sugar),
-        sodium: Number(meal.sodium)
-      }
+      id: meal.meal_detail_id, food_id: meal.food_id, name: meal.food_name, image: meal.image,
+      calPerUnit: Number(meal.calories), qty: Number(meal.quantity), meal_type: meal.meal_type,
+      macros: { carbs: Number(meal.carbohydrates), protein: Number(meal.protein), fat: Number(meal.fat), sugar: Number(meal.sugar), sodium: Number(meal.sodium) }
     }));
     localStorage.setItem("plan_plate", JSON.stringify(draftPlate));
     navigate("/MyPlate?mode=plan");
@@ -184,49 +131,35 @@ function MealPlan() {
 
   const handleSaveFavoritePlan = async () => {
     if (!mealPlan || mealPlan.length === 0) return;
-    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนบันทึกแผนโปรด"); return; }
+    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
     const planId = mealPlan[0].plan_id;
-    const currentUserId = storedUser.user_id;
     try {
       const response = await fetch("http://localhost:5000/api/favorite-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: currentUserId, plan_id: planId })
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: storedUser.user_id, plan_id: planId })
       });
       if (response.ok) {
         const data = await response.json();
         setIsPlanFav(data.isFav);
         if (data.isFav) alert("บันทึกแผนอาหารของวันนี้เป็นเซ็ตโปรดเรียบร้อยแล้ว! ❤️");
       }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
+    } catch (error) { console.error(error); }
   };
 
   const handleDeletePlan = async (planId) => {
-    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนลบแผนการกิน"); return; }
+    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
     if (!window.confirm("คุณต้องการลบแผนอาหารทั้งหมดของวันนี้ใช่หรือไม่? ข้อมูลทั้งหมดจะหายไป")) return;
     try {
       const response = await fetch(`http://localhost:5000/api/plan/${planId}`, { method: "DELETE" });
-      if (response.ok) {
-        alert("ลบแผนอาหารของวันนี้สำเร็จ");
-        fetchMealPlanFromDB(weekDays[selectedDay].fullDate);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      if (response.ok) { alert("ลบแผนอาหารของวันนี้สำเร็จ"); fetchMealPlanFromDB(weekDays[selectedDay].fullDate); }
+    } catch (error) { console.error(error); }
   };
 
   const handleOpenReviewModal = (meal) => {
-    if (!isLoggedIn) { alert("กรุณาเข้าสู่ระบบก่อนรีวิวอาหาร"); return; }
+    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
     setReviewTarget(meal);
-    if (reviewedStatus[meal.food_id]) {
-      setRating(reviewedStatus[meal.food_id].rating);
-      setReviewText(reviewedStatus[meal.food_id].review_text);
-    } else {
-      setRating(5);
-      setReviewText("");
-    }
+    if (reviewedStatus[meal.food_id]) { setRating(reviewedStatus[meal.food_id].rating); setReviewText(reviewedStatus[meal.food_id].review_text); }
+    else { setRating(5); setReviewText(""); }
   };
 
   const handleConfirmReview = async () => {
@@ -234,22 +167,15 @@ function MealPlan() {
     const currentUserId = storedUser ? JSON.parse(localStorage.getItem("user")).user_id : null;
     try {
       const response = await fetch("http://localhost:5000/api/review", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: currentUserId, food_id: reviewTarget.food_id, rating, review_text: reviewText })
       });
       if (response.ok) {
         alert("บันทึกรีวิวของคุณเรียบร้อยแล้ว รอการอนุมัติจากระบบครับ ⭐");
-        setReviewedStatus(prev => ({
-          ...prev,
-          [reviewTarget.food_id]: { isReviewed: true, rating, review_text: reviewText }
-        }));
-        setReviewTarget(null);
-        setReviewText("");
+        setReviewedStatus(prev => ({ ...prev, [reviewTarget.food_id]: { isReviewed: true, rating, review_text: reviewText } }));
+        setReviewTarget(null); setReviewText("");
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) { console.error(error); }
   };
 
   const totalCalories = mealPlan.reduce((sum, meal) => sum + (Number(meal.total_calories) || 0), 0);
@@ -296,6 +222,41 @@ function MealPlan() {
 
   return (
     <div className="meal-page">
+
+      {showLoginPrompt && (
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}
+          onClick={() => setShowLoginPrompt(false)}
+        >
+          <div
+            style={{ background: "#fff", borderRadius: "20px", boxShadow: "0 12px 40px rgba(0,0,0,0.18)", padding: "40px 36px", maxWidth: "380px", width: "90%", textAlign: "center" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
+            <h3 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#333", marginBottom: "10px" }}>กรุณาเข้าสู่ระบบ</h3>
+            <p style={{ color: "#888", fontSize: "0.95rem", marginBottom: "28px", lineHeight: "1.7" }}>
+              คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถใช้ฟีเจอร์นี้ได้
+            </p>
+            <button
+              onClick={() => { setShowLoginPrompt(false); navigate("/auth", { state: { returnTo: loginPromptReturnTo } }); }}
+              style={{ background: "linear-gradient(135deg, #ff9800, #f44336)", color: "#fff", border: "none", borderRadius: "12px", padding: "13px 0", fontSize: "1rem", fontWeight: "700", cursor: "pointer", width: "100%", marginBottom: "12px" }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "0.88"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
+            >
+              เข้าสู่ระบบ
+            </button>
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              style={{ background: "transparent", color: "#aaa", border: "1.5px solid #e0e0e0", borderRadius: "12px", padding: "11px 0", fontSize: "0.95rem", cursor: "pointer", width: "100%" }}
+              onMouseOver={(e) => e.currentTarget.style.borderColor = "#bbb"}
+              onMouseOut={(e) => e.currentTarget.style.borderColor = "#e0e0e0"}
+            >
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      )}
+
       <header className="meal-top">
         <div className="meal-left">
           <div className="meal-left-icon"><LuNotebookPen /></div>
@@ -304,12 +265,7 @@ function MealPlan() {
             <p>วางแผนมื้ออาหารล่วงหน้า เพื่อสุขภาพที่ดีในทุกวัน</p>
           </div>
         </div>
-        <Link
-          to="/MyPlate?mode=plan"
-          className="create-btn"
-          style={{ textDecoration: "none" }}
-          onClick={() => localStorage.removeItem("plan_plate")}
-        >
+        <Link to="/MyPlate?mode=plan" className="create-btn" style={{ textDecoration: "none" }} onClick={() => localStorage.removeItem("plan_plate")}>
           <FaPlus /> สร้างแผนใหม่
         </Link>
       </header>
@@ -334,12 +290,7 @@ function MealPlan() {
               <div className="card-top-header-actions">
                 <span className="card-header-date-title">เมนูอาหารของฉัน</span>
                 <div className="global-icon-actions-group">
-                  <button
-                    className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`}
-                    style={{ color: isPlanFav ? "red" : "#ddaa9d" }}
-                    title="บันทึกแผนนี้เป็นเซ็ตโปรด"
-                    onClick={handleSaveFavoritePlan}
-                  >
+                  <button className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`} style={{ color: isPlanFav ? "red" : "#ddaa9d" }} title="บันทึกแผนนี้เป็นเซ็ตโปรด" onClick={handleSaveFavoritePlan}>
                     <FaHeart />
                   </button>
                 </div>
@@ -358,26 +309,15 @@ function MealPlan() {
                         ) : (
                           <div className="meal-time-column-placeholder"></div>
                         )}
-                        <img
-                          src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
-                          alt={meal.food_name}
-                          className="row-img"
-                        />
+                        <img src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`} alt={meal.food_name} className="row-img" />
                         <div className="row-details">
                           <h2>{meal.food_name}</h2>
-                          <span className="row-qty-tag">
-                            {meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}
-                          </span>
+                          <span className="row-qty-tag">{meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}</span>
                         </div>
                       </div>
                       <div className="meal-item-right">
                         <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
-                        <button
-                          className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`}
-                          title="เขียนรีวิวเมนูนี้"
-                          onClick={() => handleOpenReviewModal(meal)}
-                          style={{ color: reviewedStatus[meal.food_id] ? "#ffb936" : "#ddaa9d" }}
-                        >
+                        <button className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`} title="เขียนรีวิวเมนูนี้" onClick={() => handleOpenReviewModal(meal)}>
                           <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} />
                           <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }}>รีวิว</span>
                         </button>
@@ -390,12 +330,8 @@ function MealPlan() {
 
               <div className="card-bottom-header-actions">
                 <div className="global-icon-actions-group">
-                  <button className="global-icon-action-btn btn-edit" title="แก้ไขแผนอาหารของวันนี้" onClick={handleEditPlan}>
-                    <FaPen />
-                  </button>
-                  <button className="global-icon-action-btn btn-delete" title="ลบแผนอาหารของวันนี้ทั้งหมด" onClick={() => handleDeletePlan(mealPlan[0].plan_id)}>
-                    <FaTrash />
-                  </button>
+                  <button className="global-icon-action-btn btn-edit" title="แก้ไขแผนอาหารของวันนี้" onClick={handleEditPlan}><FaPen /></button>
+                  <button className="global-icon-action-btn btn-delete" title="ลบแผนอาหารของวันนี้ทั้งหมด" onClick={() => handleDeletePlan(mealPlan[0].plan_id)}><FaTrash /></button>
                 </div>
               </div>
             </div>
@@ -420,9 +356,7 @@ function MealPlan() {
           <div className="goal-box">
             <div className="goal-top">
               <span>เป้าหมายรายวัน</span>
-              <strong>
-                {totalCalories.toFixed(0)} / {goalCalories > 0 ? Number(goalCalories).toFixed(0) : "0"} kcal
-              </strong>
+              <strong>{totalCalories.toFixed(0)} / {goalCalories > 0 ? Number(goalCalories).toFixed(0) : "0"} kcal</strong>
             </div>
             <div className="goal-bar">
               <div className="goal-fill" style={{ width: `${progressWidth}%` }}></div>
@@ -437,9 +371,7 @@ function MealPlan() {
       {reviewTarget && (
         <div className="review-modal-overlay">
           <div className="review-modal-box">
-            <h3>
-              {reviewedStatus[reviewTarget.food_id] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{reviewTarget.food_name}"
-            </h3>
+            <h3>{reviewedStatus[reviewTarget.food_id] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{reviewTarget.food_name}"</h3>
             <div className="star-rating-row">
               {[1, 2, 3, 4, 5].map((num) => (
                 <span key={num} onClick={() => setRating(num)} style={{ cursor: "pointer", fontSize: "1.8rem" }}>
@@ -450,9 +382,7 @@ function MealPlan() {
             <textarea rows="4" placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} className="review-textarea" />
             <div className="modal-btn-row">
               <button className="modal-cancel-btn" onClick={() => setReviewTarget(null)}>ยกเลิก</button>
-              <button className="modal-submit-btn" onClick={handleConfirmReview}>
-                {reviewedStatus[reviewTarget.food_id] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}
-              </button>
+              <button className="modal-submit-btn" onClick={handleConfirmReview}>{reviewedStatus[reviewTarget.food_id] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}</button>
             </div>
           </div>
         </div>

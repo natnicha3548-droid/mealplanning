@@ -35,7 +35,7 @@ function MyPlate() {
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-  // ✅ goalData เริ่มต้นเป็น 0 ทุกค่า
+  // goalData เริ่มต้น 0 ทุกค่า — จะถูก set ก็ต่อเมื่อมีข้อมูลจริง
   const [goalData, setGoalData] = useState({
     tdee: 0,
     carb: 0,
@@ -93,7 +93,7 @@ function MyPlate() {
 
     const fetchGoalData = async () => {
       if (storedUser?.user_id) {
-        // ✅ สมาชิก → ดึง goalData จาก DB
+        // สมาชิก → ดึง goalData จาก DB
         try {
           const response = await fetch(
             `http://localhost:5000/api/get-calculation/${storedUser.user_id}`
@@ -113,9 +113,8 @@ function MyPlate() {
           console.error(error);
         }
       } else {
-        // ✅ Guest → อ่านจาก sessionStorage["activeCalcResult"] เท่านั้น
-        // sessionStorage จะถูกเซ็ตก็ต่อเมื่อกด "เสร็จสิ้น" ที่หน้า Calc
-        // ถ้ายังไม่ได้กด → goalData ยังคงเป็น 0 ทุกค่า
+        // Guest → อ่านจาก sessionStorage เท่านั้น
+        // ถ้าปิดแท็บเปิดใหม่โดยยังไม่ได้กดเสร็จสิ้น → goalData = 0
         const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
         if (activeCalc) {
           setGoalData({
@@ -255,7 +254,6 @@ function MyPlate() {
   return (
     <div className="my-plate-container">
 
-      {/* LOGIN PROMPT MODAL */}
       {showLoginPrompt && (
         <div
           style={{

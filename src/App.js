@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-
-/* ================= COMPONENTS (USER) ================= */
 
 import Navbar from './components/User/Nav/Navbar';
 import AuthPage from './components/User/Auth_page/AuthPage';
 import ResetPass from "./components/User/Reset_pass/ResetPass";
 import Calc from "./components/User/Cal/Calc";
 import Profile from "./components/User/Pro/Profile";
-
-/* ================= PAGES (USER) ================= */
 
 import HomePage from "./pages/User/Home/HomePage";
 import MealPlanCard from "./pages/User/Home/MealPlanCard";
@@ -20,8 +16,6 @@ import PastPlans from "./pages/User/Past_plan/PastPlans";
 import MyPlate from "./pages/User/Meal_plan/MyPlate";
 import SearchFood from "./pages/User/Meal_plan/SearchFood";
 import FavFood from "./pages/User/Fav_food/FavFood";
-
-/* ================= PAGES (ADMIN) ================= */
 
 import AdminLayout from './pages/Admin/AdminLayout';
 import DashboardReport from './pages/Admin/DashboardReport';
@@ -34,84 +28,75 @@ import AddFood from "./pages/Admin/ManageFood/AddFood";
 import EditFood from "./pages/Admin/ManageFood/EditFood";
 import ManageUsers from './pages/Admin/ManageUsers';
 
-/* ================= ROUTER ================= */
-
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
 
-  /* ================= STATE ================= */
-
-  // เก็บข้อมูลผู้ใช้ที่ล็อกอิน
   const [user, setUser] = useState(null);
-
-  // เก็บผลคำนวณโภชนาการ
   const [calcResult, setCalcResult] = useState(null);
-
-  // เก็บข้อมูลฟอร์มคำนวณ
   const [formData, setFormData] = useState(null);
 
   const location = useLocation();
-  
-  // เช็คว่า URL ปัจจุบันเป็นของฝั่ง Admin หรือไม่
   const isAdminRoute = location.pathname.startsWith('/admin');
 
-  /* ================= LOAD USER + CALCULATION ================= */
+  // ใช้ ref เพื่อกัน useEffect([user]) รันซ้ำตอน mount ครั้งแรก
+  const isFirstMount = useRef(true);
 
+  // ---- โหลดข้อมูลตอนเปิดแอปครั้งแรก ----
   useEffect(() => {
 
     const loadUserData = async () => {
 
-      // โหลดข้อมูล user จาก localStorage
       const storedUser = localStorage.getItem("user");
 
-      // ถ้าไม่มี user ให้หยุดทำงาน
+      // GUEST — ไม่มี user ใน localStorage
       if (!storedUser) {
         setUser(null);
+
+        const guestCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+
+        if (guestCalc) {
+          setCalcResult({
+            bmi: guestCalc.bmi,
+            bmr: guestCalc.bmr,
+            tdee: guestCalc.tdee,
+            carb: guestCalc.carb,
+            protein: guestCalc.protein,
+            fat: guestCalc.fat,
+            sugar: guestCalc.sugar,
+            sodium: guestCalc.sodium
+          });
+          setFormData({
+            weight: guestCalc.weight,
+            height: guestCalc.height,
+            age: guestCalc.age,
+            gender: guestCalc.gender,
+            activity: guestCalc.activity,
+            disease: guestCalc.diseases
+          });
+        }
+
         return;
       }
 
-      
-
-      // แปลงข้อมูล user จาก string เป็น object
+      // MEMBER — มี user ใน localStorage
       const parsedUser = JSON.parse(storedUser);
 
       try {
-
-        const userRes = await fetch(
-          `http://localhost:5000/api/user/${parsedUser.user_id}`
-        );
-
+        const userRes = await fetch(`http://localhost:5000/api/user/${parsedUser.user_id}`);
         const latestUser = await userRes.json();
-
         setUser(latestUser);
-
-        localStorage.setItem(
-          "user",
-          JSON.stringify(latestUser)
-        );
-
+        localStorage.setItem("user", JSON.stringify(latestUser));
       } catch (err) {
-
         console.error("LOAD USER ERROR:", err);
-
         setUser(parsedUser);
-
       }
 
-
       try {
-        // เรียก API โหลดข้อมูลคำนวณล่าสุด
-        const res = await fetch(
-          `http://localhost:5000/api/get-calculation/${parsedUser.user_id}`
-        );
-
+        const res = await fetch(`http://localhost:5000/api/get-calculation/${parsedUser.user_id}`);
         const data = await res.json();
 
-        // ถ้ามีข้อมูลคำนวณ
         if (data) {
-
-          /* ================= SET RESULT ================= */
           setCalcResult({
             bmi: data.bmi,
             bmr: data.bmr,
@@ -122,8 +107,6 @@ function App() {
             sugar: data.sugar,
             sodium: data.sodium
           });
-
-          /* ================= SET FORM DATA ================= */
           setFormData({
             weight: data.weight,
             height: data.height,
@@ -142,29 +125,100 @@ function App() {
 
   }, []);
 
-  /* ================= UPDATE STATE FROM NAVIGATE ================= */
-
+  // ---- Watch user เปลี่ยน (login / logout หลัง mount) ----
   useEffect(() => {
 
-    // อัปเดตผลคำนวณเมื่อ navigate มาพร้อม state
+    // ข้าม render แรก — useEffect([]) จัดการแล้ว
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+
+    if (!user) {
+      // LOGOUT → กลับไปดู sessionStorage (guest mode)
+      const guestCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+      if (guestCalc) {
+        setCalcResult({
+          bmi: guestCalc.bmi,
+          bmr: guestCalc.bmr,
+          tdee: guestCalc.tdee,
+          carb: guestCalc.carb,
+          protein: guestCalc.protein,
+          fat: guestCalc.fat,
+          sugar: guestCalc.sugar,
+          sodium: guestCalc.sodium
+        });
+        setFormData({
+          weight: guestCalc.weight,
+          height: guestCalc.height,
+          age: guestCalc.age,
+          gender: guestCalc.gender,
+          activity: guestCalc.activity,
+          disease: guestCalc.diseases
+        });
+      } else {
+        setCalcResult(null);
+        setFormData(null);
+      }
+      return;
+    }
+
+    // LOGIN → ดึงข้อมูลจาก DB ทันที + ล้าง guest session
+    const fetchUserCalcAfterLogin = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/get-calculation/${user.user_id}`);
+        const data = await res.json();
+
+        if (data) {
+          setCalcResult({
+            bmi: data.bmi,
+            bmr: data.bmr,
+            tdee: data.tdee,
+            carb: data.carb,
+            protein: data.protein,
+            fat: data.fat,
+            sugar: data.sugar,
+            sodium: data.sodium
+          });
+          setFormData({
+            weight: data.weight,
+            height: data.height,
+            age: data.age,
+            gender: data.gender,
+            activity: data.activity,
+            disease: data.disease
+          });
+        } else {
+          setCalcResult(null);
+          setFormData(null);
+        }
+
+        // ล้างข้อมูล guest ออกหลัง login
+        sessionStorage.removeItem("activeCalcResult");
+
+      } catch (err) {
+        console.error("LOAD CALC ERROR after login:", err);
+      }
+    };
+
+    fetchUserCalcAfterLogin();
+
+  }, [user]);
+
+  // ---- รับ calcResult/formData จาก navigation state (เช่น หลังคำนวณใหม่) ----
+  useEffect(() => {
     if (location.state?.calcResult) {
       setCalcResult(location.state.calcResult);
     }
-
-    // อัปเดตข้อมูลฟอร์มเมื่อ navigate มาพร้อม state
     if (location.state?.formData) {
       setFormData(location.state.formData);
     }
-
   }, [location.state]);
 
   return (
 
     <div className="main-layout">
 
-      {/* ================= NAVBAR ================= */}
-      
-      {/* ซ่อน Navbar ของ User ถ้ากำลังอยู่หน้า Admin */}
       {!isAdminRoute && (
         <Navbar
           user={user}
@@ -174,101 +228,27 @@ function App() {
         />
       )}
 
-      {/* ================= ROUTES ================= */}
-
       <Routes>
 
-        {/* ================= USER ROUTES ================= */}
+        <Route path="/" element={<HomePage user={user} calcResult={calcResult} formData={formData} />} />
+        <Route path="/auth" element={<AuthPage setUser={setUser} />} />
+        <Route path="/reset-password/:token" element={<ResetPass />} />
+        <Route path="/calculate" element={<Calc />} />
+        <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
+        <Route path="/menu" element={<MenuFood />} />
+        <Route path="/meal-plan" element={<MealPlan />} />
+        <Route path="/report" element={<NutritionReport />} />
+        <Route path="/past-plans" element={<PastPlans />} />
+        <Route path="/MyPlate" element={<MyPlate />} />
+        <Route path="/SearchFood" element={<SearchFood />} />
+        <Route path="/favourite-food" element={<FavFood />} />
+        <Route path="/meal-plan-card" element={<MealPlanCard />} />
 
-        <Route
-          path="/"
-          element={
-            <HomePage
-              user={user}
-              calcResult={calcResult}
-              formData={formData}
-            />
-          }
-        />
-
-        <Route
-          path="/auth"
-          element={
-            <AuthPage
-              setUser={setUser}
-            />
-          }
-        />
-
-        <Route
-          path="/reset-password/:token"
-          element={<ResetPass />}
-        />
-
-        <Route
-          path="/calculate"
-          element={<Calc />}
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <Profile
-              user={user}
-              setUser={setUser}
-            />
-          }
-        />
-
-        <Route
-          path="/menu"
-          element={<MenuFood />}
-        />
-
-        <Route
-          path="/meal-plan"
-          element={<MealPlan />}
-        />
-
-        <Route
-          path="/report"
-          element={<NutritionReport />}
-        />
-
-        <Route
-          path="/past-plans"
-          element={<PastPlans />}
-        />
-
-        <Route
-          path="/MyPlate"
-          element={<MyPlate />}
-        />
-
-        <Route
-          path="/SearchFood"
-          element={<SearchFood />}
-        />
-
-        <Route
-          path="/favourite-food"
-          element={<FavFood />}
-        />
-
-        <Route
-          path="/meal-plan-card"
-          element={<MealPlanCard />}
-        />
-
-
-        {/* ================= ADMIN ROUTES ================= */}
-
-        {/* กลุ่มหน้าแอดมินที่ต้องมี Sidebar (ใช้ AdminLayout เป็นโครงร่าง) */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<DashboardReport />} /> {/* เข้า /admin จะเจอ Dashboard */}
+          <Route index element={<DashboardReport />} />
           <Route path="manage-food" element={<ManageFood />} />
           <Route path="add-food" element={<AddFood />} />
-          <Route path="/admin/edit-food/:id" element={<EditFood />}/>
+          <Route path="/admin/edit-food/:id" element={<EditFood />} />
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-categories" element={<ManageCategories />} />
           <Route path="/admin/add-category" element={<AddCategory />} />
@@ -276,19 +256,7 @@ function App() {
           <Route path="manage-reviews" element={<ManageReviews />} />
         </Route>
 
-
-        {/* ================= NOT FOUND ================= */}
-
-        <Route
-          path="*"
-          element={
-            <HomePage
-              user={user}
-              calcResult={calcResult}
-              formData={formData}
-            />
-          }
-        />
+        <Route path="*" element={<HomePage user={user} calcResult={calcResult} formData={formData} />} />
 
       </Routes>
 

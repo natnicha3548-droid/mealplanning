@@ -31,7 +31,7 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
                     {showRestoreBtn && (
                         <button
                             className="home-restore-plan-btn"
-                            onClick={() => onRestore()} // 🌟 ตรงนี้เปลี่ยนเป็น () => onRestore() 
+                            onClick={() => onRestore()}
                             title="นำแผนอาหารล่าสุดนี้กลับมาใช้ใหม่"
                         >
                             <RotateCcw size={20} />
@@ -106,7 +106,6 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
         <div className="home-meal-plan-card" style={{ marginBottom: 0 }}>
             <div className="home-meal-card-header">
                 <div>
-                    {/* 🌟 เปลี่ยนกลับมาเป็นข้อความธรรมดาตรงนี้ครับ */}
                     <h2 className="home-meal-card-title">แผนอาหารโปรดของฉัน</h2>
                     <p className="home-meal-card-subtitle">แผนอาหารที่คุณกดใจเก็บไว้</p>
                 </div>
@@ -201,13 +200,10 @@ function HomePage({ user, calcResult, formData }) {
     useEffect(() => {
         const interval = setInterval(() => setCurrentSlide(prev => (prev + 1) % 2), 3000);
 
-        const activeCalc = JSON.parse(
-            sessionStorage.getItem("activeCalcResult")
-        );
-
-        if (activeCalc) {
-            setSavedResult(activeCalc);
-        }
+        // อ่านจาก sessionStorage เท่านั้น
+        // ปิดแท็บแล้วเปิดใหม่ → sessionStorage หาย → ไม่โชว์จนกว่ากดเสร็จสิ้นใหม่
+        const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+        if (activeCalc) setSavedResult(activeCalc);
 
         return () => clearInterval(interval);
     }, []);
@@ -224,20 +220,19 @@ function HomePage({ user, calcResult, formData }) {
     useEffect(() => {
 
         if (!user) {
-
             setLatestPlan(null);
             setFavoriteFoods([]);
             setFavoritePlans([]);
             setSavedResult(null);
-
             return;
         }
 
+        // user login แล้ว → ล้าง savedResult ของ guest ออก ใช้ calcResult prop จาก DB แทน
+        setSavedResult(null);
         fetchData();
 
     }, [user]);
 
-    // กู้คืนจากรายการโปรด
     const handleRestoreFavoritePlan = async (plan) => {
         if (!window.confirm("ต้องการนำแผนนี้จากรายการโปรดมาใช้ใหม่ใช่หรือไม่?")) return;
 
@@ -265,7 +260,6 @@ function HomePage({ user, calcResult, formData }) {
         }
     };
 
-    // กู้คืนจากแผนล่าสุด
     const handleRestoreLatestPlan = async (plan) => {
         if (!window.confirm("ต้องการกู้คืนแผนล่าสุดจากเมื่อวานมาใช้ใหม่ใช่หรือไม่?")) return;
 
@@ -298,6 +292,9 @@ function HomePage({ user, calcResult, formData }) {
         setFavoriteFoods(prev => prev.filter(f => f.favorite_id !== id));
     };
 
+    // calcResult (จาก App.js state) มาก่อน savedResult เสมอ
+    // สมาชิก → calcResult = ข้อมูลจาก DB
+    // guest ในเซสชันปัจจุบัน → savedResult = sessionStorage
     const result = calcResult || savedResult;
 
     return (
@@ -336,7 +333,6 @@ function HomePage({ user, calcResult, formData }) {
                     </div>
                 )}
 
-                {/* 1. แผนอาหารล่าสุดของฉัน */}
                 {latestPlan && (
                     <MealPlanCard
                         title="แผนอาหารล่าสุดของฉัน"
@@ -347,7 +343,6 @@ function HomePage({ user, calcResult, formData }) {
                     />
                 )}
 
-                {/* 2. รายการอาหารโปรด (ปรับปรุงใหม่) */}
                 {favoriteFoods.length > 0 && (
                     <div className="home-favorite-section">
                         <div className="home-favorite-header">
@@ -365,7 +360,7 @@ function HomePage({ user, calcResult, formData }) {
                         <div className="favorite-foods-wrapper">
                             <div className="favorite-foods-scroll-container">
                                 {favoriteFoods.map((food) => (
-                                    <div key={food.favorite_id} className="food-slide"> {/* ใช้คลาส food-slide */}
+                                    <div key={food.favorite_id} className="food-slide">
                                         <div className="home-favorite-card">
                                             <div className="home-favorite-image-wrapper">
                                                 <img
@@ -377,7 +372,6 @@ function HomePage({ user, calcResult, formData }) {
                                                     alt={food.food_name}
                                                     className="home-favorite-image"
                                                 />
-                                                {/* <button className="home-favorite-heart" onClick={() => handleRemoveFavoriteFood(food.favorite_id)}> */}
                                                 <button className="home-favorite-heart" style={{ cursor: 'default' }}>
                                                     <FaHeart />
                                                 </button>
@@ -386,7 +380,6 @@ function HomePage({ user, calcResult, formData }) {
                                                 <h3>{food.food_name}</h3>
                                                 <p>{Math.round(food.calories)} kcal</p>
                                             </div>
-
                                         </div>
                                     </div>
                                 ))}
@@ -395,7 +388,6 @@ function HomePage({ user, calcResult, formData }) {
                     </div>
                 )}
 
-                {/* 🌟 3. แผนอาหารรายการโปรด (แบบเลื่อนซ้าย-ขวา) */}
                 {favoritePlans && favoritePlans.length > 0 && (
                     <div className="favorite-plans-wrapper">
                         <div className="favorite-plans-scroll-container">
