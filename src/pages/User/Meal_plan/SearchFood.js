@@ -33,7 +33,6 @@ function SearchFood() {
   const [quantity, setQuantity] = useState(1);
   const [favFoodIds, setFavFoodIds] = useState([]);
 
-  // state สำหรับ modal แจ้งเตือน login
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -355,32 +354,34 @@ function SearchFood() {
               className="sf-modal-content sf-detail-modal"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* ปุ่ม bookmark — ใช้ class ตาม CSS */}
               <button
-                className="sf-modal-fav-btn"
+                className="sf-bookmark-btn"
                 onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
               >
                 {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
               </button>
 
-              <div className="sf-modal-left">
+              {/* ===== LEFT ===== */}
+              <div className="sf-detail-left">
                 <img
                   src={selectedFood.image?.startsWith("http") ? selectedFood.image : `http://localhost:5000${selectedFood.image}`}
                   alt={selectedFood.food_name}
-                  className="sf-modal-image"
+                  className="sf-detail-image"
                 />
 
                 {selectedFood.description && selectedFood.description.trim() !== "" && (
-                  <div className="sf-modal-section">
+                  <div className="sf-detail-section">
                     <h4>รายละเอียดอาหาร</h4>
-                    <div className="sf-detail-box">{selectedFood.description}</div>
+                    <div className="sf-detail-description">{selectedFood.description}</div>
                   </div>
                 )}
 
                 {recipeSections.length > 0 && (
-                  <div className="sf-modal-section">
+                  <div className="sf-detail-section">
                     <h4>ส่วนผสม / วิธีทำ</h4>
                     {recipeSections.map((section, sIdx) => (
-                      <div key={sIdx} className="sf-recipe-section">
+                      <div key={sIdx} className="sf-recipe-section-block">
                         {section.section_name && section.section_name.trim() !== "" && (
                           <p className="sf-recipe-section-name">{section.section_name}</p>
                         )}
@@ -390,7 +391,7 @@ function SearchFood() {
                               <p className="sf-recipe-block-title">{block.block_title}</p>
                             )}
                             {block.content && block.content.trim() !== "" && (
-                              <div className="sf-detail-box">{block.content}</div>
+                              <div className="sf-detail-description">{block.content}</div>
                             )}
                           </div>
                         ))}
@@ -400,17 +401,18 @@ function SearchFood() {
                 )}
 
                 {selectedFood.notes && selectedFood.notes.trim() !== "" && (
-                  <div className="sf-modal-section">
+                  <div className="sf-detail-section">
                     <h4>หมายเหตุ</h4>
-                    <div className="sf-detail-box sf-note-box">{selectedFood.notes}</div>
+                    <div className="sf-detail-note">{selectedFood.notes}</div>
                   </div>
                 )}
               </div>
 
-              <div className="sf-modal-right">
-                <h3 className="sf-modal-title">{selectedFood.food_name}</h3>
+              {/* ===== RIGHT ===== */}
+              <div className="sf-detail-right">
+                <h3 className="sf-detail-title">{selectedFood.food_name}</h3>
 
-                <div className="sf-modal-section">
+                <div className="sf-detail-section">
                   <h4>คุณค่าทางโภชนาการ</h4>
                   <div className="sf-nutrition-grid">
                     <div className="sf-nutrition-card calorie">
