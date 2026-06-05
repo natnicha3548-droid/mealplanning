@@ -4,7 +4,6 @@
 }
 
 /* ================= PAGE ================= */
-
 .menu-page {
     max-width: 1400px;
     min-height: 100vh;
@@ -18,6 +17,7 @@
         opacity: 0;
         transform: translateY(15px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -25,7 +25,6 @@
 }
 
 /* ================= HEADER ================= */
-
 .menu-header {
     display: flex;
     justify-content: space-between;
@@ -48,16 +47,11 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background:
-        linear-gradient(135deg,
-            #fff1e5,
-            #ffe7d6);
-
+    background: linear-gradient(135deg, #fff1e5, #ffe7d6);
     color: #ff8c42;
     font-size: 2rem;
     border: 1px solid #ffe0cd;
-    box-shadow:
-        0 8px 20px rgba(255, 140, 66, 0.12);
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
     flex-shrink: 0;
 }
 
@@ -76,7 +70,6 @@
 }
 
 /* ================= SEARCH ================= */
-
 .search-wrapper {
     display: flex;
     align-items: center;
@@ -100,14 +93,12 @@
     font-size: 1rem;
     font-family: 'Kanit', sans-serif;
     color: #333;
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
     transition: 0.25s;
 }
 
 .search-box input:focus {
-    box-shadow:
-        0 8px 25px rgba(255, 140, 66, 0.18);
+    box-shadow: 0 8px 25px rgba(255, 140, 66, 0.18);
 }
 
 .search-icon {
@@ -120,7 +111,6 @@
 }
 
 /* ================= MY PLATE BUTTON ================= */
-
 .plate-icon-btn {
     width: 58px;
     height: 58px;
@@ -129,24 +119,17 @@
     justify-content: center;
     align-items: center;
     border-radius: 18px;
-    background:
-        linear-gradient(135deg,
-            #ff9b54,
-            #ff7b2c);
+    background: linear-gradient(135deg, #ff9b54, #ff7b2c);
     color: white;
     font-size: 1.35rem;
     text-decoration: none;
-    box-shadow:
-        0 10px 22px rgba(255, 140, 66, 0.22);
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    box-shadow: 0 10px 22px rgba(255, 140, 66, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .plate-icon-btn:hover {
     transform: translateY(-2px);
-    box-shadow:
-        0 14px 28px rgba(255, 140, 66, 0.3);
+    box-shadow: 0 14px 28px rgba(255, 140, 66, 0.3);
 }
 
 .plate-icon-btn svg {
@@ -154,7 +137,6 @@
 }
 
 /* ================= CATEGORY ================= */
-
 .category-tabs {
     display: flex;
     gap: 14px;
@@ -169,10 +151,10 @@
 }
 
 .category-tabs button {
-    display: flex;             /* เพิ่มบรรทัดนี้ */
-    align-items: center;       /* จัดไอคอนให้อยู่แนวกลางในแนวตั้ง */
-    justify-content: center;   /* จัดให้อยู่กึ่งกลางแนวนอน */
-    gap: 8px;                  /* เว้นระยะห่างระหว่างไอคอนกับข้อความ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     border: 1px solid #ececec;
     outline: none;
     padding: 12px 26px;
@@ -187,15 +169,14 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
     transition: 0.2s;
 }
-/* เพิ่มสไตล์สำหรับไอคอนภายในปุ่ม */
+
 .category-tabs button svg {
-    color: #ff5a5f;            /* สีชมพูสำหรับหัวใจ */
+    color: #ff5a5f;
     transition: color 0.2s;
 }
 
-/* ปรับสีไอคอนให้เป็นสีขาวเมื่อปุ่มถูกกด (Active) */
 .category-tabs button.active svg {
-    color: white;              /* หัวใจจะเปลี่ยนเป็นสีขาวเมื่อปุ่มเป็นสีส้ม */
+    color: white;
 }
 
 .category-tabs button:hover {
@@ -204,19 +185,13 @@
 }
 
 .category-tabs button.active {
-    background:
-        linear-gradient(135deg,
-            #ff9b54,
-            #ff7b2c);
-
+    background: linear-gradient(135deg, #ff9b54, #ff7b2c);
     color: white;
     border-color: transparent;
-    box-shadow:
-        0 8px 20px rgba(255, 140, 66, 0.22);
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
 }
 
 /* ================= GRID ================= */
-
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -224,7 +199,6 @@
 }
 
 /* ================= CARD ================= */
-
 .food-card {
     background: white;
     border-radius: 20px;
@@ -239,8 +213,6 @@
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
-
-/* ================= IMAGE ================= */
 
 .food-img-wrapper {
     width: 100%;
@@ -260,7 +232,6 @@
 }
 
 /* ================= FAVORITE ================= */
-
 .fav-btn {
     position: absolute;
     top: 14px;
@@ -277,19 +248,15 @@
     z-index: 100;
     color: #ff5a5f;
     font-size: 1rem;
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.08);
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .fav-btn:hover {
     transform: scale(1.08);
 }
 
-/* ================= INFO ================= */
-
+/* ================= FOOD INFO ================= */
 .food-info {
     padding: 15px;
 }
@@ -312,7 +279,6 @@
 }
 
 /* ================= EMPTY ================= */
-
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -322,8 +288,7 @@
     border-radius: 20px;
 }
 
-/* ================= MODAL ================= */
-
+/* ================= MODAL OVERLAY ================= */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -353,12 +318,10 @@
     position: relative;
     overflow: hidden;
     margin: auto;
-    box-shadow:
-        0 25px 60px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
 }
 
 /* ================= BOOKMARK ================= */
-
 .bookmark-btn {
     position: absolute;
     top: 18px;
@@ -372,8 +335,7 @@
     font-size: 1.2rem;
     cursor: pointer;
     z-index: 50;
-    box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
     transition: 0.2s ease;
 }
 
@@ -381,8 +343,7 @@
     transform: scale(1.05);
 }
 
-/* ================= LEFT RIGHT ================= */
-
+/* ================= LEFT / RIGHT ================= */
 .food-modal-left,
 .food-modal-right {
     padding: 30px;
@@ -393,8 +354,6 @@
     overflow-y: auto;
 }
 
-/* ================= IMAGE ================= */
-
 .food-modal-image {
     width: 100%;
     height: 320px;
@@ -402,8 +361,6 @@
     border-radius: 24px;
     margin-bottom: 24px;
 }
-
-/* ================= TITLE ================= */
 
 .food-modal-right h2 {
     margin: 0 0 18px;
@@ -414,47 +371,81 @@
 }
 
 /* ================= SECTION ================= */
-
 .food-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .food-section h4 {
-    margin-bottom: 12px;
-    font-size: 1.35rem;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #2d1b12;
 }
 
 /* ================= BOX ================= */
-
 .food-box {
     background: #f8f3f0;
-    border-radius: 20px;
-    padding: 20px;
-    line-height: 1.8;
-    color: #444;
-    font-size: 1rem;
+    border-radius: 16px;
+    padding: 16px 18px;
+    line-height: 1.75;
+    color: #555;
+    font-size: 0.95rem;
 }
 
 .detail-text {
     white-space: pre-line;
 }
 
-/* ================= NUTRITION GRID ================= */
+/* กล่องหมายเหตุ */
+.food-box--note {
+    background: #f9f5f2;
+    border-left: 4px solid #ffb98a;
+    border-radius: 0 14px 14px 0;
+    font-style: italic;
+    color: #8c7b70;
+    font-size: 0.9rem;
+}
 
+/* ================= RECIPE SECTIONS (จาก recipe_details) ================= */
+.recipe-section-block {
+    margin-bottom: 16px;
+}
+
+.recipe-section-name {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ff7b2c;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #ffe0cd;
+}
+
+.recipe-block {
+    margin-bottom: 10px;
+}
+
+.recipe-block-title {
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2d1b12;
+}
+
+.recipe-block-content {
+    margin-top: 0;
+}
+
+/* ================= NUTRITION GRID ================= */
 .nutrition-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-top: 15px;
+    gap: 10px;
+    margin-top: 12px;
 }
 
-/* ================= CARD BASE ================= */
-
 .nutri-card {
-    padding: 14px;
-    border-radius: 16px;
+    padding: 12px 8px;
+    border-radius: 14px;
     text-align: center;
     font-weight: 500;
     transition: all 0.25s ease;
@@ -464,63 +455,48 @@
     transform: translateY(-3px);
 }
 
-/* ================= CALORIE CARD ================= */
-
 .nutri-card.calorie {
     grid-column: 1 / -1;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    background: linear-gradient(135deg,
-            #fff4e6,
-            #ffe0c2);
-
+    background: linear-gradient(135deg, #fff4e6, #ffe0c2);
     color: #ff6b00;
-
     border: 1px solid #ffc38a;
-
-    padding: 18px;
+    padding: 16px;
 }
 
 .nutri-card.calorie .nutri-icon {
-    font-size: 28px;
+    font-size: 26px;
     color: #ff6b00;
 }
 
 .nutri-card.calorie .nutri-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    margin-top: 6px;
+    margin-top: 5px;
 }
 
 .nutri-card.calorie span {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
 }
 
-/* ================= ICON ================= */
-
 .nutri-icon {
-    font-size: 18px;
-    margin-bottom: 6px;
+    font-size: 16px;
+    margin-bottom: 5px;
 }
 
-/* ================= TEXT ================= */
-
 .nutri-label {
-    font-size: 13px;
-    margin: 4px 0;
+    font-size: 12px;
+    margin: 3px 0;
 }
 
 .nutri-card span {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
 }
-
-/* ================= COLORS ================= */
 
 .nutri-card.carb {
     background: #fff3e0;
@@ -547,57 +523,25 @@
     color: #1e88e5;
 }
 
-/* ================= BUTTON ================= */
-
-.add-btn {
-    width: 100%;
-    height: 58px;
-    border: none;
-    border-radius: 18px;
-    background:
-        linear-gradient(135deg,
-            #ff9b54,
-            #ff6b1a);
-
-    color: white;
-    font-family: 'Kanit', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 16px;
-    transition: 0.25s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.add-btn:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 10px 24px rgba(255, 123, 44, 0.25);
-}
-
 /* ================= MEAL BUTTONS ================= */
-
 .meal-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 12px;
     margin-top: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .meal-buttons button {
     flex: 1;
-    min-width: 90px;
-    height: 46px;
+    min-width: 80px;
+    height: 44px;
     border-radius: 999px;
     border: 2px solid #ff7b2c;
     background: white;
     color: #ff7b2c;
     font-family: 'Kanit', sans-serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
@@ -608,25 +552,20 @@
 }
 
 .meal-buttons button.active {
-    background:
-        linear-gradient(135deg,
-            #ff9b54,
-            #ff6b1a);
-
+    background: linear-gradient(135deg, #ff9b54, #ff6b1a);
     color: white;
     border-color: transparent;
 }
 
 /* ================= QUANTITY ================= */
-
 .quantity-section {
-    margin-top: 10px;
-    margin-bottom: 24px;
+    margin-top: 8px;
+    margin-bottom: 20px;
 }
 
 .quantity-section h4 {
-    margin-bottom: 14px;
-    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #2d1b12;
 }
@@ -638,10 +577,10 @@
 }
 
 .quantity-btn {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     background: #fff5ef;
     color: #ff7b2c;
     font-size: 1.1rem;
@@ -663,8 +602,31 @@
     color: #2d1b12;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ================= ADD BUTTON ================= */
+.add-btn {
+    width: 100%;
+    height: 54px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff9b54, #ff6b1a);
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: 0.25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(255, 123, 44, 0.25);
+}
+
+/* ================= RESPONSIVE ================= */
 @media (max-width: 1200px) {
     .food-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -686,7 +648,7 @@
     }
 
     .food-modal-image {
-        height: 280px;
+        height: 260px;
     }
 }
 
@@ -697,7 +659,6 @@
 
     .menu-header {
         flex-direction: column;
-
         align-items: flex-start;
     }
 
@@ -710,18 +671,21 @@
     }
 
     .nutrition-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nutri-card.calorie {
+        grid-column: 1 / -1;
     }
 
     .food-modal-right h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .food-modal-image {
-        height: 240px;
+        height: 230px;
     }
 }
-
 
 @media (max-width: 480px) {
     .menu-page {
@@ -742,21 +706,20 @@
     }
 
     .food-modal-right h2 {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
     }
 
     .food-modal-image {
         height: 210px;
-
         border-radius: 18px;
     }
 
-    .nutrition-grid div {
-        min-height: 100px;
+    .nutrition-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .nutrition-grid strong {
-        font-size: 1.5rem;
+    .nutri-card.calorie {
+        grid-column: 1 / -1;
     }
 
     .bookmark-btn {

@@ -29,8 +29,8 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
                     <span className="home-total-label">รวมทั้งหมด</span>
                     <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
                     {showRestoreBtn && (
-                        <button 
-                            className="home-restore-plan-btn" 
+                        <button
+                            className="home-restore-plan-btn"
                             onClick={() => onRestore()} // 🌟 ตรงนี้เปลี่ยนเป็น () => onRestore() 
                             title="นำแผนอาหารล่าสุดนี้กลับมาใช้ใหม่"
                         >
@@ -43,11 +43,11 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
             {['breakfast', 'lunch', 'dinner'].map((type) => {
                 const meals = getMeals(planData[type]);
                 if (meals.length === 0) return null;
-                
-                const icons = { 
-                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />, 
-                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />, 
-                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} /> 
+
+                const icons = {
+                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />,
+                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />,
+                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} />
                 };
                 const labels = { breakfast: "มื้อเช้า", lunch: "มื้อกลางวัน", dinner: "มื้อเย็น" };
 
@@ -61,11 +61,18 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
                                 {labels[type]}
                             </span>
                         </div>
-                        
+
                         <div className="home-meal-items-container">
                             {meals.map((item, idx) => (
                                 <div className="home-meal-food-row" key={idx}>
-                                    <img src={item.image || item.breakfast_image || item.lunch_image || item.dinner_image} alt={item.name} className="home-meal-img" />
+                                    <img
+                                        src={(() => {
+                                            const raw = item.image || item.breakfast_image || item.lunch_image || item.dinner_image;
+                                            return raw?.startsWith("http") ? raw : `http://localhost:5000${raw}`;
+                                        })()}
+                                        alt={item.name}
+                                        className="home-meal-img"
+                                    />
                                     <div className="home-meal-details">
                                         <h3>{item.name || item.breakfast_name || item.lunch_name || item.dinner_name}</h3>
                                         <span className="home-portion-badge">{item.serving_size || "1 ส่วน"}</span>
@@ -103,21 +110,21 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
                     <h2 className="home-meal-card-title">แผนอาหารโปรดของฉัน</h2>
                     <p className="home-meal-card-subtitle">แผนอาหารที่คุณกดใจเก็บไว้</p>
                 </div>
-                
+
                 <div className="home-meal-card-kcal">
                     <span className="home-total-label">รวมทั้งหมด</span>
                     <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
-                    
+
                     <div style={{ display: 'flex', gap: '12px', marginLeft: '10px' }}>
-                        <button 
-                            className="home-restore-plan-btn" 
-                            onClick={() => onRestore(planData.plan_date)} 
+                        <button
+                            className="home-restore-plan-btn"
+                            onClick={() => onRestore(planData.plan_date)}
                             title="นำแผนอาหารโปรดนี้กลับมาใช้ใหม่"
                         >
                             <RotateCcw size={20} />
                         </button>
 
-                        <div 
+                        <div
                             className="home-favorite-plan-icon"
                             title="แผนอาหารรายการโปรด"
                         >
@@ -130,11 +137,11 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
             {['breakfast', 'lunch', 'dinner'].map((type) => {
                 const meals = getMeals(planData[type]);
                 if (meals.length === 0) return null;
-                
-                const icons = { 
-                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />, 
-                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />, 
-                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} /> 
+
+                const icons = {
+                    breakfast: <FaSun size={26} color={themeStyles.breakfast.color} />,
+                    lunch: <FaCloudSun size={26} color={themeStyles.lunch.color} />,
+                    dinner: <FaMoon size={24} color={themeStyles.dinner.color} />
                 };
                 const labels = { breakfast: "มื้อเช้า", lunch: "มื้อกลางวัน", dinner: "มื้อเย็น" };
 
@@ -148,11 +155,18 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
                                 {labels[type]}
                             </span>
                         </div>
-                        
+
                         <div className="home-meal-items-container">
                             {meals.map((item, idx) => (
                                 <div className="home-meal-food-row" key={idx}>
-                                    <img src={item.image || item.breakfast_image || item.lunch_image || item.dinner_image} alt={item.name} className="home-meal-img" />
+                                    <img
+                                        src={(() => {
+                                            const raw = item.image || item.breakfast_image || item.lunch_image || item.dinner_image;
+                                            return raw?.startsWith("http") ? raw : `http://localhost:5000${raw}`;
+                                        })()}
+                                        alt={item.name}
+                                        className="home-meal-img"
+                                    />
                                     <div className="home-meal-details">
                                         <h3>{item.name || item.breakfast_name || item.lunch_name || item.dinner_name}</h3>
                                         <span className="home-portion-badge">{item.serving_size || "1 ส่วน"}</span>
@@ -201,7 +215,7 @@ function HomePage({ user, calcResult, formData }) {
     const fetchData = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) return;
-        
+
         fetch(`http://localhost:5000/api/latest-meal-plan/${user.user_id}`).then(res => res.json()).then(setLatestPlan).catch(console.log);
         fetch(`http://localhost:5000/api/favorite-foods/${user.user_id}`).then(res => res.json()).then(setFavoriteFoods).catch(console.log);
         fetch(`http://localhost:5000/api/favorite-plans/${user.user_id}`).then(res => res.json()).then(setFavoritePlans).catch(console.log);
@@ -226,20 +240,20 @@ function HomePage({ user, calcResult, formData }) {
     // กู้คืนจากรายการโปรด
     const handleRestoreFavoritePlan = async (plan) => {
         if (!window.confirm("ต้องการนำแผนนี้จากรายการโปรดมาใช้ใหม่ใช่หรือไม่?")) return;
-        
+
         setIsLoading(true);
         try {
             const user = JSON.parse(localStorage.getItem('user'));
             const res = await fetch('http://localhost:5000/api/restore-from-favorite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    userId: user?.user_id || 1, 
-                    planId: plan.plan_id, 
-                    targetDate: new Date().toISOString().split('T')[0] 
+                body: JSON.stringify({
+                    userId: user?.user_id || 1,
+                    planId: plan.plan_id,
+                    targetDate: new Date().toISOString().split('T')[0]
                 })
             });
-            
+
             if (res.ok) {
                 alert("กู้แผนจากรายการโปรดสำเร็จ!");
                 navigate("/meal-plan");
@@ -254,17 +268,17 @@ function HomePage({ user, calcResult, formData }) {
     // กู้คืนจากแผนล่าสุด
     const handleRestoreLatestPlan = async (plan) => {
         if (!window.confirm("ต้องการกู้คืนแผนล่าสุดจากเมื่อวานมาใช้ใหม่ใช่หรือไม่?")) return;
-        
+
         setIsLoading(true);
         try {
             const user = JSON.parse(localStorage.getItem('user'));
             const res = await fetch('http://localhost:5000/api/restore-latest-plan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    userId: user?.user_id || 1, 
-                    planId: plan.plan_id, 
-                    targetDate: new Date().toISOString().split('T')[0] 
+                body: JSON.stringify({
+                    userId: user?.user_id || 1,
+                    planId: plan.plan_id,
+                    targetDate: new Date().toISOString().split('T')[0]
                 })
             });
 
@@ -291,7 +305,7 @@ function HomePage({ user, calcResult, formData }) {
             <div className="slideshow">
                 <img src={currentSlide === 0 ? slide1 : slide2} alt="slide" className="slide-img" />
             </div>
-            
+
             <div className="main-container">
                 <div className="quick-actions">
                     <Link to="/calculate" state={{ formData }} className="quick-card">
@@ -324,15 +338,15 @@ function HomePage({ user, calcResult, formData }) {
 
                 {/* 1. แผนอาหารล่าสุดของฉัน */}
                 {latestPlan && (
-                    <MealPlanCard 
-                        title="แผนอาหารล่าสุดของฉัน" 
-                        subtitle="แผนอาหารที่คุณใช้เมื่อวานนี้" 
-                        planData={latestPlan} 
-                        showRestoreBtn={true} 
-                        onRestore={() => handleRestoreLatestPlan(latestPlan)} 
+                    <MealPlanCard
+                        title="แผนอาหารล่าสุดของฉัน"
+                        subtitle="แผนอาหารที่คุณใช้เมื่อวานนี้"
+                        planData={latestPlan}
+                        showRestoreBtn={true}
+                        onRestore={() => handleRestoreLatestPlan(latestPlan)}
                     />
                 )}
-                
+
                 {/* 2. รายการอาหารโปรด (ปรับปรุงใหม่) */}
                 {favoriteFoods.length > 0 && (
                     <div className="home-favorite-section">
@@ -341,14 +355,14 @@ function HomePage({ user, calcResult, formData }) {
                                 <h2 className="home-favorite-title">เมนูโปรดของฉัน</h2>
                                 <p className="home-favorite-subtitle">เมนูอาหารที่คุณชื่นชอบและกดใจไว้</p>
                             </div>
-                            <button 
-                            className="home-view-more-text-btn"
-                            onClick={() => navigate("/favourite-food", { state: { tab: "foods" } })}
+                            <button
+                                className="home-view-more-text-btn"
+                                onClick={() => navigate("/favourite-food", { state: { tab: "foods" } })}
                             >
                                 ดูเพิ่มเติม <FaChevronRight size={12} />
                             </button>
                         </div>
-                        <div className="favorite-foods-wrapper"> 
+                        <div className="favorite-foods-wrapper">
                             <div className="favorite-foods-scroll-container">
                                 {favoriteFoods.map((food) => (
                                     <div key={food.favorite_id} className="food-slide"> {/* ใช้คลาส food-slide */}
@@ -372,14 +386,14 @@ function HomePage({ user, calcResult, formData }) {
                                                 <h3>{food.food_name}</h3>
                                                 <p>{Math.round(food.calories)} kcal</p>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
-                )} 
+                )}
 
                 {/* 🌟 3. แผนอาหารรายการโปรด (แบบเลื่อนซ้าย-ขวา) */}
                 {favoritePlans && favoritePlans.length > 0 && (
@@ -387,9 +401,9 @@ function HomePage({ user, calcResult, formData }) {
                         <div className="favorite-plans-scroll-container">
                             {favoritePlans.map(plan => (
                                 <div className="favorite-plan-slide" key={plan.plan_id}>
-                                    <FavoritePlanCard 
-                                        planData={plan} 
-                                        onRestore={() => handleRestoreFavoritePlan(plan)} 
+                                    <FavoritePlanCard
+                                        planData={plan}
+                                        onRestore={() => handleRestoreFavoritePlan(plan)}
                                     />
                                 </div>
                             ))}

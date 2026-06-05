@@ -115,9 +115,16 @@ function Calc() {
         );
 
         if (activeCalc) {
-
             setResult(activeCalc);
-
+            // ✅ fill form จาก activeCalc ด้วย ถ้า userData ยังไม่มีค่า
+            setForm(prev => ({
+                weight: prev.weight || String(activeCalc.weight || ""),
+                height: prev.height || String(activeCalc.height || ""),
+                age: prev.age || String(activeCalc.age || ""),
+                gender: prev.gender || activeCalc.gender || "",
+                activity: prev.activity || String(activeCalc.activity || ""),
+                diseases: prev.diseases.length > 0 ? prev.diseases : (activeCalc.diseases || [])
+            }));
             return;
         }
 
