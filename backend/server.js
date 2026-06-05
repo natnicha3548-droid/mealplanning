@@ -2157,13 +2157,16 @@ app.post(
                 carbohydrates,
                 sugar,
                 sodium,
-                description
+                description,
+                recipe_details, // 🌟 เพิ่มบรรทัดนี้
+                notes           // 🌟 เพิ่มบรรทัดนี้
             } = req.body;
 
             const image = req.file
                 ? `/uploads/${req.file.filename}`
                 : null;
 
+            // 🌟 แก้ไข SQL ให้เพิ่มคอลัมน์ recipe_details และ notes
             const sql = `
                 INSERT INTO food
                 (
@@ -2177,9 +2180,11 @@ app.post(
                     sugar,
                     sodium,
                     description,
+                    recipe_details,
+                    notes,
                     image
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             db.query(
@@ -2195,6 +2200,8 @@ app.post(
                     sugar,
                     sodium,
                     description,
+                    recipe_details, // 🌟 เพิ่มตัวแปรนี้
+                    notes,          // 🌟 เพิ่มตัวแปรนี้
                     image
                 ],
                 (err, result) => {
@@ -2300,7 +2307,9 @@ app.put(
                 carbohydrates,
                 sugar,
                 sodium,
-                description
+                description,
+                recipe_details, // 🌟 เพิ่มบรรทัดนี้
+                notes           // 🌟 เพิ่มบรรทัดนี้
             } = req.body;
 
             console.log("CALORIES =", calories);
@@ -2336,6 +2345,7 @@ app.put(
 
             }
 
+            // 🌟 แก้ไข SQL ให้ UPDATE คอลัมน์ recipe_details และ notes ด้วย
             await db.promise().query(
                 `
                 UPDATE food
@@ -2350,6 +2360,8 @@ app.put(
                     sugar = ?,
                     sodium = ?,
                     description = ?,
+                    recipe_details = ?,
+                    notes = ?,
                     image = ?
                 WHERE food_id = ?
                 `,
@@ -2364,6 +2376,8 @@ app.put(
                     sugar,
                     sodium,
                     description,
+                    recipe_details, // 🌟 เพิ่มตัวแปรนี้
+                    notes,          // 🌟 เพิ่มตัวแปรนี้
                     image,
                     foodId
                 ]
@@ -2587,7 +2601,7 @@ app.put("/api/categories/:id", async (req, res) => {
 
         // ส่งผลลัพธ์กลับ
         res.json({
-            success: true
+            success: true,
         });
 
     } catch (error) {
