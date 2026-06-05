@@ -31,7 +31,9 @@ function EditFood() {
     const [preview, setPreview] = useState("");
     const [fileName, setFileName] = useState("");
 
-    // เพิ่ม notes ลงไปใน State
+    // โหลด categories จาก API
+    const [categories, setCategories] = useState([]);
+
     const [formData, setFormData] = useState({
         food_name: "",
         category_id: "",
@@ -46,13 +48,27 @@ function EditFood() {
         notes: ""
     });
 
-    // State สำหรับกล่องข้อมูลย่อย (Dynamic Boxes)
     const [recipeSections, setRecipeSections] = useState([
         {
             section_name: "",
             blocks: [{ block_title: "", content: "" }]
         }
     ]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch("http://localhost:5000/api/categories");
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    setCategories(data.filter((c) => c.status === "active"));
+                }
+            } catch (err) {
+                console.error("Error fetching categories:", err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -84,10 +100,10 @@ function EditFood() {
 
                 if (food.recipe_details) {
                     try {
-                        const parsedDetails = typeof food.recipe_details === "string" 
-                            ? JSON.parse(food.recipe_details) 
+                        const parsedDetails = typeof food.recipe_details === "string"
+                            ? JSON.parse(food.recipe_details)
                             : food.recipe_details;
-                        
+
                         if (parsedDetails && parsedDetails.length > 0) {
                             setRecipeSections(parsedDetails);
                         }
@@ -256,6 +272,7 @@ function EditFood() {
                     />
                 </div>
 
+                {/* หมวดหมู่ — โหลดจาก API */}
                 <div className="edit-form-group">
                     <label>หมวดหมู่</label>
                     <select
@@ -265,8 +282,11 @@ function EditFood() {
                         required
                     >
                         <option value="">เลือกหมวดหมู่</option>
-                        <option value="1">ของคาว</option>
-                        <option value="2">ของหวาน</option>
+                        {categories.map((cat) => (
+                            <option key={cat.category_id} value={String(cat.category_id)}>
+                                {cat.category_name}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -319,7 +339,7 @@ function EditFood() {
                         onChange={handleChange}
                         placeholder="อธิบายสั้นๆ เกี่ยวกับอาหาร..."
                     />
-                </div> 
+                </div>
 
                 {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
                 <div className="edit-recipe-details-section">
@@ -343,7 +363,6 @@ function EditFood() {
                                 </button>
                             </div>
 
-                            {/* กล่องย่อย (Blocks) */}
                             {section.blocks.map((block, bIndex) => (
                                 <div key={bIndex} className="edit-dynamic-block">
                                     <div className="edit-dynamic-block-header">

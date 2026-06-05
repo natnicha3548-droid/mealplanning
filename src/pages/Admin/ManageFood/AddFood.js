@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -27,6 +27,9 @@ function AddFood() {
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState("");
 
+  // โหลด categories จาก API
+  const [categories, setCategories] = useState([]);
+
   const [formData, setFormData] = useState({
     food_name: "",
     category_id: "",
@@ -38,15 +41,30 @@ function AddFood() {
     sugar: "",
     sodium: "",
     description: "",
-    notes: "" 
+    notes: ""
   });
 
   const [recipeSections, setRecipeSections] = useState([
     {
-      section_name: "", 
-      blocks: [{ block_title: "", content: "" }] 
+      section_name: "",
+      blocks: [{ block_title: "", content: "" }]
     }
   ]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/categories");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setCategories(data.filter((c) => c.status === "active"));
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -146,7 +164,7 @@ function AddFood() {
 
       {/* Form */}
       <form className="add-food-form" onSubmit={handleSubmit}>
-        
+
         {/* --- ส่วนที่ 1: ข้อมูลพื้นฐาน --- */}
         <div className="add-form-group">
           <label>รูปภาพอาหาร</label>
@@ -191,6 +209,7 @@ function AddFood() {
           />
         </div>
 
+        {/* หมวดหมู่ — โหลดจาก API */}
         <div className="add-form-group">
           <label>หมวดหมู่</label>
           <select
@@ -200,8 +219,11 @@ function AddFood() {
             required
           >
             <option value="">เลือกหมวดหมู่อาหาร</option>
-            <option value="1">ของคาว</option>
-            <option value="2">ของหวาน</option>
+            {categories.map((cat) => (
+              <option key={cat.category_id} value={cat.category_id}>
+                {cat.category_name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -260,71 +282,70 @@ function AddFood() {
 
         {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
         <div className="add-recipe-details-section">
-        <h3>รายละเอียดส่วนผสมและวิธีทำ</h3>
-        
-        {recipeSections.map((section, sIndex) => (
+          <h3>รายละเอียดส่วนผสมและวิธีทำ</h3>
+
+          {recipeSections.map((section, sIndex) => (
             <div key={sIndex} className="add-dynamic-section-card">
-            
-            <div className="add-section-header">
+
+              <div className="add-section-header">
                 <input
-                type="text"
-                placeholder="ชื่อส่วนประกอบหลัก เช่น น้ำจิ้ม, หมูหมัก..."
-                value={section.section_name}
-                onChange={(e) => handleSectionChange(e.target.value, sIndex)}
+                  type="text"
+                  placeholder="ชื่อส่วนประกอบหลัก เช่น น้ำจิ้ม, หมูหมัก..."
+                  value={section.section_name}
+                  onChange={(e) => handleSectionChange(e.target.value, sIndex)}
                 />
                 <button
-                type="button"
-                className="add-delete-section-btn"
-                onClick={() => removeSection(sIndex)}
+                  type="button"
+                  className="add-delete-section-btn"
+                  onClick={() => removeSection(sIndex)}
                 >
-                <FaTrash /> ลบส่วนนี้
+                  <FaTrash /> ลบส่วนนี้
                 </button>
-            </div>
+              </div>
 
-            {/* กล่องย่อย (Blocks) ภายใน Section */}
-            {section.blocks.map((block, bIndex) => (
+              {section.blocks.map((block, bIndex) => (
                 <div key={bIndex} className="add-dynamic-block">
-                <div className="add-dynamic-block-header">
+                  <div className="add-dynamic-block-header">
                     <input
-                    type="text"
-                    placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
-                    value={block.block_title}
-                    onChange={(e) => handleBlockChange("block_title", e.target.value, sIndex, bIndex)}
+                      type="text"
+                      placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
+                      value={block.block_title}
+                      onChange={(e) => handleBlockChange("block_title", e.target.value, sIndex, bIndex)}
                     />
                     <button
-                    type="button"
-                    className="add-delete-block-btn"
-                    onClick={() => removeBlock(sIndex, bIndex)}
+                      type="button"
+                      className="add-delete-block-btn"
+                      onClick={() => removeBlock(sIndex, bIndex)}
                     >
-                    <FaTrash />
+                      <FaTrash />
                     </button>
-                </div>
-                <textarea
+                  </div>
+                  <textarea
                     rows="3"
                     placeholder="รายละเอียด..."
                     value={block.content}
                     onChange={(e) => handleBlockChange("content", e.target.value, sIndex, bIndex)}
-                />
+                  />
                 </div>
-            ))}
+              ))}
 
-            <button
+              <button
                 type="button"
                 className="add-block-btn"
                 onClick={() => addBlock(sIndex)}
-            >
+              >
                 <FaPlusCircle /> เพิ่มหัวข้อย่อยในกลุ่มนี้
-            </button>
+              </button>
             </div>
-        ))}
+          ))}
 
-        <button
+          <button
             type="button"
             className="add-section-btn"
             onClick={addSection}
-        >
+          >
             <FaPlus /> เพิ่มส่วนประกอบหลัก (กล่องใหม่)
-        </button>
+          </button>
         </div>
 
         {/* --- ส่วนที่ 3: หมายเหตุ --- */}

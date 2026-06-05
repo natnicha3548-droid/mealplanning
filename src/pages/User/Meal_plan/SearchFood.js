@@ -25,6 +25,7 @@ function SearchFood() {
   const storageKey = mode === "plan" ? "plan_plate" : "myplate";
 
   const [foods, setFoods] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -32,12 +33,14 @@ function SearchFood() {
   const [quantity, setQuantity] = useState(1);
   const [favFoodIds, setFavFoodIds] = useState([]);
 
+  // state สำหรับ modal แจ้งเตือน login
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const currentUserId = storedUser?.user_id || null;
 
   const formatNumber = (value) => Number(value || 0).toFixed(0);
 
-  // แปลง recipe_details จาก JSON string → array ของ sections
   const parseRecipeDetails = (raw) => {
     if (!raw) return [];
     try {
@@ -53,9 +56,7 @@ function SearchFood() {
           return hasName || hasBlocks;
         });
       }
-    } catch (e) {
-      // ไม่ใช่ JSON ที่ถูกต้อง
-    }
+    } catch (e) { }
     return [];
   };
 
@@ -71,9 +72,18 @@ function SearchFood() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foodRes = await fetch("http://localhost:5000/api/foods");
+        const [foodRes, catRes] = await Promise.all([
+          fetch("http://localhost:5000/api/foods"),
+          fetch("http://localhost:5000/api/categories")
+        ]);
         const foodData = await foodRes.json();
+        const catData = await catRes.json();
         setFoods(foodData);
+        setCategories(
+          Array.isArray(catData)
+            ? catData.filter((c) => c.status === "active")
+            : []
+        );
 
         if (currentUserId) {
           const favRes = await fetch(`http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`);
@@ -94,7 +104,7 @@ function SearchFood() {
   const toggleFavorite = async (e, foodId) => {
     e.stopPropagation();
     if (!storedUser) {
-      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มรายการโปรด");
+      setShowLoginPrompt(true);
       return;
     }
     if (favFoodIds.includes(foodId)) {
@@ -159,6 +169,94 @@ function SearchFood() {
   return (
     <div className="sf-container">
 
+      {/* ================= LOGIN PROMPT MODAL ================= */}
+      {showLoginPrompt && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999
+          }}
+          onClick={() => setShowLoginPrompt(false)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "20px",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
+              padding: "40px 36px",
+              maxWidth: "380px",
+              width: "90%",
+              textAlign: "center"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
+            <h3 style={{
+              fontSize: "1.25rem",
+              fontWeight: "700",
+              color: "#333",
+              marginBottom: "10px"
+            }}>
+              กรุณาเข้าสู่ระบบ
+            </h3>
+            <p style={{
+              color: "#888",
+              fontSize: "0.95rem",
+              marginBottom: "28px",
+              lineHeight: "1.6"
+            }}>
+              คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถเพิ่มรายการโปรดได้
+            </p>
+            <button
+              onClick={() => {
+                setShowLoginPrompt(false);
+                navigate("/auth", { state: { returnTo: location.pathname + location.search } });
+              }}
+              style={{
+                background: "linear-gradient(135deg, #ff9800, #f44336)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                padding: "13px 0",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                width: "100%",
+                marginBottom: "12px",
+                transition: "opacity 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "0.88"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
+            >
+              เข้าสู่ระบบ
+            </button>
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              style={{
+                background: "transparent",
+                color: "#aaa",
+                border: "1.5px solid #e0e0e0",
+                borderRadius: "12px",
+                padding: "11px 0",
+                fontSize: "0.95rem",
+                cursor: "pointer",
+                width: "100%",
+                transition: "border-color 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.borderColor = "#bbb"}
+              onMouseOut={(e) => e.currentTarget.style.borderColor = "#e0e0e0"}
+            >
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* HEADER */}
       <header className="sf-header">
         <button className="sf-back-icon" onClick={() => navigate(-1)}>
@@ -179,7 +277,7 @@ function SearchFood() {
         />
       </div>
 
-      {/* CATEGORY */}
+      {/* CATEGORY TABS — dynamic from API */}
       <div className="sf-category-tabs">
         <button
           className={`sf-tab ${activeCategory === "all" ? "active" : ""}`}
@@ -187,23 +285,22 @@ function SearchFood() {
         >
           ทั้งหมด
         </button>
-        <button
-          className={`sf-tab ${activeCategory === 1 ? "active" : ""}`}
-          onClick={() => setActiveCategory(1)}
-        >
-          ของคาว
-        </button>
-        <button
-          className={`sf-tab ${activeCategory === 2 ? "active" : ""}`}
-          onClick={() => setActiveCategory(2)}
-        >
-          ของหวาน
-        </button>
+
+        {categories.map((cat) => (
+          <button
+            key={cat.category_id}
+            className={`sf-tab ${activeCategory === cat.category_id ? "active" : ""}`}
+            onClick={() => setActiveCategory(cat.category_id)}
+          >
+            {cat.category_name}
+          </button>
+        ))}
+
         <button
           className={`sf-tab ${activeCategory === "fav" ? "active" : ""}`}
           onClick={() => {
             if (!storedUser) {
-              alert("กรุณาเข้าสู่ระบบก่อนดูรายการโปรด");
+              setShowLoginPrompt(true);
               return;
             }
             setActiveCategory("fav");
@@ -258,38 +355,32 @@ function SearchFood() {
               className="sf-modal-content sf-detail-modal"
               onClick={(e) => e.stopPropagation()}
             >
-
               <button
-                className="sf-bookmark-btn"
+                className="sf-modal-fav-btn"
                 onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
               >
                 {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
               </button>
 
-              {/* ===== LEFT ===== */}
-              <div className="sf-detail-left">
+              <div className="sf-modal-left">
                 <img
                   src={selectedFood.image?.startsWith("http") ? selectedFood.image : `http://localhost:5000${selectedFood.image}`}
                   alt={selectedFood.food_name}
-                  className="sf-detail-image"
+                  className="sf-modal-image"
                 />
 
-                {/* คำอธิบายสั้นๆ — แสดงเมื่อมีข้อมูล */}
                 {selectedFood.description && selectedFood.description.trim() !== "" && (
-                  <div className="sf-detail-section">
+                  <div className="sf-modal-section">
                     <h4>รายละเอียดอาหาร</h4>
-                    <div className="sf-detail-description">
-                      {selectedFood.description}
-                    </div>
+                    <div className="sf-detail-box">{selectedFood.description}</div>
                   </div>
                 )}
 
-                {/* recipe_details — ส่วนผสม/วิธีทำ จากแอดมิน */}
                 {recipeSections.length > 0 && (
-                  <div className="sf-detail-section">
+                  <div className="sf-modal-section">
                     <h4>ส่วนผสม / วิธีทำ</h4>
                     {recipeSections.map((section, sIdx) => (
-                      <div key={sIdx} className="sf-recipe-section-block">
+                      <div key={sIdx} className="sf-recipe-section">
                         {section.section_name && section.section_name.trim() !== "" && (
                           <p className="sf-recipe-section-name">{section.section_name}</p>
                         )}
@@ -299,9 +390,7 @@ function SearchFood() {
                               <p className="sf-recipe-block-title">{block.block_title}</p>
                             )}
                             {block.content && block.content.trim() !== "" && (
-                              <div className="sf-detail-description sf-recipe-block-content">
-                                {block.content}
-                              </div>
+                              <div className="sf-detail-box">{block.content}</div>
                             )}
                           </div>
                         ))}
@@ -310,22 +399,18 @@ function SearchFood() {
                   </div>
                 )}
 
-                {/* หมายเหตุ — แสดงเฉพาะถ้ามีข้อมูล */}
                 {selectedFood.notes && selectedFood.notes.trim() !== "" && (
-                  <div className="sf-detail-section">
+                  <div className="sf-modal-section">
                     <h4>หมายเหตุ</h4>
-                    <div className="sf-detail-note">
-                      {selectedFood.notes}
-                    </div>
+                    <div className="sf-detail-box sf-note-box">{selectedFood.notes}</div>
                   </div>
                 )}
               </div>
 
-              {/* ===== RIGHT ===== */}
-              <div className="sf-detail-right">
-                <h2 className="sf-detail-title">{selectedFood.food_name}</h2>
+              <div className="sf-modal-right">
+                <h3 className="sf-modal-title">{selectedFood.food_name}</h3>
 
-                <div className="sf-detail-section">
+                <div className="sf-modal-section">
                   <h4>คุณค่าทางโภชนาการ</h4>
                   <div className="sf-nutrition-grid">
                     <div className="sf-nutrition-card calorie">

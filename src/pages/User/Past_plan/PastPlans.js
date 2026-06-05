@@ -173,7 +173,9 @@ const PastPlans = () => {
             name: item.food_name,
             portion: `${Number(item.quantity)} ${String(item.serving_size).replace('1 ', '')}`,
             cal: Math.round(item.total_calories),
-            img: item.image || 'https://placehold.co/100x70/ffe0b2/ff9800?text=Food'
+            img: item.image
+              ? (item.image.startsWith("http") ? item.image : `http://localhost:5000${item.image}`)
+              : 'https://placehold.co/100x70/ffe0b2/ff9800?text=Food'
           };
         });
         setMealData(formattedData);

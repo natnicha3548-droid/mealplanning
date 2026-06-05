@@ -13,6 +13,7 @@ function MenuFood() {
     const navigate = useNavigate();
 
     const [foods, setFoods] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("all");
@@ -21,7 +22,6 @@ function MenuFood() {
     const [quantity, setQuantity] = useState(1);
     const [favFoodIds, setFavFoodIds] = useState([]);
 
-    // state สำหรับ modal แจ้งเตือน login
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -59,9 +59,18 @@ function MenuFood() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const foodRes = await fetch("http://localhost:5000/api/foods");
+                const [foodRes, catRes] = await Promise.all([
+                    fetch("http://localhost:5000/api/foods"),
+                    fetch("http://localhost:5000/api/categories")
+                ]);
                 const foodData = await foodRes.json();
+                const catData = await catRes.json();
                 setFoods(foodData);
+                setCategories(
+                    Array.isArray(catData)
+                        ? catData.filter((c) => c.status === "active")
+                        : []
+                );
 
                 if (currentUserId) {
                     const favRes = await fetch(`http://localhost:5000/api/favorite-foods?user_id=${currentUserId}`);
@@ -263,7 +272,7 @@ function MenuFood() {
                 </div>
             </div>
 
-            {/* CATEGORY */}
+            {/* CATEGORY TABS — dynamic from API */}
             <div className="category-tabs">
                 <button
                     className={activeCategory === "all" ? "active" : ""}
@@ -271,18 +280,17 @@ function MenuFood() {
                 >
                     ทั้งหมด
                 </button>
-                <button
-                    className={activeCategory === 1 ? "active" : ""}
-                    onClick={() => setActiveCategory(1)}
-                >
-                    ของคาว
-                </button>
-                <button
-                    className={activeCategory === 2 ? "active" : ""}
-                    onClick={() => setActiveCategory(2)}
-                >
-                    ของหวาน
-                </button>
+
+                {categories.map((cat) => (
+                    <button
+                        key={cat.category_id}
+                        className={activeCategory === cat.category_id ? "active" : ""}
+                        onClick={() => setActiveCategory(cat.category_id)}
+                    >
+                        {cat.category_name}
+                    </button>
+                ))}
+
                 <button
                     className={activeCategory === "fav" ? "active" : ""}
                     onClick={() => {
