@@ -319,7 +319,7 @@ function EditFood() {
                         onChange={handleChange}
                         placeholder="อธิบายสั้นๆ เกี่ยวกับอาหาร..."
                     />
-                </div>
+                </div> 
 
                 {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
                 <div className="edit-recipe-details-section">
