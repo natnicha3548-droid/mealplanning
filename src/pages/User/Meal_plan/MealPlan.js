@@ -55,19 +55,19 @@ function MealPlan() {
   const [reviewText, setReviewText] = useState("");
 
   const [goalData, setGoalData] = useState({
-    tdee: 1600, carb: 0, protein: 0, fat: 0, sugar: 25, sodium: 2000  
+    tdee: 1600, carb: 0, protein: 0, fat: 0, sugar: 25, sodium: 2000
   });
 
   const fetchMealPlanFromDB = async (date) => {
     setIsLoading(true);
-    setIsPlanFav(false); 
-    setReviewedStatus({}); 
+    setIsPlanFav(false);
+    setReviewedStatus({});
 
     try {
       const storedUser = localStorage.getItem("user");
       const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
       const response = await fetch(`http://localhost:5000/api/meals?date=${date}&userId=${currentUserId}`);
-      
+
       if (!response.ok) throw new Error("เกิดข้อผิดพลาด");
       const dataFromDB = await response.json();
       setMealPlan(dataFromDB);
@@ -80,7 +80,7 @@ function MealPlan() {
           .then(data => setIsPlanFav(data.isFav))
           .catch(err => console.error("Error fetching favorite status:", err));
 
-        const uniqueFoodIds = [...new Set(dataFromDB.map(m => m.food_id))]; 
+        const uniqueFoodIds = [...new Set(dataFromDB.map(m => m.food_id))];
         uniqueFoodIds.forEach(foodId => {
           fetch(`http://localhost:5000/api/review-status?user_id=${currentUserId}&food_id=${foodId}`)
             .then(res => res.json())
@@ -99,11 +99,11 @@ function MealPlan() {
       setIsLoading(false);
     } catch (error) {
       console.error(error);
-      setMealPlan([]); 
+      setMealPlan([]);
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     sessionStorage.setItem("meal_selectedDay", selectedDay);
   }, [selectedDay]);
@@ -120,7 +120,7 @@ function MealPlan() {
         if (data) {
           setGoalData({
             tdee: data.tdee || 1600, carb: data.carb || 0, protein: data.protein || 0,
-            fat: data.fat || 0, sugar: data.sugar || 25, sodium: data.sodium || 2000   
+            fat: data.fat || 0, sugar: data.sugar || 25, sodium: data.sodium || 2000
           });
         }
       }).catch(err => console.error(err));
@@ -139,15 +139,15 @@ function MealPlan() {
       alert("กรุณาเข้าสู่ระบบก่อนแก้ไขแผนการกิน");
       return;
     }
-    
+
     const draftPlate = mealPlan.map(meal => ({
-      id: meal.meal_detail_id, 
+      id: meal.meal_detail_id,
       food_id: meal.food_id,
       name: meal.food_name,
       image: meal.image,
       calPerUnit: Number(meal.calories),
       qty: Number(meal.quantity),
-      meal_type: meal.meal_type, 
+      meal_type: meal.meal_type,
       macros: {
         carbs: Number(meal.carbohydrates),
         protein: Number(meal.protein),
@@ -157,9 +157,8 @@ function MealPlan() {
       }
     }));
 
-    // 🌟 ใช้ plan_plate แทน myplate
-    localStorage.setItem("plan_plate", JSON.stringify(draftPlate)); 
-    navigate("/MyPlate?mode=plan"); // 🌟 แนบคำว่า mode=plan ไปด้วย
+    localStorage.setItem("plan_plate", JSON.stringify(draftPlate));
+    navigate("/MyPlate?mode=plan");
   };
 
   const handleSaveFavoritePlan = async () => {
@@ -167,8 +166,8 @@ function MealPlan() {
     if (!isLoggedIn) {
       alert("กรุณาเข้าสู่ระบบก่อนบันทึกแผนโปรด");
       return;
-    } 
-    
+    }
+
     const planId = mealPlan[0].plan_id;
     const storedUser = localStorage.getItem("user");
     const currentUserId = storedUser ? JSON.parse(storedUser).user_id : 1;
@@ -179,13 +178,13 @@ function MealPlan() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: currentUserId, plan_id: planId })
       });
-      
+
       if (response.ok) {
         const data = await response.json();
-        setIsPlanFav(data.isFav); 
-        
+        setIsPlanFav(data.isFav);
+
         if (data.isFav) {
-           alert("บันทึกแผนอาหารของวันนี้เป็นเซ็ตโปรดเรียบร้อยแล้ว! ❤️");
+          alert("บันทึกแผนอาหารของวันนี้เป็นเซ็ตโปรดเรียบร้อยแล้ว! ❤️");
         }
       }
     } catch (error) {
@@ -196,12 +195,12 @@ function MealPlan() {
   const handleDeletePlan = async (planId) => {
     if (!window.confirm("คุณต้องการลบแผนอาหารทั้งหมดของวันนี้ใช่หรือไม่? ข้อมูลทั้งหมดจะหายไป")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/plan/${planId}`, { 
-        method: "DELETE" 
+      const response = await fetch(`http://localhost:5000/api/plan/${planId}`, {
+        method: "DELETE"
       });
       if (response.ok) {
         alert("ลบแผนอาหารของวันนี้สำเร็จ");
-        fetchMealPlanFromDB(weekDays[selectedDay].fullDate); 
+        fetchMealPlanFromDB(weekDays[selectedDay].fullDate);
       }
       if (!isLoggedIn) {
         alert("กรุณาเข้าสู่ระบบก่อนลบแผนการกิน");
@@ -215,11 +214,11 @@ function MealPlan() {
   const handleOpenReviewModal = (meal) => {
     setReviewTarget(meal);
     if (reviewedStatus[meal.food_id]) {
-        setRating(reviewedStatus[meal.food_id].rating);
-        setReviewText(reviewedStatus[meal.food_id].review_text);
+      setRating(reviewedStatus[meal.food_id].rating);
+      setReviewText(reviewedStatus[meal.food_id].review_text);
     } else {
-        setRating(5);
-        setReviewText("");
+      setRating(5);
+      setReviewText("");
     }
     if (!isLoggedIn) {
       alert("กรุณาเข้าสู่ระบบก่อนรีวิวอาหาร");
@@ -242,10 +241,10 @@ function MealPlan() {
       if (response.ok) {
         alert("บันทึกรีวิวของคุณเรียบร้อยแล้ว รอการอนุมัติจากระบบครับ ⭐");
         setReviewedStatus(prev => ({
-            ...prev,
-            [reviewTarget.food_id]: { isReviewed: true, rating, review_text: reviewText }
+          ...prev,
+          [reviewTarget.food_id]: { isReviewed: true, rating, review_text: reviewText }
         }));
-        setReviewTarget(null); 
+        setReviewTarget(null);
         setReviewText("");
       }
     } catch (error) {
@@ -269,7 +268,7 @@ function MealPlan() {
   const pPro = Math.round((totalProtein / totalMacros) * 100) || 0;
   const pFat = Math.round((totalFat / totalMacros) * 100) || 0;
   const pSug = Math.round((totalSugar / totalMacros) * 100) || 0;
-  const pSod = totalMacros > 1 ? Math.max(0, 100 - pCarb - pPro - pFat - pSug) : 0; 
+  const pSod = totalMacros > 1 ? Math.max(0, 100 - pCarb - pPro - pFat - pSug) : 0;
 
   const endCarb = (totalCarbs / totalMacros) * fillPercentage;
   const endPro = endCarb + ((totalProtein / totalMacros) * fillPercentage);
@@ -278,8 +277,8 @@ function MealPlan() {
   const endSod = fillPercentage;
 
   const circleStyle = {
-    background: totalCalories === 0 
-      ? `#f0f0f0` 
+    background: totalCalories === 0
+      ? `#f0f0f0`
       : `radial-gradient(closest-side, white 85%, transparent 86% 100%), conic-gradient(#FF9F43 0% ${endCarb}%, #EE5253 ${endCarb}% ${endPro}%, #10AC84 ${endPro}% ${endFat}%, #0984E3 ${endFat}% ${endSug}%, #FDCB6E ${endSug}% ${endSod}%, #f0f0f0 ${endSod}% 100%)`
   };
 
@@ -308,7 +307,6 @@ function MealPlan() {
             <p>วางแผนมื้ออาหารล่วงหน้า เพื่อสุขภาพที่ดีในทุกวัน</p>
           </div>
         </div>
-        {/* 🌟 ลิงก์แนบ ?mode=plan และลบแค่ plan_plate */}
         <Link
           to="/MyPlate?mode=plan"
           className="create-btn"
@@ -338,14 +336,14 @@ function MealPlan() {
             <div className="empty-msg">ยังไม่มีแผนการกินในวันนี้</div>
           ) : (
             <div className="unified-plan-card">
-              
+
               <div className="card-top-header-actions">
                 <span className="card-header-date-title">เมนูอาหารของฉัน</span>
                 <div className="global-icon-actions-group">
-                  <button 
-                    className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`} 
+                  <button
+                    className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`}
                     style={{ color: isPlanFav ? "red" : "#ddaa9d" }}
-                    title="บันทึกแผนนี้เป็นเซ็ตโปรด" 
+                    title="บันทึกแผนนี้เป็นเซ็ตโปรด"
                     onClick={() => handleSaveFavoritePlan()}
                   >
                     <FaHeart />
@@ -354,49 +352,50 @@ function MealPlan() {
               </div>
 
               {Object.keys(groupedMeals).map((mealType) => (
-              <div className="meal-group" key={mealType}>
-                {groupedMeals[mealType].map((meal, index) => (
-                  <div className="meal-row-item" key={index}>
-                    <div className="meal-item-left">
-                      {index === 0 ? (
-                        <div className={`meal-time-column type-${meal.meal_type}`}>
-                          <div className="meal-icon-circle">{renderIcon(meal.meal_type)}</div>
-                          <span className="meal-text-label">มื้อ{meal.meal_type}</span>
-                        </div>
-                      ) : (
-                        <div className="meal-time-column-placeholder"></div>
-                      )}
+                <div className="meal-group" key={mealType}>
+                  {groupedMeals[mealType].map((meal, index) => (
+                    <div className="meal-row-item" key={index}>
+                      <div className="meal-item-left">
+                        {index === 0 ? (
+                          <div className={`meal-time-column type-${meal.meal_type}`}>
+                            <div className="meal-icon-circle">{renderIcon(meal.meal_type)}</div>
+                            <span className="meal-text-label">มื้อ{meal.meal_type}</span>
+                          </div>
+                        ) : (
+                          <div className="meal-time-column-placeholder"></div>
+                        )}
 
-                      <img
-                        src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
-                        alt={meal.food_name}
-                        className="row-img"
-                      />
-                      <div className="row-details">
-                        <h2>{meal.food_name}</h2>
-                        <span className="row-qty-tag">
-                          {Number(meal.quantity).toFixed(0)} {meal.serving_size ? meal.serving_size.replace(/[0-9\s]/g, '') : "จาน"}
-                        </span>
+                        <img
+                          src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
+                          alt={meal.food_name}
+                          className="row-img"
+                        />
+                        <div className="row-details">
+                          <h2>{meal.food_name}</h2>
+                          {/* แสดง serving_size ตรงๆ เหมือน HomePage แทนการตัดตัวเลขออก */}
+                          <span className="row-qty-tag">
+                            {meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="meal-item-right">
+                        <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
+                        <button
+                          className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`}
+                          title="เขียนรีวิวเมนูนี้"
+                          onClick={() => handleOpenReviewModal(meal)}
+                          style={{ color: reviewedStatus[meal.food_id] ? "#ffb936" : "#ddaa9d" }}
+                        >
+                          <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} />
+                          <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }}>รีวิว</span>
+                        </button>
                       </div>
                     </div>
-
-                    <div className="meal-item-right">
-                      <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
-                      <button 
-                        className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`} 
-                        title="เขียนรีวิวเมนูนี้" 
-                        onClick={() => handleOpenReviewModal(meal)}
-                        style={{ color: reviewedStatus[meal.food_id] ? "#ffb936" : "#ddaa9d" }} 
-                      >
-                        <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} /> 
-                        <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }}>รีวิว</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <div className="meal-group-divider"></div>
-              </div>
-            ))}
+                  ))}
+                  <div className="meal-group-divider"></div>
+                </div>
+              ))}
 
               <div className="card-bottom-header-actions">
                 <div className="global-icon-actions-group">
@@ -427,9 +426,9 @@ function MealPlan() {
             <div className="goal-top"><span>เป้าหมายรายวัน</span><strong>{totalCalories.toFixed(0)} / {Number(goalCalories).toFixed(0)} kcal</strong></div>
             <div className="goal-bar"><div className="goal-fill" style={{ width: `${progressWidth}%` }}></div></div>
           </div>
-          <button 
+          <button
             className="nutrition-report-btn"
-            onClick={() => navigate("/report")} 
+            onClick={() => navigate("/report")}
           >
             <FaChartPie /> ดูรายงานโภชนาการ
           </button>
@@ -465,7 +464,7 @@ function MealPlan() {
 
 const NutritionItem = ({ label, value, grams }) => (
   <div className="summary-item">
-    <span>{label} <small style={{color:"#aaa", fontSize:"0.8rem"}}>({grams})</small></span>
+    <span>{label} <small style={{ color: "#aaa", fontSize: "0.8rem" }}>({grams})</small></span>
     <strong>{value}</strong>
   </div>
 );
