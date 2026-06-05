@@ -27,7 +27,6 @@ function AddFood() {
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState("");
 
-  // เปลี่ยน description เป็น notes ตามโครงสร้างใหม่
   const [formData, setFormData] = useState({
     food_name: "",
     category_id: "",
@@ -41,11 +40,10 @@ function AddFood() {
     notes: "" 
   });
 
-  // State สำหรับกล่องข้อมูลย่อย (สูตรอาหาร, ส่วนผสม, วิธีทำ ฯลฯ)
   const [recipeSections, setRecipeSections] = useState([
     {
-      section_name: "", // เช่น "หมูสะเต๊ะ", "น้ำจิ้ม"
-      blocks: [{ block_title: "", content: "" }] // เช่น "ส่วนผสม", "วิธีทำ"
+      section_name: "", 
+      blocks: [{ block_title: "", content: "" }] 
     }
   ]);
 
@@ -56,7 +54,6 @@ function AddFood() {
     });
   };
 
-  // --- ฟังก์ชันจัดการ Dynamic Boxes ---
   const addSection = () => {
     setRecipeSections([
       ...recipeSections,
@@ -93,7 +90,6 @@ function AddFood() {
     newSections[sectionIndex].blocks[blockIndex][field] = text;
     setRecipeSections(newSections);
   };
-  // ---------------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,17 +97,14 @@ function AddFood() {
     try {
       const data = new FormData();
 
-      // ใส่ข้อมูลพื้นฐาน
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
 
-      // ใส่รูปภาพ
       if (image) {
         data.append("image", image);
       }
 
-      // ใส่ข้อมูลกล่องย่อย โดยแปลงเป็น JSON String
       data.append("recipe_details", JSON.stringify(recipeSections));
 
       const res = await fetch(
@@ -139,27 +132,27 @@ function AddFood() {
   return (
     <div className="add-food-page">
       {/* Header */}
-      <div className="food-page-header">
-        <div className="food-header-icon">
+      <div className="add-food-page-header">
+        <div className="add-food-header-icon">
           <FaUtensils />
         </div>
-        <div className="food-header-content">
-          <h1>เพิ่มข้อมูลอาหาร</h1>
+        <div className="add-food-header-content">
+          <h2>เพิ่มข้อมูลอาหาร</h2>
         </div>
       </div>
 
-      <div className="header-line"></div>
+      <div className="add-header-line"></div>
 
       {/* Form */}
       <form className="add-food-form" onSubmit={handleSubmit}>
         
         {/* --- ส่วนที่ 1: ข้อมูลพื้นฐาน --- */}
-        <div className="form-group">
+        <div className="add-form-group">
           <label>รูปภาพอาหาร</label>
-          <div className="image-upload">
-            <div className="upload-row">
-              <FaImage className="upload-icon" />
-              <label className="custom-upload-btn">
+          <div className="add-image-upload">
+            <div className="add-upload-row">
+              <FaImage className="add-upload-icon" />
+              <label className="add-custom-upload-btn">
                 เลือกรูปอาหาร
                 <input
                   type="file"
@@ -174,19 +167,19 @@ function AddFood() {
                   }}
                 />
               </label>
-              {fileName && <span className="file-name">{fileName}</span>}
+              {fileName && <span className="add-file-name">{fileName}</span>}
             </div>
             {image && (
               <img
                 src={URL.createObjectURL(image)}
                 alt="preview"
-                className="preview-image"
+                className="add-preview-image"
               />
             )}
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="add-form-group">
           <label>ชื่ออาหาร</label>
           <input
             type="text"
@@ -197,7 +190,7 @@ function AddFood() {
           />
         </div>
 
-        <div className="form-group">
+        <div className="add-form-group">
           <label>หมวดหมู่</label>
           <select
             name="category_id"
@@ -211,7 +204,7 @@ function AddFood() {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className="add-form-group">
           <label>ปริมาณต่อหน่วย</label>
           <input
             type="text"
@@ -222,30 +215,30 @@ function AddFood() {
           />
         </div>
 
-        <div className="nutrition-section">
+        <div className="add-nutrition-section">
           <h3>ข้อมูลโภชนาการ</h3>
-          <div className="nutrition-list">
-            <div className="nutrition-item">
+          <div className="add-nutrition-list">
+            <div className="add-nutrition-item">
               <label><FaFire /> แคลอรี</label>
               <input type="number" name="calories" value={formData.calories} onChange={handleChange} />
             </div>
-            <div className="nutrition-item">
+            <div className="add-nutrition-item">
               <label><FaDrumstickBite /> โปรตีน</label>
               <input type="number" name="protein" value={formData.protein} onChange={handleChange} />
             </div>
-            <div className="nutrition-item">
+            <div className="add-nutrition-item">
               <label><FaTint /> ไขมัน</label>
               <input type="number" name="fat" value={formData.fat} onChange={handleChange} />
             </div>
-            <div className="nutrition-item">
+            <div className="add-nutrition-item">
               <label><GiWheat /> คาร์โบไฮเดรต</label>
               <input type="number" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} />
             </div>
-            <div className="nutrition-item">
+            <div className="add-nutrition-item">
               <label><GiSugarCane /> น้ำตาล</label>
               <input type="number" name="sugar" value={formData.sugar} onChange={handleChange} />
             </div>
-            <div className="nutrition-item">
+            <div className="add-nutrition-item">
               <label><MdOutlineSoupKitchen /> โซเดียม</label>
               <input type="number" name="sodium" value={formData.sodium} onChange={handleChange} />
             </div>
@@ -253,13 +246,13 @@ function AddFood() {
         </div>
 
         {/* --- ส่วนที่ 2: รายละเอียดสูตรอาหาร (Dynamic Boxes) --- */}
-        <div className="recipe-details-section">
+        <div className="add-recipe-details-section">
         <h3>รายละเอียดส่วนผสมและวิธีทำ</h3>
         
         {recipeSections.map((section, sIndex) => (
-            <div key={sIndex} className="dynamic-section-card">
+            <div key={sIndex} className="add-dynamic-section-card">
             
-            <div className="section-header">
+            <div className="add-section-header">
                 <input
                 type="text"
                 placeholder="ชื่อส่วนประกอบหลัก เช่น น้ำจิ้ม, หมูหมัก..."
@@ -268,7 +261,7 @@ function AddFood() {
                 />
                 <button
                 type="button"
-                className="delete-section-btn"
+                className="add-delete-section-btn"
                 onClick={() => removeSection(sIndex)}
                 >
                 <FaTrash /> ลบส่วนนี้
@@ -277,8 +270,8 @@ function AddFood() {
 
             {/* กล่องย่อย (Blocks) ภายใน Section */}
             {section.blocks.map((block, bIndex) => (
-                <div key={bIndex} className="dynamic-block">
-                <div className="dynamic-block-header">
+                <div key={bIndex} className="add-dynamic-block">
+                <div className="add-dynamic-block-header">
                     <input
                     type="text"
                     placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
@@ -287,7 +280,7 @@ function AddFood() {
                     />
                     <button
                     type="button"
-                    className="delete-block-btn"
+                    className="add-delete-block-btn"
                     onClick={() => removeBlock(sIndex, bIndex)}
                     >
                     <FaTrash />
@@ -322,7 +315,7 @@ function AddFood() {
         </div>
 
         {/* --- ส่วนที่ 3: หมายเหตุ --- */}
-        <div className="form-group" style={{ marginTop: '30px' }}>
+        <div className="add-form-group" style={{ marginTop: '30px' }}>
           <label>หมายเหตุ / คำอธิบายเพิ่มเติม</label>
           <textarea
             rows="4"
@@ -334,7 +327,7 @@ function AddFood() {
         </div>
 
         {/* ปุ่มบันทึก */}
-        <button type="submit" className="save-btn" style={{ marginTop: '20px' }}>
+        <button type="submit" className="add-save-btn" style={{ marginTop: '20px' }}>
           <FaPlus /> บันทึกอาหาร
         </button>
       </form>
