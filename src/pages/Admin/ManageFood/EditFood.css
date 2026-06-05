@@ -81,7 +81,9 @@
     border-radius: 15px;
     border: 2px solid #ecd9c4;
     background: #fffdfb;
-    font-size: 15px;
+    font-size: 16px;                  /* 🌟 ปรับขนาดให้เท่ากับกล่องด้านล่าง */
+    color: #555;                      /* 🌟 สีตัวหนังสือตอนพิมพ์ */
+    font-family: 'Kanit', sans-serif; /* 🌟 บังคับใช้ฟอนต์ Kanit */
     transition: .3s;
 }
 
@@ -96,6 +98,13 @@
 .edit-form-group textarea {
     resize: vertical;
     min-height: 180px;
+}
+
+.edit-form-group input::placeholder,
+.edit-form-group textarea::placeholder {
+    color: #ad927d;
+    font-weight: 400;
+    font-family: 'Kanit', sans-serif;
 }
 
 /* ================= IMAGE ================= */
@@ -204,6 +213,9 @@
     border-radius: 15px;
     border: 2px solid #ecd9c4;
     background: #fffdfb;
+    font-size: 16px;
+    color: #555;
+    font-family: 'Kanit', sans-serif;
     transition: .3s;
 }
 
@@ -211,6 +223,10 @@
     outline: none;
     border-color: #ff9f43;
     box-shadow: 0 0 0 5px rgba(255, 159, 67, .15);
+}
+.edit-nutrition-item input::placeholder {
+    color: #ad927d;
+    font-family: 'Kanit', sans-serif;
 }
 
 /* ================= BUTTON ================= */
