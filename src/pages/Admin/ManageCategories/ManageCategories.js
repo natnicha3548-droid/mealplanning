@@ -9,13 +9,27 @@ import {
   FaPauseCircle,
   FaIceCream,
   FaCoffee,
-  FaHamburger,
-  FaPizzaSlice,
   FaFish,
   FaAppleAlt,
   FaTags,
-  FaGlassWhiskey
+  FaGlassWhiskey,
+  FaUtensils,
+  FaFire,
+  FaFireAlt,
+  FaLeaf,
+  FaSeedling,
+  FaPepperHot,
+  FaDrumstickBite,
+  FaCookieBite,
+  FaMortarPestle,
+  FaWater,
+  FaEgg,
+  FaBlender,
+  FaHotdog,
+  FaMugHot,
+  FaLemon
 } from "react-icons/fa";
+import { GiCookingPot } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import "./ManageCategories.css";
 
@@ -68,6 +82,7 @@ function ManageCategories() {
 
     const name = categoryName.toLowerCase();
 
+    // ของหวาน / ขนม / เบเกอรี่ → ไอศกรีม
     if (
       name.includes("หวาน") ||
       name.includes("เบเกอรี่") ||
@@ -77,6 +92,27 @@ function ManageCategories() {
       return <FaIceCream />;
     }
 
+    // น้ำพริก / เครื่องจิ้ม → พริก (ต้องมาก่อน "น้ำ")
+    if (
+      name.includes("น้ำพริก") ||
+      name.includes("เครื่องจิ้ม") ||
+      name.includes("พริก")
+    ) {
+      return <FaPepperHot />;
+    }
+
+    // น้ำต้มกระดูก / ต้มยำ / ต้มข่า / ต้มจืด → หม้อ (ต้องมาก่อน "ต้ม" และ "น้ำ")
+    if (
+      name.includes("น้ำต้ม") ||
+      name.includes("กระดูก") ||
+      name.includes("ต้มยำ") ||
+      name.includes("ต้มข่า") ||
+      name.includes("ต้มจืด")
+    ) {
+      return <GiCookingPot />;
+    }
+
+    // เครื่องดื่ม / ชา / กาแฟ / น้ำ → กาแฟ
     if (
       name.includes("เครื่องดื่ม") ||
       name.includes("ชา") ||
@@ -86,41 +122,115 @@ function ManageCategories() {
       return <FaCoffee />;
     }
 
+    // แกง → ครก (โขลกเครื่องแกง)
+    if (name.includes("แกง")) {
+      return <FaMortarPestle />;
+    }
+
+    // ต้ม (ทั่วไป) → เปลวไฟ
+    if (name.includes("ต้ม")) {
+      return <FaFire />;
+    }
+
+    // ทอด → ไข่ (สื่อถึงการทอดในกระทะ)
+    if (name.includes("ทอด")) {
+      return <FaEgg />;
+    }
+
+    // ปิ้ง ย่าง (ต้องมาก่อน "ย่าง") → เปลวไฟลายต่าง
+    if (name.includes("ปิ้ง")) {
+      return <FaFireAlt />;
+    }
+
+    // ผัด → เครื่องปั่น (สื่อถึงการคนผัด)
+    if (name.includes("ผัด")) {
+      return <FaBlender />;
+    }
+
+    // ย่าง / ย่า → ไส้กรอกย่าง
+    if (
+      name.includes("ย่าง") ||
+      name.includes("ย่า")
+    ) {
+      return <FaHotdog />;
+    }
+
+    // นึ่ง → น้ำ (สื่อถึงไอน้ำ)
+    if (name.includes("นึ่ง")) {
+      return <FaWater />;
+    }
+
+    // ลาบ / ก้อย → ชิ้นเนื้อ
+    if (
+      name.includes("ลาบ") ||
+      name.includes("ก้อย")
+    ) {
+      return <FaDrumstickBite />;
+    }
+
+    // พล่า → ใบไม้
+    if (name.includes("พล่า")) {
+      return <FaLeaf />;
+    }
+
+    // ยำ / สลัด → มะนาว (วัตถุดิบหลักของยำ)
+    if (
+      name.includes("ยำ") ||
+      name.includes("สลัด")
+    ) {
+      return <FaLemon />;
+    }
+
+    // ข้าว → ต้นกล้า
+    if (name.includes("ข้าว")) {
+      return <FaSeedling />;
+    }
+
+    // อาหารว่าง / ของว่าง → คุกกี้
+    if (
+      name.includes("อาหารว่าง") ||
+      name.includes("ของว่าง") ||
+      name.includes("สแนก")
+    ) {
+      return <FaCookieBite />;
+    }
+
+    // ทะเล / ปลา / กุ้ง / ปู / หอย → ปลา
     if (
       name.includes("ทะเล") ||
       name.includes("ปลา") ||
-      name.includes("กุ้ง")
+      name.includes("กุ้ง") ||
+      name.includes("ปู") ||
+      name.includes("หอย")
     ) {
       return <FaFish />;
     }
 
-    if (
-      name.includes("ผลไม้")
-    ) {
+    // ผลไม้ → แอปเปิ้ล
+    if (name.includes("ผลไม้")) {
       return <FaAppleAlt />;
     }
 
-    if (
-      name.includes("pizza")
-    ) {
-      return <FaPizzaSlice />;
-    }
-
+    // เครื่องดื่มแอลกอฮอล์
     if (
       name.includes("beer") ||
-      name.includes("cocktail")
+      name.includes("cocktail") ||
+      name.includes("เบียร์") ||
+      name.includes("ค็อกเทล") ||
+      name.includes("เหล้า")
     ) {
       return <FaGlassWhiskey />;
     }
 
+    // ของคาว / อาหาร (ทั่วไป) → ช้อนส้อม
     if (
       name.includes("คาว") ||
-      name.includes("อาหาร") ||
-      name.includes("ข้าว")
+      name.includes("อาหาร")
     ) {
-      return <FaHamburger />;
+      return <FaUtensils />;
     }
 
+    // default
     return <FaTags />;
   };
 
@@ -135,7 +245,6 @@ function ManageCategories() {
 
       <div className="mc-hero">
         <div className="mc-hero-content">
-            {/* ไอคอนที่อยู่ในวงกลม */}
             <div className="mc-hero-icon">
                 <FaTags />
             </div>
@@ -143,8 +252,7 @@ function ManageCategories() {
                 <h2>จัดการหมวดหมู่อาหาร</h2>
             </div>
         </div>
-        
-        {/* ปุ่มเพิ่มรายการ */}
+
         <button className="mc-add-btn" onClick={() => navigate("/admin/add-category")}>
             <FaPlus /> เพิ่มหมวดหมู่
         </button>

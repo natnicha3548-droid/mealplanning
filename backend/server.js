@@ -43,6 +43,8 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+const fpgrowth = require('node-fpgrowth');
+
 // ================= SIGNUP API =================
 app.post('/api/signup', async (req, res) => {
 
@@ -1984,12 +1986,47 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             WHERE fr.review_status = 'รออนุมัติ' ORDER BY fr.created_at DESC LIMIT 3
         `);
 
-        // แก้ไขตรงข้อมูลจำลอง FP-growth ให้มีตัวแปร trend เพิ่มเข้ามา
-        const fpGrowthInsights = [
-            { pair: "ข้าวผัดหมู + น้ำซุป", confidence: "85%", trend: "up" },     // ชี้ขึ้น
-            { pair: "สลัดอกไก่ + ไข่ต้ม", confidence: "72%", trend: "down" },   // ชี้ลง
-            { pair: "ผัดกะเพรา + ไข่ดาว", confidence: "90%", trend: "up" }      // ชี้ขึ้น
-        ];
+        // ================= FP-GROWTH =================
+
+        const [fpRows] = await connection.query(`
+    SELECT
+        md.plan_id,
+        md.meal_type,
+        f.food_name
+    FROM meal_detail md
+    JOIN food f
+        ON md.food_id = f.food_id
+    ORDER BY md.plan_id, md.meal_type
+`);
+
+        const grouped = {};
+
+        fpRows.forEach(row => {
+
+            const key = `${row.plan_id}_${row.meal_type}`;
+
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+
+            grouped[key].push(row.food_name);
+
+        });
+
+        const transactions = Object.values(grouped);
+
+        const fp = new fpgrowth.FPGrowth(0.1);
+
+        const itemsets = await fp.exec(transactions);
+
+        const fpGrowthInsights = itemsets
+            .filter(item => item.items.length === 2)
+            .sort((a, b) => b.support - a.support)
+            .slice(0, 5)
+            .map(item => ({
+                pair: item.items.join(' + '),
+                support: item.support
+            }));
 
         // 5. ส่งข้อมูลกลับไปให้ Frontend
         res.json({
@@ -2973,6 +3010,184 @@ app.post("/api/verify-email-otp", (req, res) => {
 
         }
     );
+
+});
+
+
+
+app.get('/api/fp-transactions', (req, res) => {
+
+    const sql = `
+        SELECT
+            md.plan_id,
+            md.meal_type,
+            f.food_name
+        FROM meal_detail md
+        JOIN food f
+            ON md.food_id = f.food_id
+        ORDER BY md.plan_id, md.meal_type
+    `;
+
+    db.query(sql, (err, rows) => {
+
+        if (err) {
+            return res.status(500).json(err);
+        }
+
+        const grouped = {};
+
+        rows.forEach(row => {
+
+            const key = `${row.plan_id}_${row.meal_type}`;
+
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+
+            grouped[key].push(row.food_name);
+
+        });
+
+        const transactions = Object.values(grouped);
+
+        res.json(transactions);
+
+    });
+
+});
+
+app.get('/api/fp-growth', (req, res) => {
+
+    const sql = `
+        SELECT
+            md.plan_id,
+            md.meal_type,
+            f.food_name
+        FROM meal_detail md
+        JOIN food f
+            ON md.food_id = f.food_id
+        ORDER BY md.plan_id, md.meal_type
+    `;
+
+    db.query(sql, (err, rows) => {
+
+        if (err) {
+            return res.status(500).json(err);
+        }
+
+        const grouped = {};
+
+        rows.forEach(row => {
+
+            const key = `${row.plan_id}_${row.meal_type}`;
+
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+
+            grouped[key].push(row.food_name);
+
+        });
+
+        const transactions = Object.values(grouped);
+
+        const fp = new fpgrowth.FPGrowth(0.1);
+
+        fp.exec(transactions)
+            .then(itemsets => {
+
+                res.json(itemsets);
+
+            })
+            .catch(error => {
+
+                res.status(500).json(error);
+
+            });
+
+    });
+
+});
+
+app.get('/api/recommend/:foodName', (req, res) => {
+
+    const targetFood = req.params.foodName;
+
+    const sql = `
+        SELECT
+            md.plan_id,
+            md.meal_type,
+            f.food_name
+        FROM meal_detail md
+        JOIN food f
+            ON md.food_id = f.food_id
+        ORDER BY md.plan_id, md.meal_type
+    `;
+
+    db.query(sql, (err, rows) => {
+
+        if (err) {
+            return res.status(500).json(err);
+        }
+
+        const grouped = {};
+
+        rows.forEach(row => {
+
+            const key = `${row.plan_id}_${row.meal_type}`;
+
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+
+            grouped[key].push(row.food_name);
+
+        });
+
+        const transactions = Object.values(grouped);
+
+        const fp = new fpgrowth.FPGrowth(0.1);
+
+        fp.exec(transactions)
+            .then(itemsets => {
+
+                const recommendations = [];
+
+                itemsets.forEach(itemset => {
+
+                    if (
+                        itemset.items.includes(targetFood) &&
+                        itemset.items.length > 1
+                    ) {
+
+                        itemset.items.forEach(food => {
+
+                            if (food !== targetFood) {
+
+                                recommendations.push({
+                                    food,
+                                    support: itemset.support
+                                });
+
+                            }
+
+                        });
+
+                    }
+
+                });
+
+                recommendations.sort(
+                    (a, b) => b.support - a.support
+                );
+
+                res.json(
+                    recommendations.slice(0, 3)
+                );
+
+            });
+
+    });
 
 });
 

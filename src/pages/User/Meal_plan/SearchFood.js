@@ -35,6 +35,13 @@ function SearchFood() {
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  // ===== ส่วนเพิ่มเติม: recommend modal =====
+  const [showRecommendModal, setShowRecommendModal] = useState(false);
+  const [addedFood, setAddedFood] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [fromRecommend, setFromRecommend] = useState(false);
+  // ==========================================
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const currentUserId = storedUser?.user_id || null;
 
@@ -58,6 +65,40 @@ function SearchFood() {
     } catch (e) { }
     return [];
   };
+
+  // ===== helper functions สำหรับ recommend =====
+  const getFoodData = (foodName) => {
+    return foods.find(
+      (f) => f.food_name?.toLowerCase() === foodName?.toLowerCase()
+    ) || null;
+  };
+
+  const getFoodImage = (food) => {
+    if (!food?.image) return null;
+    return food.image.startsWith("http")
+      ? food.image
+      : `http://localhost:5000${food.image}`;
+  };
+
+  const openFoodFromRecommend = (foodName) => {
+    const foodData = getFoodData(foodName);
+    if (!foodData) return;
+    setSelectedFood(foodData);
+    setQuantity(1);
+    setFromRecommend(true);
+    setShowRecommendModal(false);
+  };
+
+  const handleCloseSelectedFood = () => {
+    if (fromRecommend) {
+      setSelectedFood(null);
+      setFromRecommend(false);
+      setShowRecommendModal(true);
+    } else {
+      setSelectedFood(null);
+    }
+  };
+  // =============================================
 
   useEffect(() => {
     if (selectedFood) {
@@ -162,7 +203,26 @@ function SearchFood() {
     };
 
     localStorage.setItem(storageKey, JSON.stringify([...currentPlate, newMeal]));
-    navigate(`/MyPlate?mode=${mode}`);
+
+    // ===== แก้ไข: แสดง recommend modal แทนการ navigate ทันที =====
+    const foodForModal = selectedFood;
+    setAddedFood(foodForModal);
+    setSelectedFood(null);
+    setFromRecommend(false);
+    setQuantity(1);
+
+    fetch(`http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}`)
+      .then(res => res.json())
+      .then(data => {
+        setRecommendations(data || []);
+        setShowRecommendModal(true);
+      })
+      .catch(err => {
+        console.error(err);
+        setRecommendations([]);
+        setShowRecommendModal(true);
+      });
+    // =============================================================
   };
 
   return (
@@ -345,22 +405,30 @@ function SearchFood() {
         )}
       </div>
 
-      {/* MODAL */}
+      {/* ================= FOOD DETAIL MODAL ================= */}
       {selectedFood && (() => {
         const recipeSections = parseRecipeDetails(selectedFood.recipe_details);
         return (
-          <div className="sf-modal-overlay" onClick={() => setSelectedFood(null)}>
+          <div className="sf-modal-overlay" onClick={handleCloseSelectedFood}>
             <div
               className="sf-modal-content sf-detail-modal"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* ปุ่ม bookmark — ใช้ class ตาม CSS */}
-              <button
-                className="sf-bookmark-btn"
-                onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
-              >
-                {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
-              </button>
+              <div className="sf-modal-actions">
+                <button
+                  className="sf-bookmark-btn"
+                  onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
+                >
+                  {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
+                </button>
+                <button
+                  className="sf-close-btn"
+                  onClick={handleCloseSelectedFood}
+                  aria-label="ปิด"
+                >
+                  ✕
+                </button>
+              </div>
 
               {/* ===== LEFT ===== */}
               <div className="sf-detail-left">
@@ -467,7 +535,7 @@ function SearchFood() {
 
                 {/* ACTION */}
                 <div className="sf-action-btns">
-                  <button className="sf-cancel-btn" onClick={() => setSelectedFood(null)}>
+                  <button className="sf-cancel-btn" onClick={handleCloseSelectedFood}>
                     ยกเลิก
                   </button>
                   <button className="sf-add-btn" onClick={handleAddToPlate}>
@@ -480,6 +548,113 @@ function SearchFood() {
           </div>
         );
       })()}
+
+      {/* ================= RECOMMEND MODAL ================= */}
+      {showRecommendModal && addedFood && !selectedFood && (
+        <div
+          className="sf-modal-overlay"
+          onClick={() => {
+            setShowRecommendModal(false);
+            navigate(`/MyPlate?mode=${mode}`);
+          }}
+        >
+          <div
+            className="sf-recommend-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* HEADER — food name + close */}
+            <div className="sf-recommend-header">
+              <h2 className="sf-recommend-modal-title">{addedFood.food_name}</h2>
+              <button
+                className="sf-recommend-close-btn"
+                onClick={() => {
+                  setShowRecommendModal(false);
+                  navigate(`/MyPlate?mode=${mode}`);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* IMAGE with success badge */}
+            <div className="sf-recommend-img-wrap">
+              <img
+                src={
+                  addedFood.image?.startsWith("http")
+                    ? addedFood.image
+                    : `http://localhost:5000${addedFood.image}`
+                }
+                alt={addedFood.food_name}
+                className="sf-recommend-food-img"
+              />
+              <div className="sf-recommend-added-badge">
+                <span className="sf-recommend-badge-check">✓</span>
+                เพิ่มเมนูอาหารนี้ใส่จานแล้ว
+              </div>
+            </div>
+
+            {/* BOTTOM — recommendations */}
+            <div className="sf-recommend-bottom">
+              <div className="sf-recommend-title-row">
+                <span className="sf-recommend-title-icon">
+                  <MdLocalFireDepartment style={{ color: "white", fontSize: "1.1rem" }} />
+                </span>
+                <h3 className="sf-recommend-title">เมนูแนะนำ</h3>
+              </div>
+
+              {recommendations.length > 0 ? (
+                <div className="sf-recommend-cards-grid">
+                  {recommendations.slice(0, 2).map((item, index) => {
+                    const foodData = getFoodData(item.food);
+                    const img = getFoodImage(foodData);
+                    const calories = foodData?.calories
+                      ? Number(foodData.calories).toFixed(0)
+                      : null;
+                    return (
+                      <div
+                        key={index}
+                        className="sf-recommend-card"
+                        onClick={() => openFoodFromRecommend(item.food)}
+                      >
+                        <div className="sf-recommend-card-img-wrap">
+                          {img ? (
+                            <img src={img} alt={item.food} />
+                          ) : (
+                            <div className="sf-recommend-card-img-placeholder">🍽️</div>
+                          )}
+                          <button
+                            className="sf-recommend-card-fav-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (foodData) toggleFavorite(e, foodData.food_id);
+                            }}
+                          >
+                            {foodData && favFoodIds.includes(foodData.food_id)
+                              ? <FaHeart />
+                              : <FaRegHeart />
+                            }
+                          </button>
+                        </div>
+                        <div className="sf-recommend-card-info">
+                          <p className="sf-recommend-card-name">{item.food}</p>
+                          {calories && (
+                            <p className="sf-recommend-card-calorie">
+                              <MdLocalFireDepartment />
+                              {calories} แคล
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="sf-recommend-empty">ยังไม่มีข้อมูลแนะนำ</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -113,9 +113,13 @@ function DashboardReport() {
 
     summaryData.push([]);
     summaryData.push(["เมนูที่มักทานคู่กัน (FP-growth)"]);
-    summaryData.push(["คู่เมนู", "ความเชื่อมั่น", "แนวโน้ม"]);
+    summaryData.push(["คู่เมนู", "จำนวนครั้ง"]);
+
     stats.fpGrowthInsights.forEach(item => {
-      summaryData.push([item.pair, item.confidence, item.trend]);
+      summaryData.push([
+        item.pair,
+        item.support
+      ]);
     });
 
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
@@ -348,33 +352,27 @@ function DashboardReport() {
           <div className="admin-card">
             <h3 className="dashboard-card-title"><LuNetwork className="title-icon" /> FP-growth: เมนูที่มักทานคู่กัน</h3>
             <ul className="insight-list">
-              {stats.fpGrowthInsights.map((item, index) => (
-                <li key={index}>
-                  <span className="flex-align"><LuLink /> {item.pair}</span>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {item.trend === 'up' && (
-                      <span style={{ color: '#1e8e3e', display: 'flex', alignItems: 'center' }} title="จับคู่ทานด้วยกันบ่อยขึ้น">
-                        <LuTrendingUp size={18} />
-                      </span>
-                    )}
-                    {item.trend === 'down' && (
-                      <span style={{ color: '#d93025', display: 'flex', alignItems: 'center' }} title="จับคู่ทานด้วยกันน้อยลง">
-                        <LuTrendingDown size={18} />
-                      </span>
-                    )}
-                    {item.trend === 'neutral' && (
-                      <span style={{ color: '#fca311', display: 'flex', alignItems: 'center' }} title="แนวโน้มคงที่">
-                        <LuMinus size={18} />
-                      </span>
-                    )}
-                    
-                    <span className="insight-value" style={{background: '#e6f4ea', color: '#1e8e3e'}}>
-                      {item.confidence}
+              {stats.fpGrowthInsights.length > 0 ? (
+                stats.fpGrowthInsights.map((item, index) => (
+                  <li key={index}>
+                    <span className="flex-align">
+                      <LuLink /> {item.pair}
                     </span>
-                  </div>
-                </li>
-              ))}
+
+                    <span
+                      className="insight-value"
+                      style={{
+                        background: '#e6f4ea',
+                        color: '#1e8e3e'
+                      }}
+                    >
+                      {item.support} ครั้ง
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li>ไม่มีข้อมูล FP-Growth</li>
+              )}
             </ul>
             <p style={{fontSize: '0.85rem', color: '#b5a18e', marginTop: '15px'}}>* ข้อมูลจากการวิเคราะห์พฤติกรรมการจัดแผนอาหารของผู้ใช้</p>
           </div>
