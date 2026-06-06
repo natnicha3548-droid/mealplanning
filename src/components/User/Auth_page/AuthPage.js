@@ -55,11 +55,11 @@ function AuthPage({ setUser }) {
                     localStorage.setItem("user", JSON.stringify(userData));
                 }
 
-                // ✅ migrate ข้อมูล guest เข้า DB ก่อนเสมอ ไม่ว่าจะ returnTo หรือไม่
                 await migrateGuestData(userData.user_id);
 
                 if (returnTo) {
-                    navigate(returnTo);
+                    // ✅ ส่ง justLoggedIn: true เพื่อให้ปลายทางล้าง Guest data
+                    navigate(returnTo, { state: { justLoggedIn: true } });
                     return;
                 }
 
@@ -78,8 +78,6 @@ function AuthPage({ setUser }) {
                     alert("โหลดข้อมูลไม่สำเร็จ");
                 }
             } else {
-                // ✅ ไม่ลบ calcResult — migrateGuestData จะ migrate เข้า DB ให้อัตโนมัติตอน login
-                // (ถ้า user มีข้อมูลใน DB แล้ว migrateGuestData จะไม่ทับ)
                 sessionStorage.removeItem("activeCalcResult");
                 alert("สมัครสำเร็จ กรุณาเข้าสู่ระบบ");
                 setIsLogin(true);

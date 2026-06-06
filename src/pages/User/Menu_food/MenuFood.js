@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
-    FaSearch, FaHeart, FaRegHeart,
+    FaSearch, FaHeart, FaRegHeart, FaLock,
     FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle
 } from "react-icons/fa";
 import { MdDinnerDining } from "react-icons/md";
@@ -86,11 +86,14 @@ function MenuFood() {
         fetchData();
     }, [currentUserId]);
 
-    // ================= FAVORITE =================
+    const openLoginPrompt = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setShowLoginPrompt(true);
+    };
     const toggleFavorite = async (e, foodId) => {
         e.stopPropagation();
         if (!storedUser) {
-            setShowLoginPrompt(true);
+            openLoginPrompt();
             return;
         }
         const isFav = favFoodIds.includes(foodId);
@@ -109,7 +112,6 @@ function MenuFood() {
         }
     };
 
-    // ================= ADD TO MEAL PLAN =================
     const addToMealPlan = () => {
         if (!selectedFood) { alert("กรุณาเลือกอาหาร"); return; }
         const myPlate = JSON.parse(localStorage.getItem("myplate")) || [];
@@ -136,7 +138,6 @@ function MenuFood() {
         setQuantity(1);
     };
 
-    // ================= FILTER =================
     const filteredFoods = useMemo(() => {
         return foods.filter((food) => {
             const matchSearch = (food.food_name || "")
@@ -181,7 +182,9 @@ function MenuFood() {
                         }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
+                        <div className="login-prompt-icon">
+                            <FaLock />
+                        </div>
                         <h3 style={{
                             fontSize: "1.25rem",
                             fontWeight: "700",
@@ -272,7 +275,7 @@ function MenuFood() {
                 </div>
             </div>
 
-            {/* CATEGORY TABS — dynamic from API */}
+            {/* CATEGORY TABS */}
             <div className="category-tabs">
                 <button
                     className={activeCategory === "all" ? "active" : ""}
@@ -295,7 +298,7 @@ function MenuFood() {
                     className={activeCategory === "fav" ? "active" : ""}
                     onClick={() => {
                         if (!storedUser) {
-                            setShowLoginPrompt(true);
+                            openLoginPrompt();
                             return;
                         }
                         setActiveCategory("fav");

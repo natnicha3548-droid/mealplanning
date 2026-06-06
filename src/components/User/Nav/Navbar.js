@@ -45,10 +45,13 @@ const Navbar = ({
         localStorage.removeItem("avatar");
         localStorage.removeItem("token");
 
-        // ✅ ล้างค่า cal ที่เคยกด "เสร็จสิ้น" ออก
-        // ไม่ให้ MealPlan/MyPlate โชว์ค่าเก่าหลัง logout
-        // (localStorage["calcResult"] ยังคงอยู่ เพื่อ pre-fill หน้า Cal ถ้า guest กลับมา)
+        // ✅ ล้าง Guest data เมื่อ logout
+        localStorage.removeItem("calcResult");
+        localStorage.removeItem("myplate");
+        localStorage.removeItem("plan_plate");
+
         sessionStorage.removeItem("activeCalcResult");
+        sessionStorage.removeItem("calcForm");
 
         setUser(null);
         setCalcResult(null);
@@ -77,78 +80,22 @@ const Navbar = ({
                 <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
 
                     <li>
-                        <Link
-                            to="/"
-                            onClick={handleClose}
-                            className={isActive("/") ? "active" : ""}
-                        >
+                        <Link to="/" onClick={handleClose} className={isActive("/") ? "active" : ""}>
                             หน้าแรก
                         </Link>
                     </li>
 
                     {user ? (
                         <>
-                            <li>
-                                <Link
-                                    to="/menu"
-                                    onClick={handleClose}
-                                    className={isActive("/menu") ? "active" : ""}
-                                >
-                                    เมนูอาหารของฉัน
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    to="/meal-plan"
-                                    onClick={handleClose}
-                                    className={isActive("/meal-plan") ? "active" : ""}
-                                >
-                                    แผนการกินของฉัน
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    to="/favourite-food"
-                                    onClick={handleClose}
-                                    className={isActive("/favourite-food") ? "active" : ""}
-                                >
-                                    รายการโปรดของฉัน
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    to="/past-plans"
-                                    onClick={handleClose}
-                                    className={isActive("/past-plans") ? "active" : ""}
-                                >
-                                    แผนการกินย้อนหลัง
-                                </Link>
-                            </li>
+                            <li><Link to="/menu" onClick={handleClose} className={isActive("/menu") ? "active" : ""}>เมนูอาหารของฉัน</Link></li>
+                            <li><Link to="/meal-plan" onClick={handleClose} className={isActive("/meal-plan") ? "active" : ""}>แผนการกินของฉัน</Link></li>
+                            <li><Link to="/favourite-food" onClick={handleClose} className={isActive("/favourite-food") ? "active" : ""}>รายการโปรดของฉัน</Link></li>
+                            <li><Link to="/past-plans" onClick={handleClose} className={isActive("/past-plans") ? "active" : ""}>แผนการกินย้อนหลัง</Link></li>
                         </>
                     ) : (
                         <>
-                            <li>
-                                <Link
-                                    to="/menu"
-                                    onClick={handleClose}
-                                    className={isActive("/menu") ? "active" : ""}
-                                >
-                                    เมนูอาหาร
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    to="/meal-plan"
-                                    onClick={handleClose}
-                                    className={isActive("/meal-plan") ? "active" : ""}
-                                >
-                                    แผนการกินของฉัน
-                                </Link>
-                            </li>
+                            <li><Link to="/menu" onClick={handleClose} className={isActive("/menu") ? "active" : ""}>เมนูอาหาร</Link></li>
+                            <li><Link to="/meal-plan" onClick={handleClose} className={isActive("/meal-plan") ? "active" : ""}>แผนการกินของฉัน</Link></li>
                         </>
                     )}
 
@@ -162,47 +109,25 @@ const Navbar = ({
                                     onClick={() => setProfileOpen(!profileOpen)}
                                 />
                                 {profileOpen && (
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            top: "45px",
-                                            right: "0",
-                                            background: "#fff",
-                                            borderRadius: "12px",
-                                            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                                            padding: "10px",
-                                            minWidth: "140px"
-                                        }}
-                                    >
-                                        <div
-                                            style={{ padding: "8px", cursor: "pointer" }}
-                                            onClick={() => {
-                                                navigate("/profile");
-                                                setProfileOpen(false);
-                                            }}
-                                        >
+                                    <div style={{
+                                        position: "absolute", top: "45px", right: "0",
+                                        background: "#fff", borderRadius: "12px",
+                                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                                        padding: "10px", minWidth: "140px"
+                                    }}>
+                                        <div style={{ padding: "8px", cursor: "pointer" }}
+                                            onClick={() => { navigate("/profile"); setProfileOpen(false); }}>
                                             โปรไฟล์
                                         </div>
-
-                                        <div
-                                            style={{
-                                                padding: "8px",
-                                                cursor: "pointer",
-                                                color: "#ff4d4f"
-                                            }}
-                                            onClick={handleLogout}
-                                        >
+                                        <div style={{ padding: "8px", cursor: "pointer", color: "#ff4d4f" }}
+                                            onClick={handleLogout}>
                                             ออกจากระบบ
                                         </div>
                                     </div>
                                 )}
                             </div>
                         ) : (
-                            <Link
-                                to="/auth"
-                                onClick={handleClose}
-                                className={isActive("/auth") ? "active" : ""}
-                            >
+                            <Link to="/auth" onClick={handleClose} className={isActive("/auth") ? "active" : ""}>
                                 เข้าสู่ระบบ
                             </Link>
                         )}

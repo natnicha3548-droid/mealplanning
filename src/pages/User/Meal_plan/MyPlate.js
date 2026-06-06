@@ -1,23 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  FaTrash,
-  FaPlus,
-  FaMinus,
-  FaSun,
-  FaCloudSun,
-  FaMoon,
-  FaCalendarDays,
-  FaAngleDown,
-  FaAngleUp
+  FaTrash, FaPlus, FaMinus, FaSun, FaCloudSun, FaMoon,
+  FaCalendarDays, FaAngleDown, FaAngleUp,
+  FaLock, FaCalculator, FaTriangleExclamation
 } from "react-icons/fa6";
-
 import "./MyPlate.css";
 import Calendar from "react-calendar";
 import { LuSalad } from "react-icons/lu";
 
 function MyPlate() {
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,21 +21,11 @@ function MyPlate() {
   const [selectedDates, setSelectedDates] = useState([]);
   const [currentWeekDays, setCurrentWeekDays] = useState([]);
   const [baseDate, setBaseDate] = useState(new Date());
-
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
-
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
-  // goalData เริ่มต้น 0 ทุกค่า — จะถูก set ก็ต่อเมื่อมีข้อมูลจริง
-  const [goalData, setGoalData] = useState({
-    tdee: 0,
-    carb: 0,
-    protein: 0,
-    fat: 0,
-    sugar: 0,
-    sodium: 0
-  });
+  const [showCalcPrompt, setShowCalcPrompt] = useState(false);
+  const [goalData, setGoalData] = useState({ tdee: 0, carb: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 });
 
   const mealCategories = [
     { id: "breakfast", title: "มื้อเช้า", dbType: "เช้า", icon: <FaSun /> },
@@ -56,18 +38,14 @@ function MyPlate() {
     const days = [];
     const labelsMap = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
     const realTodayString = new Date().toDateString();
-
     for (let i = 0; i < 7; i++) {
       const nextDate = new Date(targetDate);
       nextDate.setDate(targetDate.getDate() + i);
-
       const yyyy = nextDate.getFullYear();
       const mm = String(nextDate.getMonth() + 1).padStart(2, "0");
       const dd = String(nextDate.getDate()).padStart(2, "0");
-      const dateString = `${yyyy}-${mm}-${dd}`;
-
       days.push({
-        dateString,
+        dateString: `${yyyy}-${mm}-${dd}`,
         dayNum: nextDate.getDate(),
         label: labelsMap[nextDate.getDay()],
         isToday: realTodayString === nextDate.toDateString()
@@ -79,6 +57,10 @@ function MyPlate() {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
+    if (storedUser?.user_id && location.state?.justLoggedIn) {
+      localStorage.removeItem(storageKey);
+    }
+
     const draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
     setMeals(draftPlate);
 
@@ -86,79 +68,60 @@ function MyPlate() {
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
-    const todayString = `${yyyy}-${mm}-${dd}`;
-
-    setSelectedDates([todayString]);
+    setSelectedDates([`${yyyy}-${mm}-${dd}`]);
     generateWeekForDate(today);
 
     const fetchGoalData = async () => {
       if (storedUser?.user_id) {
-        // สมาชิก → ดึง goalData จาก DB
         try {
-          const response = await fetch(
-            `http://localhost:5000/api/get-calculation/${storedUser.user_id}`
-          );
+          const response = await fetch(`http://localhost:5000/api/get-calculation/${storedUser.user_id}`);
           if (response.ok) {
             const data = await response.json();
             setGoalData({
-              tdee: Number(data.tdee) || 0,
-              carb: Number(data.carb) || 0,
-              protein: Number(data.protein) || 0,
-              fat: Number(data.fat) || 0,
-              sugar: Number(data.sugar) || 0,
-              sodium: Number(data.sodium) || 0
+              tdee: Number(data.tdee) || 0, carb: Number(data.carb) || 0,
+              protein: Number(data.protein) || 0, fat: Number(data.fat) || 0,
+              sugar: Number(data.sugar) || 0, sodium: Number(data.sodium) || 0
             });
           }
-        } catch (error) {
-          console.error(error);
-        }
+        } catch (error) { console.error(error); }
       } else {
-        // Guest → อ่านจาก sessionStorage เท่านั้น
-        // ถ้าปิดแท็บเปิดใหม่โดยยังไม่ได้กดเสร็จสิ้น → goalData = 0
         const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
         if (activeCalc) {
           setGoalData({
-            tdee: Number(activeCalc.tdee) || 0,
-            carb: Number(activeCalc.carb) || 0,
-            protein: Number(activeCalc.protein) || 0,
-            fat: Number(activeCalc.fat) || 0,
-            sugar: Number(activeCalc.sugar) || 0,
-            sodium: Number(activeCalc.sodium) || 0
+            tdee: Number(activeCalc.tdee) || 0, carb: Number(activeCalc.carb) || 0,
+            protein: Number(activeCalc.protein) || 0, fat: Number(activeCalc.fat) || 0,
+            sugar: Number(activeCalc.sugar) || 0, sodium: Number(activeCalc.sodium) || 0
           });
         }
       }
     };
-
     fetchGoalData();
 
     const handleClickOutside = (event) => {
-      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
-        setShowCalendar(false);
-      }
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) setShowCalendar(false);
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [storageKey]);
+
+  const openLoginPrompt = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowLoginPrompt(true);
+  };
 
   const handleCalendarChange = (pickedDate) => {
     const yyyy = pickedDate.getFullYear();
     const mm = String(pickedDate.getMonth() + 1).padStart(2, "0");
     const dd = String(pickedDate.getDate()).padStart(2, "0");
     const pickedDateString = `${yyyy}-${mm}-${dd}`;
-
     setBaseDate(pickedDate);
     generateWeekForDate(pickedDate);
-
-    if (!selectedDates.includes(pickedDateString)) {
-      setSelectedDates([...selectedDates, pickedDateString]);
-    }
+    if (!selectedDates.includes(pickedDateString)) setSelectedDates([...selectedDates, pickedDateString]);
     setShowCalendar(false);
   };
 
   const calculateTotals = () => {
     let totalCal = 0, totalCarbs = 0, totalProtein = 0, totalFat = 0, totalSugar = 0, totalSodium = 0;
-
     meals.forEach((meal) => {
       totalCal += Number(meal.calPerUnit || 0) * Number(meal.qty || 0);
       if (meal.macros) {
@@ -169,7 +132,6 @@ function MyPlate() {
         totalSodium += Number(meal.macros.sodium || 0) * Number(meal.qty || 0);
       }
     });
-
     return { totalCal, totalCarbs, totalProtein, totalFat, totalSugar, totalSodium };
   };
 
@@ -191,52 +153,39 @@ function MyPlate() {
   };
 
   const toggleDateSelection = (dateString) => {
-    if (selectedDates.includes(dateString)) {
-      setSelectedDates(selectedDates.filter(d => d !== dateString));
-    } else {
-      setSelectedDates([...selectedDates, dateString]);
-    }
+    if (selectedDates.includes(dateString)) setSelectedDates(selectedDates.filter(d => d !== dateString));
+    else setSelectedDates([...selectedDates, dateString]);
   };
 
   const handleSavePlan = async () => {
-    if (meals.length === 0) {
-      return alert("กรุณาเพิ่มอาหารลงจานก่อน");
-    }
+    if (meals.length === 0) return alert("กรุณาเพิ่มอาหารลงจานก่อน");
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser?.user_id) { openLoginPrompt(); return; }
 
-    if (!storedUser?.user_id) {
-      setShowLoginPrompt(true);
-      return;
-    }
+    if (goalData.tdee === 0) { setShowCalcPrompt(true); return; }
 
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
-    const todayString = `${yyyy}-${mm}-${dd}`;
-
-    const finalDays = selectedDates.length > 0 ? selectedDates : [todayString];
+    const finalDays = selectedDates.length > 0 ? selectedDates : [`${yyyy}-${mm}-${dd}`];
 
     const payload = {
       user_id: storedUser.user_id,
       days: finalDays,
       total_calories: totals.totalCal,
       details: meals.map((m) => ({
-        meal_type: m.meal_type,
-        food_id: m.food_id,
-        quantity: m.qty,
-        total_calories: m.calPerUnit * m.qty
+        meal_type: m.meal_type, food_id: m.food_id,
+        quantity: m.qty, total_calories: m.calPerUnit * m.qty
       }))
     };
 
     try {
       const response = await fetch("http://localhost:5000/api/save-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
       if (response.ok) {
         alert("บันทึกแผนอาหารสำเร็จ!");
         localStorage.removeItem(storageKey);
@@ -254,83 +203,48 @@ function MyPlate() {
   return (
     <div className="my-plate-container">
 
+      {/* Popup: กรุณาเข้าสู่ระบบ */}
       {showLoginPrompt && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999
-          }}
-          onClick={() => setShowLoginPrompt(false)}
-        >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "20px",
-              boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
-              padding: "40px 36px",
-              maxWidth: "380px",
-              width: "90%",
-              textAlign: "center"
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ fontSize: "52px", marginBottom: "12px" }}>🔒</div>
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#333", marginBottom: "10px" }}>
-              กรุณาเข้าสู่ระบบ
-            </h3>
-            <p style={{ color: "#888", fontSize: "0.95rem", marginBottom: "28px", lineHeight: "1.7" }}>
-              คุณต้องเข้าสู่ระบบก่อน<br />
-              จึงจะสามารถบันทึกแผนอาหารได้<br />
-              <span style={{ color: "#4caf50", fontSize: "0.88rem" }}>
-                ✓ ข้อมูลในจานอาหารจะยังคงอยู่ครบ
+        <div className="prompt-overlay" onClick={() => setShowLoginPrompt(false)}>
+          <div className="prompt-card" onClick={(e) => e.stopPropagation()}>
+            <div className="login-prompt-icon">
+              <FaLock />
+            </div>
+            <h3>กรุณาเข้าสู่ระบบ</h3>
+            <p>
+              คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถบันทึกแผนอาหารได้<br />
+              <span className="prompt-warn">
+                <FaTriangleExclamation /> ข้อมูลในจานอาหารปัจจุบันจะไม่ถูกบันทึก
               </span>
             </p>
-            <button
-              onClick={() => {
-                setShowLoginPrompt(false);
-                navigate("/auth", {
-                  state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` }
-                });
-              }}
-              style={{
-                background: "linear-gradient(135deg, #ff9800, #f44336)",
-                color: "#fff",
-                border: "none",
-                borderRadius: "12px",
-                padding: "13px 0",
-                fontSize: "1rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                width: "100%",
-                marginBottom: "12px",
-                transition: "opacity 0.2s"
-              }}
-              onMouseOver={(e) => e.currentTarget.style.opacity = "0.88"}
-              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
-            >
+            <button className="prompt-btn-primary"
+              onClick={() => { setShowLoginPrompt(false); navigate("/auth", { state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` } }); }}>
               เข้าสู่ระบบ
             </button>
-            <button
-              onClick={() => setShowLoginPrompt(false)}
-              style={{
-                background: "transparent",
-                color: "#aaa",
-                border: "1.5px solid #e0e0e0",
-                borderRadius: "12px",
-                padding: "11px 0",
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                width: "100%",
-                transition: "border-color 0.2s"
-              }}
-              onMouseOver={(e) => e.currentTarget.style.borderColor = "#bbb"}
-              onMouseOut={(e) => e.currentTarget.style.borderColor = "#e0e0e0"}
-            >
+            <button className="prompt-btn-cancel" onClick={() => setShowLoginPrompt(false)}>
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Popup: ยังไม่ได้คำนวณพลังงาน */}
+      {showCalcPrompt && (
+        <div className="prompt-overlay" onClick={() => setShowCalcPrompt(false)}>
+          <div className="prompt-card" onClick={(e) => e.stopPropagation()}>
+            <div className="login-prompt-icon login-prompt-icon--blue">
+              <FaCalculator />
+            </div>
+            <h3>ยังไม่ได้คำนวณพลังงาน</h3>
+            <p>
+              กรุณาคำนวณพลังงานที่ร่างกายต้องการก่อน<br />
+              เพื่อให้ระบบสามารถตรวจสอบ<br />ความเหมาะสมของแผนอาหารได้
+            </p>
+            <button className="prompt-btn-primary"
+              onClick={() => { setShowCalcPrompt(false); navigate("/calculate"); }}>
+              ไปคำนวณพลังงาน
+            </button>
+            <button className="prompt-btn-cancel" onClick={() => setShowCalcPrompt(false)}>
               ยกเลิก
             </button>
           </div>
@@ -355,14 +269,12 @@ function MyPlate() {
       <div className="meals-list">
         {mealCategories.map((category) => {
           const categoryMeals = meals.filter((meal) => meal.meal_type === category.dbType);
-
           return (
             <div key={category.id} className="meal-section">
               <div className="meal-section-header">
                 <div className="ms-icon-box">{category.icon}</div>
                 <h2>{category.title}</h2>
               </div>
-
               {categoryMeals.length > 0 ? (
                 <div className="category-meals">
                   {categoryMeals.map((meal) => (
@@ -370,8 +282,7 @@ function MyPlate() {
                       <div className="cfi-image-wrapper">
                         <img
                           src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`}
-                          alt={meal.name}
-                          className="cfi-image"
+                          alt={meal.name} className="cfi-image"
                         />
                         <div className="cfi-overlay">
                           <h3 className="cfi-name">{meal.name}</h3>
@@ -392,11 +303,7 @@ function MyPlate() {
               ) : (
                 <p className="empty-meal">ยังไม่มีรายการอาหารสำหรับมื้อนี้</p>
               )}
-
-              <button
-                onClick={() => navigate(`/SearchFood?type=${category.title}&mode=${mode}`)}
-                className="add-meal-btn-wide"
-              >
+              <button onClick={() => navigate(`/SearchFood?type=${category.title}&mode=${mode}`)} className="add-meal-btn-wide">
                 + เพิ่มอาหารใน{category.title}
               </button>
             </div>
@@ -435,7 +342,9 @@ function MyPlate() {
             {currentWeekDays.map((day) => {
               const isSelected = selectedDates.includes(day.dateString);
               return (
-                <div key={day.dateString} className={`cute-date-item ${isSelected ? "selected" : ""} ${day.isToday ? "today" : ""}`} onClick={() => toggleDateSelection(day.dateString)}>
+                <div key={day.dateString}
+                  className={`cute-date-item ${isSelected ? "selected" : ""} ${day.isToday ? "today" : ""}`}
+                  onClick={() => toggleDateSelection(day.dateString)}>
                   <span className="day-label">{day.label}</span>
                   <div className="day-circle"><span className="day-number">{day.dayNum}</span></div>
                   {day.isToday && <span className="today-badge">วันนี้</span>}
@@ -457,13 +366,8 @@ function NutritionBar({ label, current, limit, unit, isFullWidth, className }) {
   const percentage = limit > 0 ? (current / limit) * 100 : 0;
   const fillWidth = Math.min(percentage, 100);
   let statusClass = "bar-normal";
-
-  if (current === 0) {
-    statusClass = "bar-empty";
-  } else if (percentage > 100) {
-    statusClass = "bar-exceeded";
-  }
-
+  if (current === 0) statusClass = "bar-empty";
+  else if (percentage > 100) statusClass = "bar-exceeded";
   const isExceeded = percentage > 100;
   const exceedAmount = current - limit;
 
@@ -473,9 +377,7 @@ function NutritionBar({ label, current, limit, unit, isFullWidth, className }) {
       <div className="plate-macro-track">
         <div className={`plate-macro-fill ${statusClass}`} style={{ width: `${fillWidth}%` }} />
         <div className="plate-macro-pill-text">
-          {Number(current || 0).toFixed(1)}
-          {" / "}
-          {limit > 0 ? Number(limit || 0).toFixed(0) : "0"} {unit}
+          {Number(current || 0).toFixed(1)} / {limit > 0 ? Number(limit || 0).toFixed(0) : "0"} {unit}
         </div>
       </div>
       {isExceeded && (
