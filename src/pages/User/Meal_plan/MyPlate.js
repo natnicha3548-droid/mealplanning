@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaTrash, FaPlus, FaMinus, FaSun, FaCloudSun, FaMoon,
   FaCalendarDays, FaAngleDown, FaAngleUp,
-  FaLock, FaCalculator, FaTriangleExclamation
+  FaLock, FaCalculator
 } from "react-icons/fa6";
 import "./MyPlate.css";
 import Calendar from "react-calendar";
@@ -57,11 +57,21 @@ function MyPlate() {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
-    if (storedUser?.user_id && location.state?.justLoggedIn) {
-      localStorage.removeItem(storageKey);
+    // ✅ guest → โชว์ข้อมูลจานเฉพาะเมื่อมี activeCalcResult (session ยังอยู่)
+    // ปิดแท็บ → sessionStorage หาย → จานว่าง แต่ localStorage ยังเก็บไว้
+    // กดคำนวณพลังงานใหม่ → sessionStorage กลับมา → ข้อมูลจานเดิมขึ้น
+    let draftPlate = [];
+    if (storedUser?.user_id) {
+      // member → โชว์ปกติ
+      draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
+    } else {
+      // guest → ต้องมี activeCalcResult ก่อน
+      const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+      if (activeCalc) {
+        draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
+      }
+      // ถ้าไม่มี activeCalcResult → draftPlate = [] แต่ localStorage ยังเก็บไว้อยู่
     }
-
-    const draftPlate = JSON.parse(localStorage.getItem(storageKey)) || [];
     setMeals(draftPlate);
 
     const today = new Date();
@@ -213,13 +223,16 @@ function MyPlate() {
             <h3>กรุณาเข้าสู่ระบบ</h3>
             <p>
               คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถบันทึกแผนอาหารได้<br />
-              <span className="prompt-warn">
-                <FaTriangleExclamation /> ข้อมูลในจานอาหารปัจจุบันจะไม่ถูกบันทึก
+              <span style={{ color: "#4caf50", fontWeight: "600", fontSize: "0.9rem" }}>
+                ✓ รายการอาหารที่เลือกไว้จะยังคงอยู่หลังเข้าสู่ระบบ
               </span>
             </p>
             <button className="prompt-btn-primary"
-              onClick={() => { setShowLoginPrompt(false); navigate("/auth", { state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` } }); }}>
-              เข้าสู่ระบบ
+              onClick={() => {
+                setShowLoginPrompt(false);
+                navigate("/auth", { state: { returnTo: `/MyPlate${mode !== "normal" ? `?mode=${mode}` : ""}` } });
+              }}>
+              เข้าสู่ระบบ / สมัครสมาชิก
             </button>
             <button className="prompt-btn-cancel" onClick={() => setShowLoginPrompt(false)}>
               ยกเลิก

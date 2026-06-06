@@ -168,8 +168,8 @@ function App() {
       try {
         const res = await fetch(`http://localhost:5000/api/get-calculation/${user.user_id}`);
         const data = await res.json();
-
         if (data) {
+          // มีข้อมูลใน DB → ใช้ DB และล้าง guest
           setCalcResult({
             bmi: data.bmi,
             bmr: data.bmr,
@@ -188,14 +188,36 @@ function App() {
             activity: data.activity,
             disease: data.disease
           });
+          // ล้าง guest session เพราะมีข้อมูล DB แล้ว
+          sessionStorage.removeItem("activeCalcResult");
         } else {
-          setCalcResult(null);
-          setFormData(null);
+          // user ใหม่ยังไม่มีข้อมูลใน DB → คงข้อมูล guest ไว้ก่อน
+          const guestCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
+          if (guestCalc) {
+            setCalcResult({
+              bmi: guestCalc.bmi,
+              bmr: guestCalc.bmr,
+              tdee: guestCalc.tdee,
+              carb: guestCalc.carb,
+              protein: guestCalc.protein,
+              fat: guestCalc.fat,
+              sugar: guestCalc.sugar,
+              sodium: guestCalc.sodium
+            });
+            setFormData({
+              weight: guestCalc.weight,
+              height: guestCalc.height,
+              age: guestCalc.age,
+              gender: guestCalc.gender,
+              activity: guestCalc.activity,
+              disease: guestCalc.diseases
+            });
+            // ยังไม่ล้าง sessionStorage จนกว่า user จะบันทึกข้อมูลใน DB
+          } else {
+            setCalcResult(null);
+            setFormData(null);
+          }
         }
-
-        // ล้างข้อมูล guest ออกหลัง login
-        sessionStorage.removeItem("activeCalcResult");
-
       } catch (err) {
         console.error("LOAD CALC ERROR after login:", err);
       }
