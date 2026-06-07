@@ -17,7 +17,6 @@ import {
   LuTrendingDown, 
   LuMinus,
   LuCalendarDays,
-  LuDownload, 
   LuFileSpreadsheet, 
   LuFileText,
   LuUserPlus,  // <--- นำเข้าไอคอนเพิ่ม
@@ -25,7 +24,6 @@ import {
 } from "react-icons/lu";
 import { FaChartPie } from "react-icons/fa";
 import * as XLSX from 'xlsx';
-import html2pdf from 'html2pdf.js';
 import './DashboardReport.css';
 
 function DashboardReport() {

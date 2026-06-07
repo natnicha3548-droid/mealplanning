@@ -13,54 +13,13 @@ import "./MenuFood.css";
 function MenuFood() {
     const navigate = useNavigate();
 
-    const tabsRef = useRef(null);
-    const isDragging = useRef(false);
-    const startX = useRef(0);
-    const scrollLeft = useRef(0);
-
-    const onMouseDown = useCallback((e) => {
-        isDragging.current = true;
-        startX.current = e.pageX - tabsRef.current.offsetLeft;
-        scrollLeft.current = tabsRef.current.scrollLeft;
-        tabsRef.current.style.cursor = "grabbing";
-        tabsRef.current.style.userSelect = "none";
-    }, []);
-
-    const onMouseMove = useCallback((e) => {
-        if (!isDragging.current) return;
-        e.preventDefault();
-        const x = e.pageX - tabsRef.current.offsetLeft;
-        const walk = (x - startX.current) * 1.5;
-        tabsRef.current.scrollLeft = scrollLeft.current - walk;
-    }, []);
-
-    const onMouseUp = useCallback(() => {
-        isDragging.current = false;
-        if (tabsRef.current) {
-            tabsRef.current.style.cursor = "grab";
-            tabsRef.current.style.userSelect = "";
-        }
-    }, []);
-
-    const onWheel = useCallback((e) => {
-        if (!tabsRef.current) return;
-        e.preventDefault();
-        tabsRef.current.scrollLeft += e.deltaY * 0.8;
-    }, []);
-
-    useEffect(() => {
-        const el = tabsRef.current;
-        if (!el) return;
-        el.style.cursor = "grab";
-        el.addEventListener("wheel", onWheel, { passive: false });
-        return () => el.removeEventListener("wheel", onWheel);
-    }, [onWheel]);
-
     const [foods, setFoods] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("all");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
     const [selectedFood, setSelectedFood] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
@@ -135,6 +94,29 @@ function MenuFood() {
         }
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
+
+    // 🌟 ฟังก์ชันหาชื่อหมวดหมู่ปัจจุบันมาแสดงใน Dropdown
+    const getDropdownLabel = () => {
+        if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
+        const found = categories.find(c => c.category_id === activeCategory);
+        return found ? found.category_name : "ทั้งหมด";
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        // เปิดการรับฟัง Event เมื่อ Component โหลด
+        document.addEventListener("mousedown", handleClickOutside);
+        
+        // คืนค่า Event เมื่อ Component ถูกทำลาย
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -319,34 +301,51 @@ function MenuFood() {
                 </div>
             </div>
 
-            {/* CATEGORY TABS */}
-            <div
-                className="category-tabs"
-                ref={tabsRef}
-                onMouseDown={onMouseDown}
-                onMouseMove={onMouseMove}
-                onMouseUp={onMouseUp}
-                onMouseLeave={onMouseUp}
-            >
-                <button
-                    className={activeCategory === "all" ? "active" : ""}
-                    onClick={() => setActiveCategory("all")}
-                >
-                    ทั้งหมด
-                </button>
-
-                {categories.map((cat) => (
-                    <button
-                        key={cat.category_id}
-                        className={activeCategory === cat.category_id ? "active" : ""}
-                        onClick={() => setActiveCategory(cat.category_id)}
+            {/* ================= TOOLBAR: DROPDOWN & FAVORITE ================= */}
+            <div className="menu-toolbar">
+                
+                {/* 1. Category Dropdown */}
+                <div className="custom-dropdown" ref={dropdownRef}>
+                    <div
+                        className="dropdown-selected"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        {cat.category_name}
-                    </button>
-                ))}
+                        {getDropdownLabel()}
+                        <span className={`arrow ${isDropdownOpen ? "open" : ""}`}>
+                            ▼
+                        </span>
+                    </div>
 
+                    {isDropdownOpen && (
+                        <div className="dropdown-menu">
+                            <div
+                                className="dropdown-item"
+                                onClick={() => {
+                                    setActiveCategory("all");
+                                    setIsDropdownOpen(false);
+                                }}
+                            >
+                                ทั้งหมด
+                            </div>
+                            {categories.map((cat) => (
+                                <div
+                                    key={cat.category_id}
+                                    className="dropdown-item"
+                                    onClick={() => {
+                                        setActiveCategory(cat.category_id);
+                                        setIsDropdownOpen(false);
+                                    }}
+                                >
+                                    {cat.category_name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* 2. Favorite Button (Separate) */}
                 <button
-                    className={activeCategory === "fav" ? "active" : ""}
+                    className={`fav-filter-btn ${activeCategory === "fav" ? "active" : ""}`}
                     onClick={() => {
                         if (!storedUser) {
                             openLoginPrompt();
@@ -355,9 +354,9 @@ function MenuFood() {
                         setActiveCategory("fav");
                     }}
                 >
-                    <FaHeart size={16} />
-                    รายการโปรด
+                    <FaHeart size={16} /> รายการโปรด
                 </button>
+
             </div>
 
             {/* GRID */}

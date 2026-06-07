@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
     FaHeart,
-    FaRegHeart,
     FaUtensils,
     FaCalendarAlt,
     FaSun,
@@ -25,6 +24,7 @@ function FavFood() {
     const [favFoods, setFavFoods] = useState([]);
     const [favPlans, setFavPlans] = useState([]);
     const [activeTab, setActiveTab] = useState("foods");
+    const [categories, setCategories] = useState([]);
 
     // Modal state
     const [selectedFood, setSelectedFood] = useState(null);
@@ -33,7 +33,6 @@ function FavFood() {
 
     const formatNumber = (value) => Number(value || 0).toFixed(0);
 
-    // แปลง recipe_details จาก JSON string → array ของ sections
     const parseRecipeDetails = (raw) => {
         if (!raw) return [];
         try {
@@ -49,17 +48,15 @@ function FavFood() {
                     return hasName || hasBlocks;
                 });
             }
-        } catch (e) {
-            // ไม่ใช่ JSON ที่ถูกต้อง
-        }
+        } catch (e) {}
         return [];
     };
 
     useEffect(() => {
         fetchFavorites();
+        fetchCategories();
     }, []);
 
-    // ล็อก scroll ตอนเปิด modal
     useEffect(() => {
         if (selectedFood) {
             document.body.classList.add("modal-open");
@@ -68,6 +65,86 @@ function FavFood() {
         }
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
+
+    // ================= FETCH CATEGORIES =================
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/categories");
+            const data = await response.json();
+            setCategories(data.filter((cat) => cat.status === "active"));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // ================= GROUP PLAN ROWS (แก้ Cartesian product) =================
+    // API ส่งแถวหลายแถวต่อแผน (breakfast × lunch × dinner)
+    // ต้อง deduplicate แต่ละมื้อแยกกัน
+
+    const groupPlanData = (plansRaw) => {
+        const planMap = {};
+
+        plansRaw.forEach((row) => {
+            const key = row.favorite_id;
+
+            if (!planMap[key]) {
+                planMap[key] = {
+                    favorite_id: row.favorite_id,
+                    plan_name: row.plan_name,
+                    plan_date: row.plan_date,
+                    total_calories: row.total_calories,
+                    carbs: row.carbs,
+                    protein: row.protein,
+                    fat: row.fat,
+                    sugar: row.sugar,
+                    sodium: row.sodium,
+                    _bfSet: new Set(),
+                    _lSet: new Set(),
+                    _dSet: new Set(),
+                    meals: { breakfast: [], lunch: [], dinner: [] },
+                };
+            }
+
+            const p = planMap[key];
+
+            // ดึงเมนูเช้าที่ไม่ซ้ำ
+            if (row.breakfast_name && !p._bfSet.has(row.breakfast_name)) {
+                p._bfSet.add(row.breakfast_name);
+                p.meals.breakfast.push({
+                    food_name: row.breakfast_name,
+                    image: row.breakfast_image,
+                    calories: row.breakfast_cal,
+                    serving: row.breakfast_serving,
+                });
+            }
+
+            // ดึงเมนูกลางวันที่ไม่ซ้ำ
+            if (row.lunch_name && !p._lSet.has(row.lunch_name)) {
+                p._lSet.add(row.lunch_name);
+                p.meals.lunch.push({
+                    food_name: row.lunch_name,
+                    image: row.lunch_image,
+                    calories: row.lunch_cal,
+                    serving: row.lunch_serving,
+                });
+            }
+
+            // ดึงเมนูเย็นที่ไม่ซ้ำ
+            if (row.dinner_name && !p._dSet.has(row.dinner_name)) {
+                p._dSet.add(row.dinner_name);
+                p.meals.dinner.push({
+                    food_name: row.dinner_name,
+                    image: row.dinner_image,
+                    calories: row.dinner_cal,
+                    serving: row.dinner_serving,
+                });
+            }
+        });
+
+        // ลบ Set ออกก่อน return
+        return Object.values(planMap).map(({ _bfSet, _lSet, _dSet, ...plan }) => plan);
+    };
 
     // ================= FETCH FAVORITES =================
 
@@ -82,7 +159,7 @@ function FavFood() {
             const data = await response.json();
 
             setFavFoods(data.foods || []);
-            setFavPlans(data.plans || []);
+            setFavPlans(groupPlanData(data.plans || []));
         } catch (error) {
             console.log(error);
         }
@@ -145,19 +222,40 @@ function FavFood() {
         setQuantity(1);
     };
 
-    // ================= CATEGORY =================
+    // ================= CATEGORY GROUPING (dynamic from admin) =================
 
-    const savoryFoods = favFoods.filter(
-        (food) => food.category && food.category.trim() === "ของคาว"
-    );
-    const dessertFoods = favFoods.filter(
-        (food) => food.category && food.category.trim() === "ของหวาน"
-    );
-    const otherFoods = favFoods.filter(
-        (food) =>
-            !food.category ||
-            (food.category.trim() !== "ของคาว" && food.category.trim() !== "ของหวาน")
-    );
+    const getCategoryGroups = () => {
+        const groups = [];
+        const matchedFoodIds = new Set();
+
+        categories.forEach((cat) => {
+            const catName = cat.category_name.trim();
+            const foods = favFoods.filter(
+                (food) => food.category && food.category.trim() === catName
+            );
+            if (foods.length > 0) {
+                groups.push({ name: catName, foods });
+                foods.forEach((f) => matchedFoodIds.add(f.favorite_id));
+            }
+        });
+
+        const otherFoods = favFoods.filter(
+            (food) => !matchedFoodIds.has(food.favorite_id)
+        );
+        if (otherFoods.length > 0) {
+            const otherByCategory = {};
+            otherFoods.forEach((food) => {
+                const key = food.category?.trim() || "อื่น ๆ";
+                if (!otherByCategory[key]) otherByCategory[key] = [];
+                otherByCategory[key].push(food);
+            });
+            Object.entries(otherByCategory).forEach(([name, foods]) => {
+                groups.push({ name, foods });
+            });
+        }
+
+        return groups;
+    };
 
     // ================= FOOD CARD =================
 
@@ -199,6 +297,75 @@ function FavFood() {
         </div>
     );
 
+    // ================= MEAL ROW RENDERER =================
+
+    const renderMealRows = (plan) => {
+        const themeStyles = {
+            breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={24} />, label: "มื้อเช้า" },
+            lunch:     { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} />, label: "มื้อกลางวัน" },
+            dinner:    { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} />, label: "มื้อเย็น" },
+        };
+
+        const mealTypes = ['breakfast', 'lunch', 'dinner'];
+        const visibleGroups = mealTypes.filter((type) => {
+            const foods = plan.meals[type];
+            return foods && foods.length > 0;
+        });
+
+        return visibleGroups.map((type, groupIdx) => {
+            const foods = plan.meals[type];
+            const theme = themeStyles[type];
+            const isLast = groupIdx === visibleGroups.length - 1;
+
+            return (
+                <div
+                    key={type}
+                    style={{
+                        borderBottom: isLast ? "none" : "1px dashed #e56589ae",
+                        marginBottom: isLast ? 0 : "4px",
+                        paddingBottom: isLast ? 0 : "4px",
+                    }}
+                >
+                    {foods.map((food, idx) => (
+                        <div className="meal-row" key={`${type}-${idx}`}>
+                            <div className="meal-type-stacked">
+                                {idx === 0 ? (
+                                    <>
+                                        <div
+                                            className="meal-icon-circle"
+                                            style={{ backgroundColor: theme.bg, color: theme.color }}
+                                        >
+                                            {theme.icon}
+                                        </div>
+                                        <span style={{ color: theme.color, fontWeight: "700", marginTop: "8px", fontSize: "0.95rem" }}>
+                                            {theme.label}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <div style={{ width: "56px" }} />
+                                )}
+                            </div>
+                            <img
+                                src={
+                                    food.image
+                                        ? food.image.startsWith("http") ? food.image : `http://localhost:5000${food.image}`
+                                        : "https://via.placeholder.com/120"
+                                }
+                                alt={food.food_name}
+                                className="meal-image"
+                            />
+                            <div className="meal-info">
+                                <h3>{food.food_name}</h3>
+                                {food.serving && <span className="fav-portion-badge">{food.serving}</span>}
+                            </div>
+                            <div className="meal-cal-right">{parseInt(food.calories || 0)} kcal</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        });
+    };
+
     return (
         <div className="favorite-page">
 
@@ -234,30 +401,14 @@ function FavFood() {
             {/* ================= FOOD ================= */}
             {activeTab === "foods" && (
                 <>
-                    {savoryFoods.length > 0 && (
-                        <div className="food-category">
+                    {getCategoryGroups().map((group) => (
+                        <div className="food-category" key={group.name}>
                             <div className="section-top">
-                                <h2>ของคาว ({savoryFoods.length})</h2>
+                                <h2>{group.name} ({group.foods.length})</h2>
                             </div>
-                            {renderFoodCards(savoryFoods)}
+                            {renderFoodCards(group.foods)}
                         </div>
-                    )}
-                    {dessertFoods.length > 0 && (
-                        <div className="food-category">
-                            <div className="section-top">
-                                <h2>ของหวาน ({dessertFoods.length})</h2>
-                            </div>
-                            {renderFoodCards(dessertFoods)}
-                        </div>
-                    )}
-                    {otherFoods.length > 0 && (
-                        <div className="food-category">
-                            <div className="section-top">
-                                <h2>อื่น ๆ ({otherFoods.length})</h2>
-                            </div>
-                            {renderFoodCards(otherFoods)}
-                        </div>
-                    )}
+                    ))}
                     {favFoods.length === 0 && (
                         <div className="empty-box">ยังไม่มีรายการโปรดอาหารจ้า</div>
                     )}
@@ -293,48 +444,7 @@ function FavFood() {
                                         </div>
                                     </div>
 
-                                    {['breakfast', 'lunch', 'dinner'].map((type) => {
-                                        const name = plan[`${type}_name`];
-                                        const image = plan[`${type}_image`];
-                                        const cal = plan[`${type}_cal`];
-                                        const serving = plan[`${type}_serving`];
-                                        if (!name) return null;
-
-                                        const themeStyles = {
-                                            breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={24} /> },
-                                            lunch: { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} /> },
-                                            dinner: { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} /> }
-                                        };
-                                        const theme = themeStyles[type];
-                                        const label = type === 'breakfast' ? 'มื้อเช้า' : type === 'lunch' ? 'มื้อกลางวัน' : 'มื้อเย็น';
-
-                                        return (
-                                            <div className="meal-row" key={type}>
-                                                <div className="meal-type-stacked">
-                                                    <div className="meal-icon-circle" style={{ backgroundColor: theme.bg, color: theme.color }}>
-                                                        {theme.icon}
-                                                    </div>
-                                                    <span style={{ color: theme.color, fontWeight: "700", marginTop: "8px", fontSize: "0.95rem" }}>
-                                                        {label}
-                                                    </span>
-                                                </div>
-                                                <img
-                                                    src={
-                                                        image
-                                                            ? image.startsWith("http") ? image : `http://localhost:5000${image}`
-                                                            : "https://via.placeholder.com/120"
-                                                    }
-                                                    alt={name}
-                                                    className="meal-image"
-                                                />
-                                                <div className="meal-info">
-                                                    <h3>{name}</h3>
-                                                    {serving && <span className="fav-portion-badge">{serving}</span>}
-                                                </div>
-                                                <div className="meal-cal-right">{parseInt(cal || 0)} kcal</div>
-                                            </div>
-                                        );
-                                    })}
+                                    {renderMealRows(plan)}
 
                                     <div className="plan-summary">
                                         <div className="summary-box">
@@ -406,7 +516,6 @@ function FavFood() {
                                 <FaHeart />
                             </button>
 
-                            {/* ===== LEFT ===== */}
                             <div className="fav-modal-left">
                                 <img
                                     src={
@@ -418,7 +527,6 @@ function FavFood() {
                                     className="fav-modal-image"
                                 />
 
-                                {/* คำอธิบายสั้นๆ */}
                                 {selectedFood.description && selectedFood.description.trim() !== "" && (
                                     <div className="fav-modal-section">
                                         <h4>รายละเอียดอาหาร</h4>
@@ -428,7 +536,6 @@ function FavFood() {
                                     </div>
                                 )}
 
-                                {/* recipe_details — ส่วนผสม/วิธีทำ */}
                                 {recipeSections.length > 0 && (
                                     <div className="fav-modal-section">
                                         <h4>ส่วนผสม / วิธีทำ</h4>
@@ -454,7 +561,6 @@ function FavFood() {
                                     </div>
                                 )}
 
-                                {/* หมายเหตุ */}
                                 {selectedFood.notes && selectedFood.notes.trim() !== "" && (
                                     <div className="fav-modal-section">
                                         <h4>หมายเหตุ</h4>
@@ -465,7 +571,6 @@ function FavFood() {
                                 )}
                             </div>
 
-                            {/* ===== RIGHT ===== */}
                             <div className="fav-modal-right">
                                 <h2>{selectedFood.food_name}</h2>
 
@@ -505,7 +610,6 @@ function FavFood() {
                                     </div>
                                 </div>
 
-                                {/* เลือกมื้ออาหาร */}
                                 <div className="fav-modal-section">
                                     <h4>เลือกมื้ออาหาร</h4>
                                     <div className="fav-meal-buttons">
@@ -530,7 +634,6 @@ function FavFood() {
                                     </div>
                                 </div>
 
-                                {/* จำนวน */}
                                 <div className="fav-qty-section">
                                     <h4>จำนวน</h4>
                                     <div className="fav-qty-control">

@@ -1022,3 +1022,120 @@ body.modal-open {
     gap: 10px;
   }
 }
+
+
+/* ================= TOOLBAR (Dropdown + Favorite) ================= */
+.sf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+/* CUSTOM DROPDOWN */
+.sf-custom-dropdown {
+  position: relative;
+  min-width: 180px;
+  width: fit-content;
+  z-index: 1000;
+}
+
+.sf-dropdown-selected {
+  width: 100%;
+  height: 52px;
+  padding: 0 20px;
+  border: 2px solid #ffe0cd;
+  border-radius: 25px;
+  background: #fff;
+  color: #ff8c42;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Kanit', sans-serif;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+}
+
+.sf-dropdown-selected:hover {
+  border-color: #ffb78c;
+}
+
+.sf-arrow {
+  font-size: 10px;
+  transition: 0.3s;
+}
+
+.sf-arrow.open {
+  transform: rotate(180deg);
+}
+
+.sf-dropdown-menu {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  z-index: 1000;
+  border: 1px solid #ffe0cd;
+}
+
+.sf-dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-radius: 12px;
+  color: #ff8c42;
+  font-weight: 500;
+  transition: 0.2s;
+  font-family: 'Kanit', sans-serif;
+}
+
+.sf-dropdown-item:hover {
+  background: #fff9f5;
+}
+
+/* FAVORITE BUTTON */
+.sf-fav-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px solid #ffe0cd;
+  outline: none;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 25px;
+  background: white;
+  color: #ff8c42;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  transition: 0.3s;
+}
+
+.sf-fav-filter-btn:hover {
+  border-color: #ffb78c;
+  background: #fff9f5;
+  transform: translateY(-2px);
+}
+
+.sf-fav-filter-btn.active {
+  background: linear-gradient(135deg, #ff9b54, #ff7b2c);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
+}
+
+.sf-fav-filter-btn svg {
+  transition: 0.3s;
+}

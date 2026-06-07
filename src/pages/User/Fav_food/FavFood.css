@@ -359,7 +359,7 @@
     align-items: center;
     gap: 20px;
     padding: 20px 0;
-    border-bottom: 1px dashed #e56589ae;
+    /* border-bottom: 1px dashed #e56589ae; */
 }
 
 .meal-row:last-of-type {

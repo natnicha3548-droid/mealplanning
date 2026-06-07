@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   FaChevronLeft,
@@ -29,6 +29,8 @@ function SearchFood() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null); 
   const [selectedFood, setSelectedFood] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [favFoodIds, setFavFoodIds] = useState([]);
@@ -108,6 +110,25 @@ function SearchFood() {
     }
     return () => document.body.classList.remove("modal-open");
   }, [selectedFood]);
+
+
+  // 3. เพิ่มฟังก์ชันดึง label ของ dropdown
+  const getDropdownLabel = () => {
+      if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
+      const found = categories.find(c => c.category_id === activeCategory);
+      return found ? found.category_name : "ทั้งหมด";
+  };
+
+  // 2. เพิ่ม useEffect สำหรับดักคลิกข้างนอก (วางไว้ใกล้กับ useEffect อื่นๆ)
+  useEffect(() => {
+      const handleClickOutside = (event) => {
+          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+              setIsDropdownOpen(false);
+          }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -336,27 +357,50 @@ function SearchFood() {
         />
       </div>
 
-      {/* CATEGORY TABS — dynamic from API */}
-      <div className="sf-category-tabs">
-        <button
-          className={`sf-tab ${activeCategory === "all" ? "active" : ""}`}
-          onClick={() => setActiveCategory("all")}
-        >
-          ทั้งหมด
-        </button>
-
-        {categories.map((cat) => (
-          <button
-            key={cat.category_id}
-            className={`sf-tab ${activeCategory === cat.category_id ? "active" : ""}`}
-            onClick={() => setActiveCategory(cat.category_id)}
+      {/* ================= TOOLBAR: DROPDOWN & FAVORITE ================= */}
+      <div className="sf-toolbar">
+        {/* 1. Category Dropdown */}
+        <div className="sf-custom-dropdown" ref={dropdownRef}>
+          <div
+            className="sf-dropdown-selected"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {cat.category_name}
-          </button>
-        ))}
+            {getDropdownLabel()}
+            <span className={`sf-arrow ${isDropdownOpen ? "open" : ""}`}>
+              ▼
+            </span>
+          </div>
 
+          {isDropdownOpen && (
+            <div className="sf-dropdown-menu">
+              <div
+                className="sf-dropdown-item"
+                onClick={() => {
+                  setActiveCategory("all");
+                  setIsDropdownOpen(false);
+                }}
+              >
+                ทั้งหมด
+              </div>
+              {categories.map((cat) => (
+                <div
+                  key={cat.category_id}
+                  className="sf-dropdown-item"
+                  onClick={() => {
+                    setActiveCategory(cat.category_id);
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  {cat.category_name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 2. Favorite Button */}
         <button
-          className={`sf-tab ${activeCategory === "fav" ? "active" : ""}`}
+          className={`sf-fav-filter-btn ${activeCategory === "fav" ? "active" : ""}`}
           onClick={() => {
             if (!storedUser) {
               setShowLoginPrompt(true);
@@ -365,7 +409,7 @@ function SearchFood() {
             setActiveCategory("fav");
           }}
         >
-          <FaHeart size={14} />
+          <FaHeart size={16} color={activeCategory === "fav" ? "white" : "#ff5a5f"} />
           รายการโปรด
         </button>
       </div>
