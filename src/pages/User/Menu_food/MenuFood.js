@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import {
     FaSearch, FaHeart, FaRegHeart, FaLock,
-    FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle
+    FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle,
+    FaTimes
 } from "react-icons/fa";
 import { MdDinnerDining } from "react-icons/md";
 import { LuSoup } from "react-icons/lu";
@@ -11,6 +12,49 @@ import "./MenuFood.css";
 
 function MenuFood() {
     const navigate = useNavigate();
+
+    const tabsRef = useRef(null);
+    const isDragging = useRef(false);
+    const startX = useRef(0);
+    const scrollLeft = useRef(0);
+
+    const onMouseDown = useCallback((e) => {
+        isDragging.current = true;
+        startX.current = e.pageX - tabsRef.current.offsetLeft;
+        scrollLeft.current = tabsRef.current.scrollLeft;
+        tabsRef.current.style.cursor = "grabbing";
+        tabsRef.current.style.userSelect = "none";
+    }, []);
+
+    const onMouseMove = useCallback((e) => {
+        if (!isDragging.current) return;
+        e.preventDefault();
+        const x = e.pageX - tabsRef.current.offsetLeft;
+        const walk = (x - startX.current) * 1.5;
+        tabsRef.current.scrollLeft = scrollLeft.current - walk;
+    }, []);
+
+    const onMouseUp = useCallback(() => {
+        isDragging.current = false;
+        if (tabsRef.current) {
+            tabsRef.current.style.cursor = "grab";
+            tabsRef.current.style.userSelect = "";
+        }
+    }, []);
+
+    const onWheel = useCallback((e) => {
+        if (!tabsRef.current) return;
+        e.preventDefault();
+        tabsRef.current.scrollLeft += e.deltaY * 0.8;
+    }, []);
+
+    useEffect(() => {
+        const el = tabsRef.current;
+        if (!el) return;
+        el.style.cursor = "grab";
+        el.addEventListener("wheel", onWheel, { passive: false });
+        return () => el.removeEventListener("wheel", onWheel);
+    }, [onWheel]);
 
     const [foods, setFoods] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -29,6 +73,11 @@ function MenuFood() {
 
     const formatNumber = (value) => Number(value || 0).toFixed(0);
 
+    const [recommendations, setRecommendations] = useState([]);
+    const [showRecommendModal, setShowRecommendModal] = useState(false);
+    const [addedFood, setAddedFood] = useState(null);
+    const [fromRecommend, setFromRecommend] = useState(false);
+
     const parseRecipeDetails = (raw) => {
         if (!raw) return [];
         try {
@@ -45,6 +94,37 @@ function MenuFood() {
             }
         } catch (e) { }
         return [];
+    };
+
+    const getFoodData = (foodName) => {
+        return foods.find(
+            (f) => f.food_name?.toLowerCase() === foodName?.toLowerCase()
+        ) || null;
+    };
+
+    const getFoodImage = (food) => {
+        if (!food?.image) return null;
+        return food.image.startsWith("http")
+            ? food.image
+            : `http://localhost:5000${food.image}`;
+    };
+
+    const handleCloseSelectedFood = () => {
+        if (fromRecommend) {
+            setSelectedFood(null);
+            setFromRecommend(false);
+        } else {
+            setSelectedFood(null);
+        }
+    };
+
+    const openFoodFromRecommend = (foodName) => {
+        const foodData = getFoodData(foodName);
+        if (!foodData) return;
+        setSelectedFood(foodData);
+        setSelectedMeal("breakfast");
+        setQuantity(1);
+        setFromRecommend(true);
     };
 
     useEffect(() => {
@@ -90,6 +170,7 @@ function MenuFood() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         setShowLoginPrompt(true);
     };
+
     const toggleFavorite = async (e, foodId) => {
         e.stopPropagation();
         if (!storedUser) {
@@ -133,9 +214,26 @@ function MenuFood() {
             },
         });
         localStorage.setItem("myplate", JSON.stringify(myPlate));
-        alert("เพิ่มลงจานอาหารแล้ว");
+
+        const foodForModal = selectedFood;
+        setAddedFood(foodForModal);
         setSelectedFood(null);
+        setFromRecommend(false);
         setQuantity(1);
+
+        fetch(
+            `http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}`
+        )
+            .then(res => res.json())
+            .then(data => {
+                setRecommendations(data || []);
+                setShowRecommendModal(true);
+            })
+            .catch(err => {
+                console.error(err);
+                setRecommendations([]);
+                setShowRecommendModal(true);
+            });
     };
 
     const filteredFoods = useMemo(() => {
@@ -159,90 +257,36 @@ function MenuFood() {
             {/* ================= LOGIN PROMPT MODAL ================= */}
             {showLoginPrompt && (
                 <div
-                    style={{
-                        position: "fixed",
-                        inset: 0,
-                        background: "rgba(0,0,0,0.45)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        zIndex: 9999
-                    }}
+                    className="login-prompt-overlay"
                     onClick={() => setShowLoginPrompt(false)}
                 >
                     <div
-                        style={{
-                            background: "#fff",
-                            borderRadius: "20px",
-                            boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
-                            padding: "40px 36px",
-                            maxWidth: "380px",
-                            width: "90%",
-                            textAlign: "center"
-                        }}
+                        className="login-prompt-modal"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="login-prompt-icon">
                             <FaLock />
                         </div>
-                        <h3 style={{
-                            fontSize: "1.25rem",
-                            fontWeight: "700",
-                            color: "#333",
-                            marginBottom: "10px"
-                        }}>
-                            กรุณาเข้าสู่ระบบ
-                        </h3>
-                        <p style={{
-                            color: "#888",
-                            fontSize: "0.95rem",
-                            marginBottom: "28px",
-                            lineHeight: "1.6"
-                        }}>
+                        <h3 className="login-prompt-title">กรุณาเข้าสู่ระบบ</h3>
+                        <p className="login-prompt-desc">
                             คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถเพิ่มรายการโปรดได้
                         </p>
 
                         <button
+                            className="login-prompt-btn-primary"
                             onClick={() => {
                                 setShowLoginPrompt(false);
                                 navigate("/auth", {
                                     state: { returnTo: "/menu" }
                                 });
                             }}
-                            style={{
-                                background: "linear-gradient(135deg, #ff9800, #f44336)",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "12px",
-                                padding: "13px 0",
-                                fontSize: "1rem",
-                                fontWeight: "700",
-                                cursor: "pointer",
-                                width: "100%",
-                                marginBottom: "12px",
-                                transition: "opacity 0.2s"
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.opacity = "0.88"}
-                            onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
                         >
                             เข้าสู่ระบบ
                         </button>
 
                         <button
+                            className="login-prompt-btn-cancel"
                             onClick={() => setShowLoginPrompt(false)}
-                            style={{
-                                background: "transparent",
-                                color: "#aaa",
-                                border: "1.5px solid #e0e0e0",
-                                borderRadius: "12px",
-                                padding: "11px 0",
-                                fontSize: "0.95rem",
-                                cursor: "pointer",
-                                width: "100%",
-                                transition: "border-color 0.2s"
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.borderColor = "#bbb"}
-                            onMouseOut={(e) => e.currentTarget.style.borderColor = "#e0e0e0"}
                         >
                             ยกเลิก
                         </button>
@@ -276,7 +320,14 @@ function MenuFood() {
             </div>
 
             {/* CATEGORY TABS */}
-            <div className="category-tabs">
+            <div
+                className="category-tabs"
+                ref={tabsRef}
+                onMouseDown={onMouseDown}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
+                onMouseLeave={onMouseUp}
+            >
                 <button
                     className={activeCategory === "all" ? "active" : ""}
                     onClick={() => setActiveCategory("all")}
@@ -322,6 +373,7 @@ function MenuFood() {
                                 setSelectedFood(food);
                                 setSelectedMeal("breakfast");
                                 setQuantity(1);
+                                setFromRecommend(false);
                             }}
                         >
                             <button
@@ -351,19 +403,29 @@ function MenuFood() {
                 )}
             </div>
 
-            {/* MODAL */}
+            {/* ================= FOOD DETAIL MODAL ================= */}
             {selectedFood && (() => {
                 const recipeSections = parseRecipeDetails(selectedFood.recipe_details);
                 return (
-                    <div className="modal-overlay" onClick={() => setSelectedFood(null)}>
+                    <div className="modal-overlay" onClick={handleCloseSelectedFood}>
                         <div className="food-modal" onClick={(e) => e.stopPropagation()}>
 
-                            <button
-                                className="bookmark-btn"
-                                onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
-                            >
-                                {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
-                            </button>
+                            {/* ปุ่มหัวใจ + กากบาท ชิดขอบขวา */}
+                            <div className="food-modal-actions">
+                                <button
+                                    className="bookmark-btn"
+                                    onClick={(e) => toggleFavorite(e, selectedFood.food_id)}
+                                >
+                                    {favFoodIds.includes(selectedFood.food_id) ? <FaHeart /> : <FaRegHeart />}
+                                </button>
+                                <button
+                                    className="food-modal-close-btn"
+                                    onClick={handleCloseSelectedFood}
+                                    aria-label="ปิด"
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
 
                             {/* ===== LEFT ===== */}
                             <div className="food-modal-left">
@@ -515,6 +577,107 @@ function MenuFood() {
                     </div>
                 );
             })()}
+
+            {/* ================= RECOMMEND MODAL ================= */}
+            {showRecommendModal && addedFood && !selectedFood && (
+                <div
+                    className="modal-overlay"
+                    onClick={() => setShowRecommendModal(false)}
+                >
+                    <div
+                        className="recommend-modal"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* HEADER — food name + close button */}
+                        <div className="recommend-modal-header">
+                            <h2 className="recommend-modal-title">{addedFood.food_name}</h2>
+                            <button
+                                className="recommend-close-btn"
+                                onClick={() => setShowRecommendModal(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* IMAGE with success badge overlaid */}
+                        <div className="recommend-food-img-wrap">
+                            <img
+                                src={
+                                    addedFood.image?.startsWith("http")
+                                        ? addedFood.image
+                                        : `http://localhost:5000${addedFood.image}`
+                                }
+                                alt={addedFood.food_name}
+                                className="recommend-food-img"
+                            />
+                            <div className="recommend-added-badge">
+                                <span className="recommend-badge-check">✓</span>
+                                เพิ่มเมนูอาหารนี้ใส่จานแล้ว
+                            </div>
+                        </div>
+
+                        {/* BOTTOM — recommendations */}
+                        <div className="recommend-modal-bottom">
+                            <div className="recommend-title-row">
+                                <span className="recommend-title-icon">
+                                    <MdLocalFireDepartment style={{ color: "white", fontSize: "1.1rem" }} />
+                                </span>
+                                <h3 className="recommend-title">เมนูแนะนำ</h3>
+                            </div>
+
+                            {recommendations.length > 0 ? (
+                                <div className="recommend-cards-grid">
+                                    {recommendations.slice(0, 2).map((item, index) => {
+                                        const foodData = getFoodData(item.food);
+                                        const img = getFoodImage(foodData);
+                                        const calories = foodData?.calories
+                                            ? Number(foodData.calories).toFixed(0)
+                                            : null;
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="recommend-card"
+                                                onClick={() => openFoodFromRecommend(item.food)}
+                                            >
+                                                <div className="recommend-card-img-wrap">
+                                                    {img ? (
+                                                        <img src={img} alt={item.food} />
+                                                    ) : (
+                                                        <div className="recommend-card-img-placeholder">🍽️</div>
+                                                    )}
+                                                    <button
+                                                        className="recommend-card-fav-btn"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (foodData) toggleFavorite(e, foodData.food_id);
+                                                        }}
+                                                    >
+                                                        {foodData && favFoodIds.includes(foodData.food_id)
+                                                            ? <FaHeart />
+                                                            : <FaRegHeart />
+                                                        }
+                                                    </button>
+                                                </div>
+                                                <div className="recommend-card-info">
+                                                    <p className="recommend-card-name">{item.food}</p>
+                                                    {calories && (
+                                                        <p className="recommend-card-calorie">
+                                                            <MdLocalFireDepartment />
+                                                            {calories} แคล
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="recommend-empty">ยังไม่มีข้อมูลแนะนำ</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );

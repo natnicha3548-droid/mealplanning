@@ -139,9 +139,11 @@
 /* ================= CATEGORY ================= */
 .category-tabs {
     display: flex;
+    flex-wrap: nowrap;
     gap: 14px;
     margin-bottom: 40px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     align-items: center;
     padding-bottom: 5px;
 }
@@ -321,11 +323,41 @@
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
 }
 
-/* ================= BOOKMARK ================= */
-.bookmark-btn {
+/* ================= FOOD MODAL ACTIONS (wrapper หัวใจ + กากบาท) ================= */
+.food-modal-actions {
     position: absolute;
     top: 18px;
     right: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 60;
+}
+
+/* ================= FOOD MODAL CLOSE BUTTON (กากบาท) ================= */
+.food-modal-close-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: #555;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.food-modal-close-btn:hover {
+    background: #f5f0ed;
+    transform: scale(1.08);
+}
+
+/* ================= BOOKMARK ================= */
+.bookmark-btn {
     width: 52px;
     height: 52px;
     border: none;
@@ -334,7 +366,6 @@
     color: #ff6b2c;
     font-size: 1.2rem;
     cursor: pointer;
-    z-index: 50;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
     transition: 0.2s ease;
 }
@@ -396,7 +427,6 @@
     white-space: pre-line;
 }
 
-/* กล่องหมายเหตุ */
 .food-box--note {
     background: #f9f5f2;
     border-left: 4px solid #ffb98a;
@@ -406,7 +436,7 @@
     font-size: 0.9rem;
 }
 
-/* ================= RECIPE SECTIONS (จาก recipe_details) ================= */
+/* ================= RECIPE SECTIONS ================= */
 .recipe-section-block {
     margin-bottom: 16px;
 }
@@ -626,7 +656,27 @@
     box-shadow: 0 10px 24px rgba(255, 123, 44, 0.25);
 }
 
-/* ================= LOGIN PROMPT ICON ================= */
+/* ================= LOGIN PROMPT MODAL ================= */
+.login-prompt-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.login-prompt-modal {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    padding: 40px 36px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+}
+
 .login-prompt-icon {
     display: flex;
     justify-content: center;
@@ -640,6 +690,302 @@
     margin: 0 auto 16px;
     border: 1px solid #ffe0cd;
     box-shadow: 0 8px 20px rgba(255, 140, 66, 0.15);
+}
+
+.login-prompt-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 10px;
+}
+
+.login-prompt-desc {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.login-prompt-btn-primary {
+    background: linear-gradient(135deg, #ff9800, #f44336);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Kanit', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 12px;
+    transition: opacity 0.2s;
+}
+
+.login-prompt-btn-primary:hover {
+    opacity: 0.88;
+}
+
+.login-prompt-btn-cancel {
+    background: transparent;
+    color: #aaa;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 11px 0;
+    font-size: 0.95rem;
+    font-family: 'Kanit', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.login-prompt-btn-cancel:hover {
+    border-color: #bbb;
+}
+
+/* ================= RECOMMEND MODAL ================= */
+.recommend-modal {
+    width: 100%;
+    max-width: 520px;
+    background: white;
+    border-radius: 28px;
+    overflow: hidden;
+    margin: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    animation: fadeInPage 0.3s ease;
+}
+
+/* HEADER — title + close */
+.recommend-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 22px 60px 16px;
+    background: white;
+}
+
+.recommend-modal-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1b12;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.recommend-close-btn {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid #e0dbd8;
+    border-radius: 50%;
+    background: white;
+    color: #555;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease;
+    line-height: 1;
+}
+
+.recommend-close-btn:hover {
+    background: #f5f0ed;
+    border-color: #c8c0bc;
+}
+
+/* IMAGE WRAPPER */
+.recommend-food-img-wrap {
+    position: relative;
+    width: calc(100% - 48px);
+    margin: 0 24px 24px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.recommend-food-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+/* SUCCESS BADGE — overlaid on image */
+.recommend-added-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 999px;
+    padding: 9px 24px 9px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d1b12;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.recommend-badge-check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #22c55e;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* BOTTOM SECTION */
+.recommend-modal-bottom {
+    background: #f5f0ed;
+    padding: 22px 24px 20px;
+}
+
+/* TITLE ROW */
+.recommend-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.recommend-title-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff9b54, #ff7b2c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.recommend-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d1b12;
+}
+
+/* CARDS GRID — 2 columns */
+.recommend-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.recommend-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+.recommend-card-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #e8e2de;
+}
+
+.recommend-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: 0.3s;
+}
+
+.recommend-card:hover .recommend-card-img-wrap img {
+    transform: scale(1.05);
+}
+
+.recommend-card-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    background: #e8e2de;
+}
+
+.recommend-card-fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    color: #ff5a5f;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    z-index: 10;
+}
+
+.recommend-card-fav-btn:hover {
+    transform: scale(1.1);
+}
+
+.recommend-card-info {
+    padding: 12px 14px;
+}
+
+.recommend-card-name {
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d1b12;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recommend-card-calorie {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ff7b2c;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.recommend-empty {
+    text-align: center;
+    color: #999;
+    font-size: 0.95rem;
+    padding: 20px 0;
+    margin-bottom: 16px;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -741,6 +1087,27 @@
     .bookmark-btn {
         width: 46px;
         height: 46px;
+    }
+
+    .recommend-modal-header {
+        padding: 18px 52px 14px;
+    }
+
+    .recommend-food-img-wrap {
+        width: calc(100% - 32px);
+        margin: 0 16px 20px;
+    }
+
+    .recommend-food-img {
+        height: 180px;
+    }
+
+    .recommend-modal-bottom {
+        padding: 18px 16px 16px;
+    }
+
+    .recommend-cards-grid {
+        gap: 10px;
     }
 }
 
