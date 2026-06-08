@@ -144,6 +144,36 @@
     color: #ff4d4f;
 }
 
+.profile-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    left: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    min-width: 150px;
+}
+
+.profile-dropdown-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.profile-dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+.profile-dropdown-item.logout {
+    color: #ff4d4f;
+}
+
 /* Desktop: ซ่อน mobile-avatar-wrap */
 .mobile-avatar-wrap {
     display: none;
