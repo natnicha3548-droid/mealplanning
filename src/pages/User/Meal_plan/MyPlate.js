@@ -75,10 +75,6 @@ function MyPlate() {
     setMeals(draftPlate);
 
     const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-    setSelectedDates([`${yyyy}-${mm}-${dd}`]);
     generateWeekForDate(today);
 
     const fetchGoalData = async () => {
@@ -353,7 +349,8 @@ function MyPlate() {
           <p className="calendar-subtitle">*สามารถเลือกได้หลายวัน</p>
           <div className="cute-calendar-grid">
             {currentWeekDays.map((day) => {
-              const isSelected = selectedDates.includes(day.dateString);
+              // ถ้ามีวันใน selectedDates ให้เช็คตามปกติ แต่ถ้า array ว่างเปล่า ให้ไฮไลท์ 'วันนี้' อัตโนมัติ
+              const isSelected = selectedDates.includes(day.dateString) || (selectedDates.length === 0 && day.isToday);
               return (
                 <div key={day.dateString}
                   className={`cute-date-item ${isSelected ? "selected" : ""} ${day.isToday ? "today" : ""}`}
