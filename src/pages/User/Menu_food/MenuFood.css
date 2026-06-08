@@ -10,6 +10,7 @@
     margin: auto;
     padding: 120px 10% 50px;
     animation: fadeInPage 0.5s ease;
+    background: transparent !important;
 }
 
 @keyframes fadeInPage {
@@ -147,14 +148,14 @@
 }
 
 /* CUSTOM DROPDOWN */
-.custom-dropdown {
+.menu-page .custom-dropdown {
     position: relative;
     min-width: 180px;
     width: fit-content;
-    z-index: 1000;
+    z-index: 10;
 }
 
-.dropdown-selected {
+.menu-page .dropdown-selected {
     width: 100%;
     height: 52px;
     padding: 0 20px;
@@ -174,20 +175,20 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
 }
 
-.dropdown-selected:hover {
+.menu-page .dropdown-selected:hover {
     border-color: #ffb78c;
 }
 
-.arrow {
+.menu-page .arrow {
     font-size: 10px;
     transition: 0.3s;
 }
 
-.arrow.open {
+.menu-page .arrow.open {
     transform: rotate(180deg);
 }
 
-.dropdown-menu {
+.menu-page .dropdown-menu {
     position: absolute;
     top: 60px;
     left: 0;
@@ -197,12 +198,14 @@
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     padding: 10px;
-    z-index: 1000;
+    z-index: 10;
+    max-height: 320px;
+    overflow-y: auto;
     border: 1px solid #ffe0cd;
     animation: fadeIn 0.2s ease-out forwards;
 }
 
-.dropdown-item {
+.menu-page .dropdown-item {
     padding: 12px 15px;
     cursor: pointer;
     border-radius: 12px;
@@ -212,7 +215,7 @@
     font-family: 'Kanit', sans-serif;
 }
 
-.dropdown-item:hover {
+.menu-page .dropdown-item:hover {
     background: #fff9f5;
 }
 
@@ -238,7 +241,8 @@
 }
 
 .fav-filter-btn svg {
-    color: #ff4d4f; /* รหัสสีแดง (สามารถเปลี่ยนเป็น red หรือรหัสอื่นได้) */
+    color: #ff4d4f;
+    /* รหัสสีแดง (สามารถเปลี่ยนเป็น red หรือรหัสอื่นได้) */
     transition: 0.3s;
 }
 
@@ -260,14 +264,14 @@
 }
 
 /* ================= GRID ================= */
-.food-grid {
+.menu-page .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
 }
 
 /* ================= CARD ================= */
-.food-card {
+.menu-page .food-card {
     background: white;
     border-radius: 20px;
     overflow: hidden;
@@ -277,30 +281,30 @@
     position: relative;
 }
 
-.food-card:hover {
+.menu-page .food-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-.food-img-wrapper {
+.menu-page .food-img-wrapper {
     width: 100%;
     height: 130px;
     overflow: hidden;
 }
 
-.food-img-wrapper img {
+.menu-page .food-img-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: 0.3s;
 }
 
-.food-card:hover .food-img-wrapper img {
+.menu-page .food-card:hover .food-img-wrapper img {
     transform: scale(1.05);
 }
 
 /* ================= FAVORITE ================= */
-.fav-btn {
+.menu-page .fav-btn {
     position: absolute;
     top: 14px;
     right: 14px;
@@ -313,23 +317,23 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 100;
+    z-index: 1;
     color: #ff5a5f;
     font-size: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.fav-btn:hover {
+.menu-page .fav-btn:hover {
     transform: scale(1.08);
 }
 
 /* ================= FOOD INFO ================= */
-.food-info {
+.menu-page .food-info {
     padding: 15px;
 }
 
-.food-info h3 {
+.menu-page .food-info h3 {
     margin: 0 0 5px;
     font-size: 1.05rem;
     color: #2d1b12;
@@ -339,7 +343,7 @@
     text-overflow: ellipsis;
 }
 
-.food-info p {
+.menu-page .food-info p {
     margin: 0;
     color: #ff8c42;
     font-size: 0.9rem;
@@ -347,7 +351,7 @@
 }
 
 /* ================= EMPTY ================= */
-.empty-state {
+.menu-page .empty-state {
     grid-column: 1 / -1;
     text-align: center;
     padding: 40px;
@@ -357,7 +361,7 @@
 }
 
 /* ================= MODAL OVERLAY ================= */
-.modal-overlay {
+.menu-page .modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.55);
@@ -372,11 +376,11 @@
     scrollbar-width: none;
 }
 
-.modal-overlay::-webkit-scrollbar {
+.menu-page .modal-overlay::-webkit-scrollbar {
     display: none;
 }
 
-.food-modal {
+.menu-page .food-modal {
     width: 100%;
     max-width: 1120px;
     background: white;
@@ -390,7 +394,7 @@
 }
 
 /* ================= FOOD MODAL ACTIONS (wrapper หัวใจ + กากบาท) ================= */
-.food-modal-actions {
+.menu-page .food-modal-actions {
     position: absolute;
     top: 18px;
     right: 18px;
@@ -401,7 +405,7 @@
 }
 
 /* ================= FOOD MODAL CLOSE BUTTON (กากบาท) ================= */
-.food-modal-close-btn {
+.menu-page .food-modal-close-btn {
     width: 44px;
     height: 44px;
     border: none;
@@ -417,13 +421,13 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.food-modal-close-btn:hover {
+.menu-page .food-modal-close-btn:hover {
     background: #f5f0ed;
     transform: scale(1.08);
 }
 
 /* ================= BOOKMARK ================= */
-.bookmark-btn {
+.menu-page .bookmark-btn {
     width: 52px;
     height: 52px;
     border: none;
@@ -436,13 +440,13 @@
     transition: 0.2s ease;
 }
 
-.bookmark-btn:hover {
+.menu-page .bookmark-btn:hover {
     transform: scale(1.05);
 }
 
 /* ================= LEFT / RIGHT ================= */
 .food-modal-left,
-.food-modal-right {
+.menu-page .food-modal-right {
     padding: 30px;
     min-width: 0;
 }
@@ -451,7 +455,7 @@
     overflow-y: auto;
 }
 
-.food-modal-image {
+.menu-page .food-modal-image {
     width: 100%;
     height: 320px;
     object-fit: cover;
@@ -468,7 +472,7 @@
 }
 
 /* ================= SECTION ================= */
-.food-section {
+.menu-page .food-section {
     margin-bottom: 20px;
 }
 
@@ -480,7 +484,7 @@
 }
 
 /* ================= BOX ================= */
-.food-box {
+.menu-page .food-box {
     background: #f8f3f0;
     border-radius: 16px;
     padding: 16px 18px;
@@ -489,11 +493,11 @@
     font-size: 0.95rem;
 }
 
-.detail-text {
+.menu-page .detail-text {
     white-space: pre-line;
 }
 
-.food-box--note {
+.menu-page .food-box--note {
     background: #f9f5f2;
     border-left: 4px solid #ffb98a;
     border-radius: 0 14px 14px 0;
@@ -503,11 +507,11 @@
 }
 
 /* ================= RECIPE SECTIONS ================= */
-.recipe-section-block {
+.menu-page .recipe-section-block {
     margin-bottom: 16px;
 }
 
-.recipe-section-name {
+.menu-page .recipe-section-name {
     margin: 0 0 8px;
     font-size: 1rem;
     font-weight: 700;
@@ -516,30 +520,30 @@
     border-bottom: 2px solid #ffe0cd;
 }
 
-.recipe-block {
+.menu-page .recipe-block {
     margin-bottom: 10px;
 }
 
-.recipe-block-title {
+.menu-page .recipe-block-title {
     margin: 0 0 6px;
     font-size: 0.9rem;
     font-weight: 600;
     color: #2d1b12;
 }
 
-.recipe-block-content {
+.menu-page .recipe-block-content {
     margin-top: 0;
 }
 
 /* ================= NUTRITION GRID ================= */
-.nutrition-grid {
+.menu-page .nutrition-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     margin-top: 12px;
 }
 
-.nutri-card {
+.menu-page .nutri-card {
     padding: 12px 8px;
     border-radius: 14px;
     text-align: center;
@@ -579,12 +583,12 @@
     font-weight: 700;
 }
 
-.nutri-icon {
+.menu-page .nutri-icon {
     font-size: 16px;
     margin-bottom: 5px;
 }
 
-.nutri-label {
+.menu-page .nutri-label {
     font-size: 12px;
     margin: 3px 0;
 }
@@ -620,7 +624,7 @@
 }
 
 /* ================= MEAL BUTTONS ================= */
-.meal-buttons {
+.menu-page .meal-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -654,7 +658,7 @@
 }
 
 /* ================= QUANTITY ================= */
-.quantity-section {
+.menu-page .quantity-section {
     margin-top: 8px;
     margin-bottom: 20px;
 }
@@ -666,13 +670,13 @@
     color: #2d1b12;
 }
 
-.quantity-control {
+.menu-page .quantity-control {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.quantity-btn {
+.menu-page .quantity-btn {
     width: 40px;
     height: 40px;
     border: none;
@@ -685,12 +689,12 @@
     transition: 0.2s;
 }
 
-.quantity-btn:hover {
+.menu-page .quantity-btn:hover {
     transform: translateY(-2px);
     background: #ffe7d6;
 }
 
-.quantity-value {
+.menu-page .quantity-value {
     min-width: 24px;
     text-align: center;
     font-size: 1.2rem;
@@ -699,7 +703,7 @@
 }
 
 /* ================= ADD BUTTON ================= */
-.add-btn {
+.menu-page .add-btn {
     width: 100%;
     height: 54px;
     border: none;
@@ -717,7 +721,7 @@
     align-items: center;
 }
 
-.add-btn:hover {
+.menu-page .add-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(255, 123, 44, 0.25);
 }
@@ -1106,7 +1110,7 @@
         grid-column: 1 / -1;
     }
 
-    .food-modal-right h2 {
+    .menu-page .food-modal-right h2 {
         font-size: 1.8rem;
     }
 
@@ -1124,7 +1128,7 @@
         grid-template-columns: 1fr;
     }
 
-    .modal-overlay {
+    .menu-page .modal-overlay {
         padding: 20px 12px;
     }
 
@@ -1179,4 +1183,109 @@
 
 body.modal-open {
     overflow: hidden;
+}
+
+/* ================= MOBILE RESPONSIVE (เพิ่มเติม) ================= */
+@media (max-width: 768px) {
+    .menu-page {
+        padding: 95px 4% 30px;
+    }
+
+    .menu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .menu-title-box h1 {
+        font-size: 1.6rem;
+    }
+
+    .menu-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+
+    .search-wrapper {
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .search-box {
+        width: 100%;
+        flex: 1;
+    }
+
+    .menu-toolbar {
+        gap: 10px;
+    }
+
+    .menu-page .custom-dropdown {
+        min-width: 140px;
+    }
+
+    .fav-filter-btn {
+        padding: 0 16px;
+        font-size: 0.9rem;
+    }
+
+    .menu-page .food-modal {
+        grid-template-columns: 1fr;
+        border-radius: 24px;
+    }
+
+    .menu-page .food-modal-image {
+        height: 220px;
+        border-radius: 18px;
+    }
+
+    .recommend-modal {
+        max-width: 95vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-page {
+        padding: 90px 4% 24px;
+    }
+
+    .menu-title-box h1 {
+        font-size: 1.35rem;
+    }
+
+    .menu-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .menu-page .custom-dropdown,
+    .menu-page .fav-filter-btn {
+        height: 46px;
+    }
+
+    .menu-page .food-grid {
+        gap: 12px;
+    }
+
+    .menu-page .food-img-wrapper {
+        height: 115px;
+    }
+
+    .menu-page .food-info h3 {
+        font-size: 0.95rem;
+    }
+
+    .menu-page .food-info p {
+        font-size: 0.82rem;
+    }
+
+    .menu-page .nutrition-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .menu-page .meal-buttons button {
+        font-size: 0.85rem;
+        height: 40px;
+    }
 }

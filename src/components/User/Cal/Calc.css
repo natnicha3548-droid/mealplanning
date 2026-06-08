@@ -483,10 +483,10 @@
 @media (max-width: 768px) {
 
     .calc-container {
-        margin: 20px 14px;
-        padding: 24px 18px;
-        border-radius: 26px;
-    }
+            margin: 90px 14px 20px;
+            padding: 24px 18px;
+            border-radius: 26px;
+        }
 
     .calc-container h2 {
         font-size: 2rem;

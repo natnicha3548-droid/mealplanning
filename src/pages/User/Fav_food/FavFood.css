@@ -25,9 +25,8 @@
 .favorite-header {
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 35px;
-    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 30px;
 }
 
 .favorite-icon {
@@ -47,10 +46,10 @@
 
 .favorite-header h1 {
     margin: 0;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #2d1b12;
-    line-height: 1.1;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #3b2418;
+        line-height: 1.1;
 }
 
 .favorite-header p {
@@ -1068,5 +1067,175 @@ body.modal-open {
     .fav-modal-bookmark-btn {
         width: 46px;
         height: 46px;
+    }
+}
+
+
+/* ================= MOBILE FIX - PLAN CARDS ================= */
+@media (max-width: 768px) {
+    .favorite-page {
+        padding: 100px 5% 40px;
+    }
+
+    .favorite-header {
+        margin-bottom: 20px;
+        gap: 12px;
+    }
+
+    .favorite-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .favorite-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
+    }
+
+    .favorite-tabs {
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+
+    .tab-btn {
+        padding: 9px 16px;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    /* Plan card header */
+    .meal-plan-full-card {
+        padding: 16px !important;
+        border-radius: 20px !important;
+    }
+
+    .plan-header {
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .plan-header-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .plan-header-left h2 {
+        font-size: 1.1rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .plan-header-left p {
+        font-size: 0.8rem !important;
+    }
+
+    .plan-header-right {
+        flex-shrink: 0;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .plan-cal-label {
+        font-size: 0.78rem !important;
+        white-space: nowrap;
+    }
+
+    .plan-cal-value {
+        font-size: 1rem !important;
+        white-space: nowrap;
+    }
+
+    /* Meal rows - เปลี่ยนจาก grid เป็น flex ที่กระชับกว่า */
+    .meal-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 12px 0 !important;
+        grid-template-columns: unset !important;
+    }
+
+    .meal-type-stacked {
+        min-width: 48px !important;
+        width: 48px !important;
+        flex-shrink: 0;
+    }
+
+    .meal-icon-circle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .meal-row .meal-image {
+        width: 70px !important;
+        height: 55px !important;
+        border-radius: 12px !important;
+        flex-shrink: 0;
+        object-fit: cover;
+    }
+
+    .meal-row .meal-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .meal-row .meal-info h3 {
+        font-size: 0.9rem !important;
+        margin: 0 0 4px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .meal-row .meal-info span,
+    .fav-portion-badge {
+        font-size: 0.75rem !important;
+        padding: 2px 8px !important;
+    }
+
+    .meal-cal-right {
+        font-size: 0.9rem !important;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    /* Summary grid */
+    .plan-summary {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+        margin-top: 16px !important;
+    }
+
+    .summary-box {
+        padding: 10px 8px !important;
+        border-radius: 14px !important;
+        flex-direction: column !important;
+        gap: 3px !important;
+    }
+
+    .sum-icon-wrap {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .sum-val {
+        font-size: 0.9rem !important;
+    }
+
+    .sum-unit,
+    .sum-label {
+        font-size: 0.7rem !important;
+    }
+
+    .meal-fav-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.1rem !important;
     }
 }

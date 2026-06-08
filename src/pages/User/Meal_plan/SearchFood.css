@@ -1038,7 +1038,7 @@ body.modal-open {
   position: relative;
   min-width: 180px;
   width: fit-content;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .sf-dropdown-selected {
@@ -1084,7 +1084,9 @@ body.modal-open {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   padding: 10px;
-  z-index: 1000;
+  z-index: 10;
+  max-height: 320px;
+  overflow-y: auto;
   border: 1px solid #ffe0cd;
 }
 
@@ -1138,4 +1140,38 @@ body.modal-open {
 
 .sf-fav-filter-btn svg {
   transition: 0.3s;
+}
+
+/* ================= MOBILE RESPONSIVE FIX ================= */
+@media (max-width: 768px) {
+  .sf-toolbar {
+    gap: 10px;
+  }
+
+  .sf-custom-dropdown {
+    min-width: 130px;
+  }
+
+  .sf-dropdown-menu {
+    max-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sf-food-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .sf-img-wrapper {
+    height: 115px;
+  }
+
+  .sf-food-info h4 {
+    font-size: 0.95rem;
+  }
+
+  .sf-food-info p {
+    font-size: 0.82rem;
+  }
 }

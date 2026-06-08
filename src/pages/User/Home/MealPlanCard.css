@@ -8,54 +8,69 @@
     box-sizing: border-box;
 }
 
-.home-meal-card-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 25px; 
+.home-meal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
 }
 
-.home-meal-card-title { 
-    font-size: 2rem; 
-    font-weight: 800; 
-    color: #ff7a2f; 
-    margin: 0; 
+.home-meal-card-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff7a2f;
+    margin: 0;
 }
 
-.home-meal-card-subtitle { 
-    margin-top: 6px; 
-    color: #9b7b67; 
-    font-size: 0.95rem; 
-    margin-bottom: 0; 
+.home-meal-card-subtitle {
+    margin-top: 6px;
+    color: #9b7b67;
+    font-size: 0.95rem;
+    margin-bottom: 0;
 }
 
-.home-meal-card-kcal { 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
+.home-meal-card-kcal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
 }
 
-.home-total-label { 
-    font-size: 1.1rem; 
-    font-weight: 700; 
-    color: #946b58; 
+/* Desktop: badge + restore in one row */
+.home-kcal-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.home-total-cal-badge { 
-    color: #f55b14; 
-    font-size: 1.5rem; 
-    font-weight: 800; 
-    padding: 6px 16px; 
-    border-radius: 12px; 
+/* ปุ่มกลุ่ม restore + heart ใน FavoritePlanCard */
+.home-plan-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.home-meal-group { 
-    display: flex; 
-    align-items: flex-start; 
-    width: 100%; 
-    gap: 25px; 
-    padding: 25px 0; 
-    border-bottom: 2px dotted #f4aab9; 
+.home-total-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #946b58;
+}
+
+.home-total-cal-badge {
+    color: #f55b14;
+    font-size: 1.5rem;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 12px;
+}
+
+.home-meal-group {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 25px;
+    padding: 25px 0;
+    border-bottom: 2px dotted #f4aab9;
 }
 
 /* เอาเส้นล่างของมื้อสุดท้ายออก */
@@ -63,43 +78,43 @@
     border-bottom: none;
 }
 
-.home-meal-icon-box { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    min-width: 80px; 
-    gap: 8px; 
+.home-meal-icon-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    gap: 8px;
 }
-    
-.home-icon-circle { 
-    width: 55px; 
-    height: 55px; 
-    border-radius: 50%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+
+.home-icon-circle {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 1.5rem;
 }
 
-.home-meal-items-container { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 15px; 
+.home-meal-items-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.home-meal-food-row { 
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
+.home-meal-food-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     width: 100%;
 }
 
-.home-meal-img { 
-    width: 140px; 
-    height: 90px; 
-    border-radius: 16px; 
-    object-fit: cover; 
+.home-meal-img {
+    width: 140px;
+    height: 90px;
+    border-radius: 16px;
+    object-fit: cover;
 }
 
 /* เพิ่ม 2 คลาสนี้กลับเข้ามา เพื่อดันแคลอรี่ไปชิดขวา */
@@ -115,57 +130,193 @@
     text-align: right;
     min-width: 100px;
 }
+
 /* ======================================= */
 
-.home-meal-details h3 { 
-    margin: 0 0 8px; 
-    font-size: 1.2rem; 
+.home-meal-details h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
 }
 
-.home-portion-badge { 
-    background: #f7ece4; 
+.home-portion-badge {
+    background: #f7ece4;
     color: #663823;
-    padding: 4px 12px; 
-    border-radius: 8px; 
-    font-size: 0.85rem; 
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
 }
 
-.home-cal-text { 
-    font-size: 1.3rem; 
-    font-weight: 800; 
-    color: #ff8c42; 
+.home-cal-text {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ff8c42;
 }
 
-.home-restore-plan-btn { 
+.home-restore-plan-btn {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
-    border: 1px solid #ffedd5; 
-    background: #fff4e8; 
-    color: #F97316; 
-    cursor: pointer; 
-    transition: 0.3s; 
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #ffedd5;
+    background: #fff4e8;
+    color: #F97316;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.home-restore-plan-btn svg { 
-    width: 27px;  /* ปรับขนาดตามต้องการได้เลย */
-    height: 27px; 
-    
+.home-restore-plan-btn svg {
+    width: 27px;
+    /* ปรับขนาดตามต้องการได้เลย */
+    height: 27px;
+
     /* บังคับให้ไอคอนไม่โดนบีบ */
-    display: block; 
+    display: block;
 }
 
-.home-restore-plan-btn:hover { 
-    transform: rotate(180deg); 
-    background: #fe9d57; 
-    color: #fff; 
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); 
+.home-restore-plan-btn:hover {
+    transform: rotate(180deg);
+    background: #fe9d57;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
 .home-restore-plan-btn:active {
-    transform: scale(0.95); /* ยุบตัวลงเวลาคลิก */
+    transform: scale(0.95);
+    /* ยุบตัวลงเวลาคลิก */
+}
+
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .home-meal-plan-card {
+        padding: 18px 16px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Header: title left, kcal+btn RIGHT on same row */
+    .home-meal-card-header {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .home-meal-card-header>div:first-child {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .home-meal-card-title {
+        font-size: 1.1rem !important;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .home-meal-card-subtitle {
+        font-size: 0.78rem;
+        margin-top: 3px;
+        color: #9b7b67;
+    }
+
+    /* kcal + restore: เรียงในแนวนอนเดียว ชิดขวา */
+    .home-meal-card-kcal {
+        display: flex;
+        flex-direction: column;
+        /* label บน, kcal+btn ล่าง */
+        align-items: flex-end;
+        gap: 2px;
+        flex-shrink: 0;
+    }
+
+    /* badge + ปุ่ม อยู่แถวเดียวกัน — target เฉพาะ .home-kcal-row ไม่ใช่ div ทั้งหมด */
+    .home-kcal-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .home-total-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #946b58;
+        white-space: nowrap;
+    }
+
+    .home-total-cal-badge {
+        font-size: 1.05rem !important;
+        font-weight: 800;
+        padding: 2px 6px !important;
+        white-space: nowrap;
+        line-height: 1.2;
+    }
+
+    .home-restore-plan-btn {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    /* Meal groups */
+    .home-meal-group {
+        gap: 12px;
+        padding: 14px 0;
+    }
+
+    .home-meal-icon-box {
+        min-width: 56px;
+        gap: 5px;
+    }
+
+    .home-meal-icon-box span {
+        font-size: 0.75rem;
+    }
+
+    .home-icon-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .home-meal-food-row {
+        gap: 10px;
+        align-items: center;
+    }
+
+    .home-meal-img {
+        width: 70px !important;
+        height: 55px !important;
+        border-radius: 10px !important;
+        object-fit: cover !important;
+        flex-shrink: 0;
+    }
+
+    .home-meal-details h3 {
+        font-size: 0.9rem;
+        margin: 0 0 4px;
+        font-weight: 700;
+    }
+
+    .home-portion-badge {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+    }
+
+    .home-cal-text {
+        font-size: 0.95rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
 }

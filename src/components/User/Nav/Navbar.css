@@ -97,6 +97,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .avatar {
@@ -104,8 +105,8 @@
     height: 38px;
     border-radius: 50%;
     background: linear-gradient(135deg,
-                #ffb347,
-                #ffcc70);
+            #ffb347,
+            #ffcc70);
     object-fit: cover;
     border: 2px solid #ff8c42;
     cursor: pointer;
@@ -143,10 +144,21 @@
     color: #ff4d4f;
 }
 
+/* Desktop: ซ่อน mobile-avatar-wrap */
+.mobile-avatar-wrap {
+    display: none;
+}
+
+/* Desktop: แสดง profile ใน nav-links */
+.desktop-only {
+    display: flex;
+}
+
 @media (max-width: 768px) {
     .nav-top {
         height: 100%;
-        padding: 0 2%;
+        padding: 0 14px;
+        gap: 10px;
     }
 
     .nav-logo img {
@@ -158,11 +170,55 @@
         font-size: 1.1rem;
     }
 
+    /* Mobile Avatar - อยู่ใน nav-top ข้างๆ hamburger */
+    .mobile-avatar-wrap {
+        display: flex;
+        align-items: center;
+        position: relative;
+        margin-left: auto;
+    }
+
+    .mobile-profile-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 8px;
+        min-width: 160px;
+        z-index: 9999;
+    }
+
+    .profile-dropdown-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+
+    .profile-dropdown-item:hover {
+        background: #fff4eb;
+    }
+
+    .profile-dropdown-item.logout {
+        color: #ff4d4f;
+    }
+
     .hamburger {
         display: block;
         font-size: 1.5rem;
         color: #ff8c42;
-        margin-left: auto;
+    }
+
+    /* Desktop avatar ซ่อนบน mobile */
+    .desktop-only {
+        display: none !important;
     }
 
     .nav-links {
@@ -184,5 +240,4 @@
     .nav-links.active {
         display: flex;
     }
-    
 }

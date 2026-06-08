@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import logo from "../../../assets/logo.png";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = ({
     user,
@@ -9,13 +9,18 @@ const Navbar = ({
     setCalcResult,
     setFormData
 }) => {
+
     const [isOpen, setIsOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+
     const [avatar, setAvatar] = useState(
         user?.avatar ||
         localStorage.getItem("avatar") ||
         "/avatars/0d625718d4.svg"
     );
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user?.avatar) {
@@ -23,29 +28,37 @@ const Navbar = ({
         }
     }, [user]);
 
-    const location = useLocation();
-    const navigate = useNavigate();
-
     useEffect(() => {
         const updateAvatar = () => {
-            const newAvatar =
+            setAvatar(
                 localStorage.getItem("avatar") ||
-                "/avatars/0d625718d4.svg";
-            setAvatar(newAvatar);
+                "/avatars/0d625718d4.svg"
+            );
         };
 
         window.addEventListener("avatarChanged", updateAvatar);
-        return () => window.removeEventListener("avatarChanged", updateAvatar);
+
+        return () => {
+            window.removeEventListener("avatarChanged", updateAvatar);
+        };
     }, []);
 
     const handleClose = () => setIsOpen(false);
+
+    const handleCloseAll = () => {
+        setIsOpen(false);
+        setProfileOpen(false);
+    };
+
+    const toggleProfile = () => {
+        setProfileOpen(prev => !prev);
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("avatar");
         localStorage.removeItem("token");
 
-        // ✅ ล้าง Guest data เมื่อ logout
         localStorage.removeItem("calcResult");
         localStorage.removeItem("myplate");
         localStorage.removeItem("plan_plate");
@@ -57,80 +70,155 @@ const Navbar = ({
         setCalcResult(null);
         setFormData(null);
 
-        setProfileOpen(false);
+        handleCloseAll();
 
         navigate("/", { replace: true });
     };
 
+    const goProfile = () => {
+        navigate("/profile");
+        handleCloseAll();
+    };
+
     const isActive = (path) => location.pathname === path;
+
+    const menuItems = user
+        ? [
+            { path: "/menu", label: "เมนูอาหารของฉัน" },
+            { path: "/meal-plan", label: "แผนการกินของฉัน" },
+            { path: "/favourite-food", label: "รายการโปรดของฉัน" },
+            { path: "/past-plans", label: "แผนการกินย้อนหลัง" }
+        ]
+        : [
+            { path: "/menu", label: "เมนูอาหาร" },
+            { path: "/meal-plan", label: "แผนการกินของฉัน" }
+        ];
+
+    const ProfileDropdown = ({ mobile = false }) => (
+        <div
+            className={
+                mobile
+                    ? "mobile-profile-dropdown"
+                    : "profile-dropdown"
+            }
+        >
+            <div
+                className="profile-dropdown-item"
+                onClick={goProfile}
+            >
+                แก้ไขโปรไฟล์
+            </div>
+
+            <div
+                className="profile-dropdown-item logout"
+                onClick={handleLogout}
+            >
+                ออกจากระบบ
+            </div>
+        </div>
+    );
+
+    const AvatarButton = () => (
+        <img
+            src={avatar}
+            alt="avatar"
+            className="avatar"
+            onClick={toggleProfile}
+        />
+    );
 
     return (
         <nav className="main-nav">
             <div className="nav-top">
 
-                <div className="nav-logo" onClick={() => navigate("/")}>
+                <div
+                    className="nav-logo"
+                    onClick={() => navigate("/")}
+                >
                     <img src={logo} alt="logo" />
                     <span>MealPlan</span>
                 </div>
 
-                <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? '✖' : '☰'}
+                {user && (
+                    <div className="mobile-avatar-wrap">
+
+                        <AvatarButton />
+
+                        {profileOpen && (
+                            <ProfileDropdown mobile />
+                        )}
+
+                    </div>
+                )}
+
+                <div
+                    className="hamburger"
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? "✖" : "☰"}
                 </div>
 
-                <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
+                <ul className={`nav-links ${isOpen ? "active" : ""}`}>
 
                     <li>
-                        <Link to="/" onClick={handleClose} className={isActive("/") ? "active" : ""}>
+                        <Link
+                            to="/"
+                            onClick={handleClose}
+                            className={isActive("/") ? "active" : ""}
+                        >
                             หน้าแรก
                         </Link>
                     </li>
 
-                    {user ? (
-                        <>
-                            <li><Link to="/menu" onClick={handleClose} className={isActive("/menu") ? "active" : ""}>เมนูอาหารของฉัน</Link></li>
-                            <li><Link to="/meal-plan" onClick={handleClose} className={isActive("/meal-plan") ? "active" : ""}>แผนการกินของฉัน</Link></li>
-                            <li><Link to="/favourite-food" onClick={handleClose} className={isActive("/favourite-food") ? "active" : ""}>รายการโปรดของฉัน</Link></li>
-                            <li><Link to="/past-plans" onClick={handleClose} className={isActive("/past-plans") ? "active" : ""}>แผนการกินย้อนหลัง</Link></li>
-                        </>
-                    ) : (
-                        <>
-                            <li><Link to="/menu" onClick={handleClose} className={isActive("/menu") ? "active" : ""}>เมนูอาหาร</Link></li>
-                            <li><Link to="/meal-plan" onClick={handleClose} className={isActive("/meal-plan") ? "active" : ""}>แผนการกินของฉัน</Link></li>
-                        </>
-                    )}
+                    {menuItems.map((item) => (
+                        <li key={item.path}>
+                            <Link
+                                to={item.path}
+                                onClick={handleClose}
+                                className={
+                                    isActive(item.path)
+                                        ? "active"
+                                        : ""
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        </li>
+                    ))}
 
                     <li>
+
                         {user ? (
-                            <div className="profile-box" style={{ position: "relative" }}>
-                                <img
-                                    src={avatar}
-                                    alt="avatar"
-                                    className="avatar"
-                                    onClick={() => setProfileOpen(!profileOpen)}
-                                />
+
+                            <div
+                                className="profile-box desktop-only"
+                                style={{ position: "relative" }}
+                            >
+
+                                <AvatarButton />
+
                                 {profileOpen && (
-                                    <div style={{
-                                        position: "absolute", top: "45px", right: "0",
-                                        background: "#fff", borderRadius: "12px",
-                                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                                        padding: "10px", minWidth: "140px"
-                                    }}>
-                                        <div style={{ padding: "8px", cursor: "pointer" }}
-                                            onClick={() => { navigate("/profile"); setProfileOpen(false); }}>
-                                            โปรไฟล์
-                                        </div>
-                                        <div style={{ padding: "8px", cursor: "pointer", color: "#ff4d4f" }}
-                                            onClick={handleLogout}>
-                                            ออกจากระบบ
-                                        </div>
-                                    </div>
+                                    <ProfileDropdown />
                                 )}
+
                             </div>
+
                         ) : (
-                            <Link to="/auth" onClick={handleClose} className={isActive("/auth") ? "active" : ""}>
+
+                            <Link
+                                to="/auth"
+                                onClick={handleClose}
+                                className={
+                                    isActive("/auth")
+                                        ? "active"
+                                        : ""
+                                }
+                            >
                                 เข้าสู่ระบบ
                             </Link>
+
                         )}
+
                     </li>
 
                 </ul>

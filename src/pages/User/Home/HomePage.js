@@ -27,16 +27,18 @@ const MealPlanCard = ({ title, subtitle, planData, showRestoreBtn, onRestore }) 
                 </div>
                 <div className="home-meal-card-kcal">
                     <span className="home-total-label">รวมทั้งหมด</span>
-                    <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
-                    {showRestoreBtn && (
-                        <button
-                            className="home-restore-plan-btn"
-                            onClick={() => onRestore()}
-                            title="นำแผนอาหารล่าสุดนี้กลับมาใช้ใหม่"
-                        >
-                            <RotateCcw size={20} />
-                        </button>
-                    )}
+                    <div className="home-kcal-row">
+                        <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
+                        {showRestoreBtn && (
+                            <button
+                                className="home-restore-plan-btn"
+                                onClick={() => onRestore()}
+                                title="นำแผนอาหารล่าสุดนี้กลับมาใช้ใหม่"
+                            >
+                                <RotateCcw size={20} />
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -112,22 +114,22 @@ const FavoritePlanCard = ({ planData, onRestore }) => {
 
                 <div className="home-meal-card-kcal">
                     <span className="home-total-label">รวมทั้งหมด</span>
-                    <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
-
-                    <div style={{ display: 'flex', gap: '12px', marginLeft: '10px' }}>
-                        <button
-                            className="home-restore-plan-btn"
-                            onClick={() => onRestore(planData.plan_date)}
-                            title="นำแผนอาหารโปรดนี้กลับมาใช้ใหม่"
-                        >
-                            <RotateCcw size={20} />
-                        </button>
-
-                        <div
-                            className="home-favorite-plan-icon"
-                            title="แผนอาหารรายการโปรด"
-                        >
-                            <FaHeart size={25} />
+                    <div className="home-kcal-row">
+                        <div className="home-total-cal-badge">{Math.round(planData.total_calories)} kcal</div>
+                        <div className="home-plan-btn-group">
+                            <button
+                                className="home-restore-plan-btn"
+                                onClick={() => onRestore(planData.plan_date)}
+                                title="นำแผนอาหารโปรดนี้กลับมาใช้ใหม่"
+                            >
+                                <RotateCcw size={20} />
+                            </button>
+                            <div
+                                className="home-favorite-plan-icon"
+                                title="แผนอาหารรายการโปรด"
+                            >
+                                <FaHeart size={25} />
+                            </div>
                         </div>
                     </div>
                 </div>

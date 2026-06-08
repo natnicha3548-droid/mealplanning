@@ -176,6 +176,14 @@ function MenuFood() {
     };
 
     const addToMealPlan = () => {
+        // ตรวจสอบว่าคำนวณแล้วหรือยัง
+        const nutritionData = localStorage.getItem("nutritionData");
+
+        if (!nutritionData) {
+            alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
+            navigate("/calculate"); // เปลี่ยนเป็น path หน้าคำนวณของคุณ
+            return;
+        }
         if (!selectedFood) { alert("กรุณาเลือกอาหาร"); return; }
         const myPlate = JSON.parse(localStorage.getItem("myplate")) || [];
         const mealMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };

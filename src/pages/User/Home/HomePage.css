@@ -193,18 +193,18 @@
 }
 
 .home-favorite-plan-icon {
-    width: 50px;          
+    width: 50px;
     height: 50px;
     border-radius: 50%;
     background-color: #fff0f3;
     color: #ff5b6e;
-    
+
     /* จัดหัวใจให้อยู่ตรงกลางด้วย Flexbox */
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease;
 }
 
@@ -213,7 +213,8 @@
 }
 
 .home-view-more-text-btn {
-    margin-top: 2px; /* ปรับค่านี้เพื่อให้ตรงกับความสูงของ h2 */
+    margin-top: 2px;
+    /* ปรับค่านี้เพื่อให้ตรงกับความสูงของ h2 */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -229,7 +230,8 @@
 
 .home-view-more-text-btn:hover {
     color: #ff6822;
-    transform: translateX(5px); /* ลูกศรจะขยับไปทางขวาเล็กน้อยเมื่อเอาเมาส์ชี้ */
+    transform: translateX(5px);
+    /* ลูกศรจะขยับไปทางขวาเล็กน้อยเมื่อเอาเมาส์ชี้ */
 }
 
 
@@ -253,15 +255,19 @@
 /* HEADER */
 .home-favorite-header {
     display: flex;
-    justify-content: space-between; /* ดันปุ่มไปขวาสุด */
-    align-items: flex-start;        /* จัดให้เริ่มที่ด้านบนสุด */
+    justify-content: space-between;
+    /* ดันปุ่มไปขวาสุด */
+    align-items: flex-start;
+    /* จัดให้เริ่มที่ด้านบนสุด */
     margin-bottom: 20px;
 }
 
 .header-text-group {
     display: flex;
-    flex-direction: column;         /* ให้หัวข้อและคำอธิบายเรียงแนวตั้ง */
-    gap: 4px;                       /* ระยะห่างระหว่างหัวข้อและคำอธิบาย */
+    flex-direction: column;
+    /* ให้หัวข้อและคำอธิบายเรียงแนวตั้ง */
+    gap: 4px;
+    /* ระยะห่างระหว่างหัวข้อและคำอธิบาย */
 }
 
 .home-favorite-title {
@@ -274,7 +280,8 @@
 
 .home-favorite-subtitle {
     margin: 0;
-    margin-top: 6px; /* ระยะห่างระหว่างชื่อกับคำอธิบาย */
+    margin-top: 6px;
+    /* ระยะห่างระหว่างชื่อกับคำอธิบาย */
     color: #9b7b67;
     font-size: 0.95rem;
 }
@@ -396,6 +403,7 @@
 @media screen and (max-width: 768px) {
     .quick-actions {
         flex-direction: column;
+        margin-top: -30px
     }
 
     .quick-card {
@@ -460,27 +468,30 @@
     gap: 20px;
     padding-bottom: 20px;
     scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; /* ให้มือถือปัดลื่นๆ */
+    -webkit-overflow-scrolling: touch;
+    /* ให้มือถือปัดลื่นๆ */
 }
 
 /* ปรับแต่งหน้าตา Scrollbar ให้ดูสะอาด */
 .favorite-plans-scroll-container::-webkit-scrollbar {
     height: 8px;
 }
+
 .favorite-plans-scroll-container::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
 }
+
 .favorite-plans-scroll-container::-webkit-scrollbar-thumb {
     background: #ffcda3;
     border-radius: 10px;
 }
 
 .favorite-plan-slide {
-    flex: 0 0 92%; /* มือถือ: กินพื้นที่ 92% เพื่อให้เห็นการ์ดถัดไปโผล่มาแง้มๆ */
-    min-width: 92%;
-    scroll-snap-align: center;
+    flex: 0 0 100%;
+    min-width: 100%;
 }
+
 /* ================= FAVORITE PLANS SCROLL (เลื่อนด้านบน) ================= */
 .favorite-plans-wrapper {
     width: 100%;
@@ -491,25 +502,32 @@
     display: flex;
     overflow-x: auto;
     gap: 20px;
-    
-    transform: rotateX(180deg); 
-    
+
+    transform: rotateX(180deg);
+    align-items: stretch;
+    /* ทำให้ทุก slide ยืดเท่ากัน */
+
     /* 🌟 ปรับ 2 ค่านี้ เพื่อขยับแถบให้ชิดการ์ด */
-    padding-bottom: 1px; /* ดึงแถบเลื่อนให้ลงมาแนบชิดติดขอบการ์ด */
-    padding-top: 15px;   /* เผื่อพื้นที่ด้านล่างการ์ดเอาไว้ให้เงา (Shadow) ไม่โดนตัด */
-    
+    padding-bottom: 1px;
+    /* ดึงแถบเลื่อนให้ลงมาแนบชิดติดขอบการ์ด */
+    padding-top: 15px;
+    /* เผื่อพื้นที่ด้านล่างการ์ดเอาไว้ให้เงา (Shadow) ไม่โดนตัด */
+
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
 
 /* ปรับแต่งแถบเลื่อนให้สวยงาม */
 .favorite-plans-scroll-container::-webkit-scrollbar {
-    height: 5px; /* ปรับบางลงนิดนึง จะได้ดูแนบเนียนไปกับการ์ด */
+    height: 5px;
+    /* ปรับบางลงนิดนึง จะได้ดูแนบเนียนไปกับการ์ด */
 }
+
 .favorite-plans-scroll-container::-webkit-scrollbar-track {
     background: #fff7f2;
     border-radius: 10px;
 }
+
 .favorite-plans-scroll-container::-webkit-scrollbar-thumb {
     background: #ffaa5a;
     border-radius: 10px;
@@ -527,7 +545,8 @@
     display: flex;
     overflow-x: auto;
     gap: 20px;
-    padding-bottom: 15px; /* เว้นที่ให้ Scrollbar */
+    padding-bottom: 15px;
+    /* เว้นที่ให้ Scrollbar */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
@@ -536,10 +555,12 @@
 .favorite-foods-scroll-container::-webkit-scrollbar {
     height: 5px;
 }
+
 .favorite-foods-scroll-container::-webkit-scrollbar-track {
     background: #fff7f2;
     border-radius: 10px;
 }
+
 .favorite-foods-scroll-container::-webkit-scrollbar-thumb {
     background: #ffaa5a;
     border-radius: 10px;
@@ -547,7 +568,8 @@
 
 /* คลาสสำหรับการ์ดแต่ละใบของอาหารโปรด */
 .food-slide {
-    flex: 0 0 220px; /* บังคับขนาดการ์ดไม่ให้โดนยืดหรือหด */
+    flex: 0 0 220px;
+    /* บังคับขนาดการ์ดไม่ให้โดนยืดหรือหด */
     min-width: 220px;
     scroll-snap-align: start;
 }
@@ -555,27 +577,127 @@
 
 
 .favorite-plan-slide {
-    transform: rotateX(180deg); 
-    flex: 0 0 90%; 
+    transform: rotateX(180deg);
+    flex: 0 0 90%;
     min-width: 90%;
     scroll-snap-align: center;
-    
-    /* 🌟 บังคับไม่ให้มีขอบลอย */
     margin-bottom: 0 !important;
+    display: flex;
+    /* ทำให้การ์ดยืดเต็มความสูงของ row */
+    flex-direction: column;
 }
 
-@media (min-width: 768px) {
+.favorite-plan-slide .home-meal-plan-card {
+    flex: 1;
+    /* ยืดเต็มความสูง → ทุกการ์ดสูงเท่ากัน */
+    margin-bottom: 0;
+}
+
+@media (max-width:768px) {
     .favorite-plan-slide {
-        flex: 0 0 85%;
-        min-width: 85%;
-        scroll-snap-align: center;
+        flex: 0 0 100%;
+        min-width: 100%;
     }
 }
 
 @media (min-width: 768px) {
     .favorite-plan-slide {
-        flex: 0 0 100%; /* จอคอม: ให้การ์ดกว้าง 100% */
+        flex: 0 0 100%;
+        /* จอคอม: ให้การ์ดกว้าง 100% */
         min-width: 100%;
         scroll-snap-align: start;
+    }
+}
+
+/* ================= MOBILE RESPONSIVE FIX =================  */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 20px 4% 20px;
+    }
+
+    .quick-actions {
+        margin-top: 0;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .quick-card {
+        padding: 18px 20px;
+    }
+
+    .quick-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+
+    .quick-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .quick-card p {
+        font-size: 0.85rem;
+    }
+
+    .home-favorite-title {
+        font-size: 1.4rem;
+    }
+
+    .food-slide {
+        flex: 0 0 170px;
+        min-width: 170px;
+    }
+
+    .home-favorite-card {
+        height: 240px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 90px 4% 20px;
+    }
+
+    .slideshow {
+        height: 40vh;
+    }
+
+    .nutrition-card {
+        padding: 20px 15px 30px;
+        margin: 0 0 20px;
+    }
+
+    .tdee {
+        font-size: 1.8rem;
+    }
+
+    .macro {
+        min-width: 90px;
+        min-height: 90px;
+        padding: 10px;
+    }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    .slideshow {
+        width: 100%;
+        height: 220px;
+        /* ปรับได้ 200-250px */
+        margin-top: 80px;
+        overflow: hidden;
+        position: relative;
+        padding-bottom: 0;
+    }
+
+    .slide-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
     }
 }

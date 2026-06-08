@@ -49,3 +49,41 @@
     font-weight: 600;
     font-size: 0.8rem;
 }
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .food-card {
+        border-radius: 16px;
+    }
+
+    .food-img {
+        height: 150px;
+    }
+
+    .food-details {
+        padding: 14px;
+    }
+
+    .food-name {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .food-img {
+        height: 130px;
+    }
+
+    .food-name {
+        font-size: 0.9rem;
+    }
+
+    .food-serving {
+        font-size: 0.75rem;
+    }
+
+    .kcal-badge {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+}

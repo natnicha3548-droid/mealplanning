@@ -1,6 +1,6 @@
 /* AuthPage.css */
 
-.auth-container { 
+.auth-container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -111,5 +111,56 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 30px 16px;
+        min-height: 100vh;
+        align-items: flex-start;
+        padding-top: 60px;
+    }
+
+    .auth-card {
+        padding: 30px 22px;
+        border-radius: 22px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .auth-card h2 {
+        font-size: 1.6rem;
+    }
+
+    .auth-form input {
+        height: 48px;
+        font-size: 0.95rem;
+    }
+
+    .auth-form button {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .auth-footer {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 20px 12px;
+        padding-top: 50px;
+    }
+
+    .auth-card {
+        padding: 24px 16px;
+        border-radius: 18px;
+    }
+
+    .auth-card h2 {
+        font-size: 1.4rem;
     }
 }
