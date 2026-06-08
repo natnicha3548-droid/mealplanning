@@ -175,17 +175,55 @@ function MenuFood() {
         }
     };
 
-    const addToMealPlan = () => {
-        // ตรวจสอบว่าคำนวณแล้วหรือยัง
-        const nutritionData = localStorage.getItem("nutritionData");
+    const addToMealPlan = async () => {
 
-        if (!nutritionData) {
-            alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
-            navigate("/calculate"); // เปลี่ยนเป็น path หน้าคำนวณของคุณ
+        // ===== GUEST =====
+        if (!currentUserId) {
+
+            const guestCalc = sessionStorage.getItem("activeCalcResult");
+
+            if (!guestCalc) {
+                alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
+                navigate("/calculate");
+                return;
+            }
+
+        }
+
+        // ===== MEMBER =====
+        else {
+
+            try {
+
+                const res = await fetch(
+                    `http://localhost:5000/api/get-calculation/${currentUserId}`
+                );
+
+                const calcData = await res.json();
+
+                if (!calcData) {
+                    alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
+                    navigate("/calculate");
+                    return;
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("ไม่สามารถตรวจสอบข้อมูลการคำนวณได้");
+                return;
+            }
+        }
+
+        // ===== เพิ่มอาหารตามปกติ =====
+
+        if (!selectedFood) {
+            alert("กรุณาเลือกอาหาร");
             return;
         }
-        if (!selectedFood) { alert("กรุณาเลือกอาหาร"); return; }
+
         const myPlate = JSON.parse(localStorage.getItem("myplate")) || [];
+
+    // โค้ดเดิมต่อจากนี้...
         const mealMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };
         myPlate.push({
             id: Date.now(),
