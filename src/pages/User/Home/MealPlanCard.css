@@ -31,9 +31,9 @@
 
 .home-meal-card-kcal {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
+    flex-direction: row; /* เปลี่ยนจาก column เป็น row */
+    align-items: center; /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
+    gap: 12px; /* เพิ่มระยะห่างระหว่างข้อความและปุ่ม */
 }
 
 /* Desktop: badge + restore in one row */
@@ -229,10 +229,9 @@
     /* kcal + restore: เรียงในแนวนอนเดียว ชิดขวา */
     .home-meal-card-kcal {
         display: flex;
-        flex-direction: column;
-        /* label บน, kcal+btn ล่าง */
-        align-items: flex-end;
-        gap: 2px;
+        flex-direction: row; /* เปลี่ยนเป็นแนวนอน */
+        align-items: center; /* จัดให้อยู่กึ่งกลาง */
+        gap: 8px; /* ปรับลด gap ลงเล็กน้อยสำหรับมือถือ */
         flex-shrink: 0;
     }
 
