@@ -95,7 +95,7 @@ function MenuFood() {
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
 
-    // 🌟 ฟังก์ชันหาชื่อหมวดหมู่ปัจจุบันมาแสดงใน Dropdown
+    // ฟังก์ชันหาชื่อหมวดหมู่ปัจจุบันมาแสดงใน Dropdown
     const getDropdownLabel = () => {
         if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
         const found = categories.find(c => c.category_id === activeCategory);
@@ -111,7 +111,7 @@ function MenuFood() {
 
         // เปิดการรับฟัง Event เมื่อ Component โหลด
         document.addEventListener("mousedown", handleClickOutside);
-        
+
         // คืนค่า Event เมื่อ Component ถูกทำลาย
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
@@ -223,7 +223,7 @@ function MenuFood() {
 
         const myPlate = JSON.parse(localStorage.getItem("myplate")) || [];
 
-    // โค้ดเดิมต่อจากนี้...
+        // โค้ดเดิมต่อจากนี้...
         const mealMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };
         myPlate.push({
             id: Date.now(),
@@ -249,8 +249,10 @@ function MenuFood() {
         setFromRecommend(false);
         setQuantity(1);
 
+        const mealTypeMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };
+        const mealForRecommend = mealTypeMap[selectedMeal];
         fetch(
-            `http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}`
+            `http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}?meal_type=${encodeURIComponent(mealForRecommend)}`
         )
             .then(res => res.json())
             .then(data => {
@@ -349,7 +351,7 @@ function MenuFood() {
 
             {/* ================= TOOLBAR: DROPDOWN & FAVORITE ================= */}
             <div className="menu-toolbar">
-                
+
                 {/* 1. Category Dropdown */}
                 <div className="custom-dropdown" ref={dropdownRef}>
                     <div
@@ -667,12 +669,12 @@ function MenuFood() {
                                 <span className="recommend-title-icon">
                                     <MdLocalFireDepartment style={{ color: "white", fontSize: "1.1rem" }} />
                                 </span>
-                                <h3 className="recommend-title">เมนูแนะนำ</h3>
+                                <h3 className="recommend-title">เมนูแนะนำอาหาร{{ breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" }[selectedMeal]}</h3>
                             </div>
 
                             {recommendations.length > 0 ? (
                                 <div className="recommend-cards-grid">
-                                    {recommendations.slice(0, 2).map((item, index) => {
+                                    {recommendations.slice(0, 3).map((item, index) => {
                                         const foodData = getFoodData(item.food);
                                         const img = getFoodImage(foodData);
                                         const calories = foodData?.calories
@@ -725,7 +727,7 @@ function MenuFood() {
             )}
 
         </div>
-        
+
     );
 }
 

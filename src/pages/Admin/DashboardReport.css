@@ -425,6 +425,48 @@
   background: linear-gradient(135deg, #ffc2b8 0%, #fa6555 100%);
 }
 
+.fp-top-badge {
+  margin-left: auto;
+  background: #fff3ea;
+  color: #ff8c42;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.fp-top-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fp-pair {
+  flex: 1;
+}
+
+.fp-rank-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+}
+
+.rank-gold {
+  color: #fca311;
+  font-size: 24px;
+}
+
+.rank-silver {
+  color: #9aa0a6;
+  font-size: 24px;
+}
+
+.rank-bronze {
+  color: #cd7f32;
+  font-size: 24px;
+}
+
 /* =========================================
    ตั้งค่า CSS เฉพาะสำหรับการสร้าง PDF หรือ Print (อัปเดตใหม่)
    ========================================= */

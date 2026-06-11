@@ -1,26 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
-import { 
-  LuUsers, 
-  LuUtensils, 
-  LuStar, 
-  LuTrendingUp, 
-  LuTrophy, 
-  LuNetwork, 
-  LuLink, 
-  LuZap, 
-  LuCircleCheck, 
+import {
+  LuUsers,
+  LuUtensils,
+  LuStar,
+  LuTrendingUp,
+  LuTrophy,
+  LuNetwork,
+  LuLink,
+  LuZap,
+  LuCircleCheck,
   LuTrash2,
   LuPartyPopper,
   LuArrowRight,
-  LuTrendingDown, 
+  LuTrendingDown,
   LuMinus,
   LuCalendarDays,
-  LuFileSpreadsheet, 
+  LuFileSpreadsheet,
   LuFileText,
-  LuUserPlus,  // <--- นำเข้าไอคอนเพิ่ม
-  LuUserMinus  // <--- นำเข้าไอคอนเพิ่ม
+  LuUserPlus,
+  LuUserMinus,
+  LuSunrise,
+  LuSun,
+  LuMoon,
+  LuMedal,
+  LuAward,
+  LuBadgeCheck
 } from "react-icons/lu";
 import { FaChartPie } from "react-icons/fa";
 import * as XLSX from 'xlsx';
@@ -28,9 +34,9 @@ import './DashboardReport.css';
 
 function DashboardReport() {
   const navigate = useNavigate();
-  const reportRef = useRef(null); 
+  const reportRef = useRef(null);
 
-  const [timeFilter, setTimeFilter] = useState('7days'); 
+  const [timeFilter, setTimeFilter] = useState('7days');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
@@ -46,7 +52,7 @@ function DashboardReport() {
     chartData: [],
     topFoods: [],
     recentReviews: [],
-    fpGrowthInsights: []
+    fpGrowthInsights: { 'เช้า': [], 'กลางวัน': [], 'เย็น': [] }
   });
 
   useEffect(() => {
@@ -54,7 +60,7 @@ function DashboardReport() {
       try {
         const res = await fetch(`http://localhost:5000/api/admin/dashboard-stats?filter=${timeFilter}`);
         const data = await res.json();
-        
+
         if (res.ok) {
           setStats({
             users: data.totalUsers || 0,
@@ -65,7 +71,7 @@ function DashboardReport() {
             chartData: data.chartData || [],
             topFoods: data.topFoods || [],
             recentReviews: data.recentReviews || [],
-            fpGrowthInsights: data.fpGrowthInsights || []
+            fpGrowthInsights: data.fpGrowthInsights || { 'เช้า': [], 'กลางวัน': [], 'เย็น': [] }
           });
         }
       } catch (err) {
@@ -80,7 +86,7 @@ function DashboardReport() {
     if (timeFilter === 'month') return '1 เดือนล่าสุด';
     if (timeFilter === 'year') return '1 ปีล่าสุด';
     if (timeFilter === 'all') return 'ภาพรวมทั้งหมด';
-    
+
     if (timeFilter.match(/^\d{4}-\d{2}$/)) {
       const [year, month] = timeFilter.split('-');
       const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -111,13 +117,13 @@ function DashboardReport() {
 
     summaryData.push([]);
     summaryData.push(["เมนูที่มักทานคู่กัน (FP-growth)"]);
-    summaryData.push(["คู่เมนู", "จำนวนครั้ง"]);
-
-    stats.fpGrowthInsights.forEach(item => {
-      summaryData.push([
-        item.pair,
-        item.support
-      ]);
+    ["เช้า", "กลางวัน", "เย็น"].forEach(meal => {
+      summaryData.push([`มื้${meal}`]);
+      summaryData.push(["คู่เมนู", "%"]);
+      (stats.fpGrowthInsights[meal] || []).forEach(item => {
+        summaryData.push([item.pair, `${item.supportPct}%`]);
+      });
+      summaryData.push([]);
     });
 
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
@@ -147,14 +153,14 @@ function DashboardReport() {
         </h2>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button 
+          <button
             onClick={exportToExcel}
             className="btn-export btn-export-excel"
           >
             <LuFileSpreadsheet size={18} /> Excel
           </button>
-          
-          <button 
+
+          <button
             onClick={exportToPDF}
             className="btn-export btn-export-pdf"
           >
@@ -162,11 +168,11 @@ function DashboardReport() {
           </button>
         </div>
       </div>
-      
+
       <div ref={reportRef} className="dashboard-content-wrapper" style={{ padding: '10px' }}>
-        
+
         <div className="dashboard-stats-container">
-          
+
           {/* ======================= การ์ดสมาชิกรวม (ปรับปรุงใหม่) ======================= */}
           <div className="admin-card stat-card" onClick={() => navigate('/admin/manage-users')} style={{ cursor: 'pointer', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '20px', right: '20px', color: '#ff8c42', opacity: 0.5 }}>
@@ -174,7 +180,7 @@ function DashboardReport() {
             </div>
             <h4><LuUsers className="title-icon" /> จำนวนสมาชิกรวม</h4>
             <div className="stat-value">{stats.users} <span>คน</span></div>
-            
+
             {/* กล่อง Sub-stats สำหรับผู้ใช้ใหม่และคนไม่ได้ใช้งาน */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '2px dashed #f9ece0', fontSize: '0.9rem' }}>
               <div style={{ color: '#1e8e3e', display: 'flex', alignItems: 'center', gap: '5px' }} title="สมัครใหม่ใน 30 วันล่าสุด">
@@ -188,7 +194,7 @@ function DashboardReport() {
             <p style={{ margin: '15px 0 0 0', fontSize: '0.85rem', color: '#a68c74', textAlign: 'center' }}>คลิกเพื่อดูทั้งหมด</p>
           </div>
           {/* ========================================================================= */}
-          
+
           <div className="admin-card stat-card" onClick={() => navigate('/admin/manage-food')} style={{ cursor: 'pointer', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '20px', right: '20px', color: '#ff8c42', opacity: 0.5 }}>
               <LuArrowRight size={20} />
@@ -212,14 +218,14 @@ function DashboardReport() {
           <div className="admin-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 className="dashboard-card-title" style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>
-                <LuTrendingUp className="title-icon" /> 
+                <LuTrendingUp className="title-icon" />
                 แผนการกินที่ถูกสร้าง ({getFilterDisplayText()})
               </h3>
-              
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} data-html2canvas-ignore>
                 <div className="custom-cute-dropdown" style={{ width: '150px' }}>
-                  <div 
-                    className={`dropdown-header ${isDropdownOpen ? 'active' : ''}`} 
+                  <div
+                    className={`dropdown-header ${isDropdownOpen ? 'active' : ''}`}
                     onClick={() => {
                       setIsDropdownOpen(!isDropdownOpen);
                       setIsMonthPickerOpen(false);
@@ -228,7 +234,7 @@ function DashboardReport() {
                     {getFilterDisplayText()}
                     <span className="arrow">▼</span>
                   </div>
-                  
+
                   {isDropdownOpen && (
                     <ul className="dropdown-options" style={{ width: '150px', right: 0, left: 'auto' }}>
                       <li onClick={() => { setTimeFilter('7days'); setIsDropdownOpen(false); }}>7 วันล่าสุด</li>
@@ -240,11 +246,11 @@ function DashboardReport() {
                 </div>
 
                 <div style={{ position: 'relative' }}>
-                  <div 
-                    className={`month-picker-wrapper ${isMonthPickerOpen ? 'active' : ''}`} 
+                  <div
+                    className={`month-picker-wrapper ${isMonthPickerOpen ? 'active' : ''}`}
                     title="ระบุเดือน/ปีที่ต้องการ"
-                    onClick={() => { 
-                      setIsMonthPickerOpen(!isMonthPickerOpen); 
+                    onClick={() => {
+                      setIsMonthPickerOpen(!isMonthPickerOpen);
                       setIsDropdownOpen(false);
                     }}
                   >
@@ -258,16 +264,16 @@ function DashboardReport() {
                         <span>ปี {pickerYear + 543}</span>
                         <button onClick={(e) => { e.stopPropagation(); setPickerYear(pickerYear + 1) }}>&gt;</button>
                       </div>
-                      
+
                       <div className="month-popup-grid">
                         {thaiMonthsShort.map((m, index) => {
                           const monthStr = String(index + 1).padStart(2, '0');
                           const filterValue = `${pickerYear}-${monthStr}`;
                           const isActive = timeFilter === filterValue;
-                          
+
                           return (
-                            <div 
-                              key={index} 
+                            <div
+                              key={index}
                               className={`month-item ${isActive ? 'active' : ''}`}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -291,22 +297,22 @@ function DashboardReport() {
                 <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorPlans" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ff8c42" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#ff8c42" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#ff8c42" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#ff8c42" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0e6dc" />
-                  <XAxis dataKey="name" tick={{fill: '#8c7355', fontSize: 12}} axisLine={false} tickLine={false} dy={10} />
-                  <YAxis tick={{fill: '#8c7355', fontSize: 12}} axisLine={false} tickLine={false} allowDecimals={false} />
-                  <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}/>
-                  <Area 
-                    type="monotone" 
-                    dataKey="plans" 
-                    name="จำนวนแผน (ครั้ง)" 
-                    stroke="#ff8c42" 
-                    strokeWidth={3} 
-                    fillOpacity={1} 
-                    fill="url(#colorPlans)" 
+                  <XAxis dataKey="name" tick={{ fill: '#8c7355', fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
+                  <YAxis tick={{ fill: '#8c7355', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
+                  <Area
+                    type="monotone"
+                    dataKey="plans"
+                    name="จำนวนแผน (ครั้ง)"
+                    stroke="#ff8c42"
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill="url(#colorPlans)"
                     dot={{ r: 4, fill: '#ff8c42', stroke: '#ffffff', strokeWidth: 2 }}
                     activeDot={{ r: 6, strokeWidth: 0 }}
                   />
@@ -321,7 +327,7 @@ function DashboardReport() {
               {stats.topFoods.length > 0 ? stats.topFoods.map((item, index) => (
                 <li key={index}>
                   <span style={{ fontWeight: '500' }}>{index + 1}. {item.food_name}</span>
-                  
+
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {item.trend === 'up' && (
                       <span style={{ color: '#1e8e3e', display: 'flex', alignItems: 'center' }} title="กำลังฮิตคนกดเยอะ">
@@ -349,47 +355,77 @@ function DashboardReport() {
         <div className="dashboard-grid">
           <div className="admin-card">
             <h3 className="dashboard-card-title"><LuNetwork className="title-icon" /> FP-growth: เมนูที่มักทานคู่กัน</h3>
-            <ul className="insight-list">
-              {stats.fpGrowthInsights.length > 0 ? (
-                stats.fpGrowthInsights.map((item, index) => (
-                  <li key={index}>
-                    <span className="flex-align">
-                      <LuLink /> {item.pair}
-                    </span>
+            {[
+              { meal: 'เช้า', Icon: LuSunrise },
+              { meal: 'กลางวัน', Icon: LuSun },
+              { meal: 'เย็น', Icon: LuMoon }
+            ].map(({ meal, Icon }) => (
+              <div key={meal} style={{ marginBottom: '16px' }}>
+                <div style={{ fontWeight: '600', color: '#ff8c42', marginBottom: '8px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Icon size={16} />
+                  มื้อ{meal}
 
-                    <span
-                      className="insight-value"
-                      style={{
-                        background: '#e6f4ea',
-                        color: '#1e8e3e'
-                      }}
-                    >
-                      {item.support} ครั้ง
-                    </span>
-                  </li>
-                ))
-              ) : (
-                <li>ไม่มีข้อมูล FP-Growth</li>
-              )}
-            </ul>
-            <p style={{fontSize: '0.85rem', color: '#b5a18e', marginTop: '15px'}}>* ข้อมูลจากการวิเคราะห์พฤติกรรมการจัดแผนอาหารของผู้ใช้</p>
+                  <span className="fp-top-badge">
+                    Top 3
+                  </span>
+                </div>
+                <ul className="insight-list" style={{ margin: 0 }}>
+                  {(stats.fpGrowthInsights[meal] || []).length > 0 ? (
+                    (stats.fpGrowthInsights[meal] || [])
+                      .slice(0, 3)
+                      .map((item, index) => (
+                        <li key={index} className="fp-top-item">
+
+                          <div className="fp-rank-icon">
+
+                            {index === 0 && <LuMedal className="rank-gold" />}
+
+                            {index === 1 && <LuAward className="rank-silver" />}
+
+                            {index === 2 && <LuBadgeCheck className="rank-bronze" />}
+
+                          </div>  
+
+                          <span className="fp-pair">
+                            {item.pair}
+                          </span>
+
+                          <span
+                            className="insight-value"
+                            style={{
+                              background: '#e6f4ea',
+                              color: '#1e8e3e'
+                            }}
+                          >
+                            {item.supportPct}%
+                          </span>
+
+                        </li>
+                    ))
+                  ) : (
+                    <li style={{ color: '#b5a18e', fontSize: '0.85rem' }}>ไม่มีข้อมูลมื้{meal}</li>
+                  )}
+                </ul>
+              </div>
+            ))}
+            <p style={{ fontSize: '0.85rem', color: '#b5a18e', marginTop: '15px' }}>* ข้อมูลจากการวิเคราะห์พฤติกรรมการจัดแผนอาหารของผู้ใช้</p>
           </div>
 
           <div className="admin-card" data-html2canvas-ignore>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px dashed #f9ece0', paddingBottom: '10px' }}>
               <h3 className="dashboard-card-title" style={{ borderBottom: 'none', marginBottom: 0, paddingBottom: 0 }}><LuZap className="title-icon" /> จัดการรีวิวด่วน</h3>
-              <button 
+              <button
                 onClick={() => navigate('/admin/manage-reviews')}
                 style={{ background: 'none', border: 'none', color: '#ff8c42', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}
               >
                 ดูทั้งหมด <LuArrowRight />
               </button>
             </div>
-            
+
             {stats.recentReviews.length > 0 ? stats.recentReviews.map(review => (
               <div key={review.review_id} className="quick-review-item">
                 <div className="quick-review-header">
-                  <span className="quick-review-food">{review.food_name} <span className="review-rating-badge"><LuStar size={14} fill="#ff9800" color="#ff9800"/> {review.rating}</span></span>
+                  <span className="quick-review-food">{review.food_name} <span className="review-rating-badge"><LuStar size={14} fill="#ff9800" color="#ff9800" /> {review.rating}</span></span>
                   <span className="quick-review-email">{review.email}</span>
                 </div>
                 <p className="quick-review-text">"{review.review_text}"</p>
@@ -398,7 +434,7 @@ function DashboardReport() {
                   <button className="quick-action-btn btn-reject"><LuTrash2 /> ปฏิเสธ</button>
                 </div>
               </div>
-            )) : <p style={{color: '#8c7355', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px'}}>ไม่มีรีวิวรอตรวจสอบ <LuPartyPopper /></p>}
+            )) : <p style={{ color: '#8c7355', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>ไม่มีรีวิวรอตรวจสอบ <LuPartyPopper /></p>}
           </div>
         </div>
 

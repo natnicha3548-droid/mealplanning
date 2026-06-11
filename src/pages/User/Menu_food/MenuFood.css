@@ -814,8 +814,8 @@
 
 /* ================= RECOMMEND MODAL ================= */
 .recommend-modal {
-    width: 100%;
-    max-width: 520px;
+    width: 95%;
+    max-width: 950px;
     background: white;
     border-radius: 28px;
     overflow: hidden;
@@ -950,10 +950,10 @@
     color: #2d1b12;
 }
 
-/* CARDS GRID — 2 columns */
+/* CARDS GRID — 3 columns */
 .recommend-cards-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     margin-bottom: 18px;
 }
@@ -1099,7 +1099,7 @@
     }
 
     .food-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .nutrition-grid {

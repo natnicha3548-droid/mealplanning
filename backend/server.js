@@ -32,7 +32,7 @@ db.connect(err => {
 });
 
 // ================= New plan =================
-const dbPromise = db.promise(); 
+const dbPromise = db.promise();
 
 // ================= EMAIL =================
 const transporter = nodemailer.createTransport({
@@ -878,7 +878,7 @@ app.post('/api/review', (req, res) => {
 
     // 1. เช็กก่อนว่าเคยรีวิวเมนูนี้หรือยัง
     const checkSql = "SELECT review_id FROM food_review WHERE user_id = ? AND food_id = ?";
-    
+
     db.query(checkSql, [user_id, food_id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
 
@@ -1050,7 +1050,7 @@ app.post('/api/favorite-food', (req, res) => {
 
 // ================= REPORT API =================
 app.get('/api/report/:user_id', async (req, res) => {
-const userId = req.params.user_id;
+    const userId = req.params.user_id;
     const connection = db.promise();
 
     try {
@@ -1132,14 +1132,14 @@ app.post('/api/restore-plan', async (req, res) => {
     try {
         // 1. ดึงข้อมูลแผนต้นฉบับ
         const [oldPlans] = await dbPromise.query(
-            'SELECT * FROM meal_plan WHERE user_id = ? AND DATE(plan_date) = ?', 
+            'SELECT * FROM meal_plan WHERE user_id = ? AND DATE(plan_date) = ?',
             [userId, sourceDate]
         );
 
         if (oldPlans.length === 0) {
             return res.status(404).json({ message: "ไม่พบแผนของวันที่เลือก" });
         }
-        
+
         const oldPlan = oldPlans[0];
 
         // 2. ใช้คำสั่ง SQL เริ่ม Transaction โดยตรง
@@ -1148,7 +1148,7 @@ app.post('/api/restore-plan', async (req, res) => {
         try {
             // 1. ตรวจสอบว่าวันนี้มีแผนอยู่แล้วหรือยัง?
             const [existing] = await dbPromise.query(
-                'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+                'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?',
                 [userId, targetDate]
             );
 
@@ -1203,13 +1203,13 @@ app.post('/api/restore-from-favorite', async (req, res) => {
 
         // 1. ดึงรายละเอียด รวมถึง quantity
         const [details] = await dbPromise.query(
-            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?', 
+            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?',
             [planId]
         );
 
         // 2. เช็คแผนของวันนี้
         const [existingPlans] = await dbPromise.query(
-            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?',
             [userId, targetDate]
         );
 
@@ -1254,13 +1254,13 @@ app.post('/api/restore-latest-plan', async (req, res) => {
 
         // 1. ดึงรายละเอียด รวมถึง quantity
         const [details] = await dbPromise.query(
-            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?', 
+            'SELECT meal_type, food_id, quantity, total_calories FROM meal_detail WHERE plan_id = ?',
             [planId]
         );
 
         // 2. เช็คแผนของวันนี้
         const [existingPlans] = await dbPromise.query(
-            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?', 
+            'SELECT plan_id FROM meal_plan WHERE user_id = ? AND plan_date = ?',
             [userId, targetDate]
         );
 
@@ -1304,7 +1304,7 @@ app.get('/api/meal-status', async (req, res) => {
             "SELECT * FROM favorite WHERE user_id = ? AND plan_id = ?",
             [userId, planId]
         );
-        
+
         // ดึงรีวิวของอาหารทั้งหมดในแผนนี้ (ถ้ามี)
         const [reviews] = await db.promise().query(
             "SELECT food_id, rating, review_text FROM food_review WHERE user_id = ?",
@@ -1873,7 +1873,7 @@ app.get("/api/favorite-plans/:userId", (req, res) => {
 
         // ถ้าไม่มีแผนโปรดเลย ให้ส่ง Array ว่างกลับไป (เพื่อไม่ให้ React พัง)
         if (plans.length === 0) {
-            return res.json([]); 
+            return res.json([]);
         }
 
         // 2. นำ plan_id ทั้งหมดไปค้นหาเมนูอาหารย่อยๆ ในแผนนั้น
@@ -1900,7 +1900,7 @@ app.get("/api/favorite-plans/:userId", (req, res) => {
             // 3. จัดกลุ่มอาหารแยกตามมื้อ (เช้า, กลางวัน, เย็น) เพื่อให้ React นำไปแสดงผลได้ทันที
             const formattedPlans = plans.map(plan => {
                 const planDetails = details.filter(d => d.plan_id === plan.plan_id);
-                
+
                 return {
                     ...plan,
                     breakfast: planDetails.filter(d => d.meal_type === 'เช้า'),
@@ -1920,11 +1920,11 @@ app.get("/api/favorite-plans/:userId", (req, res) => {
 app.get('/api/admin/dashboard-stats', async (req, res) => {
     const connection = db.promise();
     const filter = req.query.filter || '7days'; // รับค่า filter จาก Frontend (ค่าเริ่มต้นคือ 7 วัน)
-    
+
     try {
         // 1. นับจำนวนภาพรวม
         const [users] = await connection.query("SELECT COUNT(*) AS total FROM users WHERE role = 'User'");
-        
+
         // ================= ส่วนที่เพิ่มใหม่: คำนวณผู้ใช้ใหม่ & ผู้ไม่ได้ใช้งาน =================
         let newUsersTotal = 0;
         let inactiveUsersTotal = 0;
@@ -1975,7 +1975,7 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             let trend = 'neutral';
             if (index < 2) trend = 'up'; // อันดับ 1 และ 2 ให้ลูกศรชี้ขึ้น (กำลังฮิต)
             else if (index > 2) trend = 'down'; // อันดับ 4 และ 5 ให้ลูกศรชี้ลง (ความนิยมลดลง)
-            
+
             return { ...item, trend };
         });
 
@@ -1986,7 +1986,7 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
             WHERE fr.review_status = 'รออนุมัติ' ORDER BY fr.created_at DESC LIMIT 3
         `);
 
-        // ================= FP-GROWTH =================
+        // ================= FP-GROWTH แยกตามมื้อ =================
 
         const [fpRows] = await connection.query(`
     SELECT
@@ -2013,25 +2013,37 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
 
         });
 
-        const transactions = Object.values(grouped);
+        const mealTypes = ['เช้า', 'กลางวัน', 'เย็น'];
+        const fpGrowthInsights = {};
 
-        const fp = new fpgrowth.FPGrowth(0.1);
+        for (const meal of mealTypes) {
+            const mealTransactions = Object.entries(grouped)
+                .filter(([key]) => key.endsWith(`_${meal}`))
+                .map(([, foods]) => foods);
 
-        const itemsets = await fp.exec(transactions);
+            if (mealTransactions.length < 2) {
+                fpGrowthInsights[meal] = [];
+                continue;
+            }
 
-        const fpGrowthInsights = itemsets
-            .filter(item => item.items.length === 2)
-            .sort((a, b) => b.support - a.support)
-            .slice(0, 5)
-            .map(item => ({
-                pair: item.items.join(' + '),
-                support: item.support
-            }));
+            const fp = new fpgrowth.FPGrowth(0.1);
+            const itemsets = await fp.exec(mealTransactions);
+
+            fpGrowthInsights[meal] = itemsets
+                .filter(item => item.items.length === 2 && item.items[0] !== item.items[1])
+                .sort((a, b) => b.support - a.support)
+                .slice(0, 5)
+                .map(item => ({
+                    pair: item.items.join(' + '),
+                    support: item.support,
+                    supportPct: Math.round((item.support / mealTransactions.length) * 100)
+                }));
+        }
 
         // 5. ส่งข้อมูลกลับไปให้ Frontend
         res.json({
             totalUsers: users[0].total,
-            newUsers: newUsersTotal,          
+            newUsers: newUsersTotal,
             inactiveUsers: inactiveUsersTotal,
             totalFoods: foods[0].total,
             pendingReviews: reviews[0].total,
@@ -2070,7 +2082,7 @@ app.get('/api/admin/all-reviews', async (req, res) => {
 // 2. API สำหรับอัปเดตสถานะรีวิว (อนุมัติ / ปฏิเสธ)
 app.put('/api/admin/reviews/:id/status', async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body; 
+    const { status } = req.body;
     const connection = db.promise();
     try {
         // อัปเดตสถานะในตาราง food_review
@@ -2104,7 +2116,7 @@ app.get('/api/admin/users', async (req, res) => {
 app.delete('/api/admin/users/:id', async (req, res) => {
     const userId = req.params.id;
     const connection = db.promise();
-    
+
     try {
         await connection.query("START TRANSACTION"); // เริ่มกระบวนการ
 
@@ -2140,7 +2152,7 @@ app.delete('/api/admin/users/:id', async (req, res) => {
 app.put('/api/admin/users/:id', async (req, res) => {
     const userId = req.params.id;
     const { role } = req.body;
-    
+
     if (!role) return res.status(400).json({ message: "ไม่ได้ระบุสิทธิ์ที่ต้องการเปลี่ยน" });
 
     try {
@@ -3112,6 +3124,7 @@ app.get('/api/fp-growth', (req, res) => {
 app.get('/api/recommend/:foodName', (req, res) => {
 
     const targetFood = req.params.foodName;
+    const targetMealType = req.query.meal_type || null;
 
     const sql = `
         SELECT
@@ -3144,7 +3157,12 @@ app.get('/api/recommend/:foodName', (req, res) => {
 
         });
 
-        const transactions = Object.values(grouped);
+        // กรองเฉพาะ transactions ของมื้อที่ผู้ใช้กำลังเพิ่ม
+        const transactions = targetMealType
+            ? Object.entries(grouped)
+                .filter(([key]) => key.endsWith(`_${targetMealType}`))
+                .map(([, foods]) => foods)
+            : Object.values(grouped);
 
         const fp = new fpgrowth.FPGrowth(0.1);
 
@@ -3177,12 +3195,19 @@ app.get('/api/recommend/:foodName', (req, res) => {
 
                 });
 
-                recommendations.sort(
-                    (a, b) => b.support - a.support
-                );
+                // ตัดรายการซ้ำ เก็บ support สูงสุดของแต่ละเมนู
+                const seen = {};
+                recommendations.forEach(r => {
+                    if (!seen[r.food] || r.support > seen[r.food]) {
+                        seen[r.food] = r.support;
+                    }
+                });
+                const unique = Object.entries(seen)
+                    .map(([food, support]) => ({ food, support }))
+                    .sort((a, b) => b.support - a.support);
 
                 res.json(
-                    recommendations.slice(0, 3)
+                    unique.slice(0, 3)
                 );
 
             });

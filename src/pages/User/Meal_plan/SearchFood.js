@@ -232,7 +232,7 @@ function SearchFood() {
     setFromRecommend(false);
     setQuantity(1);
 
-    fetch(`http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}`)
+    fetch(`http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}?meal_type=${encodeURIComponent(cleanMealType)}`)
       .then(res => res.json())
       .then(data => {
         setRecommendations(data || []);
@@ -643,12 +643,12 @@ function SearchFood() {
                 <span className="sf-recommend-title-icon">
                   <MdLocalFireDepartment style={{ color: "white", fontSize: "1.1rem" }} />
                 </span>
-                <h3 className="sf-recommend-title">เมนูแนะนำ</h3>
+                <h3 className="sf-recommend-title">เมนูแนะนำอาหาร{mealType.replace("มื้อ", "")}</h3>
               </div>
 
               {recommendations.length > 0 ? (
                 <div className="sf-recommend-cards-grid">
-                  {recommendations.slice(0, 2).map((item, index) => {
+                  {recommendations.slice(0, 3).map((item, index) => {
                     const foodData = getFoodData(item.food);
                     const img = getFoodImage(foodData);
                     const calories = foodData?.calories
