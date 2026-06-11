@@ -370,42 +370,62 @@ function DashboardReport() {
                   </span>
                 </div>
                 <ul className="insight-list" style={{ margin: 0 }}>
-                  {(stats.fpGrowthInsights[meal] || []).length > 0 ? (
-                    (stats.fpGrowthInsights[meal] || [])
-                      .slice(0, 3)
-                      .map((item, index) => (
-                        <li key={index} className="fp-top-item">
+                {(stats.fpGrowthInsights[meal] || []).length > 0 ? (
+                  (stats.fpGrowthInsights[meal] || [])
+                    .slice(0, 3)
+                    .map((item, index) => (
+                      <li key={index} className="fp-top-item" style={{ display: 'flex', alignItems: 'center' }}>
 
-                          <div className="fp-rank-icon">
+                        <div className="fp-rank-icon">
+                          {index === 0 && <LuMedal className="rank-gold" />}
+                          {index === 1 && <LuAward className="rank-silver" />}
+                          {index === 2 && <LuBadgeCheck className="rank-bronze" />}
+                        </div>  
 
-                            {index === 0 && <LuMedal className="rank-gold" />}
+                        {/* เพิ่ม flexGrow เพื่อดันส่วนตัวเลขและลูกศรไปชิดขวา */}
+                        <span className="fp-pair" style={{ flexGrow: 1, paddingRight: '10px' }}>
+                          {item.pair}
+                        </span>
 
-                            {index === 1 && <LuAward className="rank-silver" />}
-
-                            {index === 2 && <LuBadgeCheck className="rank-bronze" />}
-
-                          </div>  
-
-                          <span className="fp-pair">
-                            {item.pair}
-                          </span>
+                        {/* จัดกลุ่มลูกศร Trend และเปอร์เซ็นต์ให้อยู่ด้วยกัน */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          
+                          {/* เช็คเงื่อนไขและแสดงลูกศรตาม Trend */}
+                          {item.trend === 'up' && (
+                            <span style={{ color: '#1e8e3e', display: 'flex', alignItems: 'center' }} title="มาแรง">
+                              <LuTrendingUp size={18} />
+                            </span>
+                          )}
+                          {item.trend === 'down' && (
+                            <span style={{ color: '#d93025', display: 'flex', alignItems: 'center' }} title="ความนิยมเริ่มลดลง">
+                              <LuTrendingDown size={18} />
+                            </span>
+                          )}
+                          {item.trend === 'neutral' && (
+                            <span style={{ color: '#fca311', display: 'flex', alignItems: 'center' }} title="ความนิยมคงที่">
+                              <LuMinus size={18} />
+                            </span>
+                          )}
 
                           <span
                             className="insight-value"
                             style={{
                               background: '#e6f4ea',
-                              color: '#1e8e3e'
+                              color: '#1e8e3e',
+                              minWidth: '45px',
+                              textAlign: 'center'
                             }}
                           >
                             {item.supportPct}%
                           </span>
+                        </div>
 
-                        </li>
+                      </li>
                     ))
-                  ) : (
-                    <li style={{ color: '#b5a18e', fontSize: '0.85rem' }}>ไม่มีข้อมูลมื้{meal}</li>
-                  )}
-                </ul>
+                ) : (
+                  <li style={{ color: '#b5a18e', fontSize: '0.85rem' }}>ไม่มีข้อมูลมื้อ{meal}</li>
+                )}
+              </ul>
               </div>
             ))}
             <p style={{ fontSize: '0.85rem', color: '#b5a18e', marginTop: '15px' }}>* ข้อมูลจากการวิเคราะห์พฤติกรรมการจัดแผนอาหารของผู้ใช้</p>

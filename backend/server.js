@@ -2033,11 +2033,25 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
                 .filter(item => item.items.length === 2 && item.items[0] !== item.items[1])
                 .sort((a, b) => b.support - a.support)
                 .slice(0, 5)
-                .map(item => ({
-                    pair: item.items.join(' + '),
-                    support: item.support,
-                    supportPct: Math.round((item.support / mealTransactions.length) * 100)
-                }));
+                .map((item, index) => {
+                    // คำนวณเปอร์เซ็นต์
+                    const supportPct = Math.round((item.support / mealTransactions.length) * 100);
+                    
+                    // ✨ ลอจิกจำลองลูกศร (Trend)
+                    let currentTrend = 'neutral';
+                    if (supportPct >= 30) {
+                        currentTrend = 'up'; // มากกว่าหรือเท่ากับ 30% ให้ลูกศรชี้ขึ้น
+                    } else if (supportPct <= 15) {
+                        currentTrend = 'down'; // น้อยกว่าหรือเท่ากับ 15% ให้ลูกศรชี้ลง
+                    }
+
+                    return {
+                        pair: item.items.join(' + '),
+                        support: item.support,
+                        supportPct: supportPct,
+                        trend: currentTrend // ✨ ส่งค่า trend กลับไปให้ UI
+                    };
+                });
         }
 
         // 5. ส่งข้อมูลกลับไปให้ Frontend
