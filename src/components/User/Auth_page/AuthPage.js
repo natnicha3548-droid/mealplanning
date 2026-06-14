@@ -53,12 +53,16 @@ function AuthPage({ setUser }) {
                     return;
                 } else {
                     localStorage.setItem("user", JSON.stringify(userData));
+
+                    // ล้างข้อมูลจานอาหารของ Guest
+                    localStorage.removeItem("myplate");
+                    localStorage.removeItem("plan_plate");
                 }
 
                 await migrateGuestData(userData.user_id);
 
                 if (returnTo) {
-                    // ✅ ส่ง justLoggedIn: true เพื่อให้ปลายทางล้าง Guest data
+                    // ส่ง justLoggedIn: true เพื่อให้ปลายทางล้าง Guest data
                     navigate(returnTo, { state: { justLoggedIn: true } });
                     return;
                 }
@@ -109,12 +113,6 @@ function AuthPage({ setUser }) {
         <div className="auth-container">
             <div className="auth-card">
                 <h2>{isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}</h2>
-
-                {returnTo && isLogin && (
-                    <p style={{ color: "#ff9800", fontSize: "0.9rem", marginBottom: "12px", textAlign: "center" }}>
-                        กรุณาเข้าสู่ระบบเพื่อดูรายการโปรด
-                    </p>
-                )}
 
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="input-group">

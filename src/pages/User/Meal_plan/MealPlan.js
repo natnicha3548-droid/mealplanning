@@ -156,10 +156,25 @@ function MealPlan() {
   };
 
   const handleOpenReviewModal = (meal) => {
-    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    if (!isLoggedIn) {
+      requireLogin("/meal-plan");
+      return;
+    }
+
     setReviewTarget(meal);
-    if (reviewedStatus[meal.food_id]) { setRating(reviewedStatus[meal.food_id].rating); setReviewText(reviewedStatus[meal.food_id].review_text); }
-    else { setRating(5); setReviewText(""); }
+
+    if (reviewedStatus[meal.food_id]) {
+      setRating(reviewedStatus[meal.food_id].rating);
+      setReviewText(reviewedStatus[meal.food_id].review_text);
+    } else {
+      setRating(5);
+      setReviewText("");
+    }
   };
 
   const handleConfirmReview = async () => {

@@ -219,9 +219,6 @@ function MyPlate() {
             <h3>กรุณาเข้าสู่ระบบ</h3>
             <p>
               คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถบันทึกแผนอาหารได้<br />
-              <span style={{ color: "#4caf50", fontWeight: "600", fontSize: "0.9rem" }}>
-                ✓ รายการอาหารที่เลือกไว้จะยังคงอยู่หลังเข้าสู่ระบบ
-              </span>
             </p>
             <button className="prompt-btn-primary"
               onClick={() => {

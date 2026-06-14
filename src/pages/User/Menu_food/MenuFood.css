@@ -137,8 +137,6 @@
     font-size: 32px;
 }
 
-/* ================= CATEGORY ================= */
-/* ================= TOOLBAR (Dropdown + Favorite) ================= */
 .menu-toolbar {
     display: flex;
     align-items: center;
@@ -217,6 +215,16 @@
 
 .menu-page .dropdown-item:hover {
     background: #fff9f5;
+}
+
+.menu-page .dropdown-menu {
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.menu-page .dropdown-menu::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Edge, Safari */
 }
 
 /* FAVORITE BUTTON */
@@ -879,7 +887,7 @@
 
 .recommend-food-img {
     width: 100%;
-    height: 220px;
+    height: 350px;
     object-fit: cover;
     display: block;
 }
