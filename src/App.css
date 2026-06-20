@@ -1,17 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
-/* 🌟 ซ่อนเฉพาะ Scrollbar หลักของหน้าเว็บ (แถบสีเทาด้านขวา) */
+
+/* ===== CSS RESET ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ===== ซ่อน Scrollbar หลัก ===== */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-    width: 0 !important; 
-    display: none !important;
+  width: 0 !important;
+  display: none !important;
 }
 
-/* 🌟 สำหรับเบราว์เซอร์ Firefox และ Edge */
-html, body {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
+/* Firefox และ Edge */
+html,
+body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
+/* ===== Layout หลัก ===== */
 html,
 body,
 #root {
@@ -19,8 +29,10 @@ body,
   padding: 0;
   width: 100%;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
+/* ===== Body ===== */
 body {
   font-family: 'Kanit', sans-serif;
 
@@ -32,11 +44,10 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-
   background-attachment: fixed;
 }
 
-/* มือถือ */
+/* ===== มือถือ ===== */
 @media (max-width: 768px) {
   body {
     background-image:
@@ -47,33 +58,36 @@ body {
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: scroll;
   }
 }
 
+/* ===== Main Layout ===== */
 .main-layout {
+  width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* ===== Container ===== */
 .app-container {
+  width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 90px 20px 40px;
 }
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
 
+/* ===== Print ===== */
 @media print {
-  /* ซ่อนทุกอย่างที่มีคลาส no-print */
+
   .no-print {
     display: none !important;
   }
 
-  /* บังคับให้หน้า Dashboard ขยายเต็มจอ (ไม่งั้นจะเหลือขอบขาวด้านซ้ายที่ Sidebar เคยอยู่) */
-  body, html {
+  html,
+  body {
     margin: 0 !important;
     padding: 0 !important;
   }
+
 }

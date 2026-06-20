@@ -25,7 +25,15 @@ function NutritionReport() {
     const fetchReportData = async () => {
       try {
         const storedUser = localStorage.getItem("user");
-        const user = storedUser ? JSON.parse(storedUser) : { user_id: 1 };
+
+        if (!storedUser) {
+          setUserConfig(null);
+          setReportData([]);
+          setIsLoading(false);
+          return;
+        }
+
+        const user = JSON.parse(storedUser);
         const response = await fetch(`http://localhost:5000/api/report/${user.user_id}`);
         const data = await response.json();
         
@@ -42,7 +50,7 @@ function NutritionReport() {
 
   if (isLoading) return <div className="loading">กำลังโหลดรายงานเพื่อสุขภาพ...</div>;
 
-  // ================= 🌟 ระบบจัดการหลายโรคประจำตัว =================
+  // ================= ระบบจัดการหลายโรคประจำตัว =================
   let detectedDiseases = [];
   if (userConfig?.disease) {
     const diseaseString = String(userConfig.disease).toLowerCase();
@@ -62,7 +70,7 @@ function NutritionReport() {
   const avgSodium = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.sodium, 0) / reportData.length) : 0;
   const avgFat = reportData.length > 0 ? Math.round(reportData.reduce((sum, item) => sum + item.fat, 0) / reportData.length) : 0;
 
-  // 🌟 ดึงข้อมูลของ "วันนี้วันเดียว" เพื่อนำไปเปรียบเทียบรายวัน
+  // ดึงข้อมูลของ "วันนี้วันเดียว" เพื่อนำไปเปรียบเทียบรายวัน
   const getTodayLabel = () => {
     const d = new Date();
     const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -70,7 +78,7 @@ function NutritionReport() {
   };
   const todayLabel = getTodayLabel();
 
-  // 🌟 ค้นหาข้อมูลที่ตรงกับ "วันนี้เป๊ะๆ" เท่านั้น (ถ้าหาไม่เจอให้ถือเป็น 0)
+  // ค้นหาข้อมูลที่ตรงกับ "วันนี้เป๊ะๆ" เท่านั้น (ถ้าหาไม่เจอให้ถือเป็น 0)
   const todayData = reportData.length > 0 ? reportData.find(item => item.dateLabel === todayLabel) : null;
   
   const todayCalories = todayData ? todayData.calories : 0;
@@ -86,7 +94,7 @@ function NutritionReport() {
     return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
   };
 
-  // ================= 🌟 วนลูปแสดงแผงควบคุม NCDs =================
+  // ================= วนลูปแสดงแผงควบคุม NCDs =================
   const renderAllNCDWatchSections = () => {
     if (detectedDiseases.length === 0) return null;
 
@@ -242,7 +250,7 @@ function NutritionReport() {
                   <div className="ncd-compare-box">
                     <span>ทานจริงวันนี้</span>
                     <strong className={todayValue > targetValue ? "txt-danger" : "txt-safe"}>
-                      {todayValue} {unit}
+                      {Number(todayValue).toFixed(0)} {unit}
                     </strong>
                   </div>
                 )}
@@ -325,7 +333,7 @@ function NutritionReport() {
             <div className="r-card outline">
               <div className="card-icon-wrapper"><FaBullseye /></div>
               <h3>เป้าหมายพลังงานส่วนบุคคล</h3>
-              <h2>{userConfig?.tdee || 1600} <span>kcal/วัน</span></h2>
+              <h2>{Number(userConfig?.tdee).toFixed(0)} <span>kcal/วัน</span></h2>
             </div>
           </>
         ) : (
@@ -343,7 +351,7 @@ function NutritionReport() {
             <div className="r-card outline">
               <div className="card-icon-wrapper"><FaBullseye /></div>
               <h3>เป้าหมายพลังงานส่วนบุคคล</h3>
-              <h2>{userConfig?.tdee || 1600} <span>kcal/วัน</span></h2>
+              <h2>{Number(userConfig?.tdee).toFixed(0)} <span>kcal/วัน</span></h2>
             </div>
             <div className="r-card outline">
               <div className="card-icon-wrapper"><FaCalendarAlt /></div>

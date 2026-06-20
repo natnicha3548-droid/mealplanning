@@ -180,9 +180,11 @@ function MenuFood() {
         // ===== GUEST =====
         if (!currentUserId) {
 
-            const guestCalc = sessionStorage.getItem("activeCalcResult");
+            const guestCalc = JSON.parse(
+                sessionStorage.getItem("activeCalcResult")
+            );
 
-            if (!guestCalc) {
+            if (!guestCalc || !guestCalc.tdee) {
                 alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
                 navigate("/calculate");
                 return;

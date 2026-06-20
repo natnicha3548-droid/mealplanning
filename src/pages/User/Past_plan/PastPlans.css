@@ -5,7 +5,6 @@
 
 body {
   background-color: #FFF7F0;
-  /* พื้นหลังสีครีมส้มอ่อน */
   margin: 0;
 }
 
@@ -23,7 +22,6 @@ body {
   box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
   flex-shrink: 0;
 }
-
 
 .past-plans-wrapper.pastel-theme {
   padding: 110px 10% 40px;
@@ -44,7 +42,6 @@ body {
   }
 }
 
-/* ของตกแต่งพื้นหลัง */
 .bg-decoration {
   position: absolute;
   font-size: 4rem;
@@ -113,7 +110,6 @@ body {
   gap: 1rem;
 }
 
-/* แท็บเมนูแคปซูล */
 .pill-tab-menu {
   display: flex;
   background-color: #FFFFFF;
@@ -181,7 +177,7 @@ body {
 }
 
 /* =========================================
-   3. Week Selector (เมื่อเลือกแท็บ "สัปดาห์" หรือ "เดือน")
+   3. Week Selector
    ========================================= */
 .week-selector {
   display: flex;
@@ -191,16 +187,23 @@ body {
   padding-bottom: 6px;
 }
 
+/* รวม 2 บล็อกที่ซ้ำกัน → ใช้ค่าล่าสุดจากส่วน Month Details */
 .week-selector::-webkit-scrollbar {
-  height: 5px;
+  height: 6px;
+  display: block;
 }
 
+.week-selector::-webkit-scrollbar-track {
+  background: #ffdbcb;
+  border-radius: 10px;
+}
+
+/* รวม 2 บล็อกที่ซ้ำกัน → ใช้สีที่ชัดเจนกว่า */
 .week-selector::-webkit-scrollbar-thumb {
-  background: rgba(255, 140, 66, 0.18);
-  border-radius: 999px;
+  background: #fb9461;
+  border-radius: 10px;
 }
 
-/* การ์ดวันแต่ละใบ */
 .day-card {
   flex: 1;
   min-width: 125px;
@@ -220,7 +223,6 @@ body {
   transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
 }
 
-/* จุดวงกลมเล็กๆ มุมซ้ายบนของการ์ด */
 .day-card::after {
   content: "";
   position: absolute;
@@ -243,14 +245,12 @@ body {
   border-color: #fffc3a8d;
 }
 
-/* สถานะวันเปิดใช้งาน (Active Day) */
 .day-card.active {
   background: linear-gradient(145deg, rgba(255, 250, 210, 0.98), rgba(255, 234, 216, 0.841));
   border: 2px solid rgba(255, 140, 66, 0.25);
   box-shadow: 0 20px 38px rgba(255, 140, 66, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* ขยายจุดเป็นแคปซูลตอน Active */
 .day-card.active::after {
   width: 42px;
   border-radius: 999px;
@@ -282,7 +282,7 @@ body {
 }
 
 /* =========================================
-   4. Meal List (หน้ารายการอาหาร)
+   4. Meal List
    ========================================= */
 .past-plan-card {
   background: rgba(255, 255, 255, 0.70);
@@ -294,34 +294,40 @@ body {
   flex-direction: column;
 }
 
-/* จัดกลุ่มมื้ออาหารให้มีระยะห่าง */
 .meal-group {
   margin-bottom: 1.5rem;
   border-bottom: 1px dotted #fe57ad;
-  /* เส้นคั่นแยกมื้อ */
   padding-bottom: 0.5rem;
 }
 
-/* ลบเส้นคั่นของแต่ละการ์ดออกเพื่อให้รวมกลุ่มกัน */
+/* รวม 2 บล็อกที่ซ้ำกัน → เอา border-bottom: none !important ของบล็อกแรก
+   + transition และ padding-bottom ที่สมบูรณ์กว่าของบล็อกที่สอง */
 .meal-card {
-  border-bottom: none !important;
-  padding-bottom: 0.5rem;
   display: grid;
   grid-template-columns: 80px 1fr 100px;
   align-items: center;
   gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: none !important;
+  transition: transform 0.2s ease;
 }
 
-/* =========================================
-   Meal Type
-========================================= */
+.meal-card:hover {
+  transform: translateX(5px);
+}
+
+.meal-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* รวม 2 บล็อกที่ซ้ำกัน → เพิ่ม justify-content: center จากบล็อกแรก */
 .meal-type {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  /* ระยะห่างระหว่างไอคอนกับข้อความ */
 }
 
 .meal-list-header {
@@ -359,64 +365,30 @@ body {
   gap: 1.5rem;
 }
 
-.meal-card {
-  display: grid;
-  grid-template-columns: 80px 1fr 100px;
-  align-items: center;
-  gap: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px dashed #fed7aa;
-  transition: transform 0.2s ease;
-}
-
-.meal-card:hover {
-  transform: translateX(5px);
-}
-
-.meal-card:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.meal-type {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .meal-icon {
   width: 50px;
-  /* ขนาดวงกลม */
   height: 50px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* ใช้พื้นหลังสีจางๆ ตามมื้ออาหาร */
 }
 
-/* กำหนดสีพื้นหลังแยกตามประเภทมื้ออาหาร (ถ้าคุณต้องการให้สีต่างกัน) */
 .icon-breakfast {
   background-color: #fde8cda8;
   color: #f97316;
 }
 
-/* มื้อเช้า */
 .icon-lunch {
   background-color: #ffe0d9c9;
   color: #bc2121;
 }
 
-/* มื้อกลางวัน */
 .icon-dinner {
   background-color: #dad4f790;
   color: #8b5cf6;
 }
 
-/* มื้อเย็น */
-
-/* เปลี่ยนสีตัวหนังสือมื้ออาหาร */
 .meal-type-text {
   font-size: 0.85rem;
   color: #b85a18;
@@ -463,7 +435,6 @@ body {
   font-weight: 600;
   color: #f97316;
   font-size: 1.2rem;
-
   background-color: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -484,7 +455,6 @@ body {
   color: #f59e0b;
 }
 
-/* สรุปแคลอรีรวม */
 .meal-total-row {
   display: flex;
   justify-content: flex-end;
@@ -519,10 +489,8 @@ body {
   margin-top: 2rem;
 }
 
-/* ปุ่มดูรายงานโภชนาการ */
 .nutrition-btn {
   background: linear-gradient(135deg, #ffd94e, #ff954a);
-  /* ไล่เฉดสีส้มสวยๆ */
   color: #FFFFFF;
   border: none;
   padding: 12px 24px;
@@ -548,7 +516,6 @@ body {
   transform: translateY(0);
 }
 
-/* ปุ่มรีเซ็ตแผน (ปุ่มหมุนวน) */
 .restore-plan-btn {
   background-color: #fff7f091;
   border: 1px solid #f0e6dd;
@@ -572,9 +539,8 @@ body {
   box-shadow: 0 6px 15px rgba(249, 115, 22, 0.2);
 }
 
-
 /* =========================================
-   5. Calendar Month Grid (การ์ดเดือนพาสเทล)
+   5. Calendar Month Grid
    ========================================= */
 .month-grid-pastel {
   display: grid;
@@ -587,19 +553,12 @@ body {
   background: #fffcf9cc;
   border-radius: 20px;
   position: relative;
-
-  /* 🌟 ปรับตรงนี้ครับ */
-  min-height: 100px;
-  /* เพิ่มความสูงขั้นต่ำของการ์ด */
-  padding: 30px 20px;
-  /* เพิ่ม padding บน-ล่าง ให้เนื้อหาอยู่กลางมากขึ้น */
-
+  min-height: 140px;/* สูงขึ้น */
+  padding: 35px 20px 45px;/* บน ซ้ายขวา ล่าง */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.8);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-
-  /* เพิ่ม flex เพื่อจัดเนื้อหาให้อยู่กลางแนวตั้ง */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -617,23 +576,20 @@ body {
   right: 0;
   height: 12px;
   background-color: var(--theme-main);
-  /* ใช้สีหลักของเดือนนั้น */
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   opacity: 0.8;
 }
 
+/* รวม display/justify-content ที่ซ้ำในบล็อกเดียวกันออก */
 .calendar-rings {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 10px;
   position: absolute;
   top: -8px;
   left: 0;
   right: 0;
   display: flex;
   justify-content: space-around;
+  gap: 15px;
   padding: 0 40px;
   z-index: 10;
 }
@@ -644,7 +600,6 @@ body {
   background: #d1d5db;
   border-radius: 10px;
   box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
-  /* ทำให้ห่วงดูโค้งมนมีมิติ */
 }
 
 .calendar-content {
@@ -680,14 +635,24 @@ body {
   color: #333;
 }
 
+/* รวม 2 บล็อกที่ซ้ำกัน → ใช้สไตล์ Frosted Glass (บล็อกที่ 2) เป็นหลัก
+   + เพิ่ม filter: drop-shadow จากบล็อกแรก */
 .month-art {
-  position: absolute !important;
-  bottom: 1px !important;
-  right: 10px !important;
-  display: flex !important;
-  gap: 8px;
-  /* ใช้ฟิลเตอร์เงาให้ไอคอนดูนูน */
+  position: absolute;
+  bottom: -20px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 8px 14px;
+  border-radius: 30px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  color: var(--theme-main);
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
+  transition: all 0.3s ease;
 }
 
 .month-art svg {
@@ -698,7 +663,21 @@ body {
   transform: scale(1.2) rotate(-5deg);
 }
 
-/* ส่วนพื้นหลัง */
+.calendar-card:hover .month-art {
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.art-emoji {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================
+   Review Modal
+   ========================================= */
 .review-modal-overlay {
   position: fixed;
   top: 0;
@@ -712,55 +691,43 @@ body {
   z-index: 9999;
 }
 
-/* ส่วนตัวกล่อง Modal */
 .review-modal-content {
   background: white;
   padding: 30px;
   border-radius: 25px;
-  /* ความโค้งมนของกล่อง */
   width: 90%;
   max-width: 450px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* หัวข้อรีวิว */
 .review-modal-content h3 {
   font-size: 1.4rem;
   margin-bottom: 20px;
   font-weight: bold;
 }
 
-/* กล่องข้อความ */
 .review-modal-content textarea {
   width: 100%;
   height: 150px;
   margin: 20px 0;
   border: 1px solid #e5e5e5;
   border-radius: 15px;
-  /* โค้งมน */
   padding: 15px;
   font-size: 1rem;
   resize: none;
   background-color: #fafafa;
-
-  /* 🌟 3 บรรทัดนี้ที่เพิ่มเข้ามาเพื่อแก้ปัญหาครับ */
   box-sizing: border-box;
-  /* บังคับให้ padding อยู่ภายใน 100% ไม่ดันกล่องให้ทะลุ */
   outline: none;
-  /* เอาเส้นขอบสีดำตอนกดคลิกพิมพ์ออกให้ดูสะอาดขึ้น */
   font-family: inherit;
-  /* ให้ฟอนต์ข้อความข้างในตรงกับฟอนต์หลักของเว็บ */
 }
 
-/* จัดการปุ่ม */
 .modal-actions {
   display: flex;
   gap: 15px;
   justify-content: center;
 }
 
-/* ปุ่มยกเลิก (สีเทาอ่อน) */
 .modal-actions button:first-child {
   background: #f0f0f0;
   color: #666;
@@ -771,55 +738,14 @@ body {
   cursor: pointer;
 }
 
-/* ปุ่มบันทึก (สีส้ม) */
 .modal-actions button:last-child {
   background: #fb923c;
-  /* สีส้มตามภาพ */
   color: white;
   border: none;
   padding: 12px 40px;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-}
-
-/* กรอบไอคอนสวยๆ สไตล์ Frosted Glass */
-.month-art {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-
-  /* สร้างกรอบสีขาวกึ่งโปร่งใส */
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-
-  /* จัดทรงแคปซูล */
-  padding: 8px 14px;
-  border-radius: 30px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-
-  /* 🌟 เวทมนตร์อยู่ตรงนี้: ดึงสีหลักของเดือนนั้นๆ มาถมลงบนไอคอนอัตโนมัติ */
-  color: var(--theme-main);
-
-  transition: all 0.3s ease;
-}
-
-/* อนิเมชันตอนเอาเมาส์ชี้การ์ดปฏิทิน */
-.calendar-card:hover .month-art {
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  transform: translateY(-4px) scale(1.02);
-}
-
-/* ลบ style เดิมที่เคยใส่ flex ในแท็ก span ทิ้งไปเลย เพื่อกันมันตีกัน */
-.art-emoji {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 /* =========================================
@@ -832,22 +758,71 @@ body {
 }
 
 @media (max-width: 768px) {
-  .month-grid-pastel {
-    grid-template-columns: repeat(2, 1fr);
+  .past-plans-wrapper.pastel-theme {
+    padding: 100px 5% 30px;
   }
 
   .past-plans-header {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .title-row h1 {
+    font-size: 1.6rem;
+  }
+
+  .past-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    margin-left: 74px;
+    font-size: 0.88rem;
+  }
+
+  .header-right {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
   }
 
   .pill-tab-menu {
-    width: 100%;
+    margin: 0 auto;
     justify-content: center;
+    width: 100%;
+  }
+
+  .pill-tab-btn {
+    font-size: 0.88rem;
+    padding: 7px 14px;
+  }
+
+  .week-selector {
+    gap: 8px;
+  }
+
+  .day-card {
+    min-width: 90px;
+    padding: 16px 12px;
+  }
+
+  .day-name {
+    font-size: 0.9rem;
+  }
+
+  .day-date {
+    font-size: 0.78rem;
   }
 
   .meal-card {
-    grid-template-columns: 1fr;
-    text-align: center;
+    grid-template-columns: 60px 1fr 90px;
+    gap: 10px;
   }
 
   .meal-detail {
@@ -861,6 +836,10 @@ body {
   .meal-total-row {
     justify-content: center;
   }
+
+  .month-grid-pastel {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
@@ -870,7 +849,7 @@ body {
 }
 
 /* =========================================
-   7. Month Details (หน้ารายละเอียดเดือน)
+   7. Month Details
    ========================================= */
 .month-detail-view {
   animation: fadeInPage 0.4s ease-out forwards;
@@ -909,26 +888,8 @@ body {
   gap: 10px;
 }
 
-/* เพิ่มให้ Scrollbar แถบวันที่แนวนอนดูเนียนขึ้น */
-.week-selector::-webkit-scrollbar {
-  height: 6px;
-  display: block;
-  /* เปิด Scrollbar ให้เห็นว่าเลื่อนได้ (สำหรับจอใหญ่) */
-}
-
-.week-selector::-webkit-scrollbar-track {
-  background: #ffdbcb;
-  border-radius: 10px;
-}
-
-.week-selector::-webkit-scrollbar-thumb {
-  background: #fb9461;
-  border-radius: 10px;
-}
-
-
 /* =========================================
-   8. Year Selector (Custom Dropdown ปีที่น่ารักขึ้น)
+   8. Year Selector
    ========================================= */
 .year-selector-wrapper {
   position: relative;
@@ -966,13 +927,9 @@ body {
   transform: rotate(180deg);
 }
 
-/* =========================================
-   แก้ไขเมนูเด้งหนี (สะพานล่องหน)
-   ========================================= */
 .year-dropdown-menu {
   position: absolute;
   top: calc(100% + 5px);
-  /* ปรับขยับให้ชิดปุ่มขึ้นมาอีกนิด */
   left: 10px;
   background-color: #ffffff;
   border-radius: 18px;
@@ -987,7 +944,6 @@ body {
   gap: 4px;
 }
 
-/* สร้างสะพานล่องหนเชื่อมปุ่มกับเมนู ไม่ให้เมาส์ตกหลุม */
 .year-dropdown-menu::before {
   content: '';
   position: absolute;
@@ -1032,75 +988,4 @@ body {
   color: #ffffff;
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
-}
-
-/* ================= MOBILE FIX - PAST PLANS ================= */
-@media (max-width: 768px) {
-  .past-plans-wrapper.pastel-theme {
-    padding: 100px 5% 30px;
-  }
-
-  .past-plans-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 1.5rem;
-  }
-
-  .title-row h1 {
-    font-size: 1.6rem;
-  }
-
-  .past-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 1.5rem;
-  }
-
-  .subtitle {
-    margin-left: 74px;
-    font-size: 0.88rem;
-  }
-
-  .header-right {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .pill-tab-menu {
-    margin: 0 auto;
-    justify-content: center;
-  }
-
-  .pill-tab-btn {
-    font-size: 0.88rem;
-    padding: 7px 14px;
-  }
-
-  /* Day cards row */
-  .week-selector {
-    gap: 8px;
-  }
-
-  .day-card {
-    min-width: 90px;
-    padding: 16px 12px;
-  }
-
-  .day-name {
-    font-size: 0.9rem;
-  }
-
-  .day-date {
-    font-size: 0.78rem;
-  }
-
-  /* Meal cards on past plan */
-  .meal-card {
-    grid-template-columns: 60px 1fr 90px;
-    gap: 10px;
-  }
 }

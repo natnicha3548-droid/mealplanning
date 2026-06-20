@@ -218,9 +218,6 @@ function Calc() {
             localStorage.setItem("calcResult", JSON.stringify(finalResult));
         }
 
-        // sessionStorage อัปเดตทุกครั้งที่คำนวณ (ใช้โดย MealPlan/MyPlate เมื่อกดเสร็จสิ้น)
-        sessionStorage.setItem("activeCalcResult", JSON.stringify(finalResult));
-        sessionStorage.setItem("calcForm", JSON.stringify(form));
     };
 
     const handleFinish = async () => {
@@ -228,6 +225,7 @@ function Calc() {
         const user = JSON.parse(localStorage.getItem("user"));
 
         if (user && result) {
+
             await fetch("http://localhost:5000/api/update-user-info", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -245,14 +243,32 @@ function Calc() {
             await fetch("http://localhost:5000/api/save-calculation", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: user.user_id, ...result })
+                body: JSON.stringify({
+                    user_id: user.user_id,
+                    ...result
+                })
             });
+
         }
 
-        // ตั้ง sessionStorage เพื่อให้ MealPlan/MyPlate อ่านได้
-        sessionStorage.setItem("activeCalcResult", JSON.stringify(result));
+        // ใช้ทั้ง Guest และ Member หลังจากกด "เสร็จสิ้น"
+        sessionStorage.setItem(
+            "activeCalcResult",
+            JSON.stringify(result)
+        );
 
-        navigate("/", { state: { calcResult: result } });
+        sessionStorage.setItem(
+            "calcForm",
+            JSON.stringify(form)
+        );
+
+        navigate("/", {
+            state: {
+                calcResult: result,
+                formData: form
+            }
+        });
+
     };
 
     return (

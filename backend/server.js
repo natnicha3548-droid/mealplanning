@@ -1054,7 +1054,7 @@ app.get('/api/report/:user_id', async (req, res) => {
     const connection = db.promise();
 
     try {
-        // 🌟 แก้ไข SQL: ดึง TDEE ล่าสุดจาก user_calculations และผูก JOIN กับตาราง users เพื่อเอาโรคประจำตัว (chronic_disease)
+        // แก้ไข SQL: ดึง TDEE ล่าสุดจาก user_calculations และผูก JOIN กับตาราง users เพื่อเอาโรคประจำตัว (chronic_disease)
         const [userCalc] = await connection.query(`
             SELECT 
                 uc.*,
@@ -1111,9 +1111,9 @@ app.get('/api/report/:user_id', async (req, res) => {
         // คืนค่าข้อมูลกลับไปยัง React หน้าบ้าน
         res.json({
             userConfig: userCalc[0] || {
-                tdee: 1600,
-                sugar: 25,
-                sodium: 2000,
+                tdee: 0,
+                sugar: 0,
+                sodium: 0,
                 disease: "none"
             },
             weeklyData: formattedWeekly
