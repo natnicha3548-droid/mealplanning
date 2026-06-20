@@ -1,35 +1,29 @@
 /* ================= PAGE ================= */
-
-.favorite-page {
+.fav-mp-wrapper {
+    width: 100%;
     max-width: 1400px;
     min-height: 100vh;
     margin: auto;
-    padding: 120px 10% 50px;
+    padding: 110px 10% 40px;
     animation: fadeInPage 0.5s ease;
 }
 
 @keyframes fadeInPage {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ================= HEADER ================= */
-
-.favorite-header {
+.fav-mp-header {
     display: flex;
     align-items: center;
+    justify-content: flex-start !important; /* บังคับให้ชิดซ้าย */
     gap: 24px;
     margin-bottom: 30px;
+    width: 100%;
 }
 
-.favorite-icon {
+.fav-mp-icon {
     width: 78px;
     height: 78px;
     display: flex;
@@ -44,35 +38,38 @@
     flex-shrink: 0;
 }
 
-.favorite-header h1 {
+.fav-mp-header h1 {
     margin: 0;
-        font-size: 2.4rem;
-        font-weight: 700;
-        color: #3b2418;
-        line-height: 1.1;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #3b2418;
+    line-height: 1.1;
+    text-align: left;
 }
 
-.favorite-header p {
+.fav-mp-header p {
     margin-top: 6px;
     color: #8c7b70;
     font-size: 0.95rem;
+    text-align: left;
 }
 
 /* ================= TABS ================= */
-
-.favorite-tabs {
+.fav-mp-tabs {
     display: flex;
+    justify-content: flex-start !important; /* บังคับให้ชิดซ้าย */
     gap: 14px;
     margin-bottom: 40px;
     overflow-x: auto;
     padding-bottom: 5px;
+    width: 100%;
 }
 
-.favorite-tabs::-webkit-scrollbar {
+.fav-mp-tabs::-webkit-scrollbar {
     display: none;
 }
 
-.tab-btn {
+.fav-mp-tab-btn {
     border: 1px solid #f0f0f0;
     overflow: hidden;
     outline: none;
@@ -92,19 +89,53 @@
     transition: 0.3s ease;
 }
 
-.tab-btn:hover {
+.fav-mp-tab-btn:hover {
     transform: translateY(-2px);
     background: #fff9f5;
     border-color: #ffdab9;
     color: #ff7b2c;
 }
 
-.tab-btn.active {
+.fav-mp-tab-btn.active {
     background: linear-gradient(135deg, #ff9b54, #ff7b2c);
     color: white;
     border-color: transparent;
     border-radius: 999px;
     box-shadow: 0 8px 20px rgba(255, 140, 66, 0.22);
+}
+
+/* ================= SECTION TITLES ================= */
+.fav-mp-section-top {
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+}
+
+.fav-mp-section-top h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d1b12;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    text-align: left;
+}
+
+.fav-mp-section-top h2::before {
+    content: "";
+    width: 8px;
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #ffb066, #ff7a00);
+}
+
+.fav-mp-empty-box {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    background: white;
+    border-radius: 20px;
 }
 
 /* ================= CATEGORY ================= */
@@ -899,50 +930,50 @@ body.modal-open {
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 1200px) {
-    .favorite-food-grid {
+    .fav-mp-food-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
 @media (max-width: 992px) {
-    .favorite-food-grid {
+    .fav-mp-food-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    .meal-plan-card {
+    .fav-mp-meal-plan-card {
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
     }
 
-    .fav-modal-content {
+    .fav-mp-modal-content {
         grid-template-columns: 1fr;
     }
 
-    .fav-modal-left,
-    .fav-modal-right {
+    .fav-mp-modal-left,
+    .fav-mp-modal-right {
         padding: 24px;
     }
 
-    .fav-modal-image {
+    .fav-mp-modal-image {
         height: 260px;
     }
 
-    .meal-row {
+    .fav-mp-meal-row {
         grid-template-columns: 1fr;
         text-align: center;
     }
 
-    .meal-row .meal-image {
+    .fav-mp-meal-row .fav-mp-meal-image {
         width: 100%;
         height: 220px;
     }
 
-    .plan-summary {
+    .fav-mp-plan-summary {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .plan-header {
+    .fav-mp-plan-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
@@ -950,121 +981,121 @@ body.modal-open {
 }
 
 @media (max-width: 768px) {
-    .favorite-page {
+    .fav-mp-wrapper {
         padding: 110px 6% 40px;
     }
 
-    .favorite-header {
+    .fav-mp-header {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .favorite-food-grid {
+    .fav-mp-food-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .meal-left {
+    .fav-mp-meal-left {
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
     }
 
-    .meal-image {
+    .fav-mp-meal-image {
         width: 100%;
         height: 220px;
     }
 
-    .meal-info h3 {
+    .fav-mp-meal-info h3 {
         font-size: 1.4rem;
     }
 
-    .fav-nutri-grid {
+    .fav-mp-nutri-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .fav-nutri-calorie {
+    .fav-mp-nutri-calorie {
         grid-column: 1 / -1;
     }
 
-    .fav-modal-right h2 {
+    .fav-mp-modal-right h2 {
         font-size: 1.8rem;
     }
 
-    .fav-modal-image {
+    .fav-mp-modal-image {
         height: 230px;
     }
 
-    .plan-summary {
+    .fav-mp-plan-summary {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 600px) {
-    .plan-summary {
+    .fav-mp-plan-summary {
         grid-template-columns: 1fr;
     }
 
-    .meal-plan-full-card {
+    .fav-mp-meal-plan-full-card {
         padding: 20px;
     }
 
-    .plan-header h2 {
+    .fav-mp-plan-header h2 {
         font-size: 1.6rem;
     }
 
-    .plan-header-right {
+    .fav-mp-plan-header-right {
         margin-top: 15px;
     }
 }
 
 @media (max-width: 480px) {
-    .favorite-page {
+    .fav-mp-wrapper {
         padding: 100px 5% 30px;
     }
 
-    .favorite-food-grid {
+    .fav-mp-food-grid {
         grid-template-columns: 1fr;
     }
 
-    .favorite-header h1 {
+    .fav-mp-header h1 {
         font-size: 1.8rem;
     }
 
-    .section-top h2 {
+    .fav-mp-section-top h2 {
         font-size: 1.5rem;
     }
 
-    .favorite-food-image {
+    .fav-mp-food-image {
         height: 220px;
     }
 
-    .fav-modal-overlay {
+    .fav-mp-modal-overlay {
         padding: 20px 12px;
     }
 
-    .fav-modal-left,
-    .fav-modal-right {
+    .fav-mp-modal-left,
+    .fav-mp-modal-right {
         padding: 18px;
     }
 
-    .fav-modal-right h2 {
+    .fav-mp-modal-right h2 {
         font-size: 1.6rem;
     }
 
-    .fav-modal-image {
+    .fav-mp-modal-image {
         height: 210px;
         border-radius: 18px;
     }
 
-    .fav-nutri-grid {
+    .fav-mp-nutri-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .fav-nutri-calorie {
+    .fav-mp-nutri-calorie {
         grid-column: 1 / -1;
     }
 
-    .fav-modal-bookmark-btn {
+    .fav-mp-modal-bookmark-btn {
         width: 46px;
         height: 46px;
     }
@@ -1073,43 +1104,43 @@ body.modal-open {
 
 /* ================= MOBILE FIX - PLAN CARDS ================= */
 @media (max-width: 768px) {
-    .favorite-page {
+    .fav-mp-wrapper {
         padding: 100px 5% 40px;
     }
 
-    .favorite-header {
+    .fav-mp-header {
         margin-bottom: 20px;
         gap: 12px;
     }
 
-    .favorite-header h1 {
+    .fav-mp-header h1 {
         font-size: 1.5rem;
     }
 
-    .favorite-icon {
+    .fav-mp-icon {
         width: 56px;
         height: 56px;
         font-size: 1.4rem;
     }
 
-    .favorite-tabs {
+    .fav-mp-tabs {
         gap: 8px;
         margin-bottom: 24px;
     }
 
-    .tab-btn {
+    .fav-mp-tab-btn {
         padding: 9px 16px;
         font-size: 0.85rem;
         gap: 6px;
     }
 
     /* Plan card header */
-    .meal-plan-full-card {
+    .fav-mp-meal-plan-full-card {
         padding: 16px !important;
         border-radius: 20px !important;
     }
 
-    .plan-header {
+    .fav-mp-plan-header {
         flex-direction: row !important;
         align-items: flex-start !important;
         gap: 10px !important;
@@ -1117,41 +1148,41 @@ body.modal-open {
         flex-wrap: nowrap !important;
     }
 
-    .plan-header-left {
+    .fav-mp-plan-header-left {
         flex: 1;
         min-width: 0;
     }
 
-    .plan-header-left h2 {
+    .fav-mp-plan-header-left h2 {
         font-size: 1.1rem !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    .plan-header-left p {
+    .fav-mp-plan-header-left p {
         font-size: 0.8rem !important;
     }
 
-    .plan-header-right {
+    .fav-mp-plan-header-right {
         flex-shrink: 0;
         flex-direction: row !important;
         align-items: center !important;
         gap: 8px !important;
     }
 
-    .plan-cal-label {
+    .fav-mp-plan-cal-label {
         font-size: 0.78rem !important;
         white-space: nowrap;
     }
 
-    .plan-cal-value {
+    .fav-mp-plan-cal-value {
         font-size: 1rem !important;
         white-space: nowrap;
     }
 
     /* Meal rows - เปลี่ยนจาก grid เป็น flex ที่กระชับกว่า */
-    .meal-row {
+    .fav-mp-meal-row {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
@@ -1160,18 +1191,18 @@ body.modal-open {
         grid-template-columns: unset !important;
     }
 
-    .meal-type-stacked {
+    .fav-mp-meal-type-stacked {
         min-width: 48px !important;
         width: 48px !important;
         flex-shrink: 0;
     }
 
-    .meal-icon-circle {
+    .fav-mp-meal-icon-circle {
         width: 40px !important;
         height: 40px !important;
     }
 
-    .meal-row .meal-image {
+    .fav-mp-meal-row .fav-mp-meal-image {
         width: 70px !important;
         height: 55px !important;
         border-radius: 12px !important;
@@ -1179,12 +1210,12 @@ body.modal-open {
         object-fit: cover;
     }
 
-    .meal-row .meal-info {
+    .fav-mp-meal-row .fav-mp-meal-info {
         flex: 1;
         min-width: 0;
     }
 
-    .meal-row .meal-info h3 {
+    .fav-mp-meal-row .fav-mp-meal-info h3 {
         font-size: 0.9rem !important;
         margin: 0 0 4px !important;
         white-space: nowrap;
@@ -1192,48 +1223,48 @@ body.modal-open {
         text-overflow: ellipsis;
     }
 
-    .meal-row .meal-info span,
-    .fav-portion-badge {
+    .fav-mp-meal-row .fav-mp-meal-info span,
+    .fav-mp-portion-badge {
         font-size: 0.75rem !important;
         padding: 2px 8px !important;
     }
 
-    .meal-cal-right {
+    .fav-mp-meal-cal-right {
         font-size: 0.9rem !important;
         flex-shrink: 0;
         white-space: nowrap;
     }
 
     /* Summary grid */
-    .plan-summary {
+    .fav-mp-plan-summary {
         grid-template-columns: repeat(3, 1fr) !important;
         gap: 6px !important;
         margin-top: 16px !important;
     }
 
-    .summary-box {
+    .fav-mp-summary-box {
         padding: 10px 8px !important;
         border-radius: 14px !important;
         flex-direction: column !important;
         gap: 3px !important;
     }
 
-    .sum-icon-wrap {
+    .fav-mp-sum-icon-wrap {
         width: 28px !important;
         height: 28px !important;
         font-size: 0.85rem !important;
     }
 
-    .sum-val {
+    .fav-mp-sum-val {
         font-size: 0.9rem !important;
     }
 
-    .sum-unit,
-    .sum-label {
+    .fav-mp-sum-unit,
+    .fav-mp-sum-label {
         font-size: 0.7rem !important;
     }
 
-    .meal-fav-btn {
+    .fav-mp-meal-fav-btn {
         width: 40px !important;
         height: 40px !important;
         font-size: 1.1rem !important;

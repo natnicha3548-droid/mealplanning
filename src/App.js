@@ -6,6 +6,7 @@ import AuthPage from './components/User/Auth_page/AuthPage';
 import ResetPass from "./components/User/Reset_pass/ResetPass";
 import Calc from "./components/User/Cal/Calc";
 import Profile from "./components/User/Pro/Profile";
+import Footer from "./components/User/Footer/Footer";
 
 import HomePage from "./pages/User/Home/HomePage";
 import MealPlanCard from "./pages/User/Home/MealPlanCard";
@@ -281,6 +282,8 @@ function App() {
         <Route path="*" element={<HomePage user={user} calcResult={calcResult} formData={formData} />} />
 
       </Routes>
+
+      {!isAdminRoute && <Footer />}
 
     </div>
 

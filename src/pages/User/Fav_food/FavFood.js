@@ -367,11 +367,11 @@ function FavFood() {
     };
 
     return (
-        <div className="favorite-page">
+        <div className="fav-mp-wrapper">
 
             {/* ================= HEADER ================= */}
-            <div className="favorite-header">
-                <div className="favorite-icon">
+            <div className="fav-mp-header">
+                <div className="fav-mp-icon">
                     <FaHeart />
                 </div>
                 <div>
@@ -381,16 +381,16 @@ function FavFood() {
             </div>
 
             {/* ================= TAB ================= */}
-            <div className="favorite-tabs">
+            <div className="fav-mp-tabs">
                 <button
-                    className={activeTab === "foods" ? "tab-btn active" : "tab-btn"}
+                    className={activeTab === "foods" ? "fav-mp-tab-btn active" : "fav-mp-tab-btn"}
                     onClick={() => setActiveTab("foods")}
                 >
                     <FaUtensils />
                     รายการโปรดอาหาร
                 </button>
                 <button
-                    className={activeTab === "plans" ? "tab-btn active" : "tab-btn"}
+                    className={activeTab === "plans" ? "fav-mp-tab-btn active" : "fav-mp-tab-btn"}
                     onClick={() => setActiveTab("plans")}
                 >
                     <FaCalendarAlt />
@@ -403,14 +403,14 @@ function FavFood() {
                 <>
                     {getCategoryGroups().map((group) => (
                         <div className="food-category" key={group.name}>
-                            <div className="section-top">
+                            <div className="fav-mp-section-top">
                                 <h2>{group.name} ({group.foods.length})</h2>
                             </div>
                             {renderFoodCards(group.foods)}
                         </div>
                     ))}
                     {favFoods.length === 0 && (
-                        <div className="empty-box">ยังไม่มีรายการโปรดอาหารจ้า</div>
+                        <div className="fav-mp-empty-box">ยังไม่มีรายการโปรดอาหารจ้า</div>
                     )}
                 </>
             )}
