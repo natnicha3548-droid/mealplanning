@@ -1,0 +1,174 @@
+.footer-container {
+  background-color: #4E342E; /* สีน้ำตาลเข้ม */
+  color: #FFF8E1; /* สีครีมอ่อนๆ เพื่อให้อ่านง่าย */
+  padding-top: 2.5rem;
+  font-family: inherit;
+  margin-top: auto; /* ช่วยให้ Footer ดันไปอยู่ล่างสุดของหน้าจอเสมอ */
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem 2rem;
+  gap: 2rem;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.brand-section h3 {
+  color: #FFCA28; /* สีเหลือง */
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.brand-section p {
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.links-section h4,
+.contact-section h4 {
+  color: #FF9800; /* สีส้ม */
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.links-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.links-section li {
+  margin-bottom: 0.6rem;
+}
+
+.links-section a {
+  color: #FFF8E1;
+  text-decoration: none;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.links-section a:hover {
+  color: #FFCA28; /* Hover แล้วเป็นสีเหลือง */
+  padding-left: 5px; /* ลูกเล่นขยับข้อความนิดหน่อยเวลาเอาเมาส์ชี้ */
+}
+
+.contact-section p {
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.footer-bottom {
+  background-color: #3E2723; /* สีน้ำตาลฐาน (เข้มกว่าพื้นหลังหลัก) */
+  text-align: center;
+  padding: 1.2rem 0;
+  color: #FFCA28; /* สีเหลือง */
+  font-size: 0.9rem;
+}
+
+/* เพิ่มเติมคลาสสำหรับจัดการไอคอน */
+.footer-icon {
+  color: #FFCA28; /* สีเหลือง */
+  font-size: 1.2rem;
+  flex-shrink: 0; /* ป้องกันไม่ให้ไอคอนหดตัวเมื่อข้อความยาว */
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start; /* จัดให้อยู่ระดับเดียวกันถ้าข้อความขึ้นบรรทัดใหม่ */
+  gap: 10px; /* ระยะห่างระหว่างไอคอนกับข้อความ */
+  margin-bottom: 0.8rem;
+  opacity: 0.9;
+}
+
+.list-icon {
+  color: #FF9800; /* สีส้ม */
+  margin-right: 5px;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+/* ทำให้ไอคอนในเมนูเปลี่ยนสีตามตัวอักษรเวลาชี้เมาส์ (Hover) */
+.links-section a:hover .list-icon {
+  color: #FFCA28; 
+}
+
+.links-section a {
+  display: flex;
+  align-items: center;
+  color: #FFF8E1;
+  text-decoration: none;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+/* =========================================
+   Responsive Design สำหรับ Tablet และ Mobile
+   ========================================= */
+
+/* สำหรับ iPad และ Tablet (หน้าจอขนาดไม่เกิน 992px) */
+@media (max-width: 992px) {
+  .footer-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .brand-section h3 {
+    font-size: 1.4rem !important; /* ปรับขนาดฟอนต์หัวข้อให้เล็กลงให้พอดีจอ */
+  }
+}
+
+/* สำหรับ Mobile มือถือ (หน้าจอขนาดไม่เกิน 768px) */
+@media (max-width: 768px) {
+  .footer-container {
+    padding-top: 1.5rem;
+  }
+
+  .footer-content {
+    flex-direction: column; /* บังคับให้เรียงซ้อนกันเป็นแนวตั้ง (บนลงล่าง) */
+    padding: 0 1.5rem 1rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .footer-section {
+    min-width: 100%; /* บังคับให้แต่ละคอลัมน์กว้างเต็ม 100% ของหน้าจอมือถือ */
+    margin-bottom: 0.5rem;
+  }
+
+  .brand-section h3 {
+    font-size: 1.3rem !important;
+  }
+
+  .links-section h4,
+  .contact-section h4 {
+    font-size: 1.1rem;
+  }
+
+  /* ปรับแต่งส่วนลิขสิทธิ์ด้านล่างเผื่อข้อความยาวแล้วขึ้นบรรทัดใหม่ */
+  .footer-bottom {
+    padding: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.5; 
+  }
+}
+
+/* สำหรับมือถือจอเล็กมาก (หน้าจอขนาดไม่เกิน 480px) */
+@media (max-width: 480px) {
+  .footer-content {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .brand-section p, 
+  .contact-item span, 
+  .links-section a {
+    font-size: 0.9rem; /* ลดขนาดตัวอักษรเนื้อหาลงนิดหน่อยเพื่อให้อ่านง่ายบนจอเล็ก */
+  }
+}

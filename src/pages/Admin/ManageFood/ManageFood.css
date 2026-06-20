@@ -250,13 +250,20 @@
     color: #222;
 }
 
+/* นำโค้ดนี้ไปแทนที่ .admin-food-category อันเดิม */
+
 .admin-food-category {
     display: inline-block;
     padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+    border-radius: 15px;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 14px;
+    
+    /* ส่วนที่เพิ่มเข้ามาใหม่สำหรับหมวดหมู่สีเหลือง */
+    background-color: #fffcab; /* พื้นหลังสีเหลืองอ่อนนวลๆ */
+    color: #f48a39; /* ตัวอักษรสีเหลืองเข้มอมส้ม เพื่อให้กลืนกับกรอบแต่อ่านง่าย */
+    
 }
 
 .savory-tag {

@@ -59,6 +59,11 @@ body {
   margin: 0 auto;
   padding: 90px 20px 40px;
 }
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
 @media print {
   /* ซ่อนทุกอย่างที่มีคลาส no-print */
