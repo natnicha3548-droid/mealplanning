@@ -61,16 +61,15 @@ function AddCategory() {
 
                 <div className="add-category-header">
 
-                    <div className="header-icon">
+                    <div className="add-category-header-icon">
                         <FaFolderPlus />
                     </div>
 
                     <div>
-                        <h1>
+                        <h2>
                             เพิ่มหมวดหมู่อาหาร
-                        </h1>
+                        </h2>
 
-                        
                     </div>
 
                 </div>
