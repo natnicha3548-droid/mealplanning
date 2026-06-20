@@ -313,7 +313,7 @@ function HomePage({ user, calcResult, formData }) {
                     </Link>
                     <Link to="/menu" className="quick-card">
                         <div className="quick-icon"><FaBreadSlice /></div>
-                        <div className="quick-card-content"><h3>ดูเพิ่มเติม</h3><p>คลิกเพื่อดูเมนูทั้งหมด</p></div>
+                        <div className="quick-card-content"><h3>ดูเมนูเพิ่มเติม</h3><p>คลิกเพื่อดูเมนูทั้งหมด</p></div>
                     </Link>
                 </div>
 
