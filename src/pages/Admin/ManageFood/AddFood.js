@@ -234,7 +234,7 @@ function AddFood() {
             name="serving_size"
             value={formData.serving_size}
             onChange={handleChange}
-            placeholder="เช่น 1 จาน, 1 ถ้วย (250 กรัม), 1 สูตร (450 กรัม / 1-3 จาน)"
+            placeholder="เช่น 1 จาน, 1 ถ้วย (250 กรัม)"
           />
         </div>
 
