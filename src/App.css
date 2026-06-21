@@ -1,12 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
 
-/* ===== CSS RESET ===== */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 /* ===== ซ่อน Scrollbar หลัก ===== */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
