@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
 import "./MealPlan.css";
 import { FaSun, FaCloudSun, FaMoon, FaPlus, FaTrash, FaHeart, FaPen, FaStar, FaRegStar, FaChartPie } from "react-icons/fa";
@@ -238,7 +239,7 @@ function MealPlan() {
   return (
     <div className="meal-page">
 
-      {showLoginPrompt && (
+      {showLoginPrompt && createPortal(
         <div
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}
           onClick={() => setShowLoginPrompt(false)}
@@ -269,7 +270,8 @@ function MealPlan() {
               ยกเลิก
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <header className="meal-top">
@@ -383,7 +385,7 @@ function MealPlan() {
         </aside>
       </main>
 
-      {reviewTarget && (
+      {reviewTarget && createPortal(
         <div className="review-modal-overlay">
           <div className="review-modal-box">
             <h3>{reviewedStatus[reviewTarget.food_id] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{reviewTarget.food_name}"</h3>
@@ -400,7 +402,8 @@ function MealPlan() {
               <button className="modal-submit-btn" onClick={handleConfirmReview}>{reviewedStatus[reviewTarget.food_id] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body // 👈 คำสั่งนี้จะดัน Modal ออกไปที่นอกสุดของหน้าจอ
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate } from "react-router-dom";
 import { 
   Sun, CloudSun, Moon, RefreshCw, 
@@ -528,10 +529,9 @@ const PastPlans = () => {
     <div className="past-plans-wrapper pastel-theme">
 
       {/* 🌟 ย้าย Modal ออกมาอยู่ข้างนอกสุดตรงนี้ เพื่อไม่ให้เกิดบั๊กซ้อนทับกัน */}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className="review-modal-overlay">
           <div className="review-modal-content">
-            {/* 🌟 เปลี่ยนข้อความหัวข้ออัตโนมัติ */}
             <h3>
               {reviewedStatus[activeFood] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{mealData.find(m => m.food_id === activeFood)?.name}"
             </h3>
@@ -548,13 +548,13 @@ const PastPlans = () => {
                       
             <div className="modal-actions">
               <button onClick={() => setIsModalOpen(false)}>ยกเลิก</button>
-              {/* 🌟 เปลี่ยนข้อความบนปุ่มบันทึกอัตโนมัติ */}
               <button onClick={handleSaveReview}>
                 {reviewedStatus[activeFood] ? "อัปเดตรีวิว" : "บันทึกรีวิว"}
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body // 👈 ส่งไปแสดงที่ body ของ HTML
       )}
 
       <header className="past-plans-header">
