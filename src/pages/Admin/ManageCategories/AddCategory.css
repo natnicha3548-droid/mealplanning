@@ -33,7 +33,7 @@
     color: #ff8c42;
     font-size: 2rem;
     border: 1px solid #ffe0cd;
-    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12);
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.12); 
     flex-shrink: 0;
 }
 
