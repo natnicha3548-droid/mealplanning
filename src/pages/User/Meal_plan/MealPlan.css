@@ -361,11 +361,11 @@
 /* จำนวน */
 .row-qty-tag {
   align-self: flex-start;
-  background: #f4f4f4;
+  background: #f7ece4;
   padding: 2px 10px;
   border-radius: 6px;
   font-size: 0.8rem;
-  color: #777;
+  color: #663823;
   font-weight: 500;
 }
 
