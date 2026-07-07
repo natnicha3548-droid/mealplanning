@@ -957,6 +957,37 @@ app.get('/api/review-status', (req, res) => {
 
 });
 
+app.get('/api/reviews/:food_id', (req, res) => {
+
+    const { food_id } = req.params;
+
+    const sql = `
+        SELECT 
+            fr.review_id,
+            u.email,
+            fr.rating,
+            fr.review_text,
+            fr.created_at
+        FROM food_review fr
+        JOIN users u ON fr.user_id = u.user_id
+        WHERE fr.food_id = ?
+        AND fr.review_status NOT IN ('รออนุมัติ', 'ปฏิเสธ')
+        ORDER BY fr.created_at DESC
+    `;
+
+    db.query(sql, [food_id], (err, results) => {
+
+        if (err) {
+            console.error("Get Reviews Error:", err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        res.json(results);
+
+    });
+
+});
+
 // ================= GET FAVORITE FOODS API =================
 app.get('/api/favorite-foods', (req, res) => {
 
@@ -1083,6 +1114,7 @@ app.get('/api/report/:user_id', async (req, res) => {
             LEFT JOIN food f ON md.food_id = f.food_id
             WHERE mp.user_id = ?
             GROUP BY mp.plan_id, mp.plan_date
+            HAVING COUNT(md.meal_detail_id) > 0
             ORDER BY mp.plan_date DESC
             LIMIT 7
         `, [userId]);

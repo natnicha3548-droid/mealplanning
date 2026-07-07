@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
     FaHeart,
@@ -14,6 +15,8 @@ import {
     FaCandyCane,
     FaMortarPestle,
     FaTimes,
+    FaStar,
+    FaRegStar,
 } from "react-icons/fa";
 
 import { MdLocalFireDepartment } from "react-icons/md";
@@ -21,6 +24,7 @@ import { MdLocalFireDepartment } from "react-icons/md";
 import "./FavFood.css";
 
 function FavFood() {
+    const navigate = useNavigate();
 
     const [favFoods, setFavFoods] = useState([]);
     const [favPlans, setFavPlans] = useState([]);
@@ -32,7 +36,37 @@ function FavFood() {
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
 
+    // Review state
+    const [reviews, setReviews] = useState([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewRating, setReviewRating] = useState(0);
+    const [reviewHover, setReviewHover] = useState(0);
+    const [reviewText, setReviewText] = useState("");
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [myReview, setMyReview] = useState(null);
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = storedUser?.user_id || null;
+
     const formatNumber = (value) => Number(value || 0).toFixed(0);
+
+    const maskEmail = (email) => {
+        if (!email) return "ผู้ใช้งาน";
+        const [local, domain] = email.split("@");
+        if (!domain) return email;
+        const masked = local.slice(0, 2) + "***";
+        return `${masked}@${domain}`;
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("th-TH", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    };
 
     const parseRecipeDetails = (raw) => {
         if (!raw) return [];
@@ -67,11 +101,88 @@ function FavFood() {
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
 
+    // ================= FETCH REVIEWS =================
+
+    useEffect(() => {
+        if (!selectedFood) return;
+
+        const fetchReviews = async () => {
+            setReviewsLoading(true);
+            setReviews([]);
+            setMyReview(null);
+            setReviewRating(0);
+            setReviewText("");
+
+            try {
+                const res = await fetch(
+                    `http://localhost:5000/api/reviews/${selectedFood.food_id}`
+                );
+                const data = await res.json();
+                setReviews(Array.isArray(data) ? data : []);
+
+                if (currentUserId) {
+                    const myRes = await fetch(
+                        `http://localhost:5000/api/review-status?user_id=${currentUserId}&food_id=${selectedFood.food_id}`
+                    );
+                    const myData = await myRes.json();
+                    setMyReview(myData);
+                    if (myData?.isReviewed) {
+                        setReviewRating(myData.rating || 0);
+                        setReviewText(myData.review_text || "");
+                    }
+                }
+            } catch (err) {
+                console.error("Fetch reviews error:", err);
+            } finally {
+                setReviewsLoading(false);
+            }
+        };
+
+        fetchReviews();
+    }, [selectedFood, currentUserId]);
+
     // ================= CLOSE MODAL =================
 
     const handleCloseSelectedFood = () => {
         setSelectedFood(null);
         setQuantity(1);
+        setReviews([]);
+        setMyReview(null);
+        setReviewRating(0);
+        setReviewText("");
+    };
+
+    // ================= SUBMIT REVIEW =================
+
+    const submitReview = async () => {
+        if (!currentUserId) {
+            navigate("/auth", { state: { returnTo: "/favourite-food" } });
+            return;
+        }
+        if (reviewRating === 0) return;
+
+        setReviewSubmitting(true);
+        try {
+            await fetch("http://localhost:5000/api/review", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: currentUserId,
+                    food_id: selectedFood.food_id,
+                    rating: reviewRating,
+                    review_text: reviewText.trim(),
+                }),
+            });
+            setMyReview({
+                isReviewed: true,
+                rating: reviewRating,
+                review_text: reviewText.trim(),
+            });
+        } catch (err) {
+            console.error("Submit review error:", err);
+        } finally {
+            setReviewSubmitting(false);
+        }
     };
 
     // ================= FETCH CATEGORIES =================
@@ -258,6 +369,24 @@ function FavFood() {
         return groups;
     };
 
+    // ================= STAR RATING COMPONENT =================
+
+    const StarRating = ({ value, hover, onRate, onHover, onLeave, readonly = false }) => (
+        <div className={`star-rating ${readonly ? "star-rating--readonly" : ""}`}>
+            {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                    key={star}
+                    className={`star-icon ${star <= (readonly ? value : (hover || value)) ? "star-icon--filled" : ""}`}
+                    onClick={() => !readonly && onRate && onRate(star)}
+                    onMouseEnter={() => !readonly && onHover && onHover(star)}
+                    onMouseLeave={() => !readonly && onLeave && onLeave()}
+                >
+                    {star <= (readonly ? value : (hover || value)) ? <FaStar /> : <FaRegStar />}
+                </span>
+            ))}
+        </div>
+    );
+
     // ================= FOOD CARD =================
 
     const renderFoodCards = (foods) => (
@@ -298,20 +427,20 @@ function FavFood() {
         </div>
     );
 
-    // ================= MEAL ROW RENDERER =================
+    // ================= MEAL ROWS — Homepage style =================
+    // ใช้โครงสร้าง home-meal-group เหมือน HomePage เพื่อให้ mobile layout เหมือนกัน
 
-    const renderMealRows = (plan) => {
-        const themeStyles = {
-            breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={24} />, label: "มื้อเช้า" },
-            lunch: { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} />, label: "มื้อกลางวัน" },
-            dinner: { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} />, label: "มื้อเย็น" },
-        };
+    const themeStyles = {
+        breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={22} />, label: "มื้อเช้า" },
+        lunch: { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={22} />, label: "มื้อกลางวัน" },
+        dinner: { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={20} />, label: "มื้อเย็น" },
+    };
 
-        const mealTypes = ['breakfast', 'lunch', 'dinner'];
-        const visibleGroups = mealTypes.filter((type) => {
-            const foods = plan.meals[type];
-            return foods && foods.length > 0;
-        });
+    const renderMealGroups = (plan) => {
+        const mealTypes = ["breakfast", "lunch", "dinner"];
+        const visibleGroups = mealTypes.filter(
+            (type) => plan.meals[type] && plan.meals[type].length > 0
+        );
 
         return visibleGroups.map((type, groupIdx) => {
             const foods = plan.meals[type];
@@ -321,47 +450,51 @@ function FavFood() {
             return (
                 <div
                     key={type}
-                    style={{
-                        borderBottom: isLast ? "none" : "1px dashed #e56589ae",
-                        marginBottom: isLast ? 0 : "4px",
-                        paddingBottom: isLast ? 0 : "4px",
-                    }}
+                    className="home-meal-group"
+                    style={{ borderBottom: isLast ? "none" : "2px dotted #f4aab9" }}
                 >
-                    {foods.map((food, idx) => (
-                        <div className="meal-row" key={`${type}-${idx}`}>
-                            <div className="meal-type-stacked">
-                                {idx === 0 ? (
-                                    <>
-                                        <div
-                                            className="meal-icon-circle"
-                                            style={{ backgroundColor: theme.bg, color: theme.color }}
-                                        >
-                                            {theme.icon}
-                                        </div>
-                                        <span style={{ color: theme.color, fontWeight: "700", marginTop: "8px", fontSize: "0.95rem" }}>
-                                            {theme.label}
-                                        </span>
-                                    </>
-                                ) : (
-                                    <div style={{ width: "56px" }} />
-                                )}
-                            </div>
-                            <img
-                                src={
-                                    food.image
-                                        ? food.image.startsWith("http") ? food.image : `http://localhost:5000${food.image}`
-                                        : "https://via.placeholder.com/120"
-                                }
-                                alt={food.food_name}
-                                className="meal-image"
-                            />
-                            <div className="meal-info">
-                                <h3>{food.food_name}</h3>
-                                {food.serving && <span className="fav-portion-badge">{food.serving}</span>}
-                            </div>
-                            <div className="meal-cal-right">{parseInt(food.calories || 0)} kcal</div>
+                    {/* ไอคอน + label — บน desktop อยู่ซ้าย, บน mobile อยู่บนสุดแถวเดียวกัน */}
+                    <div className="home-meal-icon-box">
+                        <div
+                            className="home-icon-circle"
+                            style={{ backgroundColor: theme.bg }}
+                        >
+                            {React.cloneElement(theme.icon, { color: theme.color })}
                         </div>
-                    ))}
+                        <span style={{ color: theme.color, fontWeight: "700" }}>
+                            {theme.label}
+                        </span>
+                    </div>
+
+                    {/* รายการอาหารทุกชิ้นในมื้อนั้น */}
+                    <div className="home-meal-items-container">
+                        {foods.map((food, idx) => (
+                            <div className="home-meal-food-row" key={`${type}-${idx}`}>
+                                <img
+                                    src={
+                                        food.image
+                                            ? food.image.startsWith("http")
+                                                ? food.image
+                                                : `http://localhost:5000${food.image}`
+                                            : "https://via.placeholder.com/120"
+                                    }
+                                    alt={food.food_name}
+                                    className="home-meal-img"
+                                />
+                                <div className="home-meal-details">
+                                    <h3>{food.food_name}</h3>
+                                    {food.serving && (
+                                        <span className="home-portion-badge">{food.serving}</span>
+                                    )}
+                                </div>
+                                <div className="home-meal-stats">
+                                    <div className="home-cal-text">
+                                        {parseInt(food.calories || 0)} kcal
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         });
@@ -427,26 +560,39 @@ function FavFood() {
                     ) : (
                         <div className="meal-plan-list">
                             {favPlans.map((plan, index) => (
-                                <div key={plan.favorite_id} className="meal-plan-full-card">
+                                <div key={plan.favorite_id} className="home-meal-plan-card">
 
-                                    <div className="plan-header">
-                                        <div className="plan-header-left">
-                                            <h2>{plan.plan_name || `แผนการกินที่ ${index + 1}`}</h2>
-                                            <p className="plan-subtitle">แผนอาหารที่คุณกดใจเก็บไว้</p>
+                                    {/* Header — ชื่อแผน + แคลรวม + ปุ่มลบ */}
+                                    <div className="home-meal-card-header">
+                                        <div>
+                                            <h2 className="home-meal-card-title">
+                                                {plan.plan_name || `แผนการกินที่ ${index + 1}`}
+                                            </h2>
+                                            <p className="home-meal-card-subtitle">
+                                                แผนอาหารที่คุณกดใจเก็บไว้
+                                            </p>
                                         </div>
-                                        <div className="plan-header-right">
-                                            <div className="plan-cal-box">
-                                                <span className="plan-cal-label">รวมทั้งหมด</span>
-                                                <span className="plan-cal-value">{parseInt(plan.total_calories || 0)} kcal</span>
+                                        <div className="home-meal-card-kcal">
+                                            <span className="home-total-label">รวมทั้งหมด</span>
+                                            <div className="home-kcal-row">
+                                                <div className="home-total-cal-badge">
+                                                    {parseInt(plan.total_calories || 0)} kcal
+                                                </div>
+                                                <button
+                                                    className="fav-plan-heart-btn"
+                                                    onClick={() => removeFavoritePlan(plan.favorite_id)}
+                                                    title="ลบออกจากรายการโปรด"
+                                                >
+                                                    <FaHeart />
+                                                </button>
                                             </div>
-                                            <button className="meal-fav-btn" onClick={() => removeFavoritePlan(plan.favorite_id)}>
-                                                <FaHeart />
-                                            </button>
                                         </div>
                                     </div>
 
-                                    {renderMealRows(plan)}
+                                    {/* Meal groups — โครงสร้างเหมือน Homepage */}
+                                    {renderMealGroups(plan)}
 
+                                    {/* สรุปโภชนาการ */}
                                     <div className="plan-summary">
                                         <div className="summary-box">
                                             <div className="sum-icon-wrap cal-icon"><FaFire /></div>
@@ -506,7 +652,7 @@ function FavFood() {
                     <div className="fav-modal-overlay" onClick={handleCloseSelectedFood}>
                         <div className="fav-modal-content" onClick={(e) => e.stopPropagation()}>
 
-                            {/* ปุ่มหัวใจ + กากบาท ชิดขอบขวา — เหมือน MenuFood */}
+                            {/* ปุ่มหัวใจ + กากบาท ชิดขอบขวา */}
                             <div className="fav-modal-actions">
                                 <button
                                     className="fav-modal-bookmark-btn"
@@ -669,6 +815,81 @@ function FavFood() {
                                 <button className="fav-add-btn" onClick={addToMealPlan}>
                                     เพิ่มใส่จานอาหาร
                                 </button>
+
+                                {/* ================= REVIEWS SECTION ================= */}
+                                <div className="fav-modal-section fav-review-section">
+                                    <h4>รีวิวจากผู้ใช้</h4>
+
+                                    {currentUserId ? (
+                                        <div className="review-form">
+                                            <p className="review-form-label">
+                                                {myReview?.isReviewed ? "แก้ไขรีวิวของคุณ" : "เขียนรีวิวของคุณ"}
+                                            </p>
+
+                                            <StarRating
+                                                value={reviewRating}
+                                                hover={reviewHover}
+                                                onRate={setReviewRating}
+                                                onHover={setReviewHover}
+                                                onLeave={() => setReviewHover(0)}
+                                            />
+
+                                            <textarea
+                                                className="review-textarea"
+                                                value={reviewText}
+                                                onChange={(e) => setReviewText(e.target.value)}
+                                                placeholder="แสดงความคิดเห็นของคุณเกี่ยวกับเมนูนี้..."
+                                                rows={3}
+                                            />
+
+                                            <button
+                                                className="review-submit-btn"
+                                                onClick={submitReview}
+                                                disabled={reviewSubmitting || reviewRating === 0}
+                                            >
+                                                {reviewSubmitting
+                                                    ? "กำลังส่ง..."
+                                                    : myReview?.isReviewed
+                                                        ? "อัปเดตรีวิว"
+                                                        : "ส่งรีวิว"}
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <p className="review-login-hint">
+                                            <span
+                                                className="review-login-link"
+                                                onClick={() =>
+                                                    navigate("/auth", { state: { returnTo: "/favourite-food" } })
+                                                }
+                                            >
+                                                เข้าสู่ระบบ
+                                            </span>{" "}
+                                            เพื่อเขียนรีวิว
+                                        </p>
+                                    )}
+
+                                    {reviewsLoading ? (
+                                        <p className="review-loading">กำลังโหลดรีวิว...</p>
+                                    ) : reviews.length > 0 ? (
+                                        <div className="reviews-list">
+                                            {reviews.map((r) => (
+                                                <div key={r.review_id} className="review-item">
+                                                    <div className="review-item-header">
+                                                        <StarRating value={r.rating} readonly />
+                                                        <span className="review-author">{maskEmail(r.email)}</span>
+                                                        <span className="review-date">{formatDate(r.created_at)}</span>
+                                                    </div>
+                                                    {r.review_text && (
+                                                        <p className="review-item-text">{r.review_text}</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="review-empty">ยังไม่มีรีวิวสำหรับเมนูนี้</p>
+                                    )}
+                                </div>
+
                             </div>
 
                         </div>

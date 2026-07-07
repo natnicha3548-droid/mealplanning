@@ -266,80 +266,11 @@
     font-weight: 500;
 }
 
-/* ================= PLAN ================= */
+/* ================= PLAN LIST ================= */
 .meal-plan-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
-}
-
-.meal-plan-card {
-    background: white;
-    border-radius: 24px;
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.meal-plan-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-}
-
-.meal-left {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.meal-image {
-    width: 210px;
-    height: 155px;
-    border-radius: 20px;
-    object-fit: cover;
-}
-
-.meal-info h3 {
-    margin: 0 0 10px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #2d1b12;
-}
-
-.meal-info p {
-    margin: 0 0 14px;
-    color: #8c7b70;
-    font-size: 0.95rem;
-}
-
-.meal-detail {
-    display: flex;
-    gap: 20px;
-    color: #666;
-    font-size: 0.95rem;
-}
-
-.meal-fav-btn {
-    width: 52px;
-    height: 52px;
-    border: none;
-    border-radius: 50%;
-    background: #fff2f2;
-    color: #ff5a5a;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.meal-fav-btn:hover {
-    transform: scale(1.08);
-    background: #ffe3e3;
 }
 
 /* ================= EMPTY ================= */
@@ -352,113 +283,26 @@
     border-radius: 20px;
 }
 
-/* ================= FULL PLAN CARD ================= */
-.meal-plan-full-card {
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 28px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-.plan-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-}
-
-.plan-header h2 {
-    margin: 0 0 8px;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2d1b12;
-}
-
-.plan-header p {
-    margin: 0;
-    color: #ff8c42;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.meal-row {
-    display: grid;
-    grid-template-columns: 80px 140px 1fr 100px;
-    align-items: center;
-    gap: 20px;
-    padding: 20px 0;
-}
-
-.meal-row:last-of-type {
-    border-bottom: none;
-}
-
-.meal-type-stacked {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.meal-icon-circle {
-    width: 50px;
-    height: 50px;
+/* ================= PLAN HEART BUTTON (remove) ================= */
+.fav-plan-heart-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
     border-radius: 50%;
+    background: #fff2f2;
+    color: #ff5a5a;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: 0.2s ease;
+    flex-shrink: 0;
 }
 
-.meal-type {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #ff8c42;
-}
-
-.meal-row .meal-image {
-    width: 140px;
-    height: 90px;
-    border-radius: 16px;
-    object-fit: cover;
-}
-
-.meal-row .meal-info h3 {
-    margin: 0 0 8px;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #552e1b;
-}
-
-.meal-row .meal-info span {
-    color: #888;
-    font-size: 0.95rem;
-}
-
-.fav-portion-badge {
-    display: inline-block;
-    background-color: #f3ebe5;
-    color: #8c7b70;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.meal-cal-right {
-    text-align: right;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ff7a00;
-}
-
-.meal-cal {
-    text-align: right;
-    font-weight: 700;
-    color: #ff8c42;
-    font-size: 1.1rem;
+.fav-plan-heart-btn:hover {
+    transform: scale(1.08);
+    background: #ffe3e3;
 }
 
 /* ================= SUMMARY BOX ================= */
@@ -466,7 +310,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 5px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .summary-box {
@@ -529,43 +373,185 @@
     font-weight: 500;
 }
 
-/* ================= PLAN HEADER ================= */
-.plan-header-left h2 {
+/* =============================================
+   HOME MEAL PLAN CARD CLASSES
+   (ใช้ร่วมกับ Homepage เพื่อให้ mobile เหมือนกัน)
+   ============================================= */
+
+.home-meal-plan-card {
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 24px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.home-meal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.home-meal-card-header>div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.home-meal-card-title {
     font-size: 2rem;
-    font-weight: 700;
-    color: #ff7b39;
+    font-weight: 800;
+    color: #ff7a2f;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.plan-header-left p {
-    color: #ae8a72;
-    font-size: 1rem;
-    margin: 4px 0 0;
+.home-meal-card-subtitle {
+    margin-top: 6px;
+    color: #9b7b67;
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.plan-header-right {
+.home-meal-card-kcal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.home-kcal-row {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
-.plan-cal-box {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-right: 5px;
-}
-
-.plan-cal-label {
-    color: #a5785a;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.plan-cal-value {
-    color: #ff7a00;
+.home-total-label {
+    font-size: 1.1rem;
     font-weight: 700;
+    color: #946b58;
+    white-space: nowrap;
+}
+
+.home-total-cal-badge {
+    color: #f55b14;
     font-size: 1.5rem;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* Meal groups */
+.home-meal-group {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 25px;
+    padding: 20px 0;
+    border-bottom: 2px dotted #f4aab9;
+}
+
+.home-meal-group:last-of-type {
+    border-bottom: none;
+}
+
+.home-meal-icon-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    gap: 8px;
+}
+
+.home-meal-icon-box span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.home-icon-circle {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.home-meal-items-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 0;
+}
+
+.home-meal-food-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.home-meal-img {
+    width: 140px;
+    height: 90px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.home-meal-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.home-meal-details h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1b12;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.home-meal-stats {
+    text-align: right;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.home-portion-badge {
+    background: #f7ece4;
+    color: #663823;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.home-cal-text {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ff8c42;
+    white-space: nowrap;
 }
 
 /* ================= FOOD MODAL OVERLAY ================= */
@@ -601,7 +587,7 @@
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
 }
 
-/* ================= MODAL ACTIONS (wrapper หัวใจ + กากบาท) ================= */
+/* ================= MODAL ACTIONS ================= */
 .fav-modal-actions {
     position: absolute;
     top: 18px;
@@ -612,7 +598,7 @@
     z-index: 60;
 }
 
-/* ================= CLOSE BUTTON (กากบาท) ================= */
+/* ================= CLOSE BUTTON ================= */
 .fav-modal-close-btn {
     width: 44px;
     height: 44px;
@@ -944,16 +930,11 @@ body.modal-open {
 }
 
 /* =============================================
-   RESPONSIVE — ตรงกับ MenuFood ทุกจุด
+   RESPONSIVE
    ============================================= */
 
 /* ---------- 992px ---------- */
 @media (max-width: 992px) {
-    .meal-plan-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-    }
 
     /* Modal: พับเป็น 1 คอลัมน์ */
     .fav-modal-content {
@@ -972,15 +953,9 @@ body.modal-open {
     .plan-summary {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .plan-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
 }
 
-/* ---------- mobile (≤ 768px) — ค่าเดียวครอบคลุมทุกขนาดมือถือ ---------- */
+/* ---------- mobile (≤ 768px) ---------- */
 @media (max-width: 768px) {
 
     /* ----- Page ----- */
@@ -990,8 +965,8 @@ body.modal-open {
 
     /* ----- Header ----- */
     .fav-mp-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
         gap: 16px;
         margin-bottom: 20px;
     }
@@ -1077,106 +1052,7 @@ body.modal-open {
         height: 40px;
     }
 
-    /* ----- Plan card ----- */
-    .meal-plan-full-card {
-        padding: 16px !important;
-        border-radius: 20px !important;
-    }
-
-    .plan-header {
-        flex-direction: row !important;
-        align-items: flex-start !important;
-        gap: 10px !important;
-        margin-bottom: 16px !important;
-        flex-wrap: nowrap !important;
-    }
-
-    .plan-header-left {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .plan-header-left h2 {
-        font-size: 1.1rem !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .plan-header-left p {
-        font-size: 0.8rem !important;
-    }
-
-    .plan-header-right {
-        flex-shrink: 0;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 8px !important;
-    }
-
-    .plan-cal-label {
-        font-size: 0.78rem !important;
-        white-space: nowrap;
-    }
-
-    .plan-cal-value {
-        font-size: 1rem !important;
-        white-space: nowrap;
-    }
-
-    .meal-row {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 10px !important;
-        padding: 12px 0 !important;
-        grid-template-columns: unset !important;
-    }
-
-    .meal-type-stacked {
-        min-width: 48px !important;
-        width: 48px !important;
-        flex-shrink: 0;
-    }
-
-    .meal-icon-circle {
-        width: 40px !important;
-        height: 40px !important;
-    }
-
-    .meal-row .meal-image {
-        width: 70px !important;
-        height: 55px !important;
-        border-radius: 12px !important;
-        flex-shrink: 0;
-        object-fit: cover;
-    }
-
-    .meal-row .meal-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .meal-row .meal-info h3 {
-        font-size: 0.9rem !important;
-        margin: 0 0 4px !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .meal-row .meal-info span,
-    .fav-portion-badge {
-        font-size: 0.75rem !important;
-        padding: 2px 8px !important;
-    }
-
-    .meal-cal-right {
-        font-size: 0.9rem !important;
-        flex-shrink: 0;
-        white-space: nowrap;
-    }
-
+    /* ----- Summary ----- */
     .plan-summary {
         grid-template-columns: repeat(3, 1fr) !important;
         gap: 6px !important;
@@ -1205,9 +1081,144 @@ body.modal-open {
         font-size: 0.7rem !important;
     }
 
-    .meal-fav-btn {
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 1.1rem !important;
+    /* ============================================
+       HOME MEAL PLAN CARD — mobile (เหมือน Homepage)
+       ============================================ */
+    .home-meal-plan-card {
+        padding: 16px 14px 18px;
+        border-radius: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Header: title left | kcal+btn right — single row */
+    .home-meal-card-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    .home-meal-card-title {
+        font-size: 1rem !important;
+        font-weight: 800;
+        line-height: 1.25;
+    }
+
+    .home-meal-card-subtitle {
+        font-size: 0.74rem;
+        margin-top: 2px;
+    }
+
+    .home-meal-card-kcal {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .home-kcal-row {
+        gap: 6px;
+    }
+
+    .home-total-label {
+        font-size: 0.68rem;
+    }
+
+    .home-total-cal-badge {
+        font-size: 0.95rem !important;
+        padding: 2px 8px !important;
+        background: #fff4ee;
+        border-radius: 8px;
+    }
+
+    .fav-plan-heart-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    /* Meal group: icon row on top, food items full-width below */
+    .home-meal-group {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 0;
+    }
+
+    /* Icon row: horizontal — circle + label side by side */
+    .home-meal-icon-box {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        min-width: unset;
+        gap: 8px;
+    }
+
+    .home-meal-icon-box span {
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+        line-height: 1;
+    }
+
+    .home-icon-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    /* Food items take full width */
+    .home-meal-items-container {
+        width: 100%;
+        padding-left: 4px;
+    }
+
+    .home-meal-food-row {
+        gap: 10px;
+    }
+
+    .home-meal-img {
+        width: 66px !important;
+        height: 52px !important;
+        border-radius: 10px !important;
+    }
+
+    .home-meal-details h3 {
+        font-size: 0.85rem;
+        margin: 0 0 4px;
+    }
+
+    .home-portion-badge {
+        font-size: 0.7rem;
+        padding: 2px 7px;
+    }
+
+    .home-meal-stats {
+        min-width: 70px;
+    }
+
+    .home-cal-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* ---------- small mobile (≤ 390px) ---------- */
+@media (max-width: 390px) {
+    .home-meal-card-title {
+        font-size: 0.92rem !important;
+    }
+
+    .home-total-cal-badge {
+        font-size: 0.88rem !important;
+    }
+
+    .home-meal-img {
+        width: 58px !important;
+        height: 46px !important;
+    }
+
+    .home-cal-text {
+        font-size: 0.82rem;
     }
 }

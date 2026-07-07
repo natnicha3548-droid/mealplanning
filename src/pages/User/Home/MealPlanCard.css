@@ -1,3 +1,8 @@
+/* ================================================
+   MealPlanCard.css  —  Mobile-first redesign
+   ================================================ */
+
+/* ================= CARD WRAPPER ================= */
 .home-meal-plan-card {
     background: rgba(255, 255, 255, 0.75);
     border-radius: 20px;
@@ -8,11 +13,18 @@
     box-sizing: border-box;
 }
 
+/* ================= CARD HEADER ================= */
 .home-meal-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    gap: 12px;
+}
+
+.home-meal-card-header>div:first-child {
+    flex: 1;
+    min-width: 0;
 }
 
 .home-meal-card-title {
@@ -20,6 +32,9 @@
     font-weight: 800;
     color: #ff7a2f;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .home-meal-card-subtitle {
@@ -27,23 +42,26 @@
     color: #9b7b67;
     font-size: 0.95rem;
     margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* ================= KCAL + RESTORE ================= */
 .home-meal-card-kcal {
     display: flex;
-    flex-direction: row; /* เปลี่ยนจาก column เป็น row */
-    align-items: center; /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
-    gap: 12px; /* เพิ่มระยะห่างระหว่างข้อความและปุ่ม */
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
-/* Desktop: badge + restore in one row */
 .home-kcal-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* ปุ่มกลุ่ม restore + heart ใน FavoritePlanCard */
 .home-plan-btn-group {
     display: flex;
     align-items: center;
@@ -54,6 +72,7 @@
     font-size: 1.1rem;
     font-weight: 700;
     color: #946b58;
+    white-space: nowrap;
 }
 
 .home-total-cal-badge {
@@ -62,8 +81,62 @@
     font-weight: 800;
     padding: 6px 16px;
     border-radius: 12px;
+    white-space: nowrap;
 }
 
+/* ================= RESTORE BUTTON ================= */
+.home-restore-plan-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #ffedd5;
+    background: #fff4e8;
+    color: #F97316;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+.home-restore-plan-btn svg {
+    width: 27px;
+    height: 27px;
+    display: block;
+}
+
+.home-restore-plan-btn:hover {
+    transform: rotate(180deg);
+    background: #fe9d57;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.home-restore-plan-btn:active {
+    transform: scale(0.95);
+}
+
+/* ================= FAVORITE PLAN ICON ================= */
+.home-favorite-plan-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff0f3;
+    color: #ff5b6e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.home-favorite-plan-icon:hover {
+    transform: scale(1.05);
+}
+
+/* ================= MEAL GROUPS ================= */
 .home-meal-group {
     display: flex;
     align-items: flex-start;
@@ -73,17 +146,24 @@
     border-bottom: 2px dotted #f4aab9;
 }
 
-/* เอาเส้นล่างของมื้อสุดท้ายออก */
 .home-meal-group:last-child {
     border-bottom: none;
 }
 
+/* Meal icon + label column */
 .home-meal-icon-box {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-width: 80px;
     gap: 8px;
+}
+
+.home-meal-icon-box span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: center;
 }
 
 .home-icon-circle {
@@ -96,11 +176,26 @@
     font-size: 1.5rem;
 }
 
+/* Theme colors for icon circles */
+.home-breakfast-theme {
+    background-color: #fff4ea;
+}
+
+.home-lunch-theme {
+    background-color: #ffebee;
+}
+
+.home-dinner-theme {
+    background-color: #f3e5f5;
+}
+
+/* ================= FOOD ROWS ================= */
 .home-meal-items-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    min-width: 0;
 }
 
 .home-meal-food-row {
@@ -115,27 +210,31 @@
     height: 90px;
     border-radius: 16px;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
-/* เพิ่ม 2 คลาสนี้กลับเข้ามา เพื่อดันแคลอรี่ไปชิดขวา */
 .home-meal-details {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    min-width: 0;
+}
+
+.home-meal-details h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .home-meal-stats {
     text-align: right;
     min-width: 100px;
-}
-
-/* ======================================= */
-
-.home-meal-details h3 {
-    margin: 0 0 8px;
-    font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
 .home-portion-badge {
@@ -144,178 +243,203 @@
     padding: 4px 12px;
     border-radius: 8px;
     font-size: 0.85rem;
+    white-space: nowrap;
 }
 
 .home-cal-text {
     font-size: 1.3rem;
     font-weight: 800;
     color: #ff8c42;
+    white-space: nowrap;
 }
 
-.home-restore-plan-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 1px solid #ffedd5;
-    background: #fff4e8;
-    color: #F97316;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.home-restore-plan-btn svg {
-    width: 27px;
-    /* ปรับขนาดตามต้องการได้เลย */
-    height: 27px;
-
-    /* บังคับให้ไอคอนไม่โดนบีบ */
-    display: block;
-}
-
-.home-restore-plan-btn:hover {
-    transform: rotate(180deg);
-    background: #fe9d57;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-}
-
-.home-restore-plan-btn:active {
-    transform: scale(0.95);
-    /* ยุบตัวลงเวลาคลิก */
-}
-
-
-/* ================= MOBILE RESPONSIVE ================= */
+/* ================================================
+   📱 MOBILE  (max-width: 768px)
+   ================================================ */
 @media (max-width: 768px) {
+
+    /* ----- Card wrapper ----- */
     .home-meal-plan-card {
-        padding: 18px 16px;
+        padding: 16px 14px 18px;
         border-radius: 20px;
-        margin-bottom: 20px;
-    }
-
-    /* Header: title left, kcal+btn RIGHT on same row */
-    .home-meal-card-header {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 10px;
         margin-bottom: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
     }
 
-    .home-meal-card-header>div:first-child {
-        flex: 1;
-        min-width: 0;
+    /* ----- Card header: title left | kcal+btn right — single row ----- */
+    .home-meal-card-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 14px;
     }
 
     .home-meal-card-title {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         font-weight: 800;
+        line-height: 1.25;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .home-meal-card-subtitle {
-        font-size: 0.78rem;
-        margin-top: 3px;
-        color: #9b7b67;
+        font-size: 0.74rem;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    /* kcal + restore: เรียงในแนวนอนเดียว ชิดขวา */
+    /* ----- kcal area: all on one row ----- */
     .home-meal-card-kcal {
-        display: flex;
-        flex-direction: row; /* เปลี่ยนเป็นแนวนอน */
-        align-items: center; /* จัดให้อยู่กึ่งกลาง */
-        gap: 8px; /* ปรับลด gap ลงเล็กน้อยสำหรับมือถือ */
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
         flex-shrink: 0;
     }
 
-    /* badge + ปุ่ม อยู่แถวเดียวกัน — target เฉพาะ .home-kcal-row ไม่ใช่ div ทั้งหมด */
     .home-kcal-row {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .home-plan-btn-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .home-total-label {
-        font-size: 0.72rem;
+        font-size: 0.68rem;
         font-weight: 600;
-        color: #946b58;
         white-space: nowrap;
     }
 
     .home-total-cal-badge {
-        font-size: 1.05rem !important;
+        font-size: 0.95rem !important;
         font-weight: 800;
-        padding: 2px 6px !important;
+        padding: 2px 8px !important;
         white-space: nowrap;
-        line-height: 1.2;
+        background: #fff4ee;
+        border-radius: 8px;
     }
 
+    /* Restore button */
     .home-restore-plan-btn {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         flex-shrink: 0;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
     }
 
-    /* Meal groups */
+    .home-restore-plan-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    /* Favorite heart */
+    .home-favorite-plan-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+
+    /* ----- Meal groups: icon on top row, food items full-width below ----- */
     .home-meal-group {
-        gap: 12px;
-        padding: 14px 0;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 0;
     }
 
+    /* Icon row: horizontal — circle + label side by side */
     .home-meal-icon-box {
-        min-width: 56px;
-        gap: 5px;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        min-width: unset;
+        gap: 8px;
     }
 
     .home-meal-icon-box span {
-        font-size: 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+        /* single line — no wrapping needed anymore */
+        line-height: 1;
     }
 
     .home-icon-circle {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
-
-    .home-meal-food-row {
-        gap: 10px;
-        align-items: center;
-    }
-
-    .home-meal-img {
-        width: 70px !important;
-        height: 55px !important;
-        border-radius: 10px !important;
-        object-fit: cover !important;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
         flex-shrink: 0;
     }
 
+    /* Food items take full width */
+    .home-meal-items-container {
+        width: 100%;
+        padding-left: 4px;
+    }
+
+    /* Food rows */
+    .home-meal-food-row {
+        gap: 10px;
+    }
+
+    .home-meal-img {
+        width: 66px !important;
+        height: 52px !important;
+        border-radius: 10px !important;
+    }
+
     .home-meal-details h3 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin: 0 0 4px;
         font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .home-portion-badge {
-        font-size: 0.75rem;
-        padding: 2px 8px;
+        font-size: 0.7rem;
+        padding: 2px 7px;
+        white-space: nowrap;
+    }
+
+    .home-meal-stats {
+        min-width: 70px;
     }
 
     .home-cal-text {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 800;
         white-space: nowrap;
     }
+}
+
+/* ================================================
+   📱 SMALL MOBILE  (max-width: 390px)
+   ================================================ */
+@media (max-width: 390px) {
+    .home-meal-card-title {
+        font-size: 0.92rem !important;
+    }
+
+    .home-total-cal-badge {
+        font-size: 0.88rem !important;
+    }
+
+    .home-meal-img {
+        width: 58px !important;
+        height: 46px !important;
+    }
+
+    .home-cal-text {
+        font-size: 0.82rem;
+    }
+
+    /* icon row stays horizontal at 390px — no column width override needed */
 }

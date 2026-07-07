@@ -255,6 +255,14 @@ body {
   width: 42px;
   border-radius: 999px;
   background: linear-gradient(90deg, #fff64e, #ff7b00);
+  top: auto;
+  /* ← เพิ่ม */
+  bottom: 10px;
+  /* ← เพิ่ม: ย้ายไปอยู่ล่างการ์ด */
+  left: 50%;
+  /* ← เพิ่ม */
+  transform: translateX(-50%);
+  /* ← เพิ่ม: จัดกลาง */
 }
 
 .day-name {

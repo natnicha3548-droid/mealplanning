@@ -1,3 +1,19 @@
+/* ================================================
+   HomePage.css  —  Mobile-first redesign
+   ================================================ */
+
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ================= SLIDESHOW ================= */
 .slideshow {
     width: 100%;
@@ -50,7 +66,7 @@
     animation: fadeInPage 0.6s ease-out forwards;
 }
 
-/* ================= QUICK ACTION ================= */
+/* ================= QUICK ACTIONS ================= */
 .quick-actions {
     display: flex;
     gap: 20px;
@@ -83,6 +99,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-width: 0;
 }
 
 .quick-icon {
@@ -95,17 +112,20 @@
     align-items: center;
     font-size: 28px;
     color: white;
+    flex-shrink: 0;
 }
 
 .quick-card h3 {
     font-size: 24px;
     color: #6b3e00;
     margin-bottom: 5px;
+    white-space: nowrap;
 }
 
 .quick-card p {
     color: #8b6b4a;
     font-size: 15px;
+    white-space: nowrap;
 }
 
 /* ================= NUTRITION CARD ================= */
@@ -192,18 +212,16 @@
     color: #1565c0;
 }
 
+/* ================= FAVORITE PLAN ICON ================= */
 .home-favorite-plan-icon {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     background-color: #fff0f3;
     color: #ff5b6e;
-
-    /* จัดหัวใจให้อยู่ตรงกลางด้วย Flexbox */
     display: flex;
     align-items: center;
     justify-content: center;
-
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease;
 }
@@ -212,9 +230,8 @@
     transform: scale(1.05);
 }
 
+/* ================= VIEW MORE BUTTON ================= */
 .home-view-more-text-btn {
-    margin-top: 2px;
-    /* ปรับค่านี้เพื่อให้ตรงกับความสูงของ h2 */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -226,16 +243,16 @@
     cursor: pointer;
     font-family: 'Kanit', sans-serif;
     transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .home-view-more-text-btn:hover {
     color: #ff6822;
     transform: translateX(5px);
-    /* ลูกศรจะขยับไปทางขวาเล็กน้อยเมื่อเอาเมาส์ชี้ */
 }
 
-
-/* ================= HOME FAVORITE ================= */
+/* ================= HOME FAVORITE SECTION ================= */
 .home-favorite-section {
     width: 100%;
     margin-bottom: 30px;
@@ -252,22 +269,18 @@
     transform: translateY(-4px);
 }
 
-/* HEADER */
 .home-favorite-header {
     display: flex;
     justify-content: space-between;
-    /* ดันปุ่มไปขวาสุด */
     align-items: flex-start;
-    /* จัดให้เริ่มที่ด้านบนสุด */
     margin-bottom: 20px;
 }
 
 .header-text-group {
     display: flex;
     flex-direction: column;
-    /* ให้หัวข้อและคำอธิบายเรียงแนวตั้ง */
     gap: 4px;
-    /* ระยะห่างระหว่างหัวข้อและคำอธิบาย */
+    min-width: 0;
 }
 
 .home-favorite-title {
@@ -275,18 +288,16 @@
     font-size: 2rem;
     font-weight: 800;
     color: #ff7a2f;
-    margin: 0;
 }
 
 .home-favorite-subtitle {
     margin: 0;
     margin-top: 6px;
-    /* ระยะห่างระหว่างชื่อกับคำอธิบาย */
     color: #9b7b67;
     font-size: 0.95rem;
 }
 
-/* ================= CARD ================= */
+/* ================= FAVORITE FOOD CARD ================= */
 .home-favorite-card {
     width: 100%;
     height: 280px;
@@ -304,7 +315,6 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* IMAGE */
 .home-favorite-image-wrapper {
     position: relative;
     width: 100%;
@@ -323,7 +333,6 @@
     transform: scale(1.05);
 }
 
-/* HEART BUTTON */
 .home-favorite-heart {
     position: absolute;
     top: 14px;
@@ -348,7 +357,6 @@
     background: #fff0f3;
 }
 
-/* CONTENT */
 .home-favorite-content {
     padding: 18px;
 }
@@ -368,131 +376,7 @@
     margin: 0;
 }
 
-/* ================= RESPONSIVE (MOBILE) ================= */
-/* (ผมเก็บอันนี้ไว้ให้เผื่อว่าคลาส .meal-food-row มีการใช้งานที่ส่วนอื่นครับ) */
-@media screen and (max-width: 768px) {
-    .meal-food-row {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-
-    .meal-details {
-        align-items: center;
-    }
-
-    .meal-stats {
-        align-items: center;
-        text-align: center;
-    }
-
-    .meal-card-footer {
-        flex-direction: column;
-        justify-content: center;
-    }
-}
-
-/* ================= TABLET ================= */
-@media screen and (max-width: 992px) {
-    .home-favorite-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* ================= MOBILE ================= */
-@media screen and (max-width: 768px) {
-    .quick-actions {
-        flex-direction: column;
-        margin-top: -30px
-    }
-
-    .quick-card {
-        padding: 20px;
-        min-height: 100px;
-    }
-
-    .slideshow {
-        height: 55vh;
-    }
-
-    .macro-box {
-        flex-wrap: wrap;
-    }
-
-    .nutrition-card {
-        margin: 25px 15px;
-        padding: 25px 20px 60px;
-    }
-
-
-    .home-favorite-section {
-        padding: 22px;
-    }
-
-    .home-favorite-title {
-        font-size: 1.6rem;
-    }
-
-    .home-favorite-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .home-favorite-image-wrapper {
-        height: 150px;
-    }
-
-    .home-favorite-image {
-        height: 150px;
-    }
-
-    .home-favorite-content {
-        padding: 14px;
-    }
-
-    .home-favorite-content h3 {
-        font-size: 1rem;
-    }
-}
-
-
-/* ================= FAVORITE PLANS SCROLL ================= */
-.favorite-plans-wrapper {
-    margin-bottom: 40px;
-    width: 100%;
-}
-
-.favorite-plans-scroll-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 20px;
-    padding-bottom: 20px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    /* ให้มือถือปัดลื่นๆ */
-}
-
-/* ปรับแต่งหน้าตา Scrollbar ให้ดูสะอาด */
-.favorite-plans-scroll-container::-webkit-scrollbar {
-    height: 8px;
-}
-
-.favorite-plans-scroll-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.favorite-plans-scroll-container::-webkit-scrollbar-thumb {
-    background: #ffcda3;
-    border-radius: 10px;
-}
-
-.favorite-plan-slide {
-    flex: 0 0 100%;
-    min-width: 100%;
-}
-
-/* ================= FAVORITE PLANS SCROLL (เลื่อนด้านบน) ================= */
+/* ================= SCROLL CONTAINERS ================= */
 .favorite-plans-wrapper {
     width: 100%;
     margin-bottom: 40px;
@@ -502,25 +386,16 @@
     display: flex;
     overflow-x: auto;
     gap: 20px;
-
     transform: rotateX(180deg);
     align-items: stretch;
-    /* ทำให้ทุก slide ยืดเท่ากัน */
-
-    /* 🌟 ปรับ 2 ค่านี้ เพื่อขยับแถบให้ชิดการ์ด */
     padding-bottom: 1px;
-    /* ดึงแถบเลื่อนให้ลงมาแนบชิดติดขอบการ์ด */
     padding-top: 15px;
-    /* เผื่อพื้นที่ด้านล่างการ์ดเอาไว้ให้เงา (Shadow) ไม่โดนตัด */
-
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
 
-/* ปรับแต่งแถบเลื่อนให้สวยงาม */
 .favorite-plans-scroll-container::-webkit-scrollbar {
     height: 5px;
-    /* ปรับบางลงนิดนึง จะได้ดูแนบเนียนไปกับการ์ด */
 }
 
 .favorite-plans-scroll-container::-webkit-scrollbar-track {
@@ -533,9 +408,21 @@
     border-radius: 10px;
 }
 
+.favorite-plan-slide {
+    transform: rotateX(180deg);
+    flex: 0 0 90%;
+    min-width: 90%;
+    scroll-snap-align: center;
+    margin-bottom: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
 
+.favorite-plan-slide .home-meal-plan-card {
+    flex: 1;
+    margin-bottom: 0;
+}
 
-/* คอนเทนเนอร์หลักของอาหารโปรด */
 .favorite-foods-wrapper {
     width: 100%;
     margin-bottom: 40px;
@@ -546,12 +433,10 @@
     overflow-x: auto;
     gap: 20px;
     padding-bottom: 15px;
-    /* เว้นที่ให้ Scrollbar */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
 
-/* ปรับแต่ง Scrollbar ให้เหมือนกัน */
 .favorite-foods-scroll-container::-webkit-scrollbar {
     height: 5px;
 }
@@ -566,128 +451,29 @@
     border-radius: 10px;
 }
 
-/* คลาสสำหรับการ์ดแต่ละใบของอาหารโปรด */
 .food-slide {
     flex: 0 0 220px;
-    /* บังคับขนาดการ์ดไม่ให้โดนยืดหรือหด */
     min-width: 220px;
     scroll-snap-align: start;
 }
 
-
-
-.favorite-plan-slide {
-    transform: rotateX(180deg);
-    flex: 0 0 90%;
-    min-width: 90%;
-    scroll-snap-align: center;
-    margin-bottom: 0 !important;
-    display: flex;
-    /* ทำให้การ์ดยืดเต็มความสูงของ row */
-    flex-direction: column;
-}
-
-.favorite-plan-slide .home-meal-plan-card {
-    flex: 1;
-    /* ยืดเต็มความสูง → ทุกการ์ดสูงเท่ากัน */
-    margin-bottom: 0;
-}
-
-@media (max-width:768px) {
-    .favorite-plan-slide {
-        flex: 0 0 100%;
-        min-width: 100%;
+/* ================= TABLET ================= */
+@media screen and (max-width: 992px) {
+    .home-favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (min-width: 768px) {
-    .favorite-plan-slide {
-        flex: 0 0 100%;
-        /* จอคอม: ให้การ์ดกว้าง 100% */
-        min-width: 100%;
-        scroll-snap-align: start;
-    }
-}
-
-/* ================= MOBILE RESPONSIVE FIX =================  */
+/* ================================================
+   📱 MOBILE  (max-width: 768px)
+   ================================================ */
 @media (max-width: 768px) {
-    .main-container {
-        padding: 20px 4% 20px;
-    }
 
-    .quick-actions {
-        margin-top: 0;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .quick-card {
-        padding: 18px 20px;
-    }
-
-    .quick-icon {
-        width: 52px;
-        height: 52px;
-        font-size: 22px;
-    }
-
-    .quick-card h3 {
-        font-size: 1.1rem;
-    }
-
-    .quick-card p {
-        font-size: 0.85rem;
-    }
-
-    .home-favorite-title {
-        font-size: 1.4rem;
-    }
-
-    .food-slide {
-        flex: 0 0 170px;
-        min-width: 170px;
-    }
-
-    .home-favorite-card {
-        height: 240px;
-    }
-}
-
-@media (max-width: 480px) {
-    .main-container {
-        padding: 90px 4% 20px;
-    }
-
-    .slideshow {
-        height: 40vh;
-    }
-
-    .nutrition-card {
-        padding: 20px 15px 30px;
-        margin: 0 0 20px;
-    }
-
-    .tdee {
-        font-size: 1.8rem;
-    }
-
-    .macro {
-        min-width: 90px;
-        min-height: 90px;
-        padding: 10px;
-    }
-}
-
-
-
-
-
-@media (max-width: 768px) {
+    /* ----- Slideshow ----- */
     .slideshow {
         width: 100%;
-        height: 220px;
-        /* ปรับได้ 200-250px */
-        margin-top: 80px;
+        height: 210px;
+        margin-top: 70px;
         overflow: hidden;
         position: relative;
         padding-bottom: 0;
@@ -697,7 +483,639 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center center;
+        object-position: center;
         display: block;
+    }
+
+    /* ----- Main container ----- */
+    .main-container {
+        padding: 16px 14px 80px;
+        animation: fadeInPage 0.45s ease-out forwards;
+    }
+
+    /* ----- Quick actions: 2-column grid ----- */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 14px;
+        margin-bottom: 18px;
+        align-items: stretch;
+    }
+
+    .quick-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 12px 16px;
+        gap: 10px;
+        border-radius: 18px;
+        border-width: 1.5px;
+    }
+
+    .quick-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        font-size: 18px;
+    }
+
+    .quick-card-content {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .quick-card h3 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #6b3e00;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+
+    .quick-card p {
+        font-size: 0.72rem;
+        color: #9b7b67;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+
+    /* ----- Nutrition card ----- */
+    .nutrition-card {
+        padding: 20px 16px 22px;
+        margin: 0 0 18px;
+        border-radius: 20px;
+        text-align: center;
+    }
+
+    .nutrition-card h2 {
+        font-size: 0.85rem;
+        margin-top: 6px;
+        white-space: nowrap;
+    }
+
+    .tdee {
+        font-size: 1.9rem;
+        gap: 6px;
+    }
+
+    .tdee small {
+        font-size: 0.9rem;
+    }
+
+    /* Macro grid: 3 columns (carb/protein/fat row 1, sugar/sodium row 2 centered) */
+    .macro-box {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 14px;
+        flex-wrap: unset;
+    }
+
+    .macro {
+        min-width: unset;
+        min-height: 80px;
+        padding: 10px 6px;
+        border-radius: 14px;
+        font-size: 0.8rem;
+        gap: 3px;
+    }
+
+    .macro p {
+        font-size: 0.72rem;
+        margin: 3px 0;
+        white-space: nowrap;
+    }
+
+    .macro strong {
+        font-size: 0.88rem;
+    }
+
+    /* 4th and 5th macro span layout — sugar & sodium get full row of 1.5 each */
+    .macro.sugar,
+    .macro.sodium {
+        grid-column: span 1;
+    }
+
+    /* Row 2: center 2 remaining items via a wrapper trick — just let grid handle 3+2 naturally */
+
+    /* ----- Favorite section ----- */
+    .home-favorite-section {
+        padding: 16px 14px 18px;
+        border-radius: 20px;
+        margin-bottom: 16px;
+    }
+
+    .home-favorite-section:hover {
+        transform: none;
+    }
+
+    .home-favorite-header {
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 8px;
+    }
+
+    .home-favorite-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .home-favorite-subtitle {
+        font-size: 0.74rem;
+        margin-top: 2px;
+    }
+
+    .home-view-more-text-btn {
+        font-size: 0.82rem;
+        gap: 4px;
+    }
+
+    /* Food cards in scroll */
+    .food-slide {
+        flex: 0 0 155px;
+        min-width: 155px;
+    }
+
+    .home-favorite-card {
+        height: 225px;
+    }
+
+    .home-favorite-image-wrapper {
+        height: 135px;
+    }
+
+    .home-favorite-image {
+        height: 135px;
+        object-fit: cover;
+    }
+
+    .home-favorite-heart {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .home-favorite-content {
+        padding: 10px 12px;
+    }
+
+    .home-favorite-content h3 {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+        line-height: 1.25;
+        /* 2-line clamp */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .home-favorite-content p {
+        font-size: 0.85rem;
+    }
+
+    /* ----- Plan slides ----- */
+    .favorite-plan-slide {
+        flex: 0 0 100%;
+        min-width: 100%;
+    }
+
+    .favorite-plans-wrapper {
+        margin-bottom: 20px;
+    }
+
+    .favorite-foods-wrapper {
+        margin-bottom: 16px;
+    }
+}
+
+/* ================================================
+   📱 SMALL MOBILE  (max-width: 390px)
+   ================================================ */
+@media (max-width: 390px) {
+    .quick-card h3 {
+        font-size: 0.82rem;
+    }
+
+    .quick-card p {
+        font-size: 0.68rem;
+    }
+
+    .quick-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
+    .food-slide {
+        flex: 0 0 140px;
+        min-width: 140px;
+    }
+
+    .home-favorite-card {
+        height: 210px;
+    }
+}
+
+/* ================================================
+   MEAL PLAN CLASSES — copied here because HomePage.js
+   defines MealPlanCard inline and only imports HomePage.css
+   ================================================ */
+
+.home-meal-plan-card {
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+    padding: 30px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    margin-bottom: 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.home-meal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 12px;
+}
+
+.home-meal-card-header>div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.home-meal-card-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff7a2f;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-meal-card-subtitle {
+    margin-top: 6px;
+    color: #9b7b67;
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-meal-card-kcal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.home-kcal-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-plan-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.home-total-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #946b58;
+    white-space: nowrap;
+}
+
+.home-total-cal-badge {
+    color: #f55b14;
+    font-size: 1.5rem;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.home-restore-plan-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #ffedd5;
+    background: #fff4e8;
+    color: #F97316;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+.home-restore-plan-btn svg {
+    width: 27px;
+    height: 27px;
+    display: block;
+}
+
+.home-restore-plan-btn:hover {
+    transform: rotate(180deg);
+    background: #fe9d57;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.home-restore-plan-btn:active {
+    transform: scale(0.95);
+}
+
+.home-meal-group {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 25px;
+    padding: 25px 0;
+    border-bottom: 2px dotted #f4aab9;
+}
+
+.home-meal-group:last-child {
+    border-bottom: none;
+}
+
+.home-meal-icon-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    gap: 8px;
+}
+
+.home-meal-icon-box span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.home-icon-circle {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.home-meal-items-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 0;
+}
+
+.home-meal-food-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.home-meal-img {
+    width: 140px;
+    height: 90px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.home-meal-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.home-meal-details h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.home-meal-stats {
+    text-align: right;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.home-portion-badge {
+    background: #f7ece4;
+    color: #663823;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.home-cal-text {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ff8c42;
+    white-space: nowrap;
+}
+
+/* ================= FOCUS VISIBLE (keyboard accessibility) ================= */
+.home-restore-plan-btn:focus-visible,
+.home-view-more-text-btn:focus-visible,
+.home-favorite-heart:focus-visible,
+.quick-card:focus-visible {
+    outline: 3px solid #ff9f43;
+    outline-offset: 3px;
+}
+
+/* ================= MEAL PLAN MOBILE ================= */
+@media (max-width: 768px) {
+    .home-meal-plan-card {
+        padding: 16px 14px 18px;
+        border-radius: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .home-meal-card-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    .home-meal-card-title {
+        font-size: 1rem !important;
+        font-weight: 800;
+        line-height: 1.25;
+    }
+
+    .home-meal-card-subtitle {
+        font-size: 0.74rem;
+        margin-top: 2px;
+    }
+
+    .home-meal-card-kcal {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .home-kcal-row {
+        gap: 6px;
+    }
+
+    .home-plan-btn-group {
+        gap: 6px;
+    }
+
+    .home-total-label {
+        font-size: 0.68rem;
+    }
+
+    .home-total-cal-badge {
+        font-size: 0.95rem !important;
+        padding: 2px 8px !important;
+        background: #fff4ee;
+        border-radius: 8px;
+    }
+
+    .home-restore-plan-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .home-restore-plan-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .home-favorite-plan-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+
+    /* Meal group: icon row on top, food items full-width below */
+    .home-meal-group {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 0;
+    }
+
+    .home-meal-icon-box {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        min-width: unset;
+        gap: 8px;
+    }
+
+    .home-meal-icon-box span {
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+        line-height: 1;
+    }
+
+    .home-icon-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .home-meal-items-container {
+        width: 100%;
+        padding-left: 4px;
+    }
+
+    .home-meal-food-row {
+        gap: 10px;
+    }
+
+    .home-meal-img {
+        width: 66px !important;
+        height: 52px !important;
+        border-radius: 10px !important;
+    }
+
+    .home-meal-details h3 {
+        font-size: 0.85rem;
+        margin: 0 0 4px;
+    }
+
+    .home-portion-badge {
+        font-size: 0.7rem;
+        padding: 2px 7px;
+    }
+
+    .home-meal-stats {
+        min-width: 70px;
+    }
+
+    .home-cal-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 390px) {
+    .home-meal-card-title {
+        font-size: 0.92rem !important;
+    }
+
+    .home-total-cal-badge {
+        font-size: 0.88rem !important;
+    }
+
+    .home-meal-img {
+        width: 58px !important;
+        height: 46px !important;
+    }
+
+    .home-cal-text {
+        font-size: 0.82rem;
+    }
+
+    /* icon row stays horizontal at 390px too — no column width override needed */
+}
+
+/* ================= REDUCED MOTION ================= */
+@media (prefers-reduced-motion: reduce) {
+
+    .main-container,
+    .quick-card,
+    .home-favorite-section,
+    .home-favorite-card,
+    .home-restore-plan-btn {
+        animation: none !important;
+        transition: none !important;
     }
 }
