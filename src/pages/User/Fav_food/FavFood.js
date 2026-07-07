@@ -12,7 +12,8 @@ import {
     FaDrumstickBite,
     FaTint,
     FaCandyCane,
-    FaMortarPestle
+    FaMortarPestle,
+    FaTimes,
 } from "react-icons/fa";
 
 import { MdLocalFireDepartment } from "react-icons/md";
@@ -48,7 +49,7 @@ function FavFood() {
                     return hasName || hasBlocks;
                 });
             }
-        } catch (e) {}
+        } catch (e) { }
         return [];
     };
 
@@ -66,6 +67,13 @@ function FavFood() {
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
 
+    // ================= CLOSE MODAL =================
+
+    const handleCloseSelectedFood = () => {
+        setSelectedFood(null);
+        setQuantity(1);
+    };
+
     // ================= FETCH CATEGORIES =================
 
     const fetchCategories = async () => {
@@ -78,9 +86,7 @@ function FavFood() {
         }
     };
 
-    // ================= GROUP PLAN ROWS (แก้ Cartesian product) =================
-    // API ส่งแถวหลายแถวต่อแผน (breakfast × lunch × dinner)
-    // ต้อง deduplicate แต่ละมื้อแยกกัน
+    // ================= GROUP PLAN ROWS =================
 
     const groupPlanData = (plansRaw) => {
         const planMap = {};
@@ -108,7 +114,6 @@ function FavFood() {
 
             const p = planMap[key];
 
-            // ดึงเมนูเช้าที่ไม่ซ้ำ
             if (row.breakfast_name && !p._bfSet.has(row.breakfast_name)) {
                 p._bfSet.add(row.breakfast_name);
                 p.meals.breakfast.push({
@@ -119,7 +124,6 @@ function FavFood() {
                 });
             }
 
-            // ดึงเมนูกลางวันที่ไม่ซ้ำ
             if (row.lunch_name && !p._lSet.has(row.lunch_name)) {
                 p._lSet.add(row.lunch_name);
                 p.meals.lunch.push({
@@ -130,7 +134,6 @@ function FavFood() {
                 });
             }
 
-            // ดึงเมนูเย็นที่ไม่ซ้ำ
             if (row.dinner_name && !p._dSet.has(row.dinner_name)) {
                 p._dSet.add(row.dinner_name);
                 p.meals.dinner.push({
@@ -142,7 +145,6 @@ function FavFood() {
             }
         });
 
-        // ลบ Set ออกก่อน return
         return Object.values(planMap).map(({ _bfSet, _lSet, _dSet, ...plan }) => plan);
     };
 
@@ -218,11 +220,10 @@ function FavFood() {
         });
         localStorage.setItem("myplate", JSON.stringify(myPlate));
         alert("เพิ่มลงจานอาหารแล้ว");
-        setSelectedFood(null);
-        setQuantity(1);
+        handleCloseSelectedFood();
     };
 
-    // ================= CATEGORY GROUPING (dynamic from admin) =================
+    // ================= CATEGORY GROUPING =================
 
     const getCategoryGroups = () => {
         const groups = [];
@@ -302,8 +303,8 @@ function FavFood() {
     const renderMealRows = (plan) => {
         const themeStyles = {
             breakfast: { bg: "#fff4ea", color: "#ff9800", icon: <FaSun size={24} />, label: "มื้อเช้า" },
-            lunch:     { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} />, label: "มื้อกลางวัน" },
-            dinner:    { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} />, label: "มื้อเย็น" },
+            lunch: { bg: "#ffebee", color: "#f44336", icon: <FaCloudSun size={24} />, label: "มื้อกลางวัน" },
+            dinner: { bg: "#f3e5f5", color: "#9c27b0", icon: <FaMoon size={22} />, label: "มื้อเย็น" },
         };
 
         const mealTypes = ['breakfast', 'lunch', 'dinner'];
@@ -502,20 +503,31 @@ function FavFood() {
             {selectedFood && (() => {
                 const recipeSections = parseRecipeDetails(selectedFood.recipe_details);
                 return (
-                    <div className="fav-modal-overlay" onClick={() => setSelectedFood(null)}>
+                    <div className="fav-modal-overlay" onClick={handleCloseSelectedFood}>
                         <div className="fav-modal-content" onClick={(e) => e.stopPropagation()}>
 
-                            <button
-                                className="fav-modal-bookmark-btn"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeFavoriteFood(e, selectedFood.favorite_id);
-                                    setSelectedFood(null);
-                                }}
-                            >
-                                <FaHeart />
-                            </button>
+                            {/* ปุ่มหัวใจ + กากบาท ชิดขอบขวา — เหมือน MenuFood */}
+                            <div className="fav-modal-actions">
+                                <button
+                                    className="fav-modal-bookmark-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeFavoriteFood(e, selectedFood.favorite_id);
+                                        handleCloseSelectedFood();
+                                    }}
+                                >
+                                    <FaHeart />
+                                </button>
+                                <button
+                                    className="fav-modal-close-btn"
+                                    onClick={handleCloseSelectedFood}
+                                    aria-label="ปิด"
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
 
+                            {/* ===== LEFT ===== */}
                             <div className="fav-modal-left">
                                 <img
                                     src={
@@ -571,6 +583,7 @@ function FavFood() {
                                 )}
                             </div>
 
+                            {/* ===== RIGHT ===== */}
                             <div className="fav-modal-right">
                                 <h2>{selectedFood.food_name}</h2>
 

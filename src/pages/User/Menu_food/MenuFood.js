@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
     FaSearch, FaHeart, FaRegHeart, FaLock,
     FaBreadSlice, FaDrumstickBite, FaTint, FaCandyCane, FaMortarPestle,
-    FaTimes
+    FaTimes, FaStar, FaRegStar
 } from "react-icons/fa";
 import { MdDinnerDining } from "react-icons/md";
 import { LuSoup } from "react-icons/lu";
@@ -24,7 +24,6 @@ function MenuFood() {
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
     const [favFoodIds, setFavFoodIds] = useState([]);
-
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -36,6 +35,34 @@ function MenuFood() {
     const [showRecommendModal, setShowRecommendModal] = useState(false);
     const [addedFood, setAddedFood] = useState(null);
     const [fromRecommend, setFromRecommend] = useState(false);
+
+    // ===== REVIEW STATE =====
+    const [reviews, setReviews] = useState([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewRating, setReviewRating] = useState(0);
+    const [reviewHover, setReviewHover] = useState(0);
+    const [reviewText, setReviewText] = useState("");
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [myReview, setMyReview] = useState(null);
+    const [reviewSuccess, setReviewSuccess] = useState("");
+
+    const maskEmail = (email) => {
+        if (!email) return "ผู้ใช้งาน";
+        const [local, domain] = email.split("@");
+        if (!domain) return email;
+        const masked = local.slice(0, 2) + "***";
+        return `${masked}@${domain}`;
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("th-TH", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+    };
 
     const parseRecipeDetails = (raw) => {
         if (!raw) return [];
@@ -69,12 +96,13 @@ function MenuFood() {
     };
 
     const handleCloseSelectedFood = () => {
-        if (fromRecommend) {
-            setSelectedFood(null);
-            setFromRecommend(false);
-        } else {
-            setSelectedFood(null);
-        }
+        setSelectedFood(null);
+        setFromRecommend(false);
+        setReviews([]);
+        setMyReview(null);
+        setReviewRating(0);
+        setReviewText("");
+        setReviewSuccess("");
     };
 
     const openFoodFromRecommend = (foodName) => {
@@ -95,7 +123,80 @@ function MenuFood() {
         return () => document.body.classList.remove("modal-open");
     }, [selectedFood]);
 
-    // ฟังก์ชันหาชื่อหมวดหมู่ปัจจุบันมาแสดงใน Dropdown
+    // ===== FETCH REVIEWS เมื่อเปิดโมเดลอาหาร =====
+    useEffect(() => {
+        if (!selectedFood) return;
+
+        const fetchReviews = async () => {
+            setReviewsLoading(true);
+            setReviews([]);
+            setMyReview(null);
+            setReviewRating(0);
+            setReviewText("");
+            setReviewSuccess("");
+
+            try {
+                // ดึงรีวิวที่อนุมัติแล้วของเมนูนี้
+                const res = await fetch(`http://localhost:5000/api/reviews/${selectedFood.food_id}`);
+                const data = await res.json();
+                setReviews(Array.isArray(data) ? data : []);
+
+                // ดึงรีวิวของผู้ใช้ปัจจุบัน (ถ้าล็อกอิน)
+                if (currentUserId) {
+                    const myRes = await fetch(
+                        `http://localhost:5000/api/review-status?user_id=${currentUserId}&food_id=${selectedFood.food_id}`
+                    );
+                    const myData = await myRes.json();
+                    setMyReview(myData);
+                    if (myData?.isReviewed) {
+                        setReviewRating(myData.rating || 0);
+                        setReviewText(myData.review_text || "");
+                    }
+                }
+            } catch (err) {
+                console.error("Fetch reviews error:", err);
+            } finally {
+                setReviewsLoading(false);
+            }
+        };
+
+        fetchReviews();
+    }, [selectedFood, currentUserId]);
+
+    // ===== ส่งรีวิว =====
+    const submitReview = async () => {
+        if (!currentUserId) {
+            openLoginPrompt();
+            return;
+        }
+        if (reviewRating === 0) return;
+
+        setReviewSubmitting(true);
+
+        try {
+            await fetch("http://localhost:5000/api/review", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: currentUserId,
+                    food_id: selectedFood.food_id,
+                    rating: reviewRating,
+                    review_text: reviewText.trim()
+                })
+            });
+
+            setMyReview({
+                isReviewed: true,
+                rating: reviewRating,
+                review_text: reviewText.trim()
+            });
+        } catch (err) {
+            console.error("Submit review error:", err);
+        } finally {
+            setReviewSubmitting(false);
+        }
+    };
+
     const getDropdownLabel = () => {
         if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
         const found = categories.find(c => c.category_id === activeCategory);
@@ -108,11 +209,7 @@ function MenuFood() {
                 setIsDropdownOpen(false);
             }
         };
-
-        // เปิดการรับฟัง Event เมื่อ Component โหลด
         document.addEventListener("mousedown", handleClickOutside);
-
-        // คืนค่า Event เมื่อ Component ถูกทำลาย
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -176,39 +273,22 @@ function MenuFood() {
     };
 
     const addToMealPlan = async () => {
-
-        // ===== GUEST =====
         if (!currentUserId) {
-
-            const guestCalc = JSON.parse(
-                sessionStorage.getItem("activeCalcResult")
-            );
-
+            const guestCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
             if (!guestCalc || !guestCalc.tdee) {
                 alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
                 navigate("/calculate");
                 return;
             }
-
-        }
-
-        // ===== MEMBER =====
-        else {
-
+        } else {
             try {
-
-                const res = await fetch(
-                    `http://localhost:5000/api/get-calculation/${currentUserId}`
-                );
-
+                const res = await fetch(`http://localhost:5000/api/get-calculation/${currentUserId}`);
                 const calcData = await res.json();
-
                 if (!calcData) {
                     alert("กรุณาคำนวณพลังงานและสารอาหารก่อนเพิ่มเมนูอาหาร");
                     navigate("/calculate");
                     return;
                 }
-
             } catch (err) {
                 console.error(err);
                 alert("ไม่สามารถตรวจสอบข้อมูลการคำนวณได้");
@@ -216,16 +296,12 @@ function MenuFood() {
             }
         }
 
-        // ===== เพิ่มอาหารตามปกติ =====
-
         if (!selectedFood) {
             alert("กรุณาเลือกอาหาร");
             return;
         }
 
         const myPlate = JSON.parse(localStorage.getItem("myplate")) || [];
-
-        // โค้ดเดิมต่อจากนี้...
         const mealMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };
         myPlate.push({
             id: Date.now(),
@@ -283,6 +359,23 @@ function MenuFood() {
         });
     }, [foods, searchTerm, activeCategory, favFoodIds]);
 
+    // ===== STAR COMPONENT =====
+    const StarRating = ({ value, hover, onRate, onHover, onLeave, readonly = false }) => (
+        <div className={`star-rating ${readonly ? "star-rating--readonly" : ""}`}>
+            {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                    key={star}
+                    className={`star-icon ${star <= (readonly ? value : (hover || value)) ? "star-icon--filled" : ""}`}
+                    onClick={() => !readonly && onRate && onRate(star)}
+                    onMouseEnter={() => !readonly && onHover && onHover(star)}
+                    onMouseLeave={() => !readonly && onLeave && onLeave()}
+                >
+                    {star <= (readonly ? value : (hover || value)) ? <FaStar /> : <FaRegStar />}
+                </span>
+            ))}
+        </div>
+    );
+
     return (
         <div className="menu-page">
 
@@ -303,19 +396,15 @@ function MenuFood() {
                         <p className="login-prompt-desc">
                             คุณต้องเข้าสู่ระบบก่อน<br />จึงจะสามารถเพิ่มรายการโปรดได้
                         </p>
-
                         <button
                             className="login-prompt-btn-primary"
                             onClick={() => {
                                 setShowLoginPrompt(false);
-                                navigate("/auth", {
-                                    state: { returnTo: "/menu" }
-                                });
+                                navigate("/auth", { state: { returnTo: "/menu" } });
                             }}
                         >
                             เข้าสู่ระบบ
                         </button>
-
                         <button
                             className="login-prompt-btn-cancel"
                             onClick={() => setShowLoginPrompt(false)}
@@ -361,9 +450,7 @@ function MenuFood() {
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
                         {getDropdownLabel()}
-                        <span className={`arrow ${isDropdownOpen ? "open" : ""}`}>
-                            ▼
-                        </span>
+                        <span className={`arrow ${isDropdownOpen ? "open" : ""}`}>▼</span>
                     </div>
 
                     {isDropdownOpen && (
@@ -393,7 +480,7 @@ function MenuFood() {
                     )}
                 </div>
 
-                {/* 2. Favorite Button (Separate) */}
+                {/* 2. Favorite Button */}
                 <button
                     className={`fav-filter-btn ${activeCategory === "fav" ? "active" : ""}`}
                     onClick={() => {
@@ -620,6 +707,84 @@ function MenuFood() {
                                 <button className="add-btn" onClick={addToMealPlan}>
                                     เพิ่มใส่จานอาหาร
                                 </button>
+
+                                {/* ===== REVIEWS SECTION ===== */}
+                                <div className="food-section review-section">
+                                    <h4>รีวิวจากผู้ใช้</h4>
+
+                                    {/* ฟอร์มเขียนรีวิว (เฉพาะผู้ล็อกอิน) */}
+                                    {currentUserId ? (
+                                        <div className="review-form">
+                                            <p className="review-form-label">
+                                                {myReview?.isReviewed ? "แก้ไขรีวิวของคุณ" : "เขียนรีวิวของคุณ"}
+                                            </p>
+
+                                            <StarRating
+                                                value={reviewRating}
+                                                hover={reviewHover}
+                                                onRate={setReviewRating}
+                                                onHover={setReviewHover}
+                                                onLeave={() => setReviewHover(0)}
+                                            />
+
+                                            <textarea
+                                                className="review-textarea"
+                                                value={reviewText}
+                                                onChange={(e) => setReviewText(e.target.value)}
+                                                placeholder="แสดงความคิดเห็นของคุณเกี่ยวกับเมนูนี้..."
+                                                rows={3}
+                                            />
+
+                                            <button
+                                                className="review-submit-btn"
+                                                onClick={submitReview}
+                                                disabled={reviewSubmitting || reviewRating === 0}
+                                            >
+                                                {reviewSubmitting
+                                                    ? "กำลังส่ง..."
+                                                    : myReview?.isReviewed
+                                                        ? "อัปเดตรีวิว"
+                                                        : "ส่งรีวิว"
+                                                }
+                                            </button>
+
+                                            
+                                        </div>
+                                    ) : (
+                                        <p className="review-login-hint">
+                                            <span
+                                                className="review-login-link"
+                                                onClick={() => navigate("/auth", { state: { returnTo: "/menu" } })}
+                                            >
+                                                เข้าสู่ระบบ
+                                            </span>{" "}
+                                            เพื่อเขียนรีวิว
+                                        </p>
+                                    )}
+
+                                    {/* รายการรีวิวที่อนุมัติแล้ว */}
+                                    {reviewsLoading ? (
+                                        <p className="review-loading">กำลังโหลดรีวิว...</p>
+                                    ) : reviews.length > 0 ? (
+                                        <div className="reviews-list">
+                                            {reviews.map((r) => (
+                                                <div key={r.review_id} className="review-item">
+                                                    <div className="review-item-header">
+                                                        <StarRating value={r.rating} readonly />
+                                                        <span className="review-author">{maskEmail(r.email)}</span>
+                                                        <span className="review-date">{formatDate(r.created_at)}</span>
+                                                    </div>
+                                                    {r.review_text && (
+                                                        <p className="review-item-text">{r.review_text}</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="review-empty">ยังไม่มีรีวิวสำหรับเมนูนี้</p>
+                                    )}
+                                </div>
+
                             </div>
 
                         </div>
@@ -637,7 +802,6 @@ function MenuFood() {
                         className="recommend-modal"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* HEADER — food name + close button */}
                         <div className="recommend-modal-header">
                             <h2 className="recommend-modal-title">{addedFood.food_name}</h2>
                             <button
@@ -648,7 +812,6 @@ function MenuFood() {
                             </button>
                         </div>
 
-                        {/* IMAGE with success badge overlaid */}
                         <div className="recommend-food-img-wrap">
                             <img
                                 src={
@@ -665,7 +828,6 @@ function MenuFood() {
                             </div>
                         </div>
 
-                        {/* BOTTOM — recommendations */}
                         <div className="recommend-modal-bottom">
                             <div className="recommend-title-row">
                                 <span className="recommend-title-icon">
@@ -729,7 +891,6 @@ function MenuFood() {
             )}
 
         </div>
-
     );
 }
 
