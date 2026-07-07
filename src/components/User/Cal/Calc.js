@@ -245,7 +245,8 @@ function Calc() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     user_id: user.user_id,
-                    ...result
+                    ...result,
+                    disease_snapshot: JSON.stringify(form.diseases)
                 })
             });
 

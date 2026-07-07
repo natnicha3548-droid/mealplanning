@@ -461,6 +461,7 @@ app.post('/api/save-calculation', (req, res) => {
         age,
         gender,
         activity,
+        disease_snapshot,
         bmi,
         bmr,
         tdee,
@@ -485,11 +486,12 @@ app.post('/api/save-calculation', (req, res) => {
         INSERT INTO user_calculations
         (
             user_id,
-            weight,
-            height,
-            age,
-            gender,
-            activity,
+            weight_snapshot,
+            height_snapshot,
+            age_snapshot,
+            gender_snapshot,
+            activity_snapshot,
+            disease_snapshot,
             bmi,
             bmr,
             tdee,
@@ -499,7 +501,7 @@ app.post('/api/save-calculation', (req, res) => {
             sugar,
             sodium
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
