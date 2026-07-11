@@ -380,11 +380,16 @@ function NutritionBar({ label, current, limit, unit, isFullWidth, className }) {
 
   return (
     <div className={`macro-progress-card ${isFullWidth ? "span-full" : ""} ${className || ""}`}>
-      <span className="macro-card-title">{label}</span>
+      <div className="macro-card-header">
+        <span className="macro-card-title">{label}</span>
+        <span className="macro-card-goal">
+          ต้องการ {limit > 0 ? Number(limit || 0).toFixed(0) : "0"} <span className="macro-card-unit">{unit}</span>
+        </span>
+      </div>
       <div className="plate-macro-track">
         <div className={`plate-macro-fill ${statusClass}`} style={{ width: `${fillWidth}%` }} />
         <div className="plate-macro-pill-text">
-          {Number(current || 0).toFixed(1)} / {limit > 0 ? Number(limit || 0).toFixed(0) : "0"} {unit}
+          {Number(current || 0).toFixed(1)}
         </div>
       </div>
       {isExceeded && (

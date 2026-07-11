@@ -724,11 +724,40 @@
   border: 1px solid #fad3a9;
 }
 
+/* แถวหัวการ์ด: ชื่อสารอาหาร (ซ้าย) + เป้าหมาย/หน่วย (ขวา) */
+.macro-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 /* ตัวหนังสือหัวการ์ด (เช่น คาร์โบไฮเดรต) */
 .macro-card-title {
   font-size: 0.95rem;
   font-weight: bold;
   color: #874d3e;
+}
+
+/* ข้อความ "ต้องการ xxx" ทางขวาของหัวการ์ด */
+.macro-card-goal {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #a67256;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* หน่วย (g / mg / kcal) อยู่ท้ายสุดฝั่งขวาของแต่ละกล่อง */
+.macro-card-unit {
+  margin-left: 2px;
+  color: #ff8c42;
+  font-weight: 700;
+}
+
+/* เจาะจงเปลี่ยนสีเฉพาะกล่อง "เป้าหมายพลังงาน" */
+.calorie-title-special .macro-card-goal {
+  color: #f65f5d;
 }
 
 /* เจาะจงเปลี่ยนสีเฉพาะคำว่า "เป้าหมายพลังงาน" ผ่าน Classname */

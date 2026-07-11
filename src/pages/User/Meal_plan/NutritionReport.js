@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area, LineChart, Line, Legend
 } from "recharts";
-import { 
+import {
   FaArrowLeft, FaExclamationTriangle, FaCheckCircle,
   FaFire, FaBullseye, FaCalendarAlt,
   FaDna, FaHeartbeat, FaChartLine, FaChartPie,
@@ -14,8 +14,8 @@ import "./NutritionReport.css";
 
 function NutritionReport() {
   const navigate = useNavigate();
-  const location = useLocation(); 
-  const pastPlanState = location.state; 
+  const location = useLocation();
+  const pastPlanState = location.state;
 
   const [reportData, setReportData] = useState([]);
   const [userConfig, setUserConfig] = useState(null);
@@ -36,7 +36,7 @@ function NutritionReport() {
         const user = JSON.parse(storedUser);
         const response = await fetch(`http://localhost:5000/api/report/${user.user_id}`);
         const data = await response.json();
-        
+
         setUserConfig(data.userConfig);
         setReportData(data.weeklyData.length === 0 ? [{ dateLabel: "ไม่มีข้อมูล", calories: 0, carbs: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 }] : data.weeklyData);
       } catch (error) {
@@ -80,7 +80,7 @@ function NutritionReport() {
 
   // ค้นหาข้อมูลที่ตรงกับ "วันนี้เป๊ะๆ" เท่านั้น (ถ้าหาไม่เจอให้ถือเป็น 0)
   const todayData = reportData.length > 0 ? reportData.find(item => item.dateLabel === todayLabel) : null;
-  
+
   const todayCalories = todayData ? todayData.calories : 0;
   const todaySugar = todayData ? todayData.sugar : 0;
   const todaySodium = todayData ? todayData.sodium : 0;
@@ -106,9 +106,9 @@ function NutritionReport() {
       let unit = "";
       let description = "";
       let ncdIcon = null;
-      
+
       // 🌟 ประกาศ currentFat ไว้ตรงนี้เพื่อไม่ให้เกิด Error no-undef
-      let currentFat = avgFat; 
+      let currentFat = avgFat;
 
       if (diseaseType === "diabetes") {
         title = "แผงควบคุมพิเศษ: ติดตามโรคเบาหวาน";
@@ -142,7 +142,7 @@ function NutritionReport() {
         const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
         const targetLabel = `${d.getDate()} ${monthNames[d.getMonth()]}`;
         const dayData = reportData.find(item => item.dateLabel === targetLabel);
-        
+
         if (dayData) {
           currentValue = diseaseType === "diabetes" ? dayData.sugar : dayData.sodium;
           currentFat = dayData.fat;
@@ -306,6 +306,22 @@ function NutritionReport() {
     });
   };
 
+  // โซเดียมมีหน่วยเป็นมิลลิกรัม (หลักพัน) ในขณะที่คาร์บ/โปรตีน/ไขมัน/น้ำตาลเป็นกรัม (หลักสิบ-ร้อย)
+  // ถ้าเอาไปวาดกราฟแกนเดียวกันตรงๆ เส้นโซเดียมจะสูงจนบังเส้นอื่นหมด จึงย่อสเกลลง 20 เท่าไว้ "แค่ตอนวาดกราฟ" เท่านั้น
+  // ค่าจริงยังคงถูกต้องเสมอ เพราะ Tooltip จะคูณกลับ 20 ก่อนแสดงผล
+  const SODIUM_SCALE = 20;
+  const chartData = reportData.map((item) => ({
+    ...item,
+    sodiumScaled: Math.round((item.sodium || 0) / SODIUM_SCALE),
+  }));
+
+  const nutrientTooltipFormatter = (value, name, props) => {
+    if (props?.dataKey === "sodiumScaled") {
+      return [`${value * SODIUM_SCALE} มก.`, "โซเดียม"];
+    }
+    return [`${value} ก.`, name];
+  };
+
   return (
     <div className="report-container">
       <header className="report-header">
@@ -414,34 +430,34 @@ function NutritionReport() {
       {/* ---------------- กราฟโซเดียม (ใช้ร่วมกัน โรคไต + โรคหัวใจ) ---------------- */}
       {(detectedDiseases.includes("kidney") ||
         detectedDiseases.includes("heart")) && (
-        <div className="chart-section warning-chart">
-          <h2>
-            <FaChartLine className="title-icon-inline-h2 warning-color" />
-            แนวโน้มปริมาณโซเดียมรายวัน (มิลลิกรัม)
-          </h2>
+          <div className="chart-section warning-chart">
+            <h2>
+              <FaChartLine className="title-icon-inline-h2 warning-color" />
+              แนวโน้มปริมาณโซเดียมรายวัน (มิลลิกรัม)
+            </h2>
 
-          <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={reportData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="dateLabel" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+            <div className="chart-wrapper">
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={reportData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                  <XAxis dataKey="dateLabel" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
 
-                <Line
-                  type="monotone"
-                  dataKey="sodium"
-                  stroke="#2e86de"
-                  strokeWidth={3}
-                  name="โซเดียมที่กินจริง (mg)"
-                  dot={{ r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+                  <Line
+                    type="monotone"
+                    dataKey="sodium"
+                    stroke="#2e86de"
+                    strokeWidth={3}
+                    name="โซเดียมที่กินจริง (mg)"
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* ---------------- กราฟไขมัน (เฉพาะโรคหัวใจ) ---------------- */}
       {detectedDiseases.includes("heart") && (
@@ -480,16 +496,18 @@ function NutritionReport() {
           <FaChartPie className="title-icon-inline-h2 groups-color" /> สัดส่วนสารอาหารที่ได้รับ (กรัม)
         </h2>
         <div className="chart-wrapper">
-          <ResponsiveContainer width="100%" height={260}>
-            <AreaChart data={reportData} margin={{ top: 10, right: 10, left: 15, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 6, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-              <XAxis dataKey="dateLabel" tick={{ fill: '#888', fontSize: 13 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#888' }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }} />
+              <XAxis dataKey="dateLabel" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} width={34} />
+              <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }} formatter={nutrientTooltipFormatter} />
               <Legend />
               <Area type="monotone" dataKey="carbs" stackId="1" stroke="#FF9F43" fill="#FF9F43" name="คาร์บ" opacity={0.8} />
               <Area type="monotone" dataKey="protein" stackId="1" stroke="#EE5253" fill="#EE5253" name="โปรตีน" opacity={0.8} />
               <Area type="monotone" dataKey="fat" stackId="1" stroke="#10AC84" fill="#10AC84" name="ไขมัน" opacity={0.8} />
+              <Area type="monotone" dataKey="sugar" stroke="#c0392b" fill="#c0392b" name="น้ำตาล" opacity={0.55} />
+              <Area type="monotone" dataKey="sodiumScaled" stroke="#2e86de" fill="#2e86de" name="โซเดียม" opacity={0.35} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
