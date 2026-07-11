@@ -337,9 +337,9 @@
 
 /* รูปอาหาร */
 .row-img {
-  width: 150px;
-  height: 100px;
-  border-radius: 20px;
+  width: 140px;
+  height: 90px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
@@ -362,9 +362,9 @@
 .row-qty-tag {
   align-self: flex-start;
   background: #f7ece4;
-  padding: 2px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
   color: #663823;
   font-weight: 500;
 }
@@ -378,8 +378,8 @@
 
 /* แคลอรี่ */
 .row-calories-display {
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-size: 1.3rem;
+  font-weight: 800;
   color: #ff8c42;
   min-width: 90px;
   text-align: right;
@@ -507,10 +507,14 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;     /* ดึงให้ชิดขวา */
-  bottom: 0;    /* ดึงให้ชิดล่าง */
-  width: 100%;  /* ใช้ % แทน vw */
-  height: 100%; /* ใช้ % แทน vh */
+  right: 0;
+  /* ดึงให้ชิดขวา */
+  bottom: 0;
+  /* ดึงให้ชิดล่าง */
+  width: 100%;
+  /* ใช้ % แทน vw */
+  height: 100%;
+  /* ใช้ % แทน vh */
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
@@ -524,7 +528,7 @@
   border-radius: 24px;
   width: 90%;
   max-width: 440px;
-  
+
   /* ขึ้นบน 120px */
 }
 
@@ -619,28 +623,28 @@
 
 /* วงกลมไอคอน */
 .meal-icon-circle {
-  width: 48px;
-  height: 48px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* สีตามประเภทมื้อ */
+/* สีตามประเภทมื้อ (เหมือนหน้าแรก/แผนการกินย้อนหลัง) */
 .type-เช้า .meal-icon-circle {
-  background: #fff5ec;
+  background: #fff4ea;
 }
 
 .type-กลางวัน .meal-icon-circle {
-  background: #fde5e5;
+  background: #ffebee;
 }
 
 .type-เย็น .meal-icon-circle {
-  background: #f7f0ff;
+  background: #f3e5f5;
 }
 
 /* Placeholder */
@@ -649,30 +653,40 @@
   flex-shrink: 0;
 }
 
-/* เส้นคั่น */
+/* กลุ่มมื้ออาหาร */
+.meal-group {
+  padding: 25px 0 0;
+}
+
+/* เส้นคั่น (ให้เหมือนหน้าแรก/แผนการกินย้อนหลัง) */
 .meal-group-divider {
-  display: none !important;
-  border-bottom: 1px dashed #f798ef;
-  margin: 10px 0 20px;
+  display: block;
+  border-bottom: 2px dotted #f4aab9;
+  margin: 14px 0 0;
+}
+
+.meal-group:last-of-type .meal-group-divider {
+  display: none;
 }
 
 /* ชื่อมื้อ */
 .meal-text-label {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   letter-spacing: -0.2px;
 }
 
-/* สีข้อความ */
+/* สีข้อความ (เหมือนหน้าแรก/แผนการกินย้อนหลัง) */
 .type-เช้า .meal-text-label {
-  color: #ff8c42;
+  color: #ff9800;
 }
 
 .type-กลางวัน .meal-text-label {
-  color: #fd534d;
+  color: #f44336;
 }
 
 .type-เย็น .meal-text-label {
-  color: #a574ff;
+  color: #9c27b0;
 }
 
 /* ================= NUTRITION BUTTON ================= */
@@ -746,26 +760,37 @@
     gap: 15px;
   }
 
+  /* กลุ่มมื้ออาหาร (เหมือนหน้าแผนการกินย้อนหลัง) */
+  .meal-group {
+    padding: 12px 0;
+  }
+
   /* แถวอาหาร */
   .meal-row-item {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: none;
-    border-radius: 16px;
-    overflow: hidden;
+    border-radius: 0;
+    overflow: visible;
     transition: transform 0.2s ease;
   }
 
   .meal-row-item:hover {
-    transform: translateY(-3px);
+    transform: translateX(5px);
   }
 
   /* ฝั่งซ้าย */
   .meal-item-left {
-    display: block;
-    position: relative;
-    gap: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: static;
+    gap: 10px;
+    width: 100%;
+    padding-left: 4px;
   }
 
   /* มื้ออาหาร */
@@ -773,96 +798,107 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: unset;
+    gap: 8px;
+    padding: 0;
   }
 
   .meal-time-column-placeholder {
     display: none;
   }
 
-  /* รูป */
-  .row-img {
-    width: 100%;
-    height: 180px;
-    border-radius: 0;
-    object-fit: cover;
-    display: block;
+  .meal-icon-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
   }
 
-  /* Overlay */
-  .meal-item-left::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    z-index: 1;
+  .meal-text-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* รูป */
+  .row-img {
+    width: 66px !important;
+    height: 52px !important;
+    border-radius: 10px !important;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
   }
 
   /* รายละเอียด */
   .row-details {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
+    position: static;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
-    z-index: 2;
-    color: white;
+    gap: 4px;
+    color: inherit;
+    min-width: 0;
+    flex: 1;
   }
 
   .row-details h2 {
     margin: 0;
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: white;
-    line-height: 1;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .row-qty-tag {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 3px 10px;
+    background: #f7ece4;
+    color: #663823;
+    padding: 2px 7px;
     border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 500;
   }
 
   /* ฝั่งขวา */
   .meal-item-right {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    padding: 12px 15px;
-    border-radius: 0 0 16px 16px;
+    gap: 8px;
+    padding: 0;
+    padding-left: 4px;
+    border-radius: 0;
   }
 
   /* แคลอรี่ */
   .row-calories-display {
-    position: relative;
+    position: static;
     width: auto;
+    min-width: unset;
     padding: 0;
     border: none;
     display: flex;
-    font-size: 1.1rem;
-    color: #ff9c67;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #ff8c42;
   }
 
   /* ปุ่มรีวิว */
   .row-action-btn.btn-star {
-    margin-left: auto;
-    background: #fffcf0;
-    color: #d5b89c;
+    margin-left: 0;
+    background: none;
+    color: #a0a0a0;
     border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.72rem;
+    font-weight: 500;
   }
 
   /* ปุ่มล่าง */
@@ -881,4 +917,309 @@
     justify-content: center;
     gap: 30px;
   }
+}
+
+/* ================= PAST-PLAN CARD (โครงสร้างใหม่เหมือน PastPlans) ================= */
+
+.past-plan-card {
+  background: rgba(255, 255, 255, 0.70);
+  border-radius: 24px;
+  padding: 15px 24px 24px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f2f2f2;
+  display: flex;
+  flex-direction: column;
+}
+
+.meal-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.meal-list-header h3 {
+  color: #602815;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.heart-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.heart-icon-btn:hover {
+  background-color: #fce7f3;
+}
+
+/* กลุ่มมื้ออาหาร: ไอคอนซ้าย + รายการขวา */
+.meal-group {
+  display: flex !important;
+  align-items: flex-start !important;
+  width: 100%;
+  gap: 25px;
+  padding: 25px 0;
+  border-bottom: 2px dotted #f4aab9;
+}
+
+.meal-group:last-child {
+  border-bottom: none;
+}
+
+/* คอลัมน์ไอคอน + ชื่อมื้อ */
+.meal-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.meal-items-list {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* การ์ดแต่ละรายการอาหาร */
+.meal-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  transition: transform 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: translateX(5px);
+}
+
+.meal-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.icon-breakfast {
+  background-color: #fff4ea;
+}
+
+.icon-lunch {
+  background-color: #ffebee;
+}
+
+.icon-dinner {
+  background-color: #f3e5f5;
+}
+
+.meal-type-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  text-align: center;
+}
+
+.meal-detail {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.meal-image {
+  width: 140px !important;
+  height: 90px !important;
+  flex-shrink: 0;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.meal-info h4 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.meal-portion {
+  font-size: 0.85rem;
+  color: #663823;
+  background-color: #f7ece4;
+  padding: 4px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* แคลอรี่ + รีวิว */
+.meal-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.meal-cal {
+  font-weight: 800;
+  color: #ff8c42;
+  font-size: 1.3rem;
+}
+
+.meal-review {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #a8a29e;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.meal-review:hover {
+  color: #f59e0b;
+}
+
+/* แถวรวมแคลอรี่ */
+.meal-total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f2f2f2;
+}
+
+.total-label {
+  font-weight: 500;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.total-value {
+  font-weight: 600;
+  color: #ea580c;
+  font-size: 1.3rem;
+  background-color: #ffedd5;
+  padding: 0.4rem 1rem;
+  border-radius: 12px;
+}
+
+/* ส่วนท้าย: ปุ่มแก้ไข/ลบ */
+.meal-list-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+  .meal-group {
+    flex-direction: column !important;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .meal-type {
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: unset;
+    gap: 8px;
+  }
+
+  .meal-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .meal-type-text {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .meal-items-list {
+    width: 100%;
+    padding-left: 4px;
+    gap: 10px;
+  }
+
+  .meal-card {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .meal-detail {
+    flex-direction: row;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .meal-image {
+    width: 66px !important;
+    height: 52px !important;
+    border-radius: 10px !important;
+  }
+
+  .meal-info h4 {
+    font-size: 0.85rem;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .meal-portion {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+  }
+
+  .meal-stats {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .meal-cal {
+    font-size: 0.9rem;
+  }
+
+  .meal-review {
+    font-size: 0.72rem;
+  }
+
+  .meal-total-row {
+    justify-content: center;
+  }
+}
+
+/* ย้ายปุ่มแก้ไข/ลบไปตรงกลาง */
+.meal-list-footer {
+  justify-content: center !important;
 }

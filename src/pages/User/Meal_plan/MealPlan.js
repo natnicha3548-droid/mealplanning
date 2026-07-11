@@ -20,6 +20,18 @@ const generateNext7Days = () => {
   return days;
 };
 
+const mealIcons = {
+  'เช้า': 'icon-breakfast',
+  'กลางวัน': 'icon-lunch',
+  'เย็น': 'icon-dinner'
+};
+
+const mealThemeColors = {
+  'เช้า': '#ff9800',
+  'กลางวัน': '#f44336',
+  'เย็น': '#9c27b0'
+};
+
 function MealPlan() {
   const navigate = useNavigate();
   const [mealPlan, setMealPlan] = useState([]);
@@ -35,7 +47,6 @@ function MealPlan() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [loginPromptReturnTo, setLoginPromptReturnTo] = useState("/meal-plan");
 
-  // goalData เริ่มต้น 0 ทุกค่า — จะถูก set ก็ต่อเมื่อมีข้อมูลจริง
   const [goalData, setGoalData] = useState({ tdee: 0, carb: 0, protein: 0, fat: 0, sugar: 0, sodium: 0 });
 
   const fetchMealPlanFromDB = async (date) => {
@@ -92,17 +103,23 @@ function MealPlan() {
     const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
     if (parsedUser?.user_id) {
-      // สมาชิก → ดึง goalData จาก DB
+      // MEMBER → โหลดจาก DB
       fetch(`http://localhost:5000/api/get-calculation/${parsedUser.user_id}`)
         .then(res => res.json())
         .then(data => {
           if (data) setGoalData({ tdee: data.tdee || 0, carb: data.carb || 0, protein: data.protein || 0, fat: data.fat || 0, sugar: data.sugar || 0, sodium: data.sodium || 0 });
         }).catch(err => console.error(err));
     } else {
-      // Guest → อ่านจาก sessionStorage เท่านั้น
-      // ถ้าปิดแท็บเปิดใหม่โดยยังไม่ได้กดเสร็จสิ้น → goalData = 0
-      const activeCalc = JSON.parse(sessionStorage.getItem("activeCalcResult"));
-      if (activeCalc) setGoalData({ tdee: activeCalc.tdee || 0, carb: activeCalc.carb || 0, protein: activeCalc.protein || 0, fat: activeCalc.fat || 0, sugar: activeCalc.sugar || 0, sodium: activeCalc.sodium || 0 });
+      // GUEST → โหลดจาก localStorage["calcResult"] ที่เดียว
+      const saved = JSON.parse(localStorage.getItem("calcResult"));
+      if (saved) setGoalData({
+        tdee: saved.tdee || 0,
+        carb: saved.carb || 0,
+        protein: saved.protein || 0,
+        fat: saved.fat || 0,
+        sugar: saved.sugar || 0,
+        sodium: saved.sodium || 0
+      });
     }
 
     fetchMealPlanFromDB(days[0].fullDate);
@@ -157,18 +174,9 @@ function MealPlan() {
   };
 
   const handleOpenReviewModal = (meal) => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-    if (!isLoggedIn) {
-      requireLogin("/meal-plan");
-      return;
-    }
-
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!isLoggedIn) { requireLogin("/meal-plan"); return; }
     setReviewTarget(meal);
-
     if (reviewedStatus[meal.food_id]) {
       setRating(reviewedStatus[meal.food_id].rating);
       setReviewText(reviewedStatus[meal.food_id].review_text);
@@ -303,49 +311,56 @@ function MealPlan() {
           ) : mealPlan.length === 0 ? (
             <div className="empty-msg">ยังไม่มีแผนการกินในวันนี้</div>
           ) : (
-            <div className="unified-plan-card">
-              <div className="card-top-header-actions">
-                <span className="card-header-date-title">เมนูอาหารของฉัน</span>
-                <div className="global-icon-actions-group">
-                  <button className={`global-icon-action-btn btn-fav ${isPlanFav ? "active" : ""}`} style={{ color: isPlanFav ? "red" : "#ddaa9d" }} title="บันทึกแผนนี้เป็นเซ็ตโปรด" onClick={handleSaveFavoritePlan}>
-                    <FaHeart />
-                  </button>
-                </div>
+            <div className="past-plan-card">
+              <div className="meal-list-header">
+                <h3>เมนูอาหารของฉัน</h3>
+                <button
+                  className={`heart-icon-btn ${isPlanFav ? "active" : ""}`}
+                  aria-label="Favorite"
+                  onClick={handleSaveFavoritePlan}
+                  style={{ backgroundColor: isPlanFav ? '#fff0f2' : 'transparent', border: 'none', padding: '8px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
+                >
+                  <FaHeart size={22} style={{ color: isPlanFav ? "red" : "#ddaa9d", transition: 'color 0.3s' }} />
+                </button>
               </div>
 
-              {Object.keys(groupedMeals).map((mealType) => (
-                <div className="meal-group" key={mealType}>
-                  {groupedMeals[mealType].map((meal, index) => (
-                    <div className="meal-row-item" key={index}>
-                      <div className="meal-item-left">
-                        {index === 0 ? (
-                          <div className={`meal-time-column type-${meal.meal_type}`}>
-                            <div className="meal-icon-circle">{renderIcon(meal.meal_type)}</div>
-                            <span className="meal-text-label">มื้อ{meal.meal_type}</span>
-                          </div>
-                        ) : (
-                          <div className="meal-time-column-placeholder"></div>
-                        )}
-                        <img src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`} alt={meal.food_name} className="row-img" />
-                        <div className="row-details">
-                          <h2>{meal.food_name}</h2>
-                          <span className="row-qty-tag">{meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}</span>
-                        </div>
-                      </div>
-                      <div className="meal-item-right">
-                        <div className="row-calories-display">{Number(meal.total_calories).toFixed(0)} kcal</div>
-                        <button className={`row-action-btn btn-star ${reviewedStatus[meal.food_id] ? "active" : ""}`} title="เขียนรีวิวเมนูนี้" onClick={() => handleOpenReviewModal(meal)}>
-                          <FaStar style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} />
-                          <span style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }}>รีวิว</span>
-                        </button>
-                      </div>
+              <div className="meal-items">
+                {Object.keys(groupedMeals).map((mealType) => (
+                  <div className="meal-group" key={mealType}>
+                    <div className="meal-type">
+                      <span className={`meal-icon ${mealIcons[mealType] || ''}`}>{renderIcon(mealType)}</span>
+                      <span className="meal-type-text" style={{ color: mealThemeColors[mealType] }}>มื้อ{mealType}</span>
                     </div>
-                  ))}
-                  <div className="meal-group-divider"></div>
-                </div>
-              ))}
+                    <div className="meal-items-list">
+                      {groupedMeals[mealType].map((meal, index) => (
+                        <div className="meal-card" key={index}>
+                          <div className="meal-detail">
+                            <img src={meal.image?.startsWith("http") ? meal.image : `http://localhost:5000${meal.image}`} alt={meal.food_name} className="meal-image" />
+                            <div className="meal-info">
+                              <h4>{meal.food_name}</h4>
+                              <span className="meal-portion">{meal.serving_size || `${Number(meal.quantity).toFixed(0)} จาน`}</span>
+                            </div>
+                          </div>
+                          <div className="meal-stats">
+                            <span className="meal-cal">{Number(meal.total_calories).toFixed(0)} kcal</span>
+                            <span className="meal-review" onClick={() => handleOpenReviewModal(meal)} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d", fontWeight: reviewedStatus[meal.food_id] ? "500" : "400", cursor: "pointer", transition: "color 0.2s" }}>
+                              <FaStar size={16} style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} />
+                              {reviewedStatus[meal.food_id] ? "แก้ไขรีวิว" : "รีวิว"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-              <div className="card-bottom-header-actions">
+              <div className="meal-total-row">
+                <span className="total-label">รวมทั้งหมด</span>
+                <span className="total-value">{totalCalories.toFixed(0)} kcal</span>
+              </div>
+
+              <div className="meal-list-footer">
                 <div className="global-icon-actions-group">
                   <button className="global-icon-action-btn btn-edit" title="แก้ไขแผนอาหารของวันนี้" onClick={handleEditPlan}><FaPen /></button>
                   <button className="global-icon-action-btn btn-delete" title="ลบแผนอาหารของวันนี้ทั้งหมด" onClick={() => handleDeletePlan(mealPlan[0].plan_id)}><FaTrash /></button>
@@ -403,7 +418,7 @@ function MealPlan() {
             </div>
           </div>
         </div>,
-        document.body // 👈 คำสั่งนี้จะดัน Modal ออกไปที่นอกสุดของหน้าจอ
+        document.body
       )}
     </div>
   );

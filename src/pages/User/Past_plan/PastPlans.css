@@ -303,39 +303,47 @@ body {
 }
 
 .meal-group {
-  margin-bottom: 1.5rem;
-  border-bottom: 1px dotted #fe57ad;
-  padding-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 25px;
+  padding: 25px 0;
+  border-bottom: 2px dotted #f4aab9;
 }
 
-/* รวม 2 บล็อกที่ซ้ำกัน → เอา border-bottom: none !important ของบล็อกแรก
-   + transition และ padding-bottom ที่สมบูรณ์กว่าของบล็อกที่สอง */
-.meal-card {
-  display: grid;
-  grid-template-columns: 80px 1fr 100px;
-  align-items: center;
-  gap: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: none !important;
-  transition: transform 0.2s ease;
-}
-
-.meal-card:hover {
-  transform: translateX(5px);
-}
-
-.meal-card:last-child {
+.meal-group:last-child {
   border-bottom: none;
-  padding-bottom: 0;
 }
 
-/* รวม 2 บล็อกที่ซ้ำกัน → เพิ่ม justify-content: center จากบล็อกแรก */
+/* กล่องไอคอน + ชื่อมื้ออาหาร แสดงครั้งเดียวต่อกลุ่ม (เหมือนหน้า HomePage) */
 .meal-type {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.meal-items-list {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.meal-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  transition: transform 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: translateX(5px);
 }
 
 .meal-list-header {
@@ -370,56 +378,56 @@ body {
 .meal-items {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
 .meal-icon {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.5rem;
 }
 
 .icon-breakfast {
-  background-color: #fde8cda8;
-  color: #f97316;
+  background-color: #fff4ea;
+  color: #ff9800;
 }
 
 .icon-lunch {
-  background-color: #ffe0d9c9;
-  color: #bc2121;
+  background-color: #ffebee;
+  color: #f44336;
 }
 
 .icon-dinner {
-  background-color: #dad4f790;
-  color: #8b5cf6;
+  background-color: #f3e5f5;
+  color: #9c27b0;
 }
 
 .meal-type-text {
-  font-size: 0.85rem;
-  color: #b85a18;
+  font-size: 0.95rem;
+  font-weight: 600;
   letter-spacing: -0.2px;
 }
 
 .meal-detail {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 20px;
 }
 
 .meal-image {
-  width: 150px !important;
-  height: 100px !important;
+  width: 140px !important;
+  height: 90px !important;
   flex-shrink: 0;
-  border-radius: 20px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
 .meal-info h4 {
-  margin: 0 0 0.4rem 0;
-  font-size: 1.15rem;
+  margin: 0 0 8px;
+  font-size: 1.2rem;
   font-weight: 500;
   color: #333;
 }
@@ -428,8 +436,8 @@ body {
   font-size: 0.85rem;
   color: #663823;
   background-color: #f7ece4;
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
+  padding: 4px 12px;
+  border-radius: 8px;
 }
 
 .meal-stats {
@@ -440,9 +448,9 @@ body {
 }
 
 .meal-cal {
-  font-weight: 600;
-  color: #f97316;
-  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ff8c42;
+  font-size: 1.3rem;
   background-color: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -561,8 +569,10 @@ body {
   background: #fffcf9cc;
   border-radius: 20px;
   position: relative;
-  min-height: 140px;/* สูงขึ้น */
-  padding: 35px 20px 45px;/* บน ซ้ายขวา ล่าง */
+  min-height: 140px;
+  /* สูงขึ้น */
+  padding: 35px 20px 45px;
+  /* บน ซ้ายขวา ล่าง */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.8);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -696,8 +706,10 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
-  justify-content: center; /* จัดกลางแนวนอน */
-  align-items: center;     /* จัดกลางแนวตั้ง */
+  justify-content: center;
+  /* จัดกลางแนวนอน */
+  align-items: center;
+  /* จัดกลางแนวตั้ง */
   z-index: 9999;
 }
 
@@ -830,17 +842,86 @@ body {
     font-size: 0.78rem;
   }
 
+  .meal-group {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .meal-type {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: unset;
+    gap: 8px;
+  }
+
+  .meal-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .meal-type-text {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .meal-items-list {
+    width: 100%;
+    padding-left: 4px;
+    gap: 10px;
+  }
+
   .meal-card {
-    grid-template-columns: 60px 1fr 90px;
+    width: 100%;
+    justify-content: space-between;
     gap: 10px;
   }
 
   .meal-detail {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .meal-image {
+    width: 66px !important;
+    height: 52px !important;
+    border-radius: 10px !important;
+  }
+
+  .meal-info h4 {
+    font-size: 0.85rem;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .meal-portion {
+    font-size: 0.7rem;
+    padding: 2px 7px;
   }
 
   .meal-stats {
+    flex-direction: row;
     align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .meal-cal {
+    font-size: 0.9rem;
+  }
+
+  .meal-review {
+    font-size: 0.72rem;
   }
 
   .meal-total-row {

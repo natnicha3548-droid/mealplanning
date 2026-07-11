@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  Sun, CloudSun, Moon, RefreshCw, 
+import {
+  Sun, CloudSun, Moon, RefreshCw,
   History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw,
 } from 'lucide-react';
-import { FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar,
-  FaSnowflake, FaMountain, FaGift, FaTree, FaSeedling, 
-  FaUmbrellaBeach, FaLeaf, FaCloudRain, FaUmbrella, 
-  FaWater, FaWind, FaGhost, FaCampground, FaFire, FaSnowman } from "react-icons/fa";
+import {
+  FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar,
+  FaSnowflake, FaMountain, FaGift, FaTree, FaSeedling,
+  FaUmbrellaBeach, FaLeaf, FaCloudRain, FaUmbrella,
+  FaWater, FaWind, FaGhost, FaCampground, FaFire, FaSnowman
+} from "react-icons/fa";
 import './PastPlans.css';
 
 import { LuCalendarClock } from "react-icons/lu";
@@ -19,12 +21,18 @@ const mealIcons = {
   'มื้อเย็น': 'icon-dinner'
 };
 
+const mealThemeColors = {
+  'มื้อเช้า': '#ff9800',
+  'มื้อกลางวัน': '#f44336',
+  'มื้อเย็น': '#9c27b0'
+};
+
 const PastPlans = () => {
   const navigate = useNavigate();
   // ================= สร้างฟังก์ชันคำนวณวันที่ =================
   const today = new Date();
   const currentYear = today.getFullYear();
-  
+
   const thaiDayNames = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
   const thaiMonthShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
@@ -45,8 +53,8 @@ const PastPlans = () => {
 
   const generateCurrentWeek = () => {
     const curr = new Date();
-    const day = curr.getDay(); 
-    const diff = curr.getDate() - day + (day === 0 ? -6 : 1); 
+    const day = curr.getDay();
+    const diff = curr.getDate() - day + (day === 0 ? -6 : 1);
     const monday = new Date(curr.setDate(diff));
 
     const week = [];
@@ -83,17 +91,17 @@ const PastPlans = () => {
   // ================= State Management =================
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [isYearOpen, setIsYearOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(sessionStorage.getItem("past_activeTab") || 'เมื่อวาน'); 
+  const [activeTab, setActiveTab] = useState(sessionStorage.getItem("past_activeTab") || 'เมื่อวาน');
   const [selectedDate, setSelectedDate] = useState(sessionStorage.getItem("past_selectedDate") || yesterdayStr);
   const [viewingMonth, setViewingMonth] = useState(sessionStorage.getItem("past_viewingMonth") ? Number(sessionStorage.getItem("past_viewingMonth")) : null);
   const [mealData, setMealData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // เพิ่ม State สำหรับจัดการรายการโปรด
-  const [currentPlanId, setCurrentPlanId] = useState(null); 
+  const [currentPlanId, setCurrentPlanId] = useState(null);
   const [isPlanFavorite, setIsPlanFavorite] = useState(false);
   const [reviewedStatus, setReviewedStatus] = useState({});
-  
+
 
   // รีวิว
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,7 +139,7 @@ const PastPlans = () => {
       if (response.ok && data.length > 0) {
         const planId = data[0].plan_id;
         setCurrentPlanId(planId);
-        
+
         // 1. เช็กสถานะหัวใจ (Favorite)
         fetch(`http://localhost:5000/api/favorite-status?user_id=${userId}&plan_id=${planId}`)
           .then(res => res.json())
@@ -157,13 +165,13 @@ const PastPlans = () => {
         const formattedData = data.map(item => {
           let icon, typeText;
           if (item.meal_type === 'เช้า') {
-            icon = <FaSun size={26} style={{ color: "#FF9F43" }} />;
+            icon = <FaSun size={26} style={{ color: mealThemeColors['มื้อเช้า'] }} />;
             typeText = 'มื้อเช้า';
           } else if (item.meal_type === 'กลางวัน') {
-            icon = <FaCloudSun size={26} style={{ color: "#fb4949" }} />;
+            icon = <FaCloudSun size={26} style={{ color: mealThemeColors['มื้อกลางวัน'] }} />;
             typeText = 'มื้อกลางวัน';
           } else {
-            icon = <FaMoon size={24} style={{ color: "#9074ff" }} />;
+            icon = <FaMoon size={24} style={{ color: mealThemeColors['มื้อเย็น'] }} />;
             typeText = 'มื้อเย็น';
           }
           return {
@@ -191,7 +199,7 @@ const PastPlans = () => {
       setIsLoading(false);
     }
   };
-  
+
   // 🌟 เพิ่ม useEffect ชุดนี้เพื่อเซฟค่าตัวเลือกเก็บไว้ตอนย้ายหน้า
   useEffect(() => {
     sessionStorage.setItem("past_activeTab", activeTab);
@@ -245,29 +253,29 @@ const PastPlans = () => {
 
     setIsLoading(true);
     try {
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        const userId = storedUser ? storedUser.user_id : 1;
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const userId = storedUser ? storedUser.user_id : 1;
 
-        const response = await fetch('http://localhost:5000/api/restore-plan', {
+      const response = await fetch('http://localhost:5000/api/restore-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            userId,
-            sourceDate: selectedDate, 
-            targetDate: new Date().toISOString().split('T')[0] 
+          userId,
+          sourceDate: selectedDate,
+          targetDate: new Date().toISOString().split('T')[0]
         })
-        });
+      });
 
-        if (response.ok) {
+      if (response.ok) {
         alert("นำแผนกลับมาใช้เรียบร้อยแล้ว!");
-        window.location.href = '/meal-plan'; 
-        } else {
+        window.location.href = '/meal-plan';
+      } else {
         alert("เกิดข้อผิดพลาดในการคัดลอกแผน");
-        }
+      }
     } catch (error) {
-        console.error("Error:", error);
+      console.error("Error:", error);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -275,21 +283,21 @@ const PastPlans = () => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (tab === 'เมื่อวาน') {
-      setSelectedYear(currentYear); 
-      setViewingMonth(null); 
-      setSelectedDate(yesterdayStr); 
+      setSelectedYear(currentYear);
+      setViewingMonth(null);
+      setSelectedDate(yesterdayStr);
       fetchMeals(yesterdayStr);
     } else if (tab === 'สัปดาห์') {
-      setSelectedYear(currentYear); 
-      setViewingMonth(null); 
-      setSelectedDate(todayFullDate); 
+      setSelectedYear(currentYear);
+      setViewingMonth(null);
+      setSelectedDate(todayFullDate);
     } else if (tab === 'เดือน') {
-      setViewingMonth(null); 
+      setViewingMonth(null);
     }
   };
 
   const handleMonthClick = (index) => {
-    setViewingMonth(index); 
+    setViewingMonth(index);
     const firstDayOfMonth = `${selectedYear}-${String(index + 1).padStart(2, '0')}-01`;
     setSelectedDate(firstDayOfMonth);
   };
@@ -298,7 +306,7 @@ const PastPlans = () => {
 
   const getListTitle = () => {
     if (activeTab === 'เมื่อวาน') return `เมนูอาหารของเมื่อวาน (${yesterdayShortDate})`;
-    
+
     let displayDate = "";
     if (activeTab === 'สัปดาห์') {
       displayDate = weekDays.find(d => d.fullDate === selectedDate)?.date || "";
@@ -306,14 +314,14 @@ const PastPlans = () => {
       const days = generateDaysInMonth(selectedYear, viewingMonth);
       displayDate = days.find(d => d.fullDate === selectedDate)?.date || "";
     }
-    
+
     return displayDate ? `เมนูอาหารวันที่ ${displayDate} ${selectedYear}` : 'เมนูอาหารของฉัน';
   };
 
   // จัดกลุ่ม mealData ตาม type
   const groupedMeals = mealData.reduce((acc, meal) => {
     if (!acc[meal.type]) {
-        acc[meal.type] = [];
+      acc[meal.type] = [];
     }
     acc[meal.type].push(meal);
     return acc;
@@ -330,9 +338,9 @@ const PastPlans = () => {
   const handleSaveReview = async () => {
     const userId = JSON.parse(localStorage.getItem('user'))?.user_id || 1;
     await fetch('http://localhost:5000/api/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, food_id: activeFood, rating, review_text: reviewText })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, food_id: activeFood, rating, review_text: reviewText })
     });
     setIsModalOpen(false);
     fetchMeals(selectedDate);
@@ -341,132 +349,129 @@ const PastPlans = () => {
   // ================= Render Functions =================
   const renderMealList = () => (
     <div className="past-plan-card">
-        <div className="meal-list-container">
-        
+      <div className="meal-list-container">
+
         {/* ส่วนหัว (ปุ่มหัวใจรายการโปรด) */}
         <div className="meal-list-header">
-            <h3>{getListTitle()}</h3>
-            <button 
-              className={`heart-icon-btn ${isPlanFavorite ? 'active' : ''}`} 
-              aria-label="Favorite"
-              onClick={handleToggleFavorite}
-              style={{
-                backgroundColor: isPlanFavorite ? '#fff0f2' : 'transparent',
-                border: 'none',
-                padding: '8px',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              {/* 🌟 ใช้ isPlanFavorite เพื่อเปลี่ยนสี */}
-              <FaHeart size={22} style={{ color: isPlanFavorite ? "red" : "#ddaa9d", transition: 'color 0.3s' }} />
-            </button>
+          <h3>{getListTitle()}</h3>
+          <button
+            className={`heart-icon-btn ${isPlanFavorite ? 'active' : ''}`}
+            aria-label="Favorite"
+            onClick={handleToggleFavorite}
+            style={{
+              backgroundColor: isPlanFavorite ? '#fff0f2' : 'transparent',
+              border: 'none',
+              padding: '8px',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            {/* 🌟 ใช้ isPlanFavorite เพื่อเปลี่ยนสี */}
+            <FaHeart size={22} style={{ color: isPlanFavorite ? "red" : "#ddaa9d", transition: 'color 0.3s' }} />
+          </button>
         </div>
-        
+
         {isLoading ? (
-            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#ff9800' }}>
+          <div style={{ textAlign: 'center', padding: '3rem 0', color: '#ff9800' }}>
             <RefreshCw className="animate-spin" size={24} style={{ margin: '0 auto', animation: 'spin 1s linear infinite' }} />
             <p style={{ marginTop: '10px' }}>กำลังโหลดเมนูอาหาร...</p>
-            </div>
+          </div>
         ) : mealData.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#888' }}>
+          <div style={{ textAlign: 'center', padding: '3rem 0', color: '#888' }}>
             <p>ไม่มีประวัติอาหารในวันนี้</p>
-            </div>
+          </div>
         ) : (
-            <div className="meal-items">
+          <div className="meal-items">
             {Object.entries(groupedMeals).map(([type, meals]) => (
-            <div className="meal-group" key={type}>
-                {meals.map((meal, index) => (
-                <div className="meal-card" key={meal.id}>
-                    <div className="meal-type">
-                    {index === 0 && (
-                        <>
-                        {/* ตรงนี้คือจุดที่แก้ไขครับ */}
-                        <span className={`meal-icon ${mealIcons[meal.type] || ''}`}>
-                            {meal.icon}
-                        </span>
-                        <span className="meal-type-text">{meal.type}</span>
-                        </>
-                    )}
-                    </div>
-                    
-                    <div className="meal-detail">
-                    <img src={meal.img} alt={meal.name} className="meal-image" />
-                    <div className="meal-info">
-                        <h4>{meal.name}</h4>
-                        <span className="meal-portion">{meal.portion}</span>
-                    </div>
-                    </div>
-                    
-                    
-                    <div className="meal-stats">
-                      <span className="meal-cal">{meal.cal} kcal</span>
-                      <span 
-                        className="meal-review"
-                        onClick={() => openReviewModal(meal.food_id)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d",
-                          fontWeight: reviewedStatus[meal.food_id] ? "500" : "400",
-                          cursor: "pointer",
-                          transition: "color 0.2s"
-                        }}
-                      >
-                        <FaStar size={16} style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} /> 
-                        {reviewedStatus[meal.food_id] ? "แก้ไขรีวิว" : "รีวิว"}
-                      </span>
-                    </div>
+              <div className="meal-group" key={type}>
+                {/* หัวข้อมื้ออาหาร แสดงครั้งเดียวต่อกลุ่ม เหมือนหน้า HomePage บนมือถือ */}
+                <div className="meal-type">
+                  <span className={`meal-icon ${mealIcons[type] || ''}`}>
+                    {meals[0].icon}
+                  </span>
+                  <span className="meal-type-text" style={{ color: mealThemeColors[type] }}>{type}</span>
                 </div>
-                ))}
-            </div>
+
+                <div className="meal-items-list">
+                  {meals.map((meal) => (
+                    <div className="meal-card" key={meal.id}>
+                      <div className="meal-detail">
+                        <img src={meal.img} alt={meal.name} className="meal-image" />
+                        <div className="meal-info">
+                          <h4>{meal.name}</h4>
+                          <span className="meal-portion">{meal.portion}</span>
+                        </div>
+                      </div>
+
+                      <div className="meal-stats">
+                        <span className="meal-cal">{meal.cal} kcal</span>
+                        <span
+                          className="meal-review"
+                          onClick={() => openReviewModal(meal.food_id)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d",
+                            fontWeight: reviewedStatus[meal.food_id] ? "500" : "400",
+                            cursor: "pointer",
+                            transition: "color 0.2s"
+                          }}
+                        >
+                          <FaStar size={16} style={{ color: reviewedStatus[meal.food_id] ? "#FDCB6E" : "#ddaa9d" }} />
+                          {reviewedStatus[meal.food_id] ? "แก้ไขรีวิว" : "รีวิว"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
-            </div>
+          </div>
         )}
 
         {mealData.length > 0 && (
-            <div className="meal-total-row">
+          <div className="meal-total-row">
             <span className="total-label">รวมทั้งหมด</span>
             <span className="total-value">{totalCalories} kcal</span>
-            </div>
+          </div>
         )}
 
         <div className="meal-list-footer">
-            <button 
-              className="nutrition-btn"
-              onClick={() => navigate("/report", { 
-                state: { 
-                  pastDate: selectedDate, 
-                  totalCalories: totalCalories 
-                } 
-              })} 
-            >ดูรายงานโภชนาการ</button>
-            <button 
-                className="restore-plan-btn" 
-                aria-label="นำแผนกลับมาใช้" 
-                title="คลิกเพื่อนำแผนเดิมกลับมาใช้ใหม่" 
-                onClick={handleRestorePlan}
-            >
-                <RotateCcw size={20} />
-            </button>
+          <button
+            className="nutrition-btn"
+            onClick={() => navigate("/report", {
+              state: {
+                pastDate: selectedDate,
+                totalCalories: totalCalories
+              }
+            })}
+          >ดูรายงานโภชนาการ</button>
+          <button
+            className="restore-plan-btn"
+            aria-label="นำแผนกลับมาใช้"
+            title="คลิกเพื่อนำแผนเดิมกลับมาใช้ใหม่"
+            onClick={handleRestorePlan}
+          >
+            <RotateCcw size={20} />
+          </button>
         </div>
-        </div>
+      </div>
     </div>
   );
 
   const renderMonthGrid = () => (
     <div className="month-grid-pastel">
       {monthsData.map((month, index) => (
-        <div 
-          className="calendar-card" 
+        <div
+          className="calendar-card"
           key={month.id}
           style={{ '--theme-light': month.light, '--theme-main': month.main }}
-          onClick={() => handleMonthClick(index)} 
+          onClick={() => handleMonthClick(index)}
         >
           <div className="calendar-rings">
             <div className="ring"></div>
@@ -496,23 +501,23 @@ const PastPlans = () => {
         <button className="back-btn" onClick={() => setViewingMonth(null)}>
           <ChevronLeft size={20} /> กลับไปเลือกเดือน
         </button>
-        
+
         <h3 className="month-detail-title" style={{ color: monthInfo.main }}>
           {monthInfo.icon} ประจำเดือน{monthInfo.name} {selectedYear}
         </h3>
-        
+
         <div className="week-selector">
           {daysInMonth.map((day) => {
             const isToday = day.fullDate === todayFullDate;
             return (
-              <div 
-                key={day.fullDate} 
+              <div
+                key={day.fullDate}
                 className={`day-card ${selectedDate === day.fullDate ? 'active' : ''}`}
                 onClick={() => setSelectedDate(day.fullDate)}
                 style={{ minWidth: '70px' }}
               >
                 <span className="day-name">
-                  {day.name} {isToday && <span style={{fontSize: '0.8rem', color: '#f97316'}}>•</span>}
+                  {day.name} {isToday && <span style={{ fontSize: '0.8rem', color: '#f97316' }}>•</span>}
                 </span>
                 <span className="day-date">{day.date}</span>
               </div>
@@ -535,17 +540,17 @@ const PastPlans = () => {
             <h3>
               {reviewedStatus[activeFood] ? "แก้ไขรีวิวเมนู" : "เขียนรีวิวให้เมนู"} "{mealData.find(m => m.food_id === activeFood)?.name}"
             </h3>
-            
-            <div style={{display:'flex', justifyContent:'center', margin:'10px 0'}}>
-              {[1,2,3,4,5].map(s => (
-                <FaStar key={s} color={s <= rating ? "#FDCB6E" : "#ddd"} 
-                  onClick={() => setRating(s)} size={35} style={{cursor:'pointer', margin:'0 2px'}}/>
+
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
+              {[1, 2, 3, 4, 5].map(s => (
+                <FaStar key={s} color={s <= rating ? "#FDCB6E" : "#ddd"}
+                  onClick={() => setRating(s)} size={35} style={{ cursor: 'pointer', margin: '0 2px' }} />
               ))}
             </div>
-            
-            <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} 
-                      placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." />
-                      
+
+            <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+              placeholder="เมนูนี้รสชาติเป็นอย่างไรบ้าง?..." />
+
             <div className="modal-actions">
               <button onClick={() => setIsModalOpen(false)}>ยกเลิก</button>
               <button onClick={handleSaveReview}>
@@ -562,12 +567,12 @@ const PastPlans = () => {
           <div className="title-row">
             <div className="past-icon"><LuCalendarClock /></div>
             <h1>ประวัติ</h1>
-            
-            <div 
-              className="year-selector-wrapper" 
-              onMouseLeave={() => setIsYearOpen(false)} 
+
+            <div
+              className="year-selector-wrapper"
+              onMouseLeave={() => setIsYearOpen(false)}
             >
-              <div 
+              <div
                 className={`year-selector-display ${isYearOpen ? 'open' : ''}`}
                 onClick={() => setIsYearOpen(!isYearOpen)}
               >
@@ -580,14 +585,14 @@ const PastPlans = () => {
                   {[...Array(5)].map((_, i) => {
                     const y = currentYear - i;
                     return (
-                      <div 
-                        key={y} 
+                      <div
+                        key={y}
                         className={`year-dropdown-item ${selectedYear === y ? 'active' : ''}`}
                         onClick={() => {
                           setSelectedYear(y);
                           setActiveTab('เดือน');
                           setViewingMonth(null);
-                          setIsYearOpen(false); 
+                          setIsYearOpen(false);
                         }}
                       >
                         {y}
@@ -600,22 +605,22 @@ const PastPlans = () => {
           </div>
           <p className="subtitle">ประวัติการวางแผนอาหาร</p>
         </div>
-        
+
         <div className="header-right">
           <div className="pill-tab-menu">
-            <button 
+            <button
               className={`pill-tab-btn ${activeTab === 'เมื่อวาน' ? 'active' : ''}`}
               onClick={() => handleTabClick('เมื่อวาน')}
             >
               <Calendar size={18} /> เมื่อวาน ({yesterdayShortDate})
             </button>
-            <button 
+            <button
               className={`pill-tab-btn ${activeTab === 'สัปดาห์' ? 'active' : ''}`}
               onClick={() => handleTabClick('สัปดาห์')}
             >
               <Bookmark size={18} /> สัปดาห์
             </button>
-            <button 
+            <button
               className={`pill-tab-btn ${activeTab === 'เดือน' ? 'active' : ''}`}
               onClick={() => handleTabClick('เดือน')}
             >
@@ -630,13 +635,13 @@ const PastPlans = () => {
           {weekDays.map((day) => {
             const isToday = day.fullDate === todayFullDate;
             return (
-              <div 
-                key={day.fullDate} 
+              <div
+                key={day.fullDate}
                 className={`day-card ${selectedDate === day.fullDate ? 'active' : ''}`}
                 onClick={() => setSelectedDate(day.fullDate)}
               >
                 <span className="day-name">
-                  {day.name} {isToday && <span style={{fontSize: '0.8rem', color: '#f97316'}}>•</span>}
+                  {day.name} {isToday && <span style={{ fontSize: '0.8rem', color: '#f97316' }}>•</span>}
                 </span>
                 <span className="day-date">{day.date}</span>
               </div>
