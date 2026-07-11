@@ -472,77 +472,32 @@ app.post('/api/save-calculation', (req, res) => {
         sodium
     } = req.body;
 
-    // เช็กข้อมูลสำคัญ
     if (!user_id || !tdee) {
-
-        return res.status(400).json({
-            message: "ข้อมูลไม่ครบ"
-        });
-
+        return res.status(400).json({ message: "ข้อมูลไม่ครบ" });
     }
 
-    // SQL บันทึกข้อมูลคำนวณ
     const sql = `
         INSERT INTO user_calculations
         (
-            user_id,
-            weight_snapshot,
-            height_snapshot,
-            age_snapshot,
-            gender_snapshot,
-            activity_snapshot,
-            disease_snapshot,
-            bmi,
-            bmr,
-            tdee,
-            carb,
-            protein,
-            fat,
-            sugar,
-            sodium
+            user_id, weight, height, age, gender, activity, disease,
+            bmi, bmr, tdee, carb, protein, fat, sugar, sodium
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
-
         sql,
-
         [
-            user_id,
-            weight,
-            height,
-            age,
-            gender,
-            activity,
-            bmi,
-            bmr,
-            tdee,
-            carb,
-            protein,
-            fat,
-            sugar,
-            sodium
+            user_id, weight, height, age, gender, activity, disease_snapshot,
+            bmi, bmr, tdee, carb, protein, fat, sugar, sodium
         ],
-
         (err) => {
-
             if (err) {
-
                 console.error(err);
-
-                return res.status(500).json({
-                    message: "save error"
-                });
-
+                return res.status(500).json({ message: "save error" });
             }
-
-            res.json({
-                message: "saved"
-            });
-
+            res.json({ message: "saved" });
         }
-
     );
 
 });
@@ -2070,7 +2025,7 @@ app.get('/api/admin/dashboard-stats', async (req, res) => {
                 .map((item, index) => {
                     // คำนวณเปอร์เซ็นต์
                     const supportPct = Math.round((item.support / mealTransactions.length) * 100);
-                    
+
                     // ✨ ลอจิกจำลองลูกศร (Trend)
                     let currentTrend = 'neutral';
                     if (supportPct >= 30) {

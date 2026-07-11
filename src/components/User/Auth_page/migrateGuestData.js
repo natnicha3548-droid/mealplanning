@@ -41,7 +41,8 @@ export const migrateGuestData = async (userId) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 user_id: userId,
-                ...calcResult
+                ...calcResult,
+                disease_snapshot: JSON.stringify(calcResult.diseases || [])
             })
         });
 
