@@ -170,13 +170,21 @@ function Calc() {
 
         const tdee = bmr * activity;
 
-        let carbPercent = 55, proteinPercent = 20, fatPercent = 25, sugar = 25, sodium = 2500;
+        // ค่าเริ่มต้น (คนทั่วไป ไม่มีโรคประจำตัว) อ้างอิงตามเอกสารบทที่ 2:
+        // - สัดส่วนสารอาหารหลักอยู่ในช่วง AMDR (ตารางที่ 2-5)
+        // - น้ำตาลไม่เกิน 20 ก./วัน เป็นค่าคงที่ ไม่ผูกกับพลังงาน (หัวข้อ 2.3.3.1)
+        // - โซเดียมไม่เกิน 2,500 มก./วัน เป็นค่าคงที่ (หัวข้อ 2.3.3.1)
+        let carbPercent = 55, proteinPercent = 20, fatPercent = 25, sodium = 2500;
+        let sugarPercent = null; // ใช้เมื่อน้ำตาลผูกกับ % ของพลังงาน (เฉพาะเบาหวาน)
+        let sugarGramFixed = 20; // ค่าคงที่กรัม/วัน ใช้เมื่อไม่มีเกณฑ์เฉพาะโรค
 
         if (form.diseases.includes("diabetes")) {
-            carbPercent = 45; proteinPercent = 20; fatPercent = 35; sugar = 20;
+            // ตารางที่ 2-6: คาร์บ 45-60% ของพลังงาน, น้ำตาลไม่เกิน 10% ของพลังงานทั้งหมดต่อวัน
+            carbPercent = 45; proteinPercent = 20; fatPercent = 35; sugarPercent = 10;
         }
         if (form.diseases.includes("heart")) {
-            fatPercent = 20; sodium = 2000;
+            // ตารางที่ 2-7: ไขมันรวมไม่เกิน 35% ของพลังงาน, โซเดียมไม่เกิน 2,000 มก./วัน
+            fatPercent = 35; sodium = 2000;
         }
 
         const carbKcal = (carbPercent * tdee) / 100;
@@ -197,6 +205,12 @@ function Calc() {
         const carbGram = carbKcal / 4;
         const fatGram = fatKcal / 9;
 
+        // น้ำตาล: เบาหวานคำนวณจาก % ของ TDEE (มีหน่วยพลังงานเหมือนคาร์บ จึงหาร 4)
+        // กรณีอื่นใช้ค่าคงที่ เพราะเอกสารไม่ได้ระบุเกณฑ์น้ำตาลเฉพาะโรคหัวใจ/ไต
+        const sugarGram = sugarPercent !== null
+            ? ((sugarPercent * tdee) / 100) / 4
+            : sugarGramFixed;
+
         const finalResult = {
             ...form,
             bmi: Number(bmi.toFixed(2)),
@@ -205,7 +219,7 @@ function Calc() {
             carb: Math.round(carbGram),
             protein: Math.round(proteinGram),
             fat: Math.round(fatGram),
-            sugar: Math.round(sugar),
+            sugar: Math.round(sugarGram),
             sodium
         };
 
