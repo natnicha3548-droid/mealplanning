@@ -500,7 +500,7 @@ app.post('/api/save-calculation', (req, res) => {
         }
     );
 
-});
+}); 
 
 // ================= GET MEALS API =================
 app.get('/api/meals', (req, res) => {

@@ -410,8 +410,8 @@
 
 .favorite-plan-slide {
     transform: rotateX(180deg);
-    flex: 0 0 90%;
-    min-width: 90%;
+    flex: 0 0 100%;
+    min-width: 100%;
     scroll-snap-align: center;
     margin-bottom: 0 !important;
     display: flex;
