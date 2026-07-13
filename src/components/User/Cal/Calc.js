@@ -170,21 +170,21 @@ function Calc() {
 
         const tdee = bmr * activity;
 
-        // ค่าเริ่มต้น (คนทั่วไป ไม่มีโรคประจำตัว) อ้างอิงตามเอกสารบทที่ 2:
-        // - สัดส่วนสารอาหารหลักอยู่ในช่วง AMDR (ตารางที่ 2-5)
-        // - น้ำตาลไม่เกิน 20 ก./วัน เป็นค่าคงที่ ไม่ผูกกับพลังงาน (หัวข้อ 2.3.3.1)
-        // - โซเดียมไม่เกิน 2,500 มก./วัน เป็นค่าคงที่ (หัวข้อ 2.3.3.1)
-        let carbPercent = 55, proteinPercent = 20, fatPercent = 25, sodium = 2500;
-        let sugarPercent = null; // ใช้เมื่อน้ำตาลผูกกับ % ของพลังงาน (เฉพาะเบาหวาน)
-        let sugarGramFixed = 20; // ค่าคงที่กรัม/วัน ใช้เมื่อไม่มีเกณฑ์เฉพาะโรค
+        let carbPercent = 55, proteinPercent = 20, fatPercent = 25, sugar = 25, sodium = 2500;
 
+        // แต่ละโรคใช้ Math.min เพื่อ "เข้มงวดที่สุด" เสมอ ไม่ว่าจะเลือกโรคไหนก่อน-หลัง
+        // (เดิมใช้ overwrite ตรง ๆ ทำให้ผลลัพธ์ขึ้นอยู่กับลำดับโค้ด ไม่ใช่ความเข้มงวดจริง)
         if (form.diseases.includes("diabetes")) {
-            // ตารางที่ 2-6: คาร์บ 45-60% ของพลังงาน, น้ำตาลไม่เกิน 10% ของพลังงานทั้งหมดต่อวัน
-            carbPercent = 45; proteinPercent = 20; fatPercent = 35; sugarPercent = 10;
+            carbPercent = 45;
+            sugar = Math.min(sugar, 20);
+            fatPercent = Math.min(fatPercent, 35);
         }
         if (form.diseases.includes("heart")) {
-            // ตารางที่ 2-7: ไขมันรวมไม่เกิน 35% ของพลังงาน, โซเดียมไม่เกิน 2,000 มก./วัน
-            fatPercent = 35; sodium = 2000;
+            fatPercent = Math.min(fatPercent, 20);
+            sodium = Math.min(sodium, 2000);
+        }
+        if (form.diseases.includes("kidney")) {
+            sodium = Math.min(sodium, 2000);
         }
 
         const carbKcal = (carbPercent * tdee) / 100;
@@ -197,19 +197,13 @@ function Calc() {
             const proteinMax = weight * 0.8;
             proteinGram = (proteinMin + proteinMax) / 2;
             proteinKcal = proteinGram * 4;
-            sodium = 2000;
+            // sodium ถูกจำกัดไว้แล้วด้านบน (Math.min) จึงไม่ต้อง set ซ้ำตรงนี้
         } else {
             proteinGram = proteinKcal / 4;
         }
 
         const carbGram = carbKcal / 4;
         const fatGram = fatKcal / 9;
-
-        // น้ำตาล: เบาหวานคำนวณจาก % ของ TDEE (มีหน่วยพลังงานเหมือนคาร์บ จึงหาร 4)
-        // กรณีอื่นใช้ค่าคงที่ เพราะเอกสารไม่ได้ระบุเกณฑ์น้ำตาลเฉพาะโรคหัวใจ/ไต
-        const sugarGram = sugarPercent !== null
-            ? ((sugarPercent * tdee) / 100) / 4
-            : sugarGramFixed;
 
         const finalResult = {
             ...form,
@@ -219,7 +213,7 @@ function Calc() {
             carb: Math.round(carbGram),
             protein: Math.round(proteinGram),
             fat: Math.round(fatGram),
-            sugar: Math.round(sugarGram),
+            sugar: Math.round(sugar),
             sodium
         };
 
@@ -410,3 +404,4 @@ function Calc() {
 }
 
 export default Calc;
+
