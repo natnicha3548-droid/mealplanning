@@ -84,3 +84,68 @@ body {
   }
 
 }
+/* รูปแบบปกติสำหรับ Desktop (ปรับตามที่คุณมีอยู่แล้วได้เลย) */
+.admin-sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  /* ใส่สไตล์อื่นๆ ของคุณต่อ */
+}
+
+/* ซ่อนปุ่ม Toggle และ Overlay บนหน้าจอ Desktop */
+.mobile-toggle-btn {
+  display: none;
+}
+.sidebar-overlay {
+  display: none;
+}
+
+/* =========================================
+   รูปแบบสำหรับหน้าจอมือถือ (ความกว้างไม่เกิน 768px)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  
+  /* ดัน Sidebar ออกไปซ่อนด้านซ้าย (ยุบ) */
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  
+  /* ดึง Sidebar กลับมาแสดงเมื่อมีคลาส .open (ขยาย) */
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* แสดงปุ่ม Toggle ขีด 3 ขีด */
+  .mobile-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100; /* ให้อยู่เหนือ Sidebar */
+    background-color: #f79046; /* ปรับสีตามตีมโปรเจกต์คุณ */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* แสดง Overlay พื้นหลังสีดำจางๆ เพื่อเน้น Sidebar */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900; /* อยู่ใต้ Sidebar (1000) แต่เหนือ Content อื่นๆ */
+  }
+}
