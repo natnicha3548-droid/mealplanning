@@ -308,7 +308,7 @@ function AddFood() {
                   <div className="add-dynamic-block-header">
                     <input
                       type="text"
-                      placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
+                      placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ, ตกแต่ง..."
                       value={block.block_title}
                       onChange={(e) => handleBlockChange("block_title", e.target.value, sIndex, bIndex)}
                     />
