@@ -228,7 +228,7 @@ function AddFood() {
         </div>
 
         <div className="add-form-group">
-          <label>ปริมาณต่อหน่วย</label>
+          <label>ปริมาณต่อหน่วยบริโภค</label>
           <input
             type="text"
             name="serving_size"
