@@ -44,12 +44,6 @@ const PastPlans = () => {
 
   const todayFullDate = getFormattedDate(today);
 
-  // คำนวณวันที่ของ "เมื่อวาน"
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = getFormattedDate(yesterday);
-  const yesterdayShortDate = `${yesterday.getDate()} ${thaiMonthShort[yesterday.getMonth()]}`;
-
   const generateDaysInMonth = (year, monthIndex) => {
     const date = new Date(year, monthIndex, 1);
     const days = [];
@@ -69,9 +63,13 @@ const PastPlans = () => {
   const [isYearOpen, setIsYearOpen] = useState(false);
   const savedTab = sessionStorage.getItem("past_activeTab");
   const [activeTab, setActiveTab] = useState(
-    savedTab === 'เดือน' ? 'เดือน' : 'เมื่อวาน'
+    savedTab === 'เดือน' ? 'เดือน' : 'วันนี้'
   );
-  const [selectedDate, setSelectedDate] = useState(sessionStorage.getItem("past_selectedDate") || yesterdayStr);
+  const [selectedDate, setSelectedDate] = useState(
+    savedTab === 'เดือน'
+      ? (sessionStorage.getItem("past_selectedDate") || todayFullDate)
+      : todayFullDate
+  );
   const [viewingMonth, setViewingMonth] = useState(sessionStorage.getItem("past_viewingMonth") ? Number(sessionStorage.getItem("past_viewingMonth")) : null);
   const [mealData, setMealData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -186,19 +184,18 @@ const PastPlans = () => {
   }, [selectedDate]);
 
   useEffect(() => {
-    if (activeTab === 'เมื่อวาน') {
-      setSelectedDate(yesterdayStr);
+    if (activeTab === 'วันนี้') {
+      setSelectedDate(todayFullDate);
     }
-  }, [activeTab, yesterdayStr]);
+  }, [activeTab, todayFullDate]);
 
   // ================= Event Handlers =================
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    if (tab === 'เมื่อวาน') {
+    if (tab === 'วันนี้') {
       setSelectedYear(currentYear);
       setViewingMonth(null);
-      setSelectedDate(yesterdayStr);
-      fetchMeals(yesterdayStr);
+      setSelectedDate(todayFullDate);
     } else if (tab === 'เดือน') {
       setViewingMonth(null);
     }
@@ -213,7 +210,7 @@ const PastPlans = () => {
   const totalCalories = mealData.reduce((sum, meal) => sum + meal.cal, 0);
 
   const getListTitle = () => {
-    if (activeTab === 'เมื่อวาน') return `ประวัติการกินเมื่อวาน (${yesterdayShortDate})`;
+    if (activeTab === 'วันนี้') return `ประวัติการกินวันนี้ (${today.getDate()} ${thaiMonthShort[today.getMonth()]})`;
 
     let displayDate = "";
     if (viewingMonth !== null) {
@@ -492,10 +489,10 @@ const PastPlans = () => {
         <div className="header-right">
           <div className="pill-tab-menu">
             <button
-              className={`pill-tab-btn ${activeTab === 'เมื่อวาน' ? 'active' : ''}`}
-              onClick={() => handleTabClick('เมื่อวาน')}
+              className={`pill-tab-btn ${activeTab === 'วันนี้' ? 'active' : ''}`}
+              onClick={() => handleTabClick('วันนี้')}
             >
-              <Calendar size={18} /> เมื่อวาน ({yesterdayShortDate})
+              <Calendar size={18} /> วันนี้
             </button>
             <button
               className={`pill-tab-btn ${activeTab === 'เดือน' ? 'active' : ''}`}
@@ -504,11 +501,19 @@ const PastPlans = () => {
               <CalendarCheck2 size={18} /> รายเดือน
             </button>
           </div>
+          <button
+            className="icon-only-btn"
+            aria-label="รีโหลดประวัติการกิน"
+            title="รีโหลดประวัติการกิน"
+            onClick={() => fetchMeals(selectedDate)}
+          >
+            <RefreshCw size={20} />
+          </button>
         </div>
       </header>
 
       <main className="past-plans-content">
-        {activeTab === 'เมื่อวาน' && renderMealList()}
+        {activeTab === 'วันนี้' && renderMealList()}
         {activeTab === 'เดือน' && viewingMonth === null && renderMonthGrid()}
         {activeTab === 'เดือน' && viewingMonth !== null && renderMonthDetail()}
       </main>
