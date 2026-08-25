@@ -73,60 +73,61 @@ function EditFood() {
     }, []);
 
     useEffect(() => {
+        const fetchFood = async () => {
+            try {
+                const res = await fetch(`http://localhost:5000/api/foods/${id}`);
+                const data = await res.json();
+
+                if (data.success && data.food) {
+                    const food = data.food;
+
+                    setFormData({
+                        food_name: food.food_name || "",
+                        category_id: String(food.category_id || ""),
+                        serving_size: food.serving_size || "",
+                        calories: food.calories || "",
+                        protein: food.protein || "",
+                        fat: food.fat || "",
+                        carbohydrates: food.carbohydrates || "",
+                        sugar: food.sugar || "",
+                        sodium: food.sodium || "",
+                        description: food.description || "",
+                        notes: food.notes || ""
+                    });
+
+                    if (food.recipe_details) {
+                        try {
+                            const parsedDetails =
+                                typeof food.recipe_details === "string"
+                                    ? JSON.parse(food.recipe_details)
+                                    : food.recipe_details;
+
+                            if (parsedDetails && parsedDetails.length > 0) {
+                                setRecipeSections(parsedDetails);
+                            }
+                        } catch (e) {
+                            console.error("Error parsing recipe_details:", e);
+                        }
+                    }
+
+                    if (food.image) {
+                        setPreview(
+                            food.image.startsWith("http")
+                                ? food.image
+                                : `http://localhost:5000${food.image}`
+                        );
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+                alert("ไม่สามารถโหลดข้อมูลอาหารได้");
+            }
+        };
+
         if (id) {
             fetchFood();
         }
     }, [id]);
-
-    const fetchFood = async () => {
-        try {
-            const res = await fetch(`http://localhost:5000/api/foods/${id}`);
-            const data = await res.json();
-
-            if (data.success && data.food) {
-                const food = data.food;
-
-                setFormData({
-                    food_name: food.food_name || "",
-                    category_id: String(food.category_id || ""),
-                    serving_size: food.serving_size || "",
-                    calories: food.calories || "",
-                    protein: food.protein || "",
-                    fat: food.fat || "",
-                    carbohydrates: food.carbohydrates || "",
-                    sugar: food.sugar || "",
-                    sodium: food.sodium || "",
-                    description: food.description || "",
-                    notes: food.notes || ""
-                });
-
-                if (food.recipe_details) {
-                    try {
-                        const parsedDetails = typeof food.recipe_details === "string"
-                            ? JSON.parse(food.recipe_details)
-                            : food.recipe_details;
-
-                        if (parsedDetails && parsedDetails.length > 0) {
-                            setRecipeSections(parsedDetails);
-                        }
-                    } catch (e) {
-                        console.error("Error parsing recipe_details:", e);
-                    }
-                }
-
-                if (food.image) {
-                    setPreview(
-                        food.image.startsWith("http")
-                            ? food.image
-                            : `http://localhost:5000${food.image}`
-                    );
-                }
-            }
-        } catch (err) {
-            console.log(err);
-            alert("ไม่สามารถโหลดข้อมูลอาหารได้");
-        }
-    };
 
     const handleChange = (e) => {
         const { name, value, type } = e.target;

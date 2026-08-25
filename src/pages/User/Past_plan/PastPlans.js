@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  Sun, CloudSun, Moon, RefreshCw,
-  History, CalendarDays, Calendar, Bookmark, CalendarCheck2, ChevronLeft, ChevronDown, RotateCcw,
+  RefreshCw, Calendar, CalendarCheck2, ChevronLeft, ChevronDown,
 } from 'lucide-react';
 import {
-  FaHeart, FaStar, FaSun, FaCloudSun, FaMoon, FaRegStar,
+  FaHeart, FaStar, FaSun, FaCloudSun, FaMoon,
   FaSnowflake, FaMountain, FaGift, FaTree, FaSeedling,
   FaUmbrellaBeach, FaLeaf, FaCloudRain, FaUmbrella,
   FaWater, FaWind, FaGhost, FaCampground, FaFire, FaSnowman
@@ -51,27 +50,6 @@ const PastPlans = () => {
   const yesterdayStr = getFormattedDate(yesterday);
   const yesterdayShortDate = `${yesterday.getDate()} ${thaiMonthShort[yesterday.getMonth()]}`;
 
-  const generateCurrentWeek = () => {
-    const curr = new Date();
-    const day = curr.getDay();
-    const diff = curr.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(curr.setDate(diff));
-
-    const week = [];
-    const orderedDayNames = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
-
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
-      week.push({
-        name: orderedDayNames[i],
-        date: `${date.getDate()} ${thaiMonthShort[date.getMonth()]}`,
-        fullDate: getFormattedDate(date)
-      });
-    }
-    return week;
-  };
-
   const generateDaysInMonth = (year, monthIndex) => {
     const date = new Date(year, monthIndex, 1);
     const days = [];
@@ -86,20 +64,18 @@ const PastPlans = () => {
     return days;
   };
 
-  const weekDays = useMemo(() => generateCurrentWeek(), []);
-
   // ================= State Management =================
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [isYearOpen, setIsYearOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(sessionStorage.getItem("past_activeTab") || 'เมื่อวาน');
+  const savedTab = sessionStorage.getItem("past_activeTab");
+  const [activeTab, setActiveTab] = useState(
+    savedTab === 'เดือน' ? 'เดือน' : 'เมื่อวาน'
+  );
   const [selectedDate, setSelectedDate] = useState(sessionStorage.getItem("past_selectedDate") || yesterdayStr);
   const [viewingMonth, setViewingMonth] = useState(sessionStorage.getItem("past_viewingMonth") ? Number(sessionStorage.getItem("past_viewingMonth")) : null);
   const [mealData, setMealData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  // เพิ่ม State สำหรับจัดการรายการโปรด
-  const [currentPlanId, setCurrentPlanId] = useState(null);
-  const [isPlanFavorite, setIsPlanFavorite] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [reviewedStatus, setReviewedStatus] = useState({});
 
 
@@ -127,7 +103,7 @@ const PastPlans = () => {
   // ================= API Fetching =================
   const fetchMeals = async (targetDate) => {
     setIsLoading(true);
-    setIsPlanFavorite(false);
+    setLoadError('');
     setReviewedStatus({}); // เคลียร์ค่ารีวิวเมื่อเปลี่ยนวัน
 
     try {
@@ -136,17 +112,12 @@ const PastPlans = () => {
       const response = await fetch(`http://localhost:5000/api/meals?userId=${userId}&date=${targetDate}`);
       const data = await response.json();
 
-      if (response.ok && data.length > 0) {
-        const planId = data[0].plan_id;
-        setCurrentPlanId(planId);
+      if (!response.ok) {
+        throw new Error('ไม่สามารถโหลดประวัติการกินได้');
+      }
 
-        // 1. เช็กสถานะหัวใจ (Favorite)
-        fetch(`http://localhost:5000/api/favorite-status?user_id=${userId}&plan_id=${planId}`)
-          .then(res => res.json())
-          .then(favData => setIsPlanFavorite(favData.isFav))
-          .catch(err => console.error("Error fetching favorite:", err));
-
-        // 2. เช็กสถานะรีวิวของแต่ละเมนู
+      if (Array.isArray(data) && data.length > 0) {
+        // ตรวจสอบว่าผู้ใช้เคยรีวิวเมนูในประวัตินี้หรือยัง
         const uniqueFoodIds = [...new Set(data.map(m => m.food_id))];
         uniqueFoodIds.forEach(foodId => {
           fetch(`http://localhost:5000/api/review-status?user_id=${userId}&food_id=${foodId}`)
@@ -190,10 +161,9 @@ const PastPlans = () => {
         setMealData(formattedData);
       } else {
         setMealData([]);
-        setCurrentPlanId(null);
-        setIsPlanFavorite(false);
       }
     } catch (error) {
+      setLoadError('ไม่สามารถเชื่อมต่อข้อมูลประวัติการกินได้ กรุณาลองใหม่อีกครั้ง');
       setMealData([]);
     } finally {
       setIsLoading(false);
@@ -219,65 +189,7 @@ const PastPlans = () => {
     if (activeTab === 'เมื่อวาน') {
       setSelectedDate(yesterdayStr);
     }
-  }, [activeTab]);
-
-  // ================= Toggle Favorite =================
-  const handleToggleFavorite = async () => {
-    if (!currentPlanId) return;
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    const userId = storedUser ? storedUser.user_id : 1;
-
-    try {
-      // ยิงไปที่ API เดียวกับหน้า MealPlan
-      const response = await fetch('http://localhost:5000/api/favorite-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, plan_id: currentPlanId })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setIsPlanFavorite(data.isFav); // อัปเดตสถานะหัวใจตามที่เซิร์ฟเวอร์ตอบกลับมา
-      } else {
-        alert("เกิดข้อผิดพลาดในการบันทึกรายการโปรด");
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
-
-  // ================= นำแผนกลับมาใช้ใหม่ =================
-  const handleRestorePlan = async () => {
-    const confirmRestore = window.confirm("ต้องการนำแผนนี้มาใช้อีกครั้งในวันนี้ใช่หรือไม่?");
-    if (!confirmRestore) return;
-
-    setIsLoading(true);
-    try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      const userId = storedUser ? storedUser.user_id : 1;
-
-      const response = await fetch('http://localhost:5000/api/restore-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          sourceDate: selectedDate,
-          targetDate: new Date().toISOString().split('T')[0]
-        })
-      });
-
-      if (response.ok) {
-        alert("นำแผนกลับมาใช้เรียบร้อยแล้ว!");
-        window.location.href = '/meal-plan';
-      } else {
-        alert("เกิดข้อผิดพลาดในการคัดลอกแผน");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [activeTab, yesterdayStr]);
 
   // ================= Event Handlers =================
   const handleTabClick = (tab) => {
@@ -287,10 +199,6 @@ const PastPlans = () => {
       setViewingMonth(null);
       setSelectedDate(yesterdayStr);
       fetchMeals(yesterdayStr);
-    } else if (tab === 'สัปดาห์') {
-      setSelectedYear(currentYear);
-      setViewingMonth(null);
-      setSelectedDate(todayFullDate);
     } else if (tab === 'เดือน') {
       setViewingMonth(null);
     }
@@ -305,17 +213,15 @@ const PastPlans = () => {
   const totalCalories = mealData.reduce((sum, meal) => sum + meal.cal, 0);
 
   const getListTitle = () => {
-    if (activeTab === 'เมื่อวาน') return `เมนูอาหารของเมื่อวาน (${yesterdayShortDate})`;
+    if (activeTab === 'เมื่อวาน') return `ประวัติการกินเมื่อวาน (${yesterdayShortDate})`;
 
     let displayDate = "";
-    if (activeTab === 'สัปดาห์') {
-      displayDate = weekDays.find(d => d.fullDate === selectedDate)?.date || "";
-    } else if (viewingMonth !== null) {
+    if (viewingMonth !== null) {
       const days = generateDaysInMonth(selectedYear, viewingMonth);
       displayDate = days.find(d => d.fullDate === selectedDate)?.date || "";
     }
 
-    return displayDate ? `เมนูอาหารวันที่ ${displayDate} ${selectedYear}` : 'เมนูอาหารของฉัน';
+    return displayDate ? `ประวัติการกินวันที่ ${displayDate} ${selectedYear}` : 'ประวัติการกินของฉัน';
   };
 
   // จัดกลุ่ม mealData ตาม type
@@ -351,28 +257,8 @@ const PastPlans = () => {
     <div className="past-plan-card">
       <div className="meal-list-container">
 
-        {/* ส่วนหัว (ปุ่มหัวใจรายการโปรด) */}
         <div className="meal-list-header">
           <h3>{getListTitle()}</h3>
-          <button
-            className={`heart-icon-btn ${isPlanFavorite ? 'active' : ''}`}
-            aria-label="Favorite"
-            onClick={handleToggleFavorite}
-            style={{
-              backgroundColor: isPlanFavorite ? '#fff0f2' : 'transparent',
-              border: 'none',
-              padding: '8px',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            {/* 🌟 ใช้ isPlanFavorite เพื่อเปลี่ยนสี */}
-            <FaHeart size={22} style={{ color: isPlanFavorite ? "red" : "#ddaa9d", transition: 'color 0.3s' }} />
-          </button>
         </div>
 
         {isLoading ? (
@@ -380,9 +266,14 @@ const PastPlans = () => {
             <RefreshCw className="animate-spin" size={24} style={{ margin: '0 auto', animation: 'spin 1s linear infinite' }} />
             <p style={{ marginTop: '10px' }}>กำลังโหลดเมนูอาหาร...</p>
           </div>
+        ) : loadError ? (
+          <div className="history-empty-state history-error" role="alert">
+            <p>{loadError}</p>
+            <button className="retry-btn" onClick={() => fetchMeals(selectedDate)}>ลองใหม่</button>
+          </div>
         ) : mealData.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem 0', color: '#888' }}>
-            <p>ไม่มีประวัติอาหารในวันนี้</p>
+            <p>ยังไม่มีบันทึกการกินในวันที่เลือก</p>
           </div>
         ) : (
           <div className="meal-items">
@@ -450,15 +341,7 @@ const PastPlans = () => {
                 totalCalories: totalCalories
               }
             })}
-          >ดูรายงานโภชนาการ</button>
-          <button
-            className="restore-plan-btn"
-            aria-label="นำแผนกลับมาใช้"
-            title="คลิกเพื่อนำแผนเดิมกลับมาใช้ใหม่"
-            onClick={handleRestorePlan}
-          >
-            <RotateCcw size={20} />
-          </button>
+          >ดูสรุปโภชนาการ</button>
         </div>
       </div>
     </div>
@@ -566,7 +449,7 @@ const PastPlans = () => {
         <div className="header-left">
           <div className="title-row">
             <div className="past-icon"><LuCalendarClock /></div>
-            <h1>ประวัติ</h1>
+            <h1>ประวัติการกิน</h1>
 
             <div
               className="year-selector-wrapper"
@@ -603,7 +486,7 @@ const PastPlans = () => {
               )}
             </div>
           </div>
-          <p className="subtitle">ประวัติการวางแผนอาหาร</p>
+          <p className="subtitle">ดูรายการอาหารและพลังงานที่กินย้อนหลัง</p>
         </div>
 
         <div className="header-right">
@@ -615,44 +498,17 @@ const PastPlans = () => {
               <Calendar size={18} /> เมื่อวาน ({yesterdayShortDate})
             </button>
             <button
-              className={`pill-tab-btn ${activeTab === 'สัปดาห์' ? 'active' : ''}`}
-              onClick={() => handleTabClick('สัปดาห์')}
-            >
-              <Bookmark size={18} /> สัปดาห์
-            </button>
-            <button
               className={`pill-tab-btn ${activeTab === 'เดือน' ? 'active' : ''}`}
               onClick={() => handleTabClick('เดือน')}
             >
-              <CalendarCheck2 size={18} /> เดือน
+              <CalendarCheck2 size={18} /> รายเดือน
             </button>
           </div>
         </div>
       </header>
 
-      {activeTab === 'สัปดาห์' && (
-        <div className="week-selector">
-          {weekDays.map((day) => {
-            const isToday = day.fullDate === todayFullDate;
-            return (
-              <div
-                key={day.fullDate}
-                className={`day-card ${selectedDate === day.fullDate ? 'active' : ''}`}
-                onClick={() => setSelectedDate(day.fullDate)}
-              >
-                <span className="day-name">
-                  {day.name} {isToday && <span style={{ fontSize: '0.8rem', color: '#f97316' }}>•</span>}
-                </span>
-                <span className="day-date">{day.date}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
       <main className="past-plans-content">
         {activeTab === 'เมื่อวาน' && renderMealList()}
-        {activeTab === 'สัปดาห์' && renderMealList()}
         {activeTab === 'เดือน' && viewingMonth === null && renderMonthGrid()}
         {activeTab === 'เดือน' && viewingMonth !== null && renderMonthDetail()}
       </main>

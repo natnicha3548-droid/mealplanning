@@ -87,7 +87,7 @@ const Navbar = ({
             { path: "/menu", label: "เมนูอาหารของฉัน" },
             { path: "/meal-plan", label: "แผนการกินของฉัน" },
             { path: "/favourite-food", label: "รายการโปรดของฉัน" },
-            { path: "/past-plans", label: "แผนการกินย้อนหลัง" }
+            { path: "/past-plans", label: "ประวัติการกินย้อนหลัง" }
         ]
         : [
             { path: "/menu", label: "เมนูอาหาร" },

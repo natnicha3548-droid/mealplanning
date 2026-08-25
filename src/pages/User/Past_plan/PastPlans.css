@@ -500,9 +500,37 @@ body {
    ========================================= */
 .meal-list-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 2rem;
+}
+
+.history-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #888;
+}
+
+.history-error {
+  color: #b45309;
+}
+
+.retry-btn {
+  margin-top: 8px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff0df;
+  color: #ea580c;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #ffe1bd;
+  transform: translateY(-2px);
 }
 
 .nutrition-btn {

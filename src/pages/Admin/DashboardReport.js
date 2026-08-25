@@ -8,7 +8,6 @@ import {
   LuTrendingUp,
   LuTrophy,
   LuNetwork,
-  LuLink,
   LuZap,
   LuCircleCheck,
   LuTrash2,
