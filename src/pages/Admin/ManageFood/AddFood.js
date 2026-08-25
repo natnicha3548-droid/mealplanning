@@ -215,9 +215,9 @@ function AddFood() {
         {/* หมวดหมู่ — โหลดจาก API */}
         <div className="add-form-group">
           <label>หมวดหมู่</label>
-          <div className="custom-cute-dropdown">
+          <div className="add-custom-cute-dropdown">
             <div
-              className={`dropdown-header ${isDropdownOpen ? 'active' : ''}`}
+              className={`add-dropdown-header ${isDropdownOpen ? 'active' : ''}`}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               {/* แสดงชื่อหมวดหมู่ที่เลือก หรือข้อความเริ่มต้น */}
@@ -228,9 +228,9 @@ function AddFood() {
             </div>
 
             {isDropdownOpen && (
-              <div className="dropdown-options" style={{ width: '100%', left: 0 }}>
+              <div className="add-dropdown-options" style={{ width: '100%', left: 0 }}>
                 <div 
-                  className="dropdown-item" 
+                  className="add-dropdown-item" 
                   onClick={() => {
                     setFormData({...formData, category_id: ""});
                     setIsDropdownOpen(false);
@@ -241,7 +241,7 @@ function AddFood() {
                 {categories.map((cat) => (
                   <div
                     key={cat.category_id}
-                    className="dropdown-item"
+                    className="add-dropdown-item"
                     onClick={() => {
                       setFormData({...formData, category_id: cat.category_id});
                       setIsDropdownOpen(false);
