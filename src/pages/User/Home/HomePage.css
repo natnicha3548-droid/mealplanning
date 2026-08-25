@@ -406,7 +406,7 @@
 .favorite-plans-scroll-container::-webkit-scrollbar-thumb {
     background: #ffaa5a;
     border-radius: 10px;
-}
+} 
 
 .favorite-plan-slide {
     transform: rotateX(180deg);

@@ -123,3 +123,23 @@
     color: #ff8c42;
     margin-top: 10px;
 } 
+/* =========================================
+   จัดการระยะห่างของเนื้อหาหลักกับ Sidebar
+========================================= */
+.admin-main-content {
+  margin-left: 300px; /* ดันเนื้อหาไปทางขวาเท่ากับความกว้างของ Sidebar */
+  width: calc(100% - 300px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out; /* ให้ขยับแบบสมูท */
+}
+
+/* =========================================
+   ส่วนของมือถือ (Mobile Responsive)
+========================================= */
+/* เมื่อหน้าจอเล็กกว่า 768px (ตอนที่ Sidebar หดไปแล้ว) ให้ดึงเนื้อหากลับมาเต็มจอ */
+@media (max-width: 768px) {
+  .admin-main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}

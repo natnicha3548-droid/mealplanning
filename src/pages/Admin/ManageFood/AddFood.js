@@ -30,6 +30,8 @@ function AddFood() {
   // โหลด categories จาก API
   const [categories, setCategories] = useState([]);
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     food_name: "",
     category_id: "",
@@ -205,6 +207,7 @@ function AddFood() {
             name="food_name"
             value={formData.food_name}
             onChange={handleChange}
+            placeholder="เช่น ต้มยำกุ้งน้ำใส"
             required
           />
         </div>
@@ -212,29 +215,54 @@ function AddFood() {
         {/* หมวดหมู่ — โหลดจาก API */}
         <div className="add-form-group">
           <label>หมวดหมู่</label>
-          <select
-            name="category_id"
-            value={formData.category_id}
-            onChange={handleChange}
-            required
-          >
-            <option value="">เลือกหมวดหมู่อาหาร</option>
-            {categories.map((cat) => (
-              <option key={cat.category_id} value={cat.category_id}>
-                {cat.category_name}
-              </option>
-            ))}
-          </select>
+          <div className="add-custom-cute-dropdown">
+            <div
+              className={`add-dropdown-header ${isDropdownOpen ? 'active' : ''}`}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              {/* แสดงชื่อหมวดหมู่ที่เลือก หรือข้อความเริ่มต้น */}
+              {formData.category_id 
+                ? categories.find(c => c.category_id === formData.category_id)?.category_name || "เลือกหมวดหมู่อาหาร"
+                : "เลือกหมวดหมู่อาหาร"}
+              <span className="arrow">▼</span>
+            </div>
+
+            {isDropdownOpen && (
+              <div className="add-dropdown-options" style={{ width: '100%', left: 0 }}>
+                <div 
+                  className="add-dropdown-item" 
+                  onClick={() => {
+                    setFormData({...formData, category_id: ""});
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  เลือกหมวดหมู่อาหาร
+                </div>
+                {categories.map((cat) => (
+                  <div
+                    key={cat.category_id}
+                    className="add-dropdown-item"
+                    onClick={() => {
+                      setFormData({...formData, category_id: cat.category_id});
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {cat.category_name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="add-form-group">
-          <label>ปริมาณต่อหน่วย</label>
+          <label>ปริมาณต่อหน่วยบริโภค</label>
           <input
             type="text"
             name="serving_size"
             value={formData.serving_size}
             onChange={handleChange}
-            placeholder="เช่น 1 จาน, 1 ถ้วย (250 กรัม)"
+            placeholder="เช่น 600 กรัม/สูตร | 1-2 เสิร์ฟ/สูตร, 1 จาน, 1 ถ้วย (250 กรัม)"
           />
         </div>
 
@@ -242,28 +270,28 @@ function AddFood() {
           <h3>ข้อมูลโภชนาการ</h3>
           <div className="add-nutrition-list">
             <div className="add-nutrition-item">
-              <label><FaFire /> แคลอรี</label>
-              <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><FaFire /> แคลอรี (kcal)</label>
+              <input type="number" step="0.01" name="calories" value={formData.calories} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 350" />
             </div>
             <div className="add-nutrition-item">
-              <label><FaDrumstickBite /> โปรตีน</label>
-              <input type="number" step="0.01" name="protein" value={formData.protein} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><FaDrumstickBite /> โปรตีน (g)</label>
+              <input type="number" step="0.01" name="protein" value={formData.protein} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 20" />
             </div>
             <div className="add-nutrition-item">
-              <label><FaTint /> ไขมัน</label>
-              <input type="number" step="0.01" name="fat" value={formData.fat} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><FaTint /> ไขมัน (g)</label>
+              <input type="number" step="0.01" name="fat" value={formData.fat} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 15" />
             </div>
             <div className="add-nutrition-item">
-              <label><GiWheat /> คาร์โบไฮเดรต</label>
-              <input type="number" step="0.01" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><GiWheat /> คาร์โบไฮเดรต (g)</label>
+              <input type="number" step="0.01" name="carbohydrates" value={formData.carbohydrates} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 45" />
             </div>
             <div className="add-nutrition-item">
-              <label><GiSugarCane /> น้ำตาล</label>
-              <input type="number" step="0.01" name="sugar" value={formData.sugar} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><GiSugarCane /> น้ำตาล (g)</label>
+              <input type="number" step="0.01" name="sugar" value={formData.sugar} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 5" />
             </div>
             <div className="add-nutrition-item">
-              <label><MdOutlineSoupKitchen /> โซเดียม</label>
-              <input type="number" step="0.01" name="sodium" value={formData.sodium} onChange={handleChange} onWheel={(e) => e.target.blur()} />
+              <label><MdOutlineSoupKitchen /> โซเดียม (mg)</label>
+              <input type="number" step="0.01" name="sodium" value={formData.sodium} onChange={handleChange} onWheel={(e) => e.target.blur()} placeholder="เช่น 800" />
             </div>
           </div>
         </div>
@@ -308,7 +336,7 @@ function AddFood() {
                   <div className="add-dynamic-block-header">
                     <input
                       type="text"
-                      placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ"
+                      placeholder="หัวข้อย่อย เช่น ส่วนผสม, วิธีทำ, ตกแต่ง..."
                       value={block.block_title}
                       onChange={(e) => handleBlockChange("block_title", e.target.value, sIndex, bIndex)}
                     />

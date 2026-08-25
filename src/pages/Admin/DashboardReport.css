@@ -87,7 +87,7 @@
   color: #5c3d00;
   margin-top: 0;
   margin-bottom: 20px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   border-bottom: 2px dashed #f9ece0;
   padding-bottom: 10px;
   display: flex;
@@ -372,57 +372,56 @@
 }
 
 /* =========================================
-   ปุ่ม Export (Cute Style)
+   ปุ่ม Export สไตล์ Modern (ลอยและมีมิติ)
    ========================================= */
-
-/* คลาสพื้นฐานที่ใช้ร่วมกันทั้ง 2 ปุ่ม */
 .btn-export {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 20px; /* มุมมนๆ */
-  font-family: 'Prompt', sans-serif; /* เปลี่ยนเป็นฟอนต์ที่ใช้ในโปรเจกต์คุณได้เลย */
+  border-radius: 30px; /* มุมมนทรงแคปซูล */
+  font-family: inherit;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* เงาบางๆ ให้ปุ่มดูลอยขึ้น */
 }
 
-/* เอฟเฟกต์ตอนชี้เมาส์ (เด้งดึ๋งนิดๆ) */
-.btn-export:hover {
-  transform: translateY(-3px); /* ลอยขึ้น */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* เงาเข้มขึ้น */
-}
-
-/* เอฟเฟกต์ตอนกดปุ่ม */
+/* เอฟเฟกต์ตอนกดปุ่ม (ยุบลงไปเล็กน้อย) */
 .btn-export:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
 }
 
-/* =========================================
-   สไตล์แยกตามสี (Excel & PDF)
-   ========================================= */
-
-/* ปุ่ม Excel - สีเขียวละมุน */
+/* ปุ่ม Excel - สีเขียวสว่างแบบมีมิติ */
 .btn-export-excel {
-  background: linear-gradient(135deg, #a8e6cf 0%, #4bcc3d 100%); /* ไล่สีเขียวมิ้นต์ */
-  color: #1b5c1a; /* สีตัวอักษรเข้มๆ ให้อ่านง่าย */
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  box-shadow: 0 6px 15px rgba(34, 197, 94, 0.3); /* เงาสีเขียวเรืองแสง */
 }
 .btn-export-excel:hover {
-  background: linear-gradient(135deg, #b5eed8 0%, #5bdb4d 100%);
+  background: linear-gradient(135deg, #6ee7b7 0%, #22c55e 100%);
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+  transform: translateY(-3px);
 }
 
-/* ปุ่ม PDF - สีส้มอมชมพู (เข้ากับโทนของ MealPlan) */
+/* ปุ่ม PDF - สีส้มอมแดงให้เข้ากับธีม MealPlan */
 .btn-export-pdf {
-  background: linear-gradient(135deg, #ffb3a7 0%, #ff4242 100%); /* ไล่สีพีช-ส้ม */
-  color: #ffffff; /* ตัวอักษรสีขาว */
+  background: linear-gradient(135deg, #ff8a65 0%, #ff5252 100%);
+  color: white;
+  box-shadow: 0 6px 15px rgba(255, 82, 82, 0.3); /* เงาสีแดงเรืองแสง */
 }
 .btn-export-pdf:hover {
-  background: linear-gradient(135deg, #ffc2b8 0%, #fa6555 100%);
+  background: linear-gradient(135deg, #ffab91 0%, #ff5252 100%);
+  box-shadow: 0 8px 20px rgba(255, 82, 82, 0.4);
+  transform: translateY(-3px);
+}
+
+/* คอนเทนเนอร์เก็บปุ่มสำหรับจอคอม (เรียงปกติ) */
+.export-buttons-container {
+  display: flex;
+  gap: 15px;
 }
 
 .fp-top-badge {
@@ -465,6 +464,21 @@
 .rank-bronze {
   color: #cd7f32;
   font-size: 24px;
+}
+/* =========================================
+   จัดเรียงส่วนหัวกราฟ สำหรับจอคอมพิวเตอร์
+========================================= */
+.chart-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chart-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* =========================================
@@ -525,5 +539,126 @@
   .stat-card {
     flex: 1 1 0 !important;
     width: auto !important;
+  }
+}
+/* =========================================
+   ส่วนของการแสดงผลบนมือถือ (Mobile Responsive)
+========================================= */
+@media (max-width: 768px) {
+  /* 1. ปรับขนาดหัวข้อหลักและไอคอนให้พอดีกับจอมือถือ */
+  .dashboard-main-title {
+    font-size: 1.35rem; /* ลดขนาดตัวอักษรลง */
+  }
+
+  .dashboard-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
+
+  .dashboard-icon-wrapper svg {
+    font-size: 1.8rem; /* ลดขนาดไอคอนด้านใน */
+  }
+
+  /* 2. จัดเรียงส่วนหัวใหม่ (Header) ให้ซ้อนกันถ้าพื้นที่ไม่พอ */
+  .dashboard-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  /* 3. ลดระยะห่าง (Gap) เพื่อประหยัดพื้นที่หน้าจอ */
+  .dashboard-grid {
+    gap: 15px; 
+    margin-bottom: 15px;
+  }
+
+  .dashboard-stats-container {
+    gap: 15px; 
+    margin-bottom: 20px;
+  }
+
+  /* 4. บังคับให้กล่องสถิติ (Stat Cards) แสดงผล 1 กล่องต่อ 1 แถว */
+  .stat-card {
+    flex: 1 1 100%; 
+  }
+
+  .export-buttons-container {
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    display: flex;
+    flex-direction: column; /* จุดสำคัญ: บังคับให้เรียงจากบนลงล่าง (Excel จะอยู่บน PDF) */
+    align-items: flex-end; /* บังคับให้ปุ่มชิดขวาเท่ากัน */
+    gap: 12px; /* ระยะห่างระหว่างปุ่ม Excel และ PDF */
+    z-index: 1000;
+    
+    opacity: 0.5; /* ทำให้จางเมื่ออยู่เฉยๆ */
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* เมื่อสัมผัสให้สว่างชัดเจน */
+  .export-buttons-container:hover,
+  .export-buttons-container:active,
+  .export-buttons-container:focus-within {
+    opacity: 1;
+  }
+
+  /* สไตล์ของปุ่มให้เป็นทรงแคปซูล */
+  .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 30px; 
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    width: max-content; /* ป้องกันปุ่มหดตัวผิดรูป */
+  }
+
+  .btn-export svg {
+    font-size: 1.3rem; 
+  }
+
+  .dashboard-grid {
+    padding-bottom: 90px; 
+  }
+
+  /* เพิ่มพื้นที่ว่างด้านล่างสุดของหน้าจอ ป้องกันเนื้อหาถูกปุ่มบัง */
+  .dashboard-grid {
+    padding-bottom: 90px; 
+  }
+
+  /* เพิ่มพื้นที่ว่างด้านล่างของจอ ป้องกันเนื้อหาถูกปุ่มบัง */
+  .dashboard-grid {
+    padding-bottom: 80px; 
+  }
+
+  /* เพิ่มพื้นที่ว่างด้านล่างของหน้าจอ ป้องกันไม่ให้เนื้อหาถูกแถบปุ่มบัง */
+  .dashboard-grid {
+    padding-bottom: 80px; 
+  }
+
+  /* 6. ปรับตำแหน่ง Popup ปฏิทินไม่ให้ล้นขอบจอด้านขวา */
+  .custom-month-popup {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px; /* ขยายให้กดเลือกเดือนได้ง่ายขึ้น */
+  }
+  .chart-header-container {
+    display: flex;
+    flex-direction: column; /* จัดเรียงเป็นแนวตั้ง */
+    align-items: flex-start; /* ดันข้อความไปชิดซ้าย */
+    gap: 15px; /* ระยะห่างระหว่างตัวหนังสือกับปุ่ม */
+    margin-bottom: 20px;
+  }
+
+  /* 2. จัดกลุ่มปุ่มให้อยู่ด้วยกันและเรียงแนวนอนตามเดิม */
+  .chart-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%; /* ให้ปุ่มกินพื้นที่เต็มความกว้าง */
   }
 }
