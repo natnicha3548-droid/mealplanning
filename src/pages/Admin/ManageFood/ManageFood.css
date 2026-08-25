@@ -89,7 +89,7 @@
     /* 🌟 กำหนดความกว้างเริ่มต้นให้ดูสมส่วน (แทน 100px เดิม) */
     width: fit-content;
     /* 🌟 ให้ขยายความกว้างตามตัวหนังสืออัตโนมัติ */
-    z-index: 10;
+    z-index: 1;
 }
 
 .food-page .dropdown-selected {
@@ -323,32 +323,112 @@
 
 @media (max-width: 768px) {
     .food-page {
-        padding: 20px;
+        padding: 15px; 
+        width: 100%; /* บังคับให้หน้าเว็บไม่ล้นออกนอกจอ */
+        box-sizing: border-box; /* ให้ padding ถูกรวมอยู่ในความกว้าง 100% */
     }
 
     .food-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        width: 100%; /* บังคับให้ส่วนหัวพอดีกับจอ */
     }
 
-    .admin-food-grid {
-        grid-template-columns: 1fr;
+    .food-title-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
     }
 
-    .admin-food-card {
-        max-width: 100%;
+    .food-title-icon svg {
+        font-size: 1.8rem;
+    }
+
+    .food-heading {
+        font-size: 1.35rem;
+    }
+
+    .food-add-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    /* 2. จัดระเบียบ Toolbar (Dropdown & Search) */
+    .food-toolbar {
+        flex-direction: column;
+        gap: 15px; 
+        margin-bottom: 20px;
+        width: 100%; 
+        align-items: stretch;
+    }
+
+    .food-page .custom-dropdown {
+        width: 100%; 
+        min-width: unset;
+        box-sizing: border-box;
+    }
+
+    /* 🌟 เพิ่มคลาสนี้เข้าไปเพื่อแก้ปัญหากล่อง Dropdown ล้นจอ */
+    .food-page .dropdown-selected {
+        width: 100%;
+        box-sizing: border-box; /* บังคับให้ padding ถูกรวมอยู่ในความกว้าง 100% */
+    }
+
+    .food-search-box {
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .food-search-box input {
         width: 100%;
-        min-width: 280px;
+        min-width: unset; 
+        box-sizing: border-box;
     }
 
-    .food-title h1 {
-        font-size: 30px;
+    /* 3. จัดระเบียบ Grid ของการ์ดอาหาร */
+    .admin-food-grid {
+        grid-template-columns: repeat(2, 1fr); /* 🌟 บังคับให้แสดง 2 คอลัมน์ */
+        gap: 10px; /* ลดช่องว่างลงเล็กน้อยเพื่อให้พอดีจอ */
+        width: 100%;
+    }
+
+    .admin-food-card {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .admin-food-image {
-        height: 180px;
+        height: 120px; /* 🌟 ลดความสูงของรูปภาพลงให้สมดุลกับความกว้าง */
+        width: 100%; 
+        object-fit: cover; 
+    }
+    
+    /* 🌟 ปรับขนาดเนื้อหาด้านในให้เล็กลงเมื่ออยู่แบบ 2 คอลัมน์ */
+    .admin-food-content {
+        padding: 10px; 
+    }
+
+    .admin-food-content h3 {
+        font-size: 14px; 
+        margin-bottom: 6px;
+    }
+
+    .admin-food-category {
+        font-size: 11px;
+        padding: 4px 8px;
+        margin-bottom: 10px;
+    }
+
+    .admin-food-actions button {
+        width: 35px; /* ลดขนาดปุ่มลง */
+        height: 35px;
+        font-size: 0.9rem;
     }
 }

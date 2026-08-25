@@ -1,0 +1,125 @@
+/* =========================================
+   AdminSidebar.css
+========================================= */
+
+/* ตัว Sidebar หลัก */
+.admin-sidebar {
+  position: fixed; /* ยึดติดกับหน้าจอ */
+  top: 0;
+  left: 0; /* บังคับให้ชิดซ้ายสุด ป้องกันการเกิดช่องว่าง */
+  width: 250px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05); /* ใส่เงาด้านขวาเล็กน้อยแทนเส้นขอบ */
+  border-left: none; /* ป้องกันไม่ให้มีเส้นขอบด้านซ้าย */
+  margin-left: 0; /* ป้องกันการถูกดันออกจากขอบ */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* ส่วนหัวของ Sidebar (โลโก้) */
+.admin-logo {
+  padding: 0px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ff7e5f; /* ปรับสีให้เข้ากับธีม MealPlan ของคุณ */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* รายการเมนู */
+.admin-menu-list {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin-menu-item {
+  padding: 0 15px;
+}
+
+/* ลิงก์ในเมนู */
+.admin-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #555555;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-menu-link:hover {
+  background-color: #fff3e0;
+  color: #ff7e5f;
+}
+
+/* สถานะเมนูที่กำลังเลือกใช้งานอยู่ */
+.admin-menu-link.active {
+  background-color: #ff7e5f;
+  color: #ffffff;
+  font-weight: 600;
+}
+/* คอนเทนเนอร์หลักที่ครอบเนื้อหาฝั่งขวาไว้ */
+.admin-content {
+  margin-left: 250px; /* ดันเนื้อหาไปทางขวาเท่ากับความกว้างของ Sidebar */
+  width: calc(100% - 250px); /* ปรับขนาดความกว้างให้พอดีหน้าจอ */
+  min-height: 100vh;
+  padding: 20px; /* เพิ่มช่องว่างรอบๆ เนื้อหาตามต้องการ */
+  box-sizing: border-box;
+}
+
+/* =========================================
+   ส่วนของมือถือ (Mobile Responsive)
+========================================= */
+.mobile-toggle-btn {
+  display: none; /* ซ่อนปุ่มบนจอคอมพิวเตอร์ */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  background-color: #ff7e5f;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+
+/* ซ่อน Sidebar เมื่อจอเล็กกว่า 768px */
+@media (max-width: 768px) {
+    .mobile-toggle-btn {
+        display: block;
+    }
+  
+  .admin-sidebar {
+    transform: translateX(-100%); /* ซ่อนไปทางซ้าย */
+  }
+
+/* แสดง Sidebar เมื่อ class open ทำงาน */
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+
+/* ซ่อนคลาส no-print เมื่อทำการพิมพ์ (Print) */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

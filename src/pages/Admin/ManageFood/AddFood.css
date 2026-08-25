@@ -457,37 +457,162 @@
     border-color: #2fb344;
 }
 
+/* ================= Custom Dropdown (หมวดหมู่) ================= */
+.custom-cute-dropdown {
+    position: relative;
+    width: 100%;
+    font-family: inherit;
+    z-index: 1;
+}
+
+.custom-cute-dropdown .dropdown-header {
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 15px;
+    border: 2px solid #ecd9c4;
+    background: #fffdfb;
+    font-size: 16px;
+    color: #b29e90;
+    font-family: 'Kanit', sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.custom-cute-dropdown .dropdown-header:hover, 
+.custom-cute-dropdown .dropdown-header.active {
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 5px rgba(255, 159, 67, .15);
+}
+
+.custom-cute-dropdown .arrow {
+    font-size: 12px;
+    color: #ff9f43;
+    transition: transform 0.3s ease;
+}
+
+.custom-cute-dropdown .dropdown-header.active .arrow {
+    transform: rotate(180deg);
+}
+
+.custom-cute-dropdown .dropdown-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(255, 140, 66, 0.15);
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+    border: 1px solid #fcf2e8;
+    max-height: 250px;
+    overflow-y: auto;
+    animation: fadeInDown 0.2s ease forwards;
+}
+
+.custom-cute-dropdown .dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: #ff8c42;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.custom-cute-dropdown .dropdown-item:hover {
+    background: #fff4eb;
+}
+
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
+    /* 1. จัดระเบียบส่วนหัว (Header) ให้กะทัดรัดขึ้น */
     .add-food-page-header {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row; /* เปลี่ยนจาก column เป็น row เพื่อให้เรียงซ้ายไปขวา */
+        align-items: center; /* จัดให้อยู่กึ่งกลางในแนวนอน */
+        justify-content: flex-start; /* ให้ชิดซ้าย */
+        text-align: left; /* ให้ตัวหนังสือชิดซ้าย */
+        gap: 15px; /* ระยะห่างระหว่างไอคอนกับตัวหนังสือ */
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+
+    .add-food-header-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+
+    .add-food-header-icon svg {
+        font-size: 1.5rem;
     }
 
     .add-food-header-content h1,
     .add-food-header-content h2 {
-        font-size: 2rem;
+        font-size: 1.5rem; /* ลดขนาดฟอนต์หัวข้อหลักลง */
+        margin: 0;
+    }
+    
+    .add-food-header-content p {
+        font-size: 0.9rem; /* ลดขนาดคำอธิบายย่อยลง (ถ้ามี) */
+        margin-top: 5px;
     }
 
+    /* 2. ขยายพื้นที่แบบฟอร์มให้เต็มจอมากขึ้น */
     .add-food-form {
-        padding: 25px;
+        padding: 15px; /* ลด Padding เพื่อเพิ่มพื้นที่กรอกข้อมูล */
+        border-radius: 20px; /* ลดความโค้งมนลงให้เหมาะกับจอมือถือ */
+    }
+
+    .add-form-group input,
+    .add-form-group textarea,
+    .add-form-group select {
+        padding: 12px 15px; /* ย่อความสูงของช่องกรอกเล็กน้อย */
+    }
+
+    /* 3. ปรับกรอบอัปโหลดรูปภาพ */
+    .add-image-upload {
+        padding: 20px;
+        gap: 15px;
     }
 
     .add-preview-image {
         width: 100%;
-        height: 250px;
+        height: 200px; /* ลดความสูงของรูปตัวอย่าง ลดการใช้นิ้วปัดหน้าจอ */
     }
 
+    /* 4. ปรับตารางโภชนาการให้เรียงแนวตั้ง */
     .add-nutrition-list {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
+    /* 5. ปรับบล็อกเพิ่มขั้นตอน/ส่วนผสม */
     .add-section-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+    }
+
+    .add-delete-section-btn {
+        width: 100%;
+        justify-content: center; /* ขยายปุ่มลบให้เต็มจอ กดยาวๆ ได้ไม่พลาด */
+    }
+
+    /* จัดช่องกรอกและปุ่มลบรายการย่อยไม่ให้เบียดกัน */
+    .add-dynamic-block-header {
+        flex-wrap: wrap; /* ยอมให้ตกบรรทัดได้ถ้าจอแคบไป */
+        gap: 10px;
     }
 
     .add-dynamic-block input {
-        width: 100%;
+        width: 100%; /* ให้ช่องกรอกขยายเต็มจอ */
     }
+
+    .add-delete-block-btn {
+        margin-left: auto; /* ดันปุ่มลบย่อยไปชิดขวา */
+    }
+    
 }

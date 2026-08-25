@@ -152,7 +152,8 @@ function DashboardReport() {
           รายงานสรุปผล (Dashboard)
         </h2>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="export-buttons-container">
+          <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={exportToExcel}
             className="btn-export btn-export-excel"
@@ -168,6 +169,8 @@ function DashboardReport() {
           </button>
         </div>
       </div>
+        </div>
+        
 
       <div ref={reportRef} className="dashboard-content-wrapper" style={{ padding: '10px' }}>
 
@@ -216,13 +219,13 @@ function DashboardReport() {
 
         <div className="dashboard-grid">
           <div className="admin-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="chart-header-container">
               <h3 className="dashboard-card-title" style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>
                 <LuTrendingUp className="title-icon" />
                 แผนการกินที่ถูกสร้าง ({getFilterDisplayText()})
               </h3>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} data-html2canvas-ignore>
+              <div className="chart-action-buttons" data-html2canvas-ignore>
                 <div className="custom-cute-dropdown" style={{ width: '150px' }}>
                   <div
                     className={`dropdown-header ${isDropdownOpen ? 'active' : ''}`}

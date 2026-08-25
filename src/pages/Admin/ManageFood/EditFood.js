@@ -34,6 +34,8 @@ function EditFood() {
     // โหลด categories จาก API
     const [categories, setCategories] = useState([]);
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
     const [formData, setFormData] = useState({
         food_name: "",
         category_id: "",
@@ -272,22 +274,47 @@ function EditFood() {
                     />
                 </div>
 
-                {/* หมวดหมู่ — โหลดจาก API */}
+                {/* หมวดหมู่ — โหลดจาก API (แบบ Custom Dropdown โค้งมน - เติม edit- นำหน้า) */}
                 <div className="edit-form-group">
                     <label>หมวดหมู่</label>
-                    <select
-                        name="category_id"
-                        value={formData.category_id}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">เลือกหมวดหมู่</option>
-                        {categories.map((cat) => (
-                            <option key={cat.category_id} value={String(cat.category_id)}>
-                                {cat.category_name}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="edit-custom-cute-dropdown">
+                        <div
+                            className={`edit-dropdown-header ${isDropdownOpen ? 'active' : ''}`}
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                            {/* แสดงชื่อหมวดหมู่ที่เลือก หรือข้อความเริ่มต้น */}
+                            {formData.category_id 
+                                ? categories.find(c => String(c.category_id) === String(formData.category_id))?.category_name || "เลือกหมวดหมู่"
+                                : "เลือกหมวดหมู่"}
+                            <span className="edit-arrow">▼</span>
+                        </div>
+
+                        {isDropdownOpen && (
+                            <div className="edit-dropdown-options" style={{ width: '100%', left: 0 }}>
+                                <div 
+                                    className="edit-dropdown-item" 
+                                    onClick={() => {
+                                        setFormData({...formData, category_id: ""});
+                                        setIsDropdownOpen(false);
+                                    }}
+                                >
+                                    เลือกหมวดหมู่
+                                </div>
+                                {categories.map((cat) => (
+                                    <div
+                                        key={cat.category_id}
+                                        className="edit-dropdown-item"
+                                        onClick={() => {
+                                            setFormData({...formData, category_id: String(cat.category_id)});
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        {cat.category_name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="edit-form-group">

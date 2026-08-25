@@ -11,7 +11,7 @@ function AdminLayout() {
       <AdminSidebar />
       
       {/* ขวา: เนื้อหาหลัก */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div className="admin-main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <AdminNavbar />
         <div style={{ padding: '20px', flex: 1 }}>
           <Outlet /> {/* หน้าย่อยต่างๆ จะมาโผล่ตรงนี้ */}

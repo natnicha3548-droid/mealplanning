@@ -4,6 +4,7 @@ import {
   FaChartPie, FaHamburger, FaUtensils, FaUserCog, 
   FaTags, FaComments, FaBars, FaTimes 
 } from 'react-icons/fa'; // เพิ่ม FaBars และ FaTimes เข้ามา
+import './AdminSidebar.css';
 
 function AdminSidebar() {
   const location = useLocation();

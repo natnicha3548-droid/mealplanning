@@ -262,32 +262,6 @@
     box-shadow: 0 15px 35px rgba(255, 107, 53, .45);
 }
 
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 768px) {
-
-    .edit-food-page-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .edit-food-header-content h1 {
-        font-size: 2rem;
-    }
-
-    .edit-food-form {
-        padding: 25px;
-    }
-
-    .edit-preview-image {
-        width: 100%;
-        height: 250px;
-    }
-
-    .edit-nutrition-list {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* ================= RECIPE DETAILS (DYNAMIC BOXES) ================= */
 
@@ -506,15 +480,162 @@
     background: #e0f6e6;
     border-color: #2fb344;
 }
+/* ================= Custom Dropdown (หมวดหมู่ - เติม edit-) ================= */
+.edit-custom-cute-dropdown {
+    position: relative;
+    width: 100%;
+    font-family: inherit;
+    z-index: 1;
+}
 
-/* Responsive สำหรับมือถือเพิ่มเติม */
+.edit-custom-cute-dropdown .edit-dropdown-header {
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 15px;
+    border: 2px solid #ecd9c4;
+    background: #fffdfb;
+    font-size: 16px;
+    color: #555;
+    font-family: 'Kanit', sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: .3s;
+    box-sizing: border-box;
+}
+
+.edit-custom-cute-dropdown .edit-dropdown-header:hover, 
+.edit-custom-cute-dropdown .edit-dropdown-header.active {
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 5px rgba(255, 159, 67, .15);
+}
+
+.edit-custom-cute-dropdown .edit-arrow {
+    font-size: 12px;
+    color: #ff9f43;
+    transition: transform 0.3s ease;
+}
+
+.edit-custom-cute-dropdown .edit-dropdown-header.active .edit-arrow {
+    transform: rotate(180deg);
+}
+
+.edit-custom-cute-dropdown .edit-dropdown-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(255, 140, 66, 0.15);
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+    border: 1px solid #fcf2e8;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+    animation: fadeInDown 0.2s ease forwards;
+}
+
+.edit-custom-cute-dropdown .edit-dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: #ff8c42;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.edit-custom-cute-dropdown .edit-dropdown-item:hover {
+    background: #fff4eb;
+}
+
+/* ================= RESPONSIVE (MOBILE) ================= */
 @media (max-width: 768px) {
+    /* 1. จัดระเบียบส่วนหัว (Header) ให้เหมือน AddFood */
+    .edit-food-page-header {
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: flex-start; 
+        text-align: left; 
+        gap: 15px; 
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+
+    .edit-food-header-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .edit-food-header-icon svg {
+        font-size: 1.5rem;
+    }
+
+    .edit-food-header-content h1,
+    .edit-food-header-content h2 {
+        font-size: 1.5rem; 
+        margin: 0;
+    }
+    
+    .edit-food-header-content p {
+        font-size: 0.9rem; 
+        margin-top: 5px;
+    }
+
+    /* 2. ขยายพื้นที่แบบฟอร์มให้เต็มจอมากขึ้น */
+    .edit-food-form {
+        padding: 15px; 
+        border-radius: 20px; 
+    }
+
+    .edit-form-group input,
+    .edit-form-group textarea,
+    .edit-form-group select {
+        padding: 12px 15px; 
+    }
+
+    /* 3. ปรับกรอบอัปโหลดรูปภาพ */
+    .edit-image-upload {
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .edit-preview-image {
+        width: 100%;
+        height: 200px; 
+    }
+
+    /* 4. ปรับตารางโภชนาการให้เรียงแนวตั้ง */
+    .edit-nutrition-list {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* 5. ปรับบล็อกเพิ่มขั้นตอน/ส่วนผสม */
     .edit-section-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
     }
-    
-    .edit-dynamic-block input {
+
+    .edit-delete-section-btn {
         width: 100%;
+        justify-content: center; 
+    }
+
+    .edit-dynamic-block-header {
+        flex-wrap: wrap; 
+        gap: 10px;
+    }
+
+    .edit-dynamic-block input {
+        width: 100%; 
+    }
+
+    .edit-delete-block-btn {
+        margin-left: auto; 
     }
 }
