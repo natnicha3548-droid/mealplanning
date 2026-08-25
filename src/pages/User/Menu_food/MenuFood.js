@@ -29,7 +29,19 @@ function MenuFood() {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const currentUserId = storedUser?.user_id || null;
 
-    const formatNumber = (value) => Number(value || 0).toFixed(0);
+    const formatNumber = (value) => {
+        if (value === null || value === undefined || value === "") return "0";
+
+        const num = Number(value);
+
+        // ถ้าเป็นจำนวนเต็ม ไม่แสดง .00
+        if (Number.isInteger(num)) {
+            return String(num);
+        }
+
+        // ถ้ามีทศนิยม แสดง 2 ตำแหน่ง
+        return num.toFixed(2);
+    };
 
     const [recommendations, setRecommendations] = useState([]);
     const [showRecommendModal, setShowRecommendModal] = useState(false);
