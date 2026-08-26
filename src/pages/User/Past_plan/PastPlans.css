@@ -502,7 +502,9 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 16px;
   margin-top: 2rem;
+  padding: 4px 2px 0;
 }
 
 .history-empty-state {
