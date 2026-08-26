@@ -21,13 +21,12 @@
     border-bottom: 2px dashed #ffd0a8;
 }
 
-.header-icon {
+/* 🌟 เปลี่ยนชื่อคลาสจาก .header-icon เป็น .edit-category-header-icon */
+.edit-category-header-icon {
     width: 95px;
     height: 95px;
     border-radius: 28px;
-    background: linear-gradient(135deg,
-            #fff2e6,
-            #ffe2c7);
+    background: linear-gradient(135deg, #fff2e6, #ffe2c7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,48 +41,58 @@
     font-weight: 700;
 }
 
-.category-form {
+.edit-category-form {
     display: flex;
     flex-direction: column;
     gap: 28px;
 }
 
-.form-group {
+.edit-category-form-group {
     display: flex;
     flex-direction: column;
 }
 
-.form-group label {
+/* 🌟 ปรับสีตัวหนังสือให้เป็นสีน้ำตาล */
+.edit-category-form-group label {
     margin-bottom: 10px;
     font-size: 16px;
     font-weight: 600;
-    color: #3b2f12;
+    color: #8b5e34;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+/* 🌟 ปรับสีกรอบและพื้นหลังให้เป็นโทนครีมอุ่นๆ เหมือนหน้า Add */
+.edit-category-form-group input,
+.edit-category-form-group textarea,
+.edit-category-form-group select {
     width: 100%;
-    border: 1px solid #ecd2b5;
+    border: 2px solid #ecd9c4;
     border-radius: 18px;
     padding: 16px 20px;
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
     transition: .25s;
-    background: #fff;
+    background: #fffdfb;
+    color: #555;
 }
 
-.form-group textarea {
+/* 🌟 สีตัวหนังสือ Placeholder */
+.edit-category-form-group input::placeholder,
+.edit-category-form-group textarea::placeholder {
+    color: #ad927d;
+    font-weight: 400;
+}
+
+.edit-category-form-group textarea {
     min-height: 170px;
     resize: vertical;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+.edit-category-form-group input:focus,
+.edit-category-form-group textarea:focus,
+.edit-category-form-group select:focus {
     outline: none;
-    border-color: #ff8c42;
-    box-shadow: 0 0 0 4px rgba(255, 140, 66, .12);
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 4px rgba(255, 159, 67, .15);
 }
 
 .save-btn {
@@ -91,9 +100,7 @@
     cursor: pointer;
     height: 58px;
     border-radius: 18px;
-    background: linear-gradient(135deg,
-            #ffa64d,
-            #ff7b39);
+    background: linear-gradient(135deg, #ffa64d, #ff7b39);
     color: #fff;
     font-family: inherit;
     font-size: 16px;
@@ -110,28 +117,57 @@
     box-shadow: 0 12px 25px rgba(255, 123, 57, .25);
 }
 
-@media (max-width:768px) {
-
+@media (max-width: 768px) {
     .edit-category-page {
         padding: 15px;
     }
 
     .edit-category-card {
-        padding: 25px;
+        padding: 20px 15px;
+        border-radius: 20px;
     }
 
     .edit-category-header {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 15px;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* 🌟 เปลี่ยนชื่อคลาสตรงนี้ด้วย */
+    .edit-category-header-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        border-radius: 16px; 
     }
 
     .edit-category-header h1 {
-        font-size: 30px;
+        font-size: 1.5rem;
     }
 
-    .header-icon {
-        width: 80px;
-        height: 80px;
-        font-size: 30px;
+    .edit-category-form {
+        gap: 15px;
+    }
+
+    .edit-category-form-group label {
+        margin-bottom: 6px;
+    }
+
+    .edit-category-form-group input,
+    .edit-category-form-group textarea,
+    .edit-category-form-group select {
+        padding: 12px 15px;
+    }
+
+    .edit-category-form-group textarea {
+        min-height: 120px; 
+    }
+    
+    .save-btn {
+        height: 50px;
+        font-size: 15px;
     }
 }

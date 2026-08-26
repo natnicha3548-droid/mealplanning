@@ -336,7 +336,7 @@
     font-size: 40px;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ================= RESPONSIVE (MOBILE) ================= */
 
 @media (max-width: 1024px) {
     .mc-stats-grid {
@@ -347,34 +347,184 @@
 @media (max-width: 768px) {
 
     .mc-page {
-        padding: 20px;
+        padding: 15px; /* ลดระยะขอบเพื่อให้กล่องด้านในมีพื้นที่มากขึ้น */
     }
 
+    /* 1. จัดระเบียบ Hero (ส่วนหัว) ให้เป็นแนวนอนคล้ายหน้าอื่นๆ */
     .mc-hero {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        flex-direction: row; /* เรียงซ้ายไปขวา */
+        align-items: center; 
+        justify-content: flex-start; 
+        text-align: left; 
+        gap: 15px; 
+        margin-bottom: 20px;
+        padding-bottom: 15px;
     }
 
     .mc-hero-content {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row; /* จัดไอคอนและตัวหนังสือไว้ด้วยกัน */
+        align-items: center;
+        gap: 12px;
     }
 
-    .mc-hero h1 {
-        font-size: 28px;
+    /* 1. จัดระเบียบ Hero (ส่วนหัว) ให้ปุ่มตกลงมาด้านล่าง */
+    .mc-hero {
+        flex-direction: column; /* เปลี่ยนจาก row เป็น column */
+        align-items: flex-start; /* ให้เนื้อหาชิดซ้าย */
+        gap: 15px; 
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        width: 100%;
     }
 
-    .mc-category-grid {
-        grid-template-columns: 1fr;
+    .mc-hero-content {
+        flex-direction: row; /* ให้ไอคอนและตัวหนังสือเรียงแนวนอนคู่กัน */
+        align-items: center;
+        gap: 12px;
     }
 
-    .mc-card-actions {
-        flex-direction: column;
+    .mc-hero-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
     }
 
+    .mc-hero-icon svg {
+        font-size: 1.5rem;
+    }
+
+    .mc-hero h2 {
+        font-size: 1.35rem; 
+        white-space: nowrap; /* ป้องกันไม่ให้ข้อความตกบรรทัด */
+    }
+
+    .mc-hero p {
+        display: none; 
+    }
+
+    /* ขยายปุ่ม "เพิ่ม" ให้เต็มความกว้าง */
     .mc-add-btn {
         width: 100%;
         justify-content: center;
+        padding: 12px;
+        margin-top: 5px; /* ลดระยะห่างด้านบนปุ่มให้พอดี */
+        box-sizing: border-box;
+        font-size: 16px; /* เพิ่มขนาดตัวอักษรให้ใหญ่ขึ้น */
+    }
+
+   /* =========================================
+       บังคับให้กล่องสถิติเรียงแนวนอน 3 กล่องบนมือถือ
+       (ไอคอนและตัวเลขอยู่บรรทัดเดียวกัน ตัวหนังสืออยู่ด้านล่าง)
+       ========================================= */
+    .mc-stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 4px !important;
+    }
+
+    /* 🌟 เปลี่ยนมาใช้ Flexbox เพื่อล็อคระยะห่างไอคอนกับตัวเลขให้คงที่ */
+    .mc-stat-card {
+        display: flex !important;
+        flex-wrap: wrap !important; /* อนุญาตให้เนื้อหาตกลงบรรทัดใหม่ได้ */
+        justify-content: center !important;
+        align-items: center !important;
+        column-gap: 6px !important; /* ล็อคระยะห่างระหว่างไอคอนกับตัวเลขให้เท่ากันเป๊ะทุกกล่อง */
+        padding: 12px 5px !important;
+        border-radius: 15px !important;
+    }
+
+    .mc-stat-card > div:not(.mc-stat-icon) {
+        display: contents !important;
+    }
+
+    .mc-stat-icon {
+        display: flex !important;  
+        width: 32px !important;    
+        height: 32px !important;
+        font-size: 14px !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+    }
+
+    .mc-stat-card h2 {
+        font-size: 1.5rem !important;
+        margin: 0 !important;
+    }
+
+    .mc-stat-card span {
+        width: 100% !important; /* 🌟 บังคับให้ตัวหนังสือตกลงมาบรรทัดใหม่เสมอ */
+        margin-top: 2px !important; /* ระยะห่างระหว่างบรรทัดบนกับตัวหนังสือด้านล่าง */
+        font-size: 0.8rem !important;
+        line-height: 1.2;
+        text-align: center !important;
+    }
+
+    .mc-stat-icon {
+        width: 50px; 
+        height: 50px;
+        border-radius: 14px;
+        font-size: 20px;
+    }
+
+    /* 3. จัดการ Grid ให้แสดงการ์ดหมวดหมู่เป็น 2 คอลัมน์ */
+    .mc-category-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px; 
+        margin-top: 15px;
+    }
+
+    /* 4. ปรับย่อขนาดเนื้อหาภายในการ์ดให้พอดีกับ 2 คอลัมน์ */
+    .mc-category-card {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    /* ย่อขนาดวงกลมลายน้ำด้านหลัง (Decoration) */
+    .mc-category-card::before {
+        width: 100px;
+        height: 100px;
+        top: -20px;
+        right: -20px;
+    }
+
+    /* ย่อขนาดไอคอน */
+    .mc-card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+        border-radius: 12px;
+    }
+
+    .mc-card-icon svg {
+        font-size: 22px;
+    }
+
+    /* ย่อขนาดตัวหนังสือหัวข้อ */
+    .mc-category-card h3 {
+        font-size: 14px; 
+        margin-top: 10px;
+        margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ย่อขนาดป้ายสถานะ Active */
+    .mc-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    /* 5. ปรับปุ่มแก้ไข/ลบให้เล็กลง */
+    .mc-card-actions {
+        flex-direction: row; 
+        gap: 6px;
+        margin-top: 12px;
+    }
+
+    .mc-edit-btn,
+    .mc-delete-btn {
+        padding: 6px;
+        font-size: 11px;
+        border-radius: 8px;
     }
 }
