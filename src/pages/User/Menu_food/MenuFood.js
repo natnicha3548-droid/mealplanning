@@ -602,6 +602,13 @@ function MenuFood() {
                                     className="food-modal-image"
                                 />
 
+                                <div className="food-section serving-size-section">
+                                    <h4>ปริมาณต่อหน่วย</h4>
+                                    <div className="food-box detail-text">
+                                        {selectedFood.serving_size || "-"}
+                                    </div>
+                                </div>
+
                                 {selectedFood.description && selectedFood.description.trim() !== "" && (
                                     <div className="food-section">
                                         <h4>รายละเอียดอาหาร</h4>
@@ -655,13 +662,6 @@ function MenuFood() {
                                         กำลังโหลดรายละเอียดอาหาร...
                                     </p>
                                 )}
-
-                                <div className="food-section">
-                                    <h4>ปริมาณต่อหน่วย</h4>
-                                    <div className="food-box detail-text">
-                                        <p>{selectedFood.serving_size || "-"}</p>
-                                    </div>
-                                </div>
 
                                 <div className="food-section">
                                     <h4>คุณค่าทางโภชนาการ</h4>
