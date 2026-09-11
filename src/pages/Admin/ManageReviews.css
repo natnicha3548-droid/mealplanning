@@ -230,8 +230,9 @@
   }
 
   .header-icon-wrapper {
-    width: 50px; /* ย่อขนาดไอคอนหัวข้อ */
-    height: 50px;
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
   }
 
   .header-icon-wrapper svg {
@@ -260,48 +261,58 @@
 
   /* 3. การ์ดรีวิว (Review Cards) ให้แสดง 1 แถวต่อ 1 การ์ด และย่อส่วน */
   .review-grid {
-    grid-template-columns: 1fr; /* บังคับ 1 คอลัมน์บนมือถือ */
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr); /* 🌟 บังคับให้เป็น 2 คอลัมน์ */
+    gap: 10px; /* ลดระยะห่างระหว่างการ์ดให้พอดีจอ */
   }
 
   .review-card-full {
-    padding: 15px; /* ลดระยะห่างขอบด้านใน */
+    padding: 10px; /* ลดขอบด้านในให้บางลง */
     border-radius: 12px;
   }
 
+  /* ปรับส่วนหัวของการ์ด (ชื่อและวันที่) */
+  .review-card-header {
+    flex-direction: column; /* 🌟 ดันวันที่ลงมาอยู่บรรทัดใหม่ เพราะพื้นที่แนวนอนไม่พอ */
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
   .review-food-name {
-    font-size: 1rem; /* ลดขนาดชื่ออาหาร */
+    font-size: 0.95rem; /* ลดขนาดชื่ออาหาร */
   }
 
   .review-user-email {
-    font-size: 0.8rem; /* ลดขนาดอีเมล */
+    font-size: 0.7rem; /* ลดขนาดอีเมล */
+    word-break: break-all; /* 🌟 สำคัญมาก: ป้องกันอีเมลยาวๆ ดันจนการ์ดพัง */
   }
 
   .review-date {
-    font-size: 0.75rem; /* ลดขนาดวันที่ */
+    font-size: 0.65rem; /* ลดขนาดวันที่ */
   }
 
   .review-text-content {
-    padding: 12px;
-    font-size: 0.9rem;
-    min-height: auto; /* ไม่ต้องบังคับความสูง */
-    margin-bottom: 15px;
+    padding: 8px;
+    font-size: 0.8rem; /* ลดขนาดตัวหนังสือรีวิว */
+    min-height: auto;
+    margin-bottom: 10px;
   }
 
   /* 4. ปุ่มอนุมัติ/ปฏิเสธ (Actions Buttons) */
   .review-actions {
-    gap: 8px; /* ให้ปุ่มอยู่ใกล้กันขึ้นนิดนึง */
+    flex-direction: column; /* 🌟 เปลี่ยนปุ่มให้เรียงซ้อนกัน (บน-ล่าง) เพื่อไม่ให้บีบจนกดไม่ได้ */
+    gap: 6px; 
   }
 
   .action-btn-large {
-    padding: 8px; /* ลดขนาดปุ่ม */
-    font-size: 0.9rem;
+    padding: 6px; /* ลดขนาดปุ่ม */
+    font-size: 0.8rem;
     border-radius: 8px;
   }
 
   .status-badge {
-    padding: 6px 10px;
-    font-size: 0.9rem;
+    padding: 6px;
+    font-size: 0.8rem;
     border-radius: 8px;
   }
 }

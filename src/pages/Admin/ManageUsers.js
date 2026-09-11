@@ -7,7 +7,9 @@ import {
   LuSearch, 
   LuX,
   LuUserPlus,  // <--- เพิ่มไอคอนผู้ใช้ใหม่
-  LuUserMinus  // <--- เพิ่มไอคอนไม่ได้ใช้งาน
+  LuUserMinus,  // <--- เพิ่มไอคอนไม่ได้ใช้งาน
+  LuChevronDown, // <--- เพิ่มตรงนี้
+  LuChevronUp
 } from "react-icons/lu";
 import { FaUserCog } from "react-icons/fa";
 import './ManageUsers.css';
@@ -25,6 +27,7 @@ function ManageUsers() {
   // ================= State สำหรับ Modal =================
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState(''); // 'view', 'edit', 'add'
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({
     user_id: '', email: '', password: '', role: 'User'
   }); 
@@ -278,16 +281,50 @@ function ManageUsers() {
 
                 <div className="form-group">
                   <label>สิทธิ์การใช้งาน (Role)</label>
-                  <select 
-                    disabled={modalMode === 'view'}
-                    value={selectedUser.role}
-                    onChange={(e) => setSelectedUser({...selectedUser, role: e.target.value})}
-                  >
-                    <option value="User">ผู้ใช้งานทั่วไป (User)</option>
-                    <option value="Admin">แอดมิน (Admin)</option>
-                  </select>
-                </div>
-              </div>
+                  
+                  {/* เริ่มต้น Custom Dropdown */}
+                  <div className="user-custom-select-container">
+                    <div 
+                      className={`user-custom-select-header ${isRoleDropdownOpen ? 'open' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}
+                      onClick={() => {
+                        if (modalMode !== 'view') {
+                          setIsRoleDropdownOpen(!isRoleDropdownOpen);
+                        }
+                      }}
+                    >
+                      <span>
+                        {selectedUser.role === 'Admin' ? 'แอดมิน (Admin)' : 'ผู้ใช้งานทั่วไป (User)'}
+                      </span>
+                      {isRoleDropdownOpen ? <LuChevronUp /> : <LuChevronDown />}
+                    </div>
+
+                    {isRoleDropdownOpen && modalMode !== 'view' && (
+                      <div className="user-custom-select-options">
+                        <div 
+                          className={`user-custom-select-option ${selectedUser.role === 'User' ? 'selected' : ''}`}
+                          onClick={() => {
+                            setSelectedUser({...selectedUser, role: 'User'});
+                            setIsRoleDropdownOpen(false);
+                          }}
+                        >
+                          ผู้ใช้งานทั่วไป (User)
+                        </div>
+                        <div 
+                          className={`user-custom-select-option ${selectedUser.role === 'Admin' ? 'selected' : ''}`}
+                          onClick={() => {
+                            setSelectedUser({...selectedUser, role: 'Admin'});
+                            setIsRoleDropdownOpen(false);
+                          }}
+                        >
+                          แอดมิน (Admin)
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* จบส่วน Custom Dropdown */}
+                </div> {/* 🌟 จุดที่แก้ 1: ปิดแท็ก .form-group ที่หายไป */}
+
+              </div> {/* 🌟 จุดที่แก้ 2: ปิดแท็ก .modal-body ที่หายไป */}
 
               <div className="modal-footer">
                 <button type="button" className="btn-cancel" onClick={closeModal}>ปิด</button>
@@ -305,4 +342,4 @@ function ManageUsers() {
   );
 }
 
-export default ManageUsers; 
+export default ManageUsers;

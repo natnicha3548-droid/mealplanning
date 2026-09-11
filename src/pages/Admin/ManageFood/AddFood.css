@@ -465,6 +465,7 @@
     z-index: 1;
 }
 
+/* 🌟 แก้ไข: เรียกคลาสให้ตรงกัน (.add-dropdown-header) */
 .add-custom-cute-dropdown .add-dropdown-header {
     width: 100%;
     padding: 15px 18px;
@@ -472,18 +473,20 @@
     border: 2px solid #ecd9c4;
     background: #fffdfb;
     font-size: 16px;
-    color: #b29e90;
+    color: #a89589; /* เปลี่ยนให้เป็นสีส้มอุ่น ตามหน้า Add Category ที่เราทำไว้ */
     font-family: 'Kanit', sans-serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: .3s;
+    font-weight: 500;
 }
 
-.add-custom-cute-dropdown .dropdown-header:hover, 
-.add-custom-cute-dropdown .dropdown-header.active {
-    border-color: #ff9f43;
+/* 🌟 แก้ไข: เรียกคลาสให้ตรงกัน */
+.add-custom-cute-dropdown .add-dropdown-header:hover, 
+.add-custom-cute-dropdown .add-dropdown-header.active {
+    border-color: #eea867;
     box-shadow: 0 0 0 5px rgba(255, 159, 67, .15);
 }
 
@@ -493,11 +496,13 @@
     transition: transform 0.3s ease;
 }
 
-.add-custom-cute-dropdown .dropdown-header.active .arrow {
+/* 🌟 แก้ไข: เรียกคลาสให้ตรงกัน */
+.add-custom-cute-dropdown .add-dropdown-header.active .arrow {
     transform: rotate(180deg);
 }
 
-.add-custom-cute-dropdown .dropdown-options {
+/* 🌟 แก้ไข: เรียกคลาสให้ตรงกับใน JS (.add-dropdown-options) */
+.add-custom-cute-dropdown .add-dropdown-options {
     position: absolute;
     top: calc(100% + 5px);
     background: #ffffff;
@@ -510,19 +515,21 @@
     max-height: 250px;
     overflow-y: auto;
     animation: fadeInDown 0.2s ease forwards;
+    z-index: 10; /* ดันให้อยู่บนสุด */
 }
 
-.add-custom-cute-dropdown .dropdown-item {
+/* 🌟 แก้ไข: เรียกคลาสให้ตรงกับใน JS (.add-dropdown-item) */
+.add-custom-cute-dropdown .add-dropdown-item {
     padding: 12px 15px;
     cursor: pointer;
     border-radius: 10px;
-    color: #ff8c42;
+    color: #ee9862;
     font-weight: 500;
     font-size: 0.95rem;
     transition: 0.2s;
 }
 
-.add-custom-cute-dropdown .dropdown-item:hover {
+.add-custom-cute-dropdown .add-dropdown-item:hover {
     background: #fff4eb;
 }
 

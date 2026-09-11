@@ -89,7 +89,27 @@
     transition: .25s;
 }
 
-/* 🌟 เพิ่มสีให้ตัวหนังสือแนะนำ (Placeholder) เป็นสีน้ำตาลอ่อน */
+.add-category-form-group label {
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #8b5e34;
+}
+
+/* 🌟 นำ select ออกจากบรรทัดนี้ เพราะเราไม่ได้ใช้แท็กปกติแล้ว */
+.add-category-form-group input,
+.add-category-form-group textarea {
+    width: 100%;
+    border: 2px solid #ecd9c4; 
+    background: #fffdfb; 
+    border-radius: 15px;
+    padding: 15px 18px;
+    font-family: inherit;
+    font-size: 16px;
+    color: #555; 
+    transition: .25s;
+}
+
 .add-category-form-group input::placeholder,
 .add-category-form-group textarea::placeholder {
     color: #ad927d;
@@ -102,15 +122,71 @@
 }
 
 .add-category-form-group input:focus,
-.add-category-form-group textarea:focus,
-.add-category-form-group select:focus {
+.add-category-form-group textarea:focus {
     outline: none;
-    border-color: #ff9f43; /* เปลี่ยนสีกรอบตอนกดพิมพ์เป็นสีส้ม */
+    border-color: #ff9f43; 
     box-shadow: 0 0 0 4px rgba(255, 159, 67, .15);
 }
 
-.add-category-form-group select {
+/* =========================================
+   🌟 CSS สำหรับ Custom Dropdown ตามภาพที่ 2
+   ========================================= */
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-header {
+    width: 100%;
+    border: 2px solid #ecd9c4;
+    background: #fffdfb;
+    border-radius: 15px;
+    padding: 15px 18px;
+    font-family: inherit;
+    font-size: 16px;
+    color: #b19487; /* สีส้ม */
+    font-weight: 500;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: .25s;
+}
+
+.custom-select-header.open {
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 4px rgba(255, 159, 67, .15);
+}
+
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 8px); /* ให้เมนูหล่นลงมาใต้กล่อง */
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 20px; /* ขอบโค้งมนตามภาพ */
+    box-shadow: 0 8px 30px rgba(255, 140, 66, 0.15); /* เงาสีส้มอ่อน */
+    padding: 10px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.custom-select-option {
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: #d78c5e; /* สีส้ม */
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* เมื่อเอาเมาส์ชี้ หรือ เป็นข้อความที่ถูกเลือกอยู่ ให้เป็นสีส้มอ่อน */
+.custom-select-option:hover,
+.custom-select-option.selected {
+    background: #fff4eb; 
 }
 
 .save-btn {
