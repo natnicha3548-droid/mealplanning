@@ -50,59 +50,66 @@
     font-family: 'Kanit', sans-serif;
 }
 
-.form-section-title {
+.add-category-form-section-title {
     color: #ff8c42;
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 20px;
 }
 
-.category-form {
+.add-category-form {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 22px; /* 🌟 ปรับระยะห่างกลับมาเป็น 22px สำหรับ Desktop */
 }
 
-.form-group {
+.add-category-form-group {
     display: flex;
     flex-direction: column;
 }
 
-.form-group label {
+.add-category-form-group label {
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    color: #334155;
+    color: #8b5e34; /* 🌟 เปลี่ยนสีตัวหนังสือหัวข้อเป็นสีน้ำตาลเข้ม */
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+.add-category-form-group input,
+.add-category-form-group textarea,
+.add-category-form-group select {
     width: 100%;
-    border: 1px solid #e2e8f0;
-    background: #f8fafc;
-    border-radius: 16px;
+    border: 2px solid #ecd9c4; /* 🌟 เปลี่ยนสีกรอบเป็นสีครีมอ่อนๆ และปรับความหนาเป็น 2px */
+    background: #fffdfb; /* 🌟 เปลี่ยนสีพื้นหลังให้อมส้มนิดๆ (ขาวอุ่น) */
+    border-radius: 15px;
     padding: 15px 18px;
     font-family: inherit;
-    font-size: 15px;
+    font-size: 16px;
+    color: #555; /* สีตัวหนังสือที่ผู้ใช้พิมพ์ */
     transition: .25s;
 }
 
-.form-group textarea {
+/* 🌟 เพิ่มสีให้ตัวหนังสือแนะนำ (Placeholder) เป็นสีน้ำตาลอ่อน */
+.add-category-form-group input::placeholder,
+.add-category-form-group textarea::placeholder {
+    color: #ad927d;
+    font-weight: 400;
+}
+
+.add-category-form-group textarea {
     min-height: 160px;
     resize: none;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+.add-category-form-group input:focus,
+.add-category-form-group textarea:focus,
+.add-category-form-group select:focus {
     outline: none;
-    background: white;
-    border-color: #ff8c42;
-    box-shadow: 0 0 0 4px rgba(255, 140, 66, .15);
+    border-color: #ff9f43; /* เปลี่ยนสีกรอบตอนกดพิมพ์เป็นสีส้ม */
+    box-shadow: 0 0 0 4px rgba(255, 159, 67, .15);
 }
 
-.form-group select {
+.add-category-form-group select {
     cursor: pointer;
 }
 
@@ -139,21 +146,58 @@
     }
 
     .add-category-card {
-        padding: 22px;
+        padding: 20px 15px;
+        border-radius: 20px;
     }
 
     .add-category-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
     }
 
-    .header-icon {
-        width: 70px;
-        height: 70px;
-        font-size: 28px;
+    .add-category-header-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
     }
 
-    .add-category-header h1 {
-        font-size: 26px;
+    .add-category-header-icon svg {
+        font-size: 1.35rem;
+    }
+
+    .add-category-header h2 {
+        font-size: 1.5rem;
+    }
+
+    /* 🌟 เพิ่มโค้ดลดระยะห่างบนมือถือที่เคยคุยกันไว้ */
+    .add-category-form {
+        gap: 15px; 
+    }
+
+    .add-category-form-section-title {
+        margin-bottom: 15px; 
+    }
+
+    .add-category-form-group label {
+        margin-bottom: 6px; 
+    }
+
+    /* 🌟 เปลี่ยนมาใช้ .add-category-form-group แทน .form-group ให้ถูกต้อง */
+    .add-category-form-group input,
+    .add-category-form-group textarea,
+    .add-category-form-group select {
+        padding: 12px 15px;
+    }
+
+    .add-category-form-group textarea {
+        min-height: 120px; 
+    }
+    
+    .save-btn {
+        height: 50px;
+        font-size: 15px;
     }
 }

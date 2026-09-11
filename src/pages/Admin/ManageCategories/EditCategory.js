@@ -48,53 +48,39 @@ function EditCategory() {
         e.preventDefault();
 
         try {
-
             await axios.put(
                 `http://localhost:5000/api/categories/${id}`,
                 formData
             );
 
             alert("แก้ไขหมวดหมู่สำเร็จ");
-
             navigate("/admin/manage-categories");
 
         } catch (error) {
-
             console.log(error);
-
             alert("เกิดข้อผิดพลาด");
-
         }
     };
 
     return (
         <div className="edit-category-page">
-
             <div className="edit-category-card">
-
                 <div className="edit-category-header">
-
-                    <div className="header-icon">
+                    {/* 🌟 เปลี่ยนคลาสจาก header-icon เป็น edit-category-header-icon */}
+                    <div className="edit-category-header-icon">
                         <FaEdit />
                     </div>
-
                     <div>
                         <h1>แก้ไขหมวดหมู่อาหาร</h1>
                     </div>
-
                 </div>
 
                 <form
-                    className="category-form"
+                    className="edit-category-form"
                     onSubmit={handleSubmit}
                 >
-
-                    <div className="form-group">
-
-                        <label>
-                            ชื่อหมวดหมู่
-                        </label>
-
+                    <div className="edit-category-form-group">
+                        <label>ชื่อหมวดหมู่</label>
                         <input
                             type="text"
                             name="category_name"
@@ -103,15 +89,10 @@ function EditCategory() {
                             placeholder="เช่น ของคาว ของหวาน เครื่องดื่ม"
                             required
                         />
-
                     </div>
 
-                    <div className="form-group">
-
-                        <label>
-                            รายละเอียด
-                        </label>
-
+                    <div className="edit-category-form-group">
+                        <label>รายละเอียด</label>
                         <textarea
                             rows="5"
                             name="description"
@@ -119,36 +100,20 @@ function EditCategory() {
                             onChange={handleChange}
                             placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับหมวดหมู่"
                         />
-
                     </div>
 
-                    <div className="form-group">
-
-                        <label>
-                            สถานะ
-                        </label>
-
+                    <div className="edit-category-form-group">
+                        <label>สถานะ</label>
                         <select
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
                             required
                         >
-
-                            <option value="">
-                                เลือกสถานะการใช้งาน
-                            </option>
-
-                            <option value="active">
-                                ใช้งาน
-                            </option>
-
-                            <option value="inactive">
-                                ปิดใช้งาน
-                            </option>
-
+                            <option value="">เลือกสถานะการใช้งาน</option>
+                            <option value="active">ใช้งาน</option>
+                            <option value="inactive">ปิดใช้งาน</option>
                         </select>
-
                     </div>
 
                     <button
@@ -158,11 +123,8 @@ function EditCategory() {
                         <FaSave />
                         บันทึกการแก้ไข
                     </button>
-
                 </form>
-
             </div>
-
         </div>
     );
 }

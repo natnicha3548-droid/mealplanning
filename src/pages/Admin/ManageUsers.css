@@ -560,3 +560,133 @@
   box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
   transform: translateY(-2px);
 }
+
+/* =========================================
+   RESPONSIVE MOBILE (หน้าจอขนาด 768px ลงไป)
+   ========================================= */
+@media (max-width: 768px) {
+  
+  /* 1. จัดระเบียบ Header ให้กะทัดรัดขึ้น */
+  .manage-users-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  .title-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
+
+  .title-icon-wrapper svg {
+    font-size: 1.5rem;
+  }
+
+  /* 2. กล่องค้นหาและปุ่มเพิ่มให้ขยายเต็มจอ */
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .menu-search-box, 
+  .menu-search-box input {
+    width: 100%;
+  }
+
+  .menu-search-box input:focus {
+    width: 100%; /* ยกเลิกการขยายขนาดตอนกดพิมพ์บนมือถือ */
+  }
+
+  .menu-btn-cute {
+    width: 100%;
+    justify-content: center; /* ให้ตัวหนังสือในปุ่มอยู่กึ่งกลาง */
+  }
+
+  /* 3. แท็บกรองสิทธิ์ (Role Tabs) และสรุปสถิติ ให้สามารถเลื่อนซ้ายขวาได้ */
+  .filter-and-stats-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .role-filter-tabs {
+    width: 100%;
+    overflow-x: auto; /* เปิดให้เลื่อนซ้าย-ขวาได้ถ้าแท็บล้นจอ */
+    white-space: nowrap;
+    padding-bottom: 5px; /* เผื่อพื้นที่ให้ Scrollbar นิ้วเลื่อน */
+    /* ซ่อน Scrollbar ของบราวเซอร์เพื่อความสวยงาม */
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+  }
+  
+  .role-filter-tabs::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  /* =========================================
+     จัดระเบียบกล่องสถิติให้เป็น 2 แถว แถวละ 2 กล่อง (2x2 Grid)
+     ========================================= */
+  .user-stats-summary {
+    width: 100% !important;
+    display: grid !important; /* เปลี่ยนจาก flex เป็น grid */
+    grid-template-columns: repeat(2, 1fr) !important; /* บังคับแบ่งเป็น 2 คอลัมน์เท่าๆ กัน */
+    gap: 10px !important; /* ระยะห่างระหว่างกล่อง */
+  }
+
+  .stat-pill {
+    width: 100% !important; /* ขยายให้เต็มพื้นที่คอลัมน์ */
+    justify-content: center !important; /* จัดข้อความให้อยู่กึ่งกลาง */
+    padding: 10px 5px !important; /* ปรับพื้นที่ด้านในให้สมดุล */
+    box-sizing: border-box;
+    text-align: center;
+    /* หากต้องการให้ตัวเลขตกลงมาบรรทัดใหม่ ให้ลบ comment บรรทัดล่างนี้ออกครับ */
+    /* flex-direction: column; */
+  }
+
+  /* 4. ปรับตาราง (Table) ให้อ่านง่ายบนมือถือ */
+  .table-wrapper {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .cute-table th, 
+  .cute-table td {
+    padding: 10px 8px; /* ลด Padding ในเซลล์ตารางลง */
+    font-size: 0.85rem; /* ย่อขนาดตัวหนังสือในตาราง */
+  }
+
+  /* ย่อขนาดปุ่มจัดการ (Action Buttons) */
+  .action-buttons {
+    min-width: 90px;
+    gap: 5px;
+  }
+
+  .btn-action {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  /* 5. ปรับ Modal (ป๊อปอัปแก้ไข) ให้เต็มจอขึ้น */
+  .modal-content {
+    width: 95%;
+    max-width: none; /* ยกเลิก max-width เดิม */
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  .form-group input, 
+  .form-group select {
+    padding: 10px 12px;
+  }
+}

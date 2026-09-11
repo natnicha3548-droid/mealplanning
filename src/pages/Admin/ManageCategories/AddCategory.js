@@ -74,16 +74,16 @@ function AddCategory() {
 
                 </div>
 
-                <div className="form-section-title">
+                <div className="add-category-form-section-title">
                     ข้อมูลหมวดหมู่อาหาร
                 </div>
 
                 <form
                     onSubmit={handleSubmit}
-                    className="category-form"
+                    className="add-category-form"
                 >
 
-                    <div className="form-group">
+                    <div className="add-category-form-group">
 
                         <label>
                             ชื่อหมวดหมู่
@@ -100,7 +100,7 @@ function AddCategory() {
 
                     </div>
 
-                    <div className="form-group">
+                    <div className="add-category-form-group">
 
                         <label>
                             รายละเอียด
@@ -115,7 +115,7 @@ function AddCategory() {
 
                     </div>
 
-                    <div className="form-group">
+                    <div className="add-category-form-group">
 
                         <label>
                             สถานะ

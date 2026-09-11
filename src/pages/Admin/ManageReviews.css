@@ -214,3 +214,94 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* =========================================
+   RESPONSIVE (MOBILE) - สำหรับหน้าจอไม่เกิน 768px
+   ========================================= */
+@media (max-width: 768px) {
+  /* 1. จัดระเบียบ Header ให้เรียงแนวนอนแบบกะทัดรัด */
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .page-title {
+    font-size: 1.5rem; /* ลดขนาดหัวข้อ */
+    gap: 12px;
+  }
+
+  .header-icon-wrapper {
+    width: 50px; /* ย่อขนาดไอคอนหัวข้อ */
+    height: 50px;
+  }
+
+  .header-icon-wrapper svg {
+    font-size: 1.5rem; /* ย่อขนาด svg ด้านใน */
+  }
+
+  /* 2. แท็บเมนู (Tabs) สามารถเลื่อนซ้าย-ขวาได้ */
+  .review-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto; /* ใช้นิ้วปัดเลื่อนได้ถ้าแท็บล้นจอ */
+    padding-bottom: 10px; /* ลด Padding ลง */
+    margin-bottom: 20px;
+    -ms-overflow-style: none; /* ซ่อน scrollbar สำหรับเบราว์เซอร์เก่า */
+    scrollbar-width: none;
+  }
+  
+  .review-tabs::-webkit-scrollbar { 
+    display: none; /* ซ่อน scrollbar เพื่อความสวยงาม */
+  }
+
+  .tab-btn {
+    padding: 8px 15px; /* ลดขนาดปุ่มแท็บ */
+    font-size: 0.9rem;
+    white-space: nowrap; /* ไม่ให้ข้อความในปุ่มถูกดันตกบรรทัด */
+  }
+
+  /* 3. การ์ดรีวิว (Review Cards) ให้แสดง 1 แถวต่อ 1 การ์ด และย่อส่วน */
+  .review-grid {
+    grid-template-columns: 1fr; /* บังคับ 1 คอลัมน์บนมือถือ */
+    gap: 15px;
+  }
+
+  .review-card-full {
+    padding: 15px; /* ลดระยะห่างขอบด้านใน */
+    border-radius: 12px;
+  }
+
+  .review-food-name {
+    font-size: 1rem; /* ลดขนาดชื่ออาหาร */
+  }
+
+  .review-user-email {
+    font-size: 0.8rem; /* ลดขนาดอีเมล */
+  }
+
+  .review-date {
+    font-size: 0.75rem; /* ลดขนาดวันที่ */
+  }
+
+  .review-text-content {
+    padding: 12px;
+    font-size: 0.9rem;
+    min-height: auto; /* ไม่ต้องบังคับความสูง */
+    margin-bottom: 15px;
+  }
+
+  /* 4. ปุ่มอนุมัติ/ปฏิเสธ (Actions Buttons) */
+  .review-actions {
+    gap: 8px; /* ให้ปุ่มอยู่ใกล้กันขึ้นนิดนึง */
+  }
+
+  .action-btn-large {
+    padding: 8px; /* ลดขนาดปุ่ม */
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  .status-badge {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+}
