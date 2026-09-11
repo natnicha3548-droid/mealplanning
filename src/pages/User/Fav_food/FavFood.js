@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -15,6 +15,7 @@ import {
     FaCandyCane,
     FaMortarPestle,
     FaTimes,
+    FaRedoAlt,
     FaStar,
     FaRegStar,
 } from "react-icons/fa";
@@ -35,6 +36,7 @@ function FavFood() {
     const [selectedFood, setSelectedFood] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
+    const [restoringPlanId, setRestoringPlanId] = useState(null);
 
     // Review state
     const [reviews, setReviews] = useState([]);
@@ -86,11 +88,6 @@ function FavFood() {
         } catch (e) { }
         return [];
     };
-
-    useEffect(() => {
-        fetchFavorites();
-        fetchCategories();
-    }, []);
 
     useEffect(() => {
         if (selectedFood) {
@@ -187,7 +184,7 @@ function FavFood() {
 
     // ================= FETCH CATEGORIES =================
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const response = await fetch("http://localhost:5000/api/categories");
             const data = await response.json();
@@ -195,11 +192,11 @@ function FavFood() {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, []);
 
     // ================= GROUP PLAN ROWS =================
 
-    const groupPlanData = (plansRaw) => {
+    const groupPlanData = useCallback((plansRaw) => {
         const planMap = {};
 
         plansRaw.forEach((row) => {
@@ -257,11 +254,11 @@ function FavFood() {
         });
 
         return Object.values(planMap).map(({ _bfSet, _lSet, _dSet, ...plan }) => plan);
-    };
+    }, []);
 
     // ================= FETCH FAVORITES =================
 
-    const fetchFavorites = async () => {
+    const fetchFavorites = useCallback(async () => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user) return;
@@ -276,7 +273,12 @@ function FavFood() {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [groupPlanData]);
+
+    useEffect(() => {
+        fetchFavorites();
+        fetchCategories();
+    }, [fetchFavorites, fetchCategories]);
 
     // ================= REMOVE FAVORITE FOOD =================
 
@@ -304,6 +306,53 @@ function FavFood() {
             setFavPlans(favPlans.filter((plan) => plan.favorite_id !== favoriteId));
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    // ================= RESTORE FAVORITE PLAN =================
+
+    const handleRestorePlan = async (plan) => {
+        const confirmRestore = window.confirm(
+            "ต้องการนำแผนโปรดนี้กลับมาใช้ในวันนี้ใช่หรือไม่?"
+        );
+        if (!confirmRestore) return;
+
+        const sourceDate = plan.plan_date
+            ? String(plan.plan_date).slice(0, 10)
+            : "";
+
+        if (!sourceDate) {
+            alert("ไม่พบวันที่ของแผนอาหารนี้");
+            return;
+        }
+
+        setRestoringPlanId(plan.favorite_id);
+
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const userId = user?.user_id;
+
+            const response = await fetch("http://localhost:5000/api/restore-plan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId,
+                    sourceDate,
+                    targetDate: new Date().toISOString().split("T")[0],
+                }),
+            });
+
+            if (response.ok) {
+                alert("นำแผนกลับมาใช้เรียบร้อยแล้ว!");
+                navigate("/meal-plan");
+            } else {
+                alert("เกิดข้อผิดพลาดในการนำแผนกลับมาใช้");
+            }
+        } catch (error) {
+            console.error("Restore favorite plan error:", error);
+            alert("ไม่สามารถนำแผนกลับมาใช้ได้");
+        } finally {
+            setRestoringPlanId(null);
         }
     };
 
@@ -578,6 +627,25 @@ function FavFood() {
                                                 <div className="home-total-cal-badge">
                                                     {parseInt(plan.total_calories || 0)} kcal
                                                 </div>
+                                                <button
+                                                    className="fav-plan-restore-btn"
+                                                    onClick={() => handleRestorePlan(plan)}
+                                                    title="นำแผนกลับมาใช้ใหม่"
+                                                    aria-label="นำแผนกลับมาใช้ใหม่"
+                                                    disabled={restoringPlanId === plan.favorite_id}
+                                                    style={{
+                                                        border: "none",
+                                                        background: "transparent",
+                                                        color: "#ff9800",
+                                                        cursor: restoringPlanId === plan.favorite_id
+                                                            ? "not-allowed"
+                                                            : "pointer",
+                                                        opacity: restoringPlanId === plan.favorite_id ? 0.6 : 1,
+                                                        fontSize: "1.2rem",
+                                                    }}
+                                                >
+                                                    <FaRedoAlt />
+                                                </button>
                                                 <button
                                                     className="fav-plan-heart-btn"
                                                     onClick={() => removeFavoritePlan(plan.favorite_id)}

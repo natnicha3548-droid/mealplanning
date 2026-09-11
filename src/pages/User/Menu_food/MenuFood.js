@@ -21,6 +21,7 @@ function MenuFood() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const [selectedFood, setSelectedFood] = useState(null);
+    const [foodDetailsLoading, setFoodDetailsLoading] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
     const [favFoodIds, setFavFoodIds] = useState([]);
@@ -46,7 +47,6 @@ function MenuFood() {
     const [recommendations, setRecommendations] = useState([]);
     const [showRecommendModal, setShowRecommendModal] = useState(false);
     const [addedFood, setAddedFood] = useState(null);
-    const [fromRecommend, setFromRecommend] = useState(false);
 
     // ===== REVIEW STATE =====
     const [reviews, setReviews] = useState([]);
@@ -56,7 +56,6 @@ function MenuFood() {
     const [reviewText, setReviewText] = useState("");
     const [reviewSubmitting, setReviewSubmitting] = useState(false);
     const [myReview, setMyReview] = useState(null);
-    const [reviewSuccess, setReviewSuccess] = useState("");
 
     const maskEmail = (email) => {
         if (!email) return "ผู้ใช้งาน";
@@ -107,23 +106,46 @@ function MenuFood() {
             : `http://localhost:5000${food.image}`;
     };
 
+    // ดึงข้อมูลรายละเอียดฉบับเต็มจาก endpoint เดียวกับหน้า EditFood
+    const openFoodDetails = async (food) => {
+        if (!food) return;
+
+        setSelectedFood(food);
+        setSelectedMeal("breakfast");
+        setQuantity(1);
+        setFoodDetailsLoading(true);
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/foods/${food.food_id}`);
+            const data = await res.json();
+
+            if (data.success && data.food) {
+                setSelectedFood((currentFood) => (
+                    currentFood?.food_id === food.food_id
+                        ? { ...currentFood, ...data.food }
+                        : currentFood
+                ));
+            }
+        } catch (err) {
+            console.error("Fetch food details error:", err);
+        } finally {
+            setFoodDetailsLoading(false);
+        }
+    };
+
     const handleCloseSelectedFood = () => {
         setSelectedFood(null);
-        setFromRecommend(false);
+        setFoodDetailsLoading(false);
         setReviews([]);
         setMyReview(null);
         setReviewRating(0);
         setReviewText("");
-        setReviewSuccess("");
     };
 
     const openFoodFromRecommend = (foodName) => {
         const foodData = getFoodData(foodName);
         if (!foodData) return;
-        setSelectedFood(foodData);
-        setSelectedMeal("breakfast");
-        setQuantity(1);
-        setFromRecommend(true);
+        openFoodDetails(foodData);
     };
 
     useEffect(() => {
@@ -145,7 +167,6 @@ function MenuFood() {
             setMyReview(null);
             setReviewRating(0);
             setReviewText("");
-            setReviewSuccess("");
 
             try {
                 // ดึงรีวิวที่อนุมัติแล้วของเมนูนี้
@@ -336,7 +357,6 @@ function MenuFood() {
         const foodForModal = selectedFood;
         setAddedFood(foodForModal);
         setSelectedFood(null);
-        setFromRecommend(false);
         setQuantity(1);
 
         const mealTypeMap = { breakfast: "เช้า", lunch: "กลางวัน", dinner: "เย็น" };
@@ -517,12 +537,7 @@ function MenuFood() {
                         <div
                             key={food.food_id}
                             className="food-card"
-                            onClick={() => {
-                                setSelectedFood(food);
-                                setSelectedMeal("breakfast");
-                                setQuantity(1);
-                                setFromRecommend(false);
-                            }}
+                            onClick={() => openFoodDetails(food)}
                         >
                             <button
                                 className="fav-btn"
@@ -634,6 +649,19 @@ function MenuFood() {
                             {/* ===== RIGHT ===== */}
                             <div className="food-modal-right">
                                 <h2>{selectedFood.food_name}</h2>
+
+                                {foodDetailsLoading && (
+                                    <p style={{ color: "#999", marginTop: "-8px" }}>
+                                        กำลังโหลดรายละเอียดอาหาร...
+                                    </p>
+                                )}
+
+                                <div className="food-section">
+                                    <h4>ปริมาณต่อหน่วย</h4>
+                                    <div className="food-box detail-text">
+                                        <p>{selectedFood.serving_size || "-"}</p>
+                                    </div>
+                                </div>
 
                                 <div className="food-section">
                                     <h4>คุณค่าทางโภชนาการ</h4>
@@ -760,7 +788,7 @@ function MenuFood() {
                                                 }
                                             </button>
 
-                                            
+
                                         </div>
                                     ) : (
                                         <p className="review-login-hint">
