@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'; 
-import { 
-  LuPlus, 
-  LuEye, 
-  LuPenLine, 
-  LuTrash2, 
-  LuSearch, 
+import React, { useState, useEffect } from 'react';
+import {
+  LuPlus,
+  LuEye,
+  LuPenLine,
+  LuTrash2,
+  LuSearch,
   LuX,
   LuUserPlus,  // <--- เพิ่มไอคอนผู้ใช้ใหม่
   LuUserMinus,  // <--- เพิ่มไอคอนไม่ได้ใช้งาน
@@ -17,8 +17,7 @@ import './ManageUsers.css';
 function ManageUsers() {
   const [activeTab, setActiveTab] = useState('All');
   const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   // ================= State สำหรับสถิติเพิ่มเติม (ใหม่/ไม่ได้ใช้งาน) =================
@@ -30,11 +29,11 @@ function ManageUsers() {
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({
     user_id: '', email: '', password: '', role: 'User'
-  }); 
+  });
 
   useEffect(() => {
     fetchUsersData();
-  }, []); 
+  }, []);
 
   const fetchUsersData = async () => {
     try {
@@ -42,7 +41,7 @@ function ManageUsers() {
       const response = await fetch('http://localhost:5000/api/admin/users');
       if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลสมาชิกได้');
       const data = await response.json();
-      setUsers(data); 
+      setUsers(data);
       setIsLoading(false);
 
       // 2. แอบไปดึงสถิติผู้ใช้งานใหม่/ไม่ได้ใช้งาน จาก API dashboard
@@ -61,7 +60,6 @@ function ManageUsers() {
 
     } catch (err) {
       console.error("Fetch Error:", err);
-      setError(err.message);
       setIsLoading(false);
     }
   };
@@ -95,7 +93,7 @@ function ManageUsers() {
   };
 
   const handleAdd = () => {
-    setSelectedUser({ email: '', password: '', role: 'User' }); 
+    setSelectedUser({ email: '', password: '', role: 'User' });
     setModalMode('add');
     setIsModalOpen(true);
   };
@@ -104,8 +102,8 @@ function ManageUsers() {
 
   // ================= ฟังก์ชันบันทึกข้อมูล (เพิ่ม / แก้ไข) =================
   const handleSaveModal = async (e) => {
-    e.preventDefault(); 
-    
+    e.preventDefault();
+
     if (modalMode === 'add') {
       try {
         const response = await fetch('http://localhost:5000/api/signup', {
@@ -116,7 +114,7 @@ function ManageUsers() {
         const result = await response.json();
         if (response.ok) {
           alert("เพิ่มสมาชิกสำเร็จ!");
-          fetchUsersData(); 
+          fetchUsersData();
           closeModal();
         } else {
           alert(result.message || "เกิดข้อผิดพลาด");
@@ -133,7 +131,7 @@ function ManageUsers() {
         });
         if (response.ok) {
           alert("อัปเดตข้อมูลสำเร็จ!");
-          fetchUsersData(); 
+          fetchUsersData();
           closeModal();
         } else {
           alert("เกิดข้อผิดพลาดในการอัปเดต");
@@ -159,13 +157,13 @@ function ManageUsers() {
           <div className="title-icon-wrapper"><FaUserCog /></div>
           จัดการข้อมูลสมาชิก
         </h2>
-        
+
         <div className="header-actions">
           <div className="menu-search-box">
             <LuSearch className="menu-search-icon" />
-            <input 
-              type="text" 
-              placeholder="ค้นหาอีเมล หรือ ID..." 
+            <input
+              type="text"
+              placeholder="ค้นหาอีเมล หรือ ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -178,7 +176,7 @@ function ManageUsers() {
 
       {/* ================= Tab กรองข้อมูล & สถิติภาพรวม ================= */}
       <div className="filter-and-stats-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-        
+
         <div className="role-filter-tabs">
           <button className={`filter-tab tab-all ${activeTab === 'All' ? 'active' : ''}`} onClick={() => setActiveTab('All')}>ทั้งหมด</button>
           <button className={`filter-tab tab-user ${activeTab === 'User' ? 'active' : ''}`} onClick={() => setActiveTab('User')}>ผู้ใช้งาน (User)</button>
@@ -189,12 +187,12 @@ function ManageUsers() {
         <div className="user-stats-summary" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <span className="stat-pill stat-user">ผู้ใช้งาน <strong>{users.filter(u => u.role === 'User').length}</strong> คน</span>
           <span className="stat-pill stat-admin">แอดมิน <strong>{users.filter(u => u.role === 'Admin').length}</strong> คน</span>
-          
+
           <span className="stat-pill" style={{ background: '#e6f4ea', color: '#1e8e3e', border: '1px solid #cce8d6', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <LuUserPlus size={15}/> ใหม่ (30 วัน) <strong>{extraStats.newUsers}</strong> คน
+            <LuUserPlus size={15} /> ใหม่ (30 วัน) <strong>{extraStats.newUsers}</strong> คน
           </span>
           <span className="stat-pill" style={{ background: '#fce8e6', color: '#d93025', border: '1px solid #fad2cf', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <LuUserMinus size={15}/> ไม่ได้ใช้งาน <strong>{extraStats.inactiveUsers}</strong> คน
+            <LuUserMinus size={15} /> ไม่ได้ใช้งาน <strong>{extraStats.inactiveUsers}</strong> คน
           </span>
         </div>
         {/* ========================================================= */}
@@ -241,27 +239,27 @@ function ManageUsers() {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            
+
             <div className="modal-header">
               <h3>
-                {modalMode === 'add' ? 'เพิ่มสมาชิกใหม่' : 
-                 modalMode === 'edit' ? 'แก้ไขสิทธิ์การใช้งาน' : 
-                 'รายละเอียดสมาชิก'}
+                {modalMode === 'add' ? 'เพิ่มสมาชิกใหม่' :
+                  modalMode === 'edit' ? 'แก้ไขสิทธิ์การใช้งาน' :
+                    'รายละเอียดสมาชิก'}
               </h3>
               <button className="btn-close-modal" onClick={closeModal}><LuX size={20} /></button>
             </div>
 
             <form onSubmit={handleSaveModal}>
               <div className="modal-body">
-                
+
                 <div className="form-group">
                   <label>อีเมล (Email)</label>
-                  <input 
-                    type="email" 
-                    required 
-                    readOnly={modalMode !== 'add'} 
+                  <input
+                    type="email"
+                    required
+                    readOnly={modalMode !== 'add'}
                     value={selectedUser.email}
-                    onChange={(e) => setSelectedUser({...selectedUser, email: e.target.value})}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
                     placeholder="example@email.com"
                   />
                 </div>
@@ -269,11 +267,11 @@ function ManageUsers() {
                 {modalMode === 'add' && (
                   <div className="form-group">
                     <label>รหัสผ่าน (Password)</label>
-                    <input 
-                      type="password" 
-                      required 
+                    <input
+                      type="password"
+                      required
                       value={selectedUser.password}
-                      onChange={(e) => setSelectedUser({...selectedUser, password: e.target.value})}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, password: e.target.value })}
                       placeholder="กำหนดรหัสผ่าน"
                     />
                   </div>
@@ -281,10 +279,10 @@ function ManageUsers() {
 
                 <div className="form-group">
                   <label>สิทธิ์การใช้งาน (Role)</label>
-                  
+
                   {/* เริ่มต้น Custom Dropdown */}
                   <div className="user-custom-select-container">
-                    <div 
+                    <div
                       className={`user-custom-select-header ${isRoleDropdownOpen ? 'open' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}
                       onClick={() => {
                         if (modalMode !== 'view') {
@@ -300,19 +298,19 @@ function ManageUsers() {
 
                     {isRoleDropdownOpen && modalMode !== 'view' && (
                       <div className="user-custom-select-options">
-                        <div 
+                        <div
                           className={`user-custom-select-option ${selectedUser.role === 'User' ? 'selected' : ''}`}
                           onClick={() => {
-                            setSelectedUser({...selectedUser, role: 'User'});
+                            setSelectedUser({ ...selectedUser, role: 'User' });
                             setIsRoleDropdownOpen(false);
                           }}
                         >
                           ผู้ใช้งานทั่วไป (User)
                         </div>
-                        <div 
+                        <div
                           className={`user-custom-select-option ${selectedUser.role === 'Admin' ? 'selected' : ''}`}
                           onClick={() => {
-                            setSelectedUser({...selectedUser, role: 'Admin'});
+                            setSelectedUser({ ...selectedUser, role: 'Admin' });
                             setIsRoleDropdownOpen(false);
                           }}
                         >
@@ -321,10 +319,10 @@ function ManageUsers() {
                       </div>
                     )}
                   </div>
-                  {/* จบส่วน Custom Dropdown */}
-                </div> {/* 🌟 จุดที่แก้ 1: ปิดแท็ก .form-group ที่หายไป */}
+                  
+                </div> 
 
-              </div> {/* 🌟 จุดที่แก้ 2: ปิดแท็ก .modal-body ที่หายไป */}
+              </div> 
 
               <div className="modal-footer">
                 <button type="button" className="btn-cancel" onClick={closeModal}>ปิด</button>

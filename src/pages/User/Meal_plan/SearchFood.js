@@ -30,7 +30,7 @@ function SearchFood() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null); 
+  const dropdownRef = useRef(null);
   const [selectedFood, setSelectedFood] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [favFoodIds, setFavFoodIds] = useState([]);
@@ -114,20 +114,20 @@ function SearchFood() {
 
   // 3. เพิ่มฟังก์ชันดึง label ของ dropdown
   const getDropdownLabel = () => {
-      if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
-      const found = categories.find(c => c.category_id === activeCategory);
-      return found ? found.category_name : "ทั้งหมด";
+    if (activeCategory === "all" || activeCategory === "fav") return "ทั้งหมด";
+    const found = categories.find(c => c.category_id === activeCategory);
+    return found ? found.category_name : "ทั้งหมด";
   };
 
   // 2. เพิ่ม useEffect สำหรับดักคลิกข้างนอก (วางไว้ใกล้กับ useEffect อื่นๆ)
   useEffect(() => {
-      const handleClickOutside = (event) => {
-          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-              setIsDropdownOpen(false);
-          }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -481,6 +481,13 @@ function SearchFood() {
                   alt={selectedFood.food_name}
                   className="sf-detail-image"
                 />
+
+                <div className="sf-detail-section sf-serving-section">
+                  <h4>ปริมาณต่อหน่วย</h4>
+                  <div className="sf-detail-description">
+                    {selectedFood.serving_size || "-"}
+                  </div>
+                </div>
 
                 {selectedFood.description && selectedFood.description.trim() !== "" && (
                   <div className="sf-detail-section">

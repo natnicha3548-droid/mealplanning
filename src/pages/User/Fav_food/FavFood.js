@@ -753,6 +753,13 @@ function FavFood() {
                                     className="fav-modal-image"
                                 />
 
+                                <div className="fav-modal-section fav-serving-section">
+                                    <h4>ปริมาณต่อหน่วย</h4>
+                                    <div className="fav-modal-box fav-modal-detail-text">
+                                        {selectedFood.serving_size || "-"}
+                                    </div>
+                                </div>
+
                                 {selectedFood.description && selectedFood.description.trim() !== "" && (
                                     <div className="fav-modal-section">
                                         <h4>รายละเอียดอาหาร</h4>
