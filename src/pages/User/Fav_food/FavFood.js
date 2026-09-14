@@ -577,7 +577,7 @@ function FavFood() {
                     onClick={() => setActiveTab("plans")}
                 >
                     <FaCalendarAlt />
-                    แผนการกิน
+                    รายการโปรดแผนการกิน
                 </button>
             </div>
 
