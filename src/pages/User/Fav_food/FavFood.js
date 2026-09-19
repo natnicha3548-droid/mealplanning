@@ -28,6 +28,7 @@ function FavFood() {
     const navigate = useNavigate();
 
     const [favFoods, setFavFoods] = useState([]);
+    const [foodCatalog, setFoodCatalog] = useState([]);
     const [favPlans, setFavPlans] = useState([]);
     const [activeTab, setActiveTab] = useState("foods");
     const [categories, setCategories] = useState([]);
@@ -37,6 +38,9 @@ function FavFood() {
     const [selectedMeal, setSelectedMeal] = useState("breakfast");
     const [quantity, setQuantity] = useState(1);
     const [restoringPlanId, setRestoringPlanId] = useState(null);
+    const [recommendations, setRecommendations] = useState([]);
+    const [showRecommendModal, setShowRecommendModal] = useState(false);
+    const [addedFood, setAddedFood] = useState(null);
 
     // Review state
     const [reviews, setReviews] = useState([]);
@@ -89,14 +93,28 @@ function FavFood() {
         return [];
     };
 
+    const getFoodData = (foodName) => {
+        const foods = [...foodCatalog, ...favFoods];
+        return foods.find(
+            (food) => food.food_name?.toLowerCase() === foodName?.toLowerCase()
+        ) || null;
+    };
+
+    const getFoodImage = (food) => {
+        if (!food?.image) return null;
+        return food.image.startsWith("http")
+            ? food.image
+            : `http://localhost:5000${food.image}`;
+    };
+
     useEffect(() => {
-        if (selectedFood) {
+        if (selectedFood || showRecommendModal) {
             document.body.classList.add("modal-open");
         } else {
             document.body.classList.remove("modal-open");
         }
         return () => document.body.classList.remove("modal-open");
-    }, [selectedFood]);
+    }, [selectedFood, showRecommendModal]);
 
     // ================= FETCH REVIEWS =================
 
@@ -147,6 +165,16 @@ function FavFood() {
         setMyReview(null);
         setReviewRating(0);
         setReviewText("");
+    };
+
+    const openFoodFromRecommend = (foodName) => {
+        const foodData = getFoodData(foodName);
+        if (!foodData) return;
+
+        setShowRecommendModal(false);
+        setSelectedFood(foodData);
+        setSelectedMeal("breakfast");
+        setQuantity(1);
     };
 
     // ================= SUBMIT REVIEW =================
@@ -270,6 +298,14 @@ function FavFood() {
 
             setFavFoods(data.foods || []);
             setFavPlans(groupPlanData(data.plans || []));
+
+            try {
+                const foodsResponse = await fetch("http://localhost:5000/api/foods");
+                const foodsData = await foodsResponse.json();
+                setFoodCatalog(Array.isArray(foodsData) ? foodsData : []);
+            } catch (error) {
+                console.log("Fetch food catalog error:", error);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -379,8 +415,32 @@ function FavFood() {
             },
         });
         localStorage.setItem("myplate", JSON.stringify(myPlate));
-        alert("เพิ่มลงจานอาหารแล้ว");
-        handleCloseSelectedFood();
+
+        const foodForModal = selectedFood;
+        const mealTypeMap = {
+            breakfast: "เช้า",
+            lunch: "กลางวัน",
+            dinner: "เย็น"
+        };
+        const mealForRecommend = mealTypeMap[selectedMeal];
+
+        setAddedFood(foodForModal);
+        setSelectedFood(null);
+        setQuantity(1);
+
+        fetch(
+            `http://localhost:5000/api/recommend/${encodeURIComponent(foodForModal.food_name)}?meal_type=${encodeURIComponent(mealForRecommend)}`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                setRecommendations(Array.isArray(data) ? data : []);
+                setShowRecommendModal(true);
+            })
+            .catch((error) => {
+                console.error("Fetch recommendations error:", error);
+                setRecommendations([]);
+                setShowRecommendModal(true);
+            });
     };
 
     // ================= CATEGORY GROUPING =================
@@ -722,16 +782,18 @@ function FavFood() {
 
                             {/* ปุ่มหัวใจ + กากบาท ชิดขอบขวา */}
                             <div className="fav-modal-actions">
-                                <button
-                                    className="fav-modal-bookmark-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeFavoriteFood(e, selectedFood.favorite_id);
-                                        handleCloseSelectedFood();
-                                    }}
-                                >
-                                    <FaHeart />
-                                </button>
+                                {selectedFood.favorite_id && (
+                                    <button
+                                        className="fav-modal-bookmark-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            removeFavoriteFood(e, selectedFood.favorite_id);
+                                            handleCloseSelectedFood();
+                                        }}
+                                    >
+                                        <FaHeart />
+                                    </button>
+                                )}
                                 <button
                                     className="fav-modal-close-btn"
                                     onClick={handleCloseSelectedFood}
@@ -971,6 +1033,112 @@ function FavFood() {
                     </div>
                 );
             })()}
+
+            {/* ================= RECOMMEND MODAL ================= */}
+            {showRecommendModal && addedFood && (
+                <div
+                    className="fav-modal-overlay"
+                    onClick={() => setShowRecommendModal(false)}
+                >
+                    <div
+                        className="recommend-modal"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="recommend-modal-header">
+                            <h2 className="recommend-modal-title">
+                                {addedFood.food_name}
+                            </h2>
+                            <button
+                                className="recommend-close-btn"
+                                onClick={() => setShowRecommendModal(false)}
+                                aria-label="ปิด"
+                            >
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <div className="recommend-food-img-wrap">
+                            {getFoodImage(addedFood) ? (
+                                <img
+                                    src={getFoodImage(addedFood)}
+                                    alt={addedFood.food_name}
+                                    className="recommend-food-img"
+                                />
+                            ) : (
+                                <div className="recommend-card-img-placeholder">
+                                    🍽️
+                                </div>
+                            )}
+                            <div className="recommend-added-badge">
+                                <span className="recommend-badge-check">✓</span>
+                                เพิ่มเมนูอาหารนี้ใส่จานแล้ว
+                            </div>
+                        </div>
+
+                        <div className="recommend-modal-bottom">
+                            <div className="recommend-title-row">
+                                <span className="recommend-title-icon">
+                                    <MdLocalFireDepartment style={{ color: "white" }} />
+                                </span>
+                                <h3 className="recommend-title">
+                                    เมนูแนะนำสำหรับมื้อ{
+                                        {
+                                            breakfast: "เช้า",
+                                            lunch: "กลางวัน",
+                                            dinner: "เย็น"
+                                        }[selectedMeal]
+                                    }
+                                </h3>
+                            </div>
+
+                            {recommendations.length > 0 ? (
+                                <div className="recommend-cards-grid">
+                                    {recommendations.slice(0, 3).map((item, index) => {
+                                        const foodData = getFoodData(item.food);
+                                        const image = getFoodImage(foodData);
+
+                                        return (
+                                            <div
+                                                key={`${item.food}-${index}`}
+                                                onClick={() => openFoodFromRecommend(item.food)}
+                                                className="recommend-card"
+                                                style={{ cursor: foodData ? "pointer" : "default" }}
+                                            >
+                                                <div className="recommend-card-img-wrap">
+                                                    {image ? (
+                                                        <img src={image} alt={item.food} />
+                                                    ) : (
+                                                        <div className="recommend-card-img-placeholder">
+                                                            🍽️
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="recommend-card-info">
+                                                    <p className="recommend-card-name">
+                                                        {item.food}
+                                                    </p>
+                                                    {foodData?.calories !== undefined && (
+                                                        <p className="recommend-card-calorie">
+                                                            <MdLocalFireDepartment />
+                                                            {" "}
+                                                            {Number(foodData.calories).toFixed(0)} แคล
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="recommend-empty">
+                                    ยังไม่มีข้อมูลเมนูแนะนำ
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );
