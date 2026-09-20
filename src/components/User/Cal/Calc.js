@@ -174,17 +174,25 @@ function Calc() {
 
         // แต่ละโรคใช้ Math.min เพื่อ "เข้มงวดที่สุด" เสมอ ไม่ว่าจะเลือกโรคไหนก่อน-หลัง
         // (เดิมใช้ overwrite ตรง ๆ ทำให้ผลลัพธ์ขึ้นอยู่กับลำดับโค้ด ไม่ใช่ความเข้มงวดจริง)
+        // เบาหวาน: 45% คาร์โบไฮเดรต / 20% โปรตีน / 35% ไขมัน
         if (form.diseases.includes("diabetes")) {
             carbPercent = 45;
-            sugar = Math.min(sugar, 20);
-            fatPercent = Math.min(fatPercent, 35);
+            proteinPercent = 20;
+            fatPercent = 35;
+            sugar = 20;
         }
+
+        // หัวใจและหลอดเลือด: 55% คาร์โบไฮเดรต / 25% โปรตีน / 20% ไขมัน
         if (form.diseases.includes("heart")) {
-            fatPercent = Math.min(fatPercent, 20);
-            sodium = Math.min(sodium, 2000);
+            carbPercent = 55;
+            proteinPercent = 25;
+            fatPercent = 20;
+            sodium = 2000;
         }
+
+        // โรคไต: จำกัดโซเดียมไม่เกิน 2,000 มก./วัน
         if (form.diseases.includes("kidney")) {
-            sodium = Math.min(sodium, 2000);
+            sodium = 2000;
         }
 
         const carbKcal = (carbPercent * tdee) / 100;
